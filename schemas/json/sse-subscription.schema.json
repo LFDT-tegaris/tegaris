@@ -1,0 +1,228 @@
+{
+  "$defs": {
+    "Frame": {
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "contentMediaType": "application/cloudevents+json",
+          "type": "string"
+        },
+        "event": {
+          "pattern": "^io\\.openpc\\.[a-z0-9.]+\\.v[1-9][0-9]*$",
+          "type": "string"
+        },
+        "id": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpaqueCursor"
+        },
+        "retryMilliseconds": {
+          "maximum": 60000,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "event",
+        "data",
+        "retryMilliseconds"
+      ],
+      "title": "SseFrameV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-CONTROL-API",
+          "LS-WORKBENCH"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-004-AUTHORITY-INTERSECTION",
+          "AD-SR04-014-SECURITY-OPERATIONS",
+          "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-REQ-TARCH-COM-024"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-3b7d5dff1c7a2777eef5afd7"
+        ]
+      }
+    },
+    "Snapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "cursor": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpaqueCursor"
+        },
+        "snapshotRevision": {
+          "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+        },
+        "topicDigests": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "digest": {
+                "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+              },
+              "topic": {
+                "enum": [
+                  "operations",
+                  "work-items",
+                  "notifications",
+                  "fleet",
+                  "policy",
+                  "evidence",
+                  "facts"
+                ]
+              }
+            },
+            "required": [
+              "topic",
+              "digest"
+            ],
+            "title": "TopicDigestV1",
+            "type": "object",
+            "x-openpc-trace": {
+              "componentIds": [
+                "LS-CONTROL-API",
+                "LS-WORKBENCH"
+              ],
+              "decisionIds": [
+                "AD-SR04-001-B0-FREEZE",
+                "AD-SR04-004-AUTHORITY-INTERSECTION",
+                "AD-SR04-014-SECURITY-OPERATIONS",
+                "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY"
+              ],
+              "requirementIds": [
+                "REQ-SR01-B0-REQ-TARCH-COM-024"
+              ],
+              "sourceUnitIds": [
+                "SU-REQ-3b7d5dff1c7a2777eef5afd7"
+              ]
+            }
+          },
+          "type": "array"
+        },
+        "truthState": {
+          "$ref": "shared-primitives.schema.json#/$defs/TruthState"
+        }
+      },
+      "required": [
+        "snapshotRevision",
+        "cursor",
+        "truthState",
+        "topicDigests"
+      ],
+      "title": "SseSnapshotV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-CONTROL-API",
+          "LS-WORKBENCH"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-004-AUTHORITY-INTERSECTION",
+          "AD-SR04-014-SECURITY-OPERATIONS",
+          "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-REQ-TARCH-COM-024"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-3b7d5dff1c7a2777eef5afd7"
+        ]
+      }
+    },
+    "SubscriptionRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "participantId": {
+          "$ref": "shared-primitives.schema.json#/$defs/ParticipantId"
+        },
+        "resumeCursor": {
+          "oneOf": [
+            {
+              "$ref": "shared-primitives.schema.json#/$defs/OpaqueCursor"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "snapshotRevision": {
+          "oneOf": [
+            {
+              "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "topics": {
+          "items": {
+            "enum": [
+              "operations",
+              "work-items",
+              "notifications",
+              "fleet",
+              "policy",
+              "evidence",
+              "facts"
+            ]
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "participantId",
+        "topics",
+        "resumeCursor",
+        "snapshotRevision"
+      ],
+      "title": "SseSubscriptionRequestV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-CONTROL-API",
+          "LS-WORKBENCH"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-004-AUTHORITY-INTERSECTION",
+          "AD-SR04-014-SECURITY-OPERATIONS",
+          "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-REQ-TARCH-COM-024"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-3b7d5dff1c7a2777eef5afd7"
+        ]
+      }
+    }
+  },
+  "$id": "https://schemas.openpc.local/sse-subscription.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OpenPC SSE subscription and frame v1",
+  "x-openpc-trace": {
+    "componentIds": [
+      "LS-CONTROL-API",
+      "LS-WORKBENCH"
+    ],
+    "decisionIds": [
+      "AD-SR04-001-B0-FREEZE",
+      "AD-SR04-004-AUTHORITY-INTERSECTION",
+      "AD-SR04-014-SECURITY-OPERATIONS",
+      "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY"
+    ],
+    "requirementIds": [
+      "REQ-SR01-B0-REQ-TARCH-COM-024"
+    ],
+    "sourceUnitIds": [
+      "SU-REQ-3b7d5dff1c7a2777eef5afd7"
+    ]
+  }
+}

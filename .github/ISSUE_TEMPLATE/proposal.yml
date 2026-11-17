@@ -1,0 +1,31 @@
+name: Change proposal
+description: Discuss a feature, interface or substantial behavior change.
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and expected behavior
+      description: Describe the user task and give a concrete example.
+    validations:
+      required: true
+  - type: textarea
+    id: approach
+    attributes:
+      label: Proposed approach
+      description: Cover scope, affected components and alternatives considered.
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility and privacy
+      description: Explain effects on authorization, data, APIs and deployment.
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: How should this be verified?
+      description: Include expected outcomes, rejected inputs and recovery where relevant.
+    validations:
+      required: true

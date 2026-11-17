@@ -1,0 +1,900 @@
+name: openpc-local
+
+x-postgres: &postgres
+  image: docker.io/library/postgres:18.6@sha256:7341002d2b8c7c5bdd7542a671a95b36196c0b5b888daf454ae4fc33ba5346d7
+  platform: linux/amd64
+  restart: unless-stopped
+  # Reap orphaned exec/health-check children outside the postmaster. PostgreSQL
+  # treats an unknown signaled child as a crash and restarts all its backends.
+  init: true
+  security_opt: [no-new-privileges:true]
+  cpus: 0.75
+  mem_limit: 1g
+  pids_limit: 256
+  networks: [openpc-local]
+
+x-postgres-final-healthcheck: &postgres-final-healthcheck
+  test: ["CMD", "sh", "/postgres_final_healthcheck"]
+  interval: 2s
+  timeout: 3s
+  retries: 30
+
+services:
+  oidc-emulator:
+    image: docker.io/library/node:24.19.0-alpine@sha256:2a49bdf71e9fd965a58c1703fd9ddd205b34e5782b692a72dd1d248abb0beb43
+    platform: linux/amd64
+    command: ["node", "/app/server.mjs"]
+    environment:
+      OIDC_EMULATOR_ISSUER: http://oidc-emulator:3006
+      OIDC_EMULATOR_PRINCIPAL_ID: 018f0000-0000-7000-8000-000000000111
+      OIDC_EMULATOR_VIEWER_PRINCIPAL_ID: 018f0000-0000-7000-8000-000000000112
+      OIDC_EMULATOR_PARTICIPANT_ID: 018f0000-0000-7000-8000-000000000101
+    ports: ["127.0.0.1:53006:3006"]
+    volumes: ["../../../tests/integration/local-runtime/oidc-emulator.mjs:/app/server.mjs:ro"]
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cpus: 0.25
+    mem_limit: 128m
+    pids_limit: 64
+    networks: [openpc-local]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3006/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  control-pg:
+    <<: *postgres
+    mem_limit: ${OPENPC_LOCAL_CONTROL_PG_MEMORY:-1g}
+    memswap_limit: ${OPENPC_LOCAL_CONTROL_PG_SWAP:-2g}
+    cpus: ${OPENPC_LOCAL_CONTROL_PG_CPUS:-0.75}
+    # Nested authority and RLS checks are short transactional queries; LLVM
+    # compilation costs more than their execution in this bounded local profile.
+    command: ["postgres", "-c", "jit=off"]
+    environment:
+      POSTGRES_DB: openpc_control
+      POSTGRES_USER: openpc_control
+      POSTGRES_PASSWORD_FILE: /run/secrets/control_pg_password
+      # Return large, transient RLS planning allocations under the 1 GiB cap.
+      MALLOC_MMAP_THRESHOLD_: "131072"
+      MALLOC_TRIM_THRESHOLD_: "131072"
+    ports: ["127.0.0.1:55432:5432"]
+    volumes: ["${OPENPC_LOCAL_DATA_ROOT:?}/control-pg:/var/lib/postgresql"]
+    secrets: [control_pg_password]
+    configs: [postgres_final_healthcheck]
+    healthcheck: *postgres-final-healthcheck
+
+  fact-pg:
+    <<: *postgres
+    environment:
+      POSTGRES_DB: openpc_facts
+      POSTGRES_USER: openpc_facts
+      POSTGRES_PASSWORD_FILE: /run/secrets/fact_pg_password
+    ports: ["127.0.0.1:55433:5432"]
+    volumes: ["${OPENPC_LOCAL_DATA_ROOT:?}/fact-pg:/var/lib/postgresql"]
+    secrets: [fact_pg_password]
+    configs: [postgres_final_healthcheck]
+    healthcheck: *postgres-final-healthcheck
+
+  candidate-index-pg:
+    <<: *postgres
+    environment:
+      POSTGRES_DB: openpc_candidate_index
+      POSTGRES_USER: openpc_candidate_index
+      POSTGRES_PASSWORD_FILE: /run/secrets/candidate_index_pg_password
+    ports: ["127.0.0.1:55434:5432"]
+    volumes: ["${OPENPC_LOCAL_DATA_ROOT:?}/candidate-index-pg:/var/lib/postgresql"]
+    secrets: [candidate_index_pg_password]
+    configs: [postgres_final_healthcheck]
+    healthcheck: *postgres-final-healthcheck
+
+  control-migrate:
+    <<: *postgres
+    restart: "no"
+    entrypoint: ["/bin/sh", "/local/migrate.sh", "control"]
+    environment:
+      PGHOST: control-pg
+      PGUSER: openpc_control
+      PGDATABASE: openpc_control
+    volumes:
+      - ../../../migrations/postgres:/migrations/postgres:ro
+      - ./migrate.sh:/local/migrate.sh:ro
+    secrets: [control_pg_password, identity_runtime_db_password, participant_runtime_db_password, policy_runtime_db_password, control_api_runtime_db_password, control_worker_runtime_db_password, source_control_db_password, fleet_fact_admission_key, runtime_target_disposition_key]
+    depends_on:
+      control-pg: { condition: service_healthy }
+
+  fact-migrate:
+    <<: *postgres
+    restart: "no"
+    entrypoint: ["/bin/sh", "/local/migrate.sh", "fact"]
+    environment:
+      PGHOST: fact-pg
+      PGUSER: openpc_facts
+      PGDATABASE: openpc_facts
+    volumes:
+      - ../../../migrations/postgres:/migrations/postgres:ro
+      - ./migrate.sh:/local/migrate.sh:ro
+    secrets: [fact_pg_password, fact_capability_secret, fact_runtime_db_password, policy_fact_db_password]
+    depends_on:
+      fact-pg: { condition: service_healthy }
+
+  candidate-index-migrate:
+    <<: *postgres
+    restart: "no"
+    entrypoint: ["/bin/sh", "/local/migrate.sh", "candidate_index"]
+    environment:
+      PGHOST: candidate-index-pg
+      PGUSER: openpc_candidate_index
+      PGDATABASE: openpc_candidate_index
+    volumes:
+      - ../../../migrations/postgres:/migrations/postgres:ro
+      - ./migrate.sh:/local/migrate.sh:ro
+    secrets: [candidate_index_pg_password, indexer_manager_db_password, indexer_writer_db_password, fact_bridge_reader_db_password, candidate_index_reader_db_password, candidate_retirement_capability_secret]
+    depends_on:
+      candidate-index-pg: { condition: service_healthy }
+
+  identity-service:
+    image: openpc-r1-dev/identity-service:local
+    build:
+      labels:
+        io.openpc.image.owner: openpc-r1-local-runtime-v1
+        io.openpc.image.service: identity-service
+      context: ../../..
+      dockerfile: services/identity-service/Dockerfile
+    platform: linux/amd64
+    ports: ["127.0.0.1:53443:3443", "127.0.0.1:53444:3444"]
+    environment:
+      OPENPC_LOCAL_RUNTIME: "1"
+      OPENPC_LOCAL_RUNTIME_QA_FIXTURE: ${OPENPC_LOCAL_RUNTIME_QA_FIXTURE:-0}
+      IDENTITY_LOCAL_QA_RUNTIME_SNAPSHOT_TTL_MS: ${OPENPC_LOCAL_RUNTIME_QA_SNAPSHOT_TTL_MS:-60000}
+      IDENTITY_RECOVERY_LEASE_TTL_MS: ${IDENTITY_RECOVERY_LEASE_TTL_MS:-900000}
+      IDENTITY_RECOVERY_ADMINISTRATOR_TTL_MS: ${IDENTITY_RECOVERY_ADMINISTRATOR_TTL_MS:-3600000}
+      IDENTITY_DATABASE_HOST: control-pg
+      IDENTITY_DATABASE_PORT: "5432"
+      IDENTITY_DATABASE_NAME: openpc_control
+      IDENTITY_DATABASE_USER: openpc_identity_runtime
+      IDENTITY_DATABASE_PASSWORD_FILE: /run/secrets/identity_runtime_db_password
+      IDENTITY_INTERNAL_TOKEN_FILE: /run/secrets/identity_internal_token
+      IDENTITY_RUNTIME_SIGNING_PRIVATE_KEY_FILE: /run/secrets/identity_runtime_signing_private_key
+      IDENTITY_RUNTIME_SIGNING_PUBLIC_KEY_FILE: /run/secrets/identity_runtime_signing_public_key
+      IDENTITY_RUNTIME_TRUSTED_PUBLIC_KEY_FILES: /run/secrets/identity_runtime_signing_public_key
+      IDENTITY_LOCAL_OPERATOR_CREDENTIAL_FILE: /run/secrets/local_operator_credential
+      IDENTITY_LOCAL_VIEWER_CREDENTIAL_FILE: /run/secrets/local_viewer_credential
+      IDENTITY_LOCAL_OPERATOR_PRINCIPAL_ID: 018f0000-0000-7000-8000-000000000111
+      IDENTITY_LOCAL_VIEWER_PRINCIPAL_ID: 018f0000-0000-7000-8000-000000000112
+      IDENTITY_LOCAL_PARTICIPANT_ID: 018f0000-0000-7000-8000-000000000101
+      IDENTITY_LOCAL_PRIVACY_DOMAIN_ID: 018f0000-0000-7000-8000-000000000201
+      IDENTITY_OIDC_ISSUER: http://oidc-emulator:3006
+      IDENTITY_OIDC_CLIENT_ID: openpc-local-workbench
+      IDENTITY_OIDC_REDIRECT_URI: http://localhost:8080/api/v1/ui/oidc-session/callback
+      IDENTITY_SIGNING_CONTINUATION_CLIENT_CA_FILE: /run/secrets/business_provider_ca
+      IDENTITY_SIGNING_CONTINUATION_LISTEN: 0.0.0.0:3444
+      IDENTITY_SIGNING_CONTINUATION_PRIVATE_KEY_FILE: /run/secrets/identity_continuation_private_key
+      IDENTITY_SIGNING_CONTINUATION_PUBLIC_KEY_FILE: /run/secrets/identity_continuation_public_key
+      IDENTITY_SIGNING_CONTINUATION_TRUSTED_PUBLIC_KEY_FILES: /run/secrets/identity_continuation_public_key
+      IDENTITY_MTLS_CA_FILE: /run/secrets/identity_mtls_ca
+      IDENTITY_WORKLOAD_ISSUER_URL: http://workload-issuer:3008/v1/certificates
+      IDENTITY_WORKLOAD_ISSUER_TOKEN_FILE: /run/secrets/workload_issuer_token
+      IDENTITY_MTLS_SERVER_CERT_FILE: /run/secrets/identity_mtls_server_cert
+      IDENTITY_MTLS_SERVER_KEY_FILE: /run/secrets/identity_mtls_server_key
+      IDENTITY_MTLS_LISTEN: 0.0.0.0:3443
+      IDENTITY_LISTEN: 0.0.0.0:3001
+    secrets:
+      - identity_runtime_db_password
+      - identity_internal_token
+      - identity_continuation_private_key
+      - identity_continuation_public_key
+      - identity_runtime_signing_private_key
+      - identity_runtime_signing_public_key
+      - local_operator_credential
+      - local_viewer_credential
+      - identity_mtls_ca
+      - workload_issuer_token
+      - business_provider_ca
+      - identity_mtls_server_cert
+      - identity_mtls_server_key
+    depends_on:
+      control-migrate: { condition: service_completed_successfully }
+      oidc-emulator: { condition: service_healthy }
+      workload-issuer: { condition: service_healthy }
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cpus: 0.75
+    mem_limit: 768m
+    pids_limit: 256
+    networks: [openpc-local]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/readyz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  participant-service:
+    image: openpc-r1-dev/participant-service:local
+    build:
+      labels:
+        io.openpc.image.owner: openpc-r1-local-runtime-v1
+        io.openpc.image.service: participant-service
+      context: ../../..
+      dockerfile: services/participant-service/Dockerfile
+    platform: linux/amd64
+    ports: ["127.0.0.1:53005:3005"]
+    environment:
+      OPENPC_LOCAL_RUNTIME: "1"
+      OPENPC_LOCAL_RUNTIME_QA_FIXTURE: ${OPENPC_LOCAL_RUNTIME_QA_FIXTURE:-0}
+      PARTICIPANT_DATABASE_HOST: control-pg
+      PARTICIPANT_DATABASE_PORT: "5432"
+      PARTICIPANT_DATABASE_NAME: openpc_control
+      PARTICIPANT_DATABASE_USER: openpc_participant_runtime
+      PARTICIPANT_DATABASE_PASSWORD_FILE: /run/secrets/participant_runtime_db_password
+      PARTICIPANT_IDENTITY_URL: http://identity-service:3001
+      PARTICIPANT_IDENTITY_RUNTIME_TRUSTED_PUBLIC_KEY_FILES: /run/secrets/identity_runtime_signing_public_key
+      PARTICIPANT_IDENTITY_INTERNAL_TOKEN_FILE: /run/secrets/identity_internal_token
+      PARTICIPANT_LOCAL_PRIVACY_DOMAIN_ID: 018f0000-0000-7000-8000-000000000201
+      PARTICIPANT_ENVELOPE_SIGNING_PROVIDER_URL: https://signing-provider:3007
+      PARTICIPANT_ENVELOPE_SIGNING_PROVIDER_CA_FILE: /run/secrets/business_provider_ca
+      PARTICIPANT_ENVELOPE_SIGNING_PROVIDER_CERT_FILE: /run/secrets/business_api_cert
+      PARTICIPANT_ENVELOPE_SIGNING_PROVIDER_KEY_FILE: /run/secrets/business_api_key
+      PARTICIPANT_ENVELOPE_SIGNING_PROVIDER_SERVER_CERT_FILE: /run/secrets/business_provider_server_cert
+      PARTICIPANT_ENVELOPE_SIGNING_ENVIRONMENT_ID: local
+      PARTICIPANT_ENVELOPE_SIGNING_CALLER_CREDENTIAL_ID: 018f0000-0000-7000-8000-000000000195
+      PARTICIPANT_LISTEN: 0.0.0.0:3005
+    secrets: [participant_runtime_db_password, identity_internal_token, identity_runtime_signing_public_key, business_provider_ca, business_provider_server_cert, business_api_cert, business_api_key]
+    depends_on:
+      control-migrate: { condition: service_completed_successfully }
+      identity-service: { condition: service_healthy }
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cpus: 0.75
+    mem_limit: 768m
+    pids_limit: 256
+    networks: [openpc-local]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3005/readyz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  control-api:
+    image: openpc-r1-dev/control-api:local
+    env_file:
+      - path: "${OPENPC_LOCAL_DATA_ROOT:?}/protected-proofs/control.env"
+        required: false
+      - path: "${OPENPC_LOCAL_DATA_ROOT:?}/privacy-explorer/control.env"
+        required: false
+    build:
+      labels:
+        io.openpc.image.owner: openpc-r1-local-runtime-v1
+        io.openpc.image.service: control-api
+      context: ../../..
+      dockerfile: services/control-api/Dockerfile
+    platform: linux/amd64
+    ports: ["127.0.0.1:53003:3003"]
+    environment:
+      OPENPC_LOCAL_RUNTIME: "1"
+      OPENPC_LOCAL_RUNTIME_QA_FIXTURE: ${OPENPC_LOCAL_RUNTIME_QA_FIXTURE:-0}
+      OPENPC_LOCAL_QA_INITIAL_POLICY_RENEWAL_ENVELOPE_IDS: ${OPENPC_LOCAL_QA_INITIAL_POLICY_RENEWAL_ENVELOPE_IDS:-}
+      CONTROL_API_MODULE_RELEASE_CATALOG_FILE: /app/module-releases/catalog.json
+      CONTROL_API_MODULE_RELEASE_TRUST_FILE: /app/module-releases/trust.json
+      CONTROL_API_DATABASE_HOST: control-pg
+      CONTROL_API_DATABASE_PORT: "5432"
+      CONTROL_API_DATABASE_NAME: openpc_control
+      CONTROL_API_DATABASE_USER: openpc_configuration_runtime
+      CONTROL_API_DATABASE_PASSWORD_FILE: /run/secrets/control_api_runtime_db_password
+      POLICY_FACT_DATABASE_HOST: fact-pg
+      POLICY_FACT_DATABASE_PORT: "5432"
+      POLICY_FACT_DATABASE_NAME: openpc_facts
+      POLICY_FACT_DATABASE_USER: openpc_policy_fact_runtime
+      POLICY_FACT_DATABASE_PASSWORD_FILE: /run/secrets/policy_fact_db_password
+      POLICY_FACT_VERIFY_KEY_FILE: /run/secrets/policy_fact_verify_key
+      POLICY_FACT_VERIFY_KEY_ID: sha256:6bd1b7ff42169210dab9f9a28055f450b422a47834ff4e68e8c2de9d54804efc
+      CONTROL_API_FACT_URL: http://fact-service:8081
+      CONTROL_API_FACT_INTERNAL_TOKEN_FILE: /run/secrets/fact_internal_token
+      CONTROL_API_IDENTITY_URL: http://identity-service:3001
+      CONTROL_API_IDENTITY_RUNTIME_TRUSTED_PUBLIC_KEY_FILES: /run/secrets/identity_runtime_signing_public_key
+      OPENPC_DEPLOYMENT_PROJECTION_PUBLIC_KEY_FILE: /run/secrets/runtime_agent_projection_public_key
+      OPENPC_CIGL_ANALYSIS_TARGET_KEYS_FILE: /run/secrets/runtime_analysis_target_keys
+      OPENPC_CIGL_PROFILE_PUBLIC_KEY_FILE: /run/secrets/fleet_deployment_rejection_public_key
+      OPENPC_DEPLOYMENT_REJECTION_PUBLIC_KEY_FILE: /run/secrets/fleet_deployment_rejection_public_key
+      CONTROL_API_SIGNING_CONTINUATION_TRUSTED_PUBLIC_KEY_FILES: /run/secrets/identity_continuation_public_key
+      CONTROL_API_SIGNING_CONTINUATION_URL: https://identity-service:3444
+      CONTROL_API_SIGNING_CONTINUATION_CA_FILE: /run/secrets/identity_mtls_ca
+      CONTROL_API_SIGNING_FINALIZER_ENABLED: "${OPENPC_LOCAL_RUNTIME_SIGNING_FINALIZER_ENABLED:-1}"
+      CONTROL_API_LOCAL_PARTICIPANT_ID: 018f0000-0000-7000-8000-000000000101
+      CONTROL_API_SIGNING_PROVIDER_URL: https://signing-provider:3007
+      CONTROL_API_SIGNING_PROVIDER_CA_FILE: /run/secrets/business_provider_ca
+      CONTROL_API_SIGNING_PROVIDER_CERT_FILE: /run/secrets/business_api_cert
+      CONTROL_API_SIGNING_PROVIDER_KEY_FILE: /run/secrets/business_api_key
+      CONTROL_API_SIGNING_LIFECYCLE_CREDENTIAL_ID: 018f0000-0000-7000-8000-000000000198
+      CONTROL_API_SIGNING_WORKLOAD_CREDENTIAL_ID: 018f0000-0000-7000-8000-000000000195
+      CONTROL_API_EVIDENCE_ENVIRONMENT_ID: local
+      CONTROL_API_IDENTITY_INTERNAL_TOKEN_FILE: /run/secrets/identity_internal_token
+      CONTROL_API_LOCAL_PRIVACY_DOMAIN_ID: "${OPENPC_LOCAL_BOOTSTRAP_PRIVACY_DOMAIN_ID:-018f0000-0000-7000-8000-000000000201}"
+      CONTROL_API_LISTEN: 0.0.0.0:3003
+    secrets: [policy_fact_db_password, policy_fact_verify_key, runtime_analysis_target_keys, runtime_agent_projection_public_key, fleet_deployment_rejection_public_key, identity_continuation_public_key, control_api_runtime_db_password, fact_internal_token, identity_internal_token, identity_runtime_signing_public_key, business_provider_ca, business_api_cert, business_api_key, identity_mtls_ca]
+    volumes:
+      - "${OPENPC_LOCAL_DATA_ROOT:?}/module-releases:/app/module-releases:ro"
+      - "${OPENPC_LOCAL_DATA_ROOT:?}/privacy-explorer:/app/privacy-explorer-fixture:ro"
+      - "${OPENPC_LOCAL_DATA_ROOT:?}/protected-proofs:/app/protected-proofs:ro"
+    depends_on:
+      signing-provider: { condition: service_healthy }
+      control-migrate: { condition: service_completed_successfully }
+      identity-service: { condition: service_healthy }
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cpus: 0.75
+    mem_limit: 768m
+    pids_limit: 256
+    networks: [openpc-local]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3003/readyz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  control-worker:
+    image: openpc-r1-dev/control-worker:local
+    env_file:
+      - path: "${OPENPC_LOCAL_DATA_ROOT:?}/fact-bridge/worker.env"
+        required: false
+    build:
+      labels:
+        io.openpc.image.owner: openpc-r1-local-runtime-v1
+        io.openpc.image.service: control-worker
+      context: ../../..
+      dockerfile: services/fleet-controller/Dockerfile
+      network: host
+      entitlements: [network.host]
+    platform: linux/amd64
+    environment:
+      OPENPC_LOCAL_RUNTIME: "1"
+      CONTROL_WORKER_DATABASE_HOST: control-pg
+      CONTROL_WORKER_DATABASE_PORT: "5432"
+      CONTROL_WORKER_DATABASE_NAME: openpc_control
+      CONTROL_WORKER_DATABASE_USER: openpc_local_control_worker
+      CONTROL_WORKER_DATABASE_PASSWORD_FILE: /run/secrets/control_worker_runtime_db_password
+      CONTROL_WORKER_PARTICIPANT_ID: 018f0000-0000-7000-8000-000000000101
+      CONTROL_WORKER_PRIVACY_DOMAIN_ID: "${OPENPC_LOCAL_BOOTSTRAP_PRIVACY_DOMAIN_ID:-018f0000-0000-7000-8000-000000000201}"
+      CONTROL_WORKER_ID: local-control-worker-1
+      OPENPC_TARGET_WITHDRAWAL_PRE_SIGN_RETRY_MS: "${OPENPC_TARGET_WITHDRAWAL_PRE_SIGN_RETRY_MS:-1000}"
+      OPENPC_CIGL_ANALYSIS_TARGET_KEYS_FILE: /run/secrets/runtime_analysis_target_keys
+      OPENPC_MANAGED_DEPLOYMENT_ENABLED: "${OPENPC_MANAGED_DEPLOYMENT_ENABLED:-false}"
+      CONTROL_WORKER_DEPLOYMENT_IDENTITY_URL: https://identity-service:3443/
+      CONTROL_WORKER_DEPLOYMENT_TARGET_URL: https://runtime-envoy:18545/
+      CONTROL_WORKER_DEPLOYMENT_TARGET_ID: "${OPENPC_LOCAL_TARGET_ID:-unconfigured}"
+      CONTROL_WORKER_DEPLOYMENT_RESULT_ROOT: /runtime
+      CONTROL_WORKER_DEPLOYMENT_CA_FILE: /run/secrets/identity_mtls_ca
+      CONTROL_WORKER_DEPLOYMENT_CERT_FILE: /run/secrets/identity_mtls_rotated_cert
+      CONTROL_WORKER_DEPLOYMENT_KEY_FILE: /run/secrets/identity_mtls_rotated_key
+      CONTROL_WORKER_SIGNING_PROVIDER_URL: https://signing-provider:3007
+      CONTROL_WORKER_SIGNING_CREDENTIAL_ID: 018f0000-0000-7000-8000-000000000198
+      CONTROL_WORKER_SIGNING_PROVIDER_CA_FILE: /run/secrets/business_provider_ca
+      CONTROL_WORKER_SIGNING_PROVIDER_CERT_FILE: /run/secrets/business_worker_cert
+      CONTROL_WORKER_SIGNING_PROVIDER_KEY_FILE: /run/secrets/business_worker_key
+      CONTROL_WORKER_ARTIFACT_CAPACITY_BYTES: "1048576"
+      CONTROL_WORKER_FLEET_SIGNING_SECRET_FILE: /run/secrets/fleet_controller_signing_secret
+      CONTROL_WORKER_FACT_ADMISSION_KEY_FILE: /run/secrets/fleet_fact_admission_key
+      CONTROL_WORKER_TARGET_DISPOSITION_KEY_FILE: /run/secrets/runtime_target_disposition_key
+      CONTROL_WORKER_FACT_FAILURE_SIGNING_KEY_FILE: /run/secrets/fleet_fact_failure_signing_key
+      CONTROL_WORKER_AGENT_SIGNING_SECRET_FILE: /run/secrets/runtime_agent_signing_secret
+      CONTROL_WORKER_IDENTITY_RUNTIME_PUBLIC_KEY_FILE: /run/secrets/identity_runtime_signing_public_key
+      CONTROL_WORKER_FACT_DATABASE_HOST: fact-pg
+      CONTROL_WORKER_FACT_DATABASE_PORT: "5432"
+      CONTROL_WORKER_FACT_DATABASE_NAME: openpc_facts
+      CONTROL_WORKER_FACT_DATABASE_USER: openpc_policy_fact_runtime
+      CONTROL_WORKER_FACT_DATABASE_PASSWORD_FILE: /run/secrets/policy_fact_db_password
+      CONTROL_WORKER_FACT_VERIFY_KEY_FILE: /run/secrets/policy_fact_verify_key
+      CONTROL_WORKER_FACT_VERIFY_KEY_ID: sha256:6bd1b7ff42169210dab9f9a28055f450b422a47834ff4e68e8c2de9d54804efc
+      CONTROL_WORKER_ADS_LISTEN: 0.0.0.0:18000
+      CONTROL_WORKER_ADS_SERVER_CERT_FILE: /run/secrets/runtime_ads_server_cert
+      CONTROL_WORKER_ADS_SERVER_KEY_FILE: /run/secrets/runtime_ads_server_key
+      CONTROL_WORKER_ADS_CLIENT_CA_FILE: /run/secrets/runtime_ads_ca
+      CONTROL_WORKER_TARGET_CLIENT_CERT_FILE: /runtime/tls/ads-client.pem
+      CONTROL_WORKER_PROTECTED_BIND: 0.0.0.0
+      CONTROL_WORKER_PROTECTED_PORT: "18545"
+      CONTROL_WORKER_PDS_SOCKET: /runtime/ipc/pds.sock
+      CONTROL_WORKER_BROKER_SOCKET: /runtime/ipc/broker.sock
+      CONTROL_WORKER_PROTECTED_CERT_FILE: /runtime/tls/protected-server.pem
+      CONTROL_WORKER_PROTECTED_KEY_FILE: /runtime/tls/protected-server.key
+      CONTROL_WORKER_WORKLOAD_CA_FILE: /runtime/tls/workload-ca.pem
+      OPENPC_PROVIDER_SOURCE_DIRECTORY: /provider-sources
+      OPENPC_RUNTIME_CONFIGURATION_INPUT_FILE: /provider-sources/runtime-configuration.cbor
+      OPENPC_PROVIDER_PROBE_JOURNAL_DIRECTORY: /provider-journal/owner
+      OPENPC_LOCAL_PROVIDER_PROFILE_FILE: /provider-sources/profile.json
+    volumes:
+      - "${OPENPC_LOCAL_DATA_ROOT:?}/fact-bridge/manager-url:/fact-manager-url:ro"
+      - "${OPENPC_LOCAL_DATA_ROOT:?}/provider-probe-source:/provider-sources:ro"
+      - "${OPENPC_LOCAL_DATA_ROOT:?}/provider-probe-journal:/provider-journal"
+      - "${OPENPC_LOCAL_DATA_ROOT:?}/runtime:/runtime"
+    secrets:
+      - control_worker_runtime_db_password
+      - business_provider_ca
+      - business_worker_cert
+      - business_worker_key
+      - identity_mtls_ca
+      - identity_mtls_rotated_cert
+      - identity_mtls_rotated_key
+      - fleet_controller_signing_secret
+      - fleet_fact_admission_key
+      - runtime_target_disposition_key
+      - fleet_fact_failure_signing_key
+      - runtime_analysis_target_keys
+      - runtime_agent_signing_secret
+      - identity_runtime_signing_public_key
+      - policy_fact_db_password
+      - policy_fact_verify_key
+      - runtime_ads_server_cert
+      - runtime_ads_server_key
+      - runtime_ads_ca
+    depends_on:
+      control-migrate: { condition: service_completed_successfully }
+      fact-migrate: { condition: service_completed_successfully }
+      identity-service: { condition: service_healthy }
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cpus: 1.0
+    # Observed local gate peak 10 MiB; keep ample bounded growth room.
+    mem_limit: 256m
+    pids_limit: 256
+    networks: [openpc-local]
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/openpc-control-worker", "healthcheck"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  policy-service:
+    image: openpc-r1-dev/policy-service:local
+    build:
+      labels:
+        io.openpc.image.owner: openpc-r1-local-runtime-v1
+        io.openpc.image.service: policy-service
+      context: ../../..
+      dockerfile: services/module-registry/Dockerfile
+    platform: linux/amd64
+    environment:
+      OPENPC_LOCAL_RUNTIME: "1"
+      OPENPC_LOCAL_RUNTIME_QA_FIXTURE: ${OPENPC_LOCAL_RUNTIME_QA_FIXTURE:-0}
+      OPENPC_LOCAL_QA_INITIAL_POLICY_RENEWAL_ENVELOPE_IDS: ${OPENPC_LOCAL_QA_INITIAL_POLICY_RENEWAL_ENVELOPE_IDS:-}
+      POLICY_APPROVAL_TTL_MS: ${POLICY_APPROVAL_TTL_MS:-1800000}
+      POLICY_MODULE_RELEASE_CATALOG_FILE: /app/module-releases/catalog.json
+      POLICY_MODULE_RELEASE_TRUST_FILE: /app/module-releases/trust.json
+      POLICY_DATABASE_HOST: control-pg
+      POLICY_DATABASE_PORT: "5432"
+      POLICY_DATABASE_NAME: openpc_control
+      POLICY_DATABASE_USER: openpc_policy_runtime
+      POLICY_DATABASE_PASSWORD_FILE: /run/secrets/policy_runtime_db_password
+      POLICY_FACT_DATABASE_HOST: fact-pg
+      POLICY_FACT_DATABASE_PORT: "5432"
+      POLICY_FACT_DATABASE_NAME: openpc_facts
+      POLICY_FACT_DATABASE_USER: openpc_policy_fact_runtime
+      POLICY_FACT_DATABASE_PASSWORD_FILE: /run/secrets/policy_fact_db_password
+      POLICY_FACT_VERIFY_KEY_FILE: /run/secrets/policy_fact_verify_key
+      POLICY_FACT_VERIFY_KEY_ID: sha256:6bd1b7ff42169210dab9f9a28055f450b422a47834ff4e68e8c2de9d54804efc
+      POLICY_INTERNAL_TOKEN_FILE: /run/secrets/policy_internal_token
+      POLICY_IDENTITY_INTERNAL_TOKEN_FILE: /run/secrets/identity_internal_token
+      POLICY_IDENTITY_RUNTIME_TRUSTED_PUBLIC_KEY_FILES: /run/secrets/identity_runtime_signing_public_key
+      POLICY_ARTIFACT_SIGNER_PUBLIC_KEY_FILE: /run/secrets/policy_artifact_signer_public_key
+      POLICY_ARTIFACT_SIGNER_PRIVATE_KEY_FILE: /run/secrets/policy_artifact_signer_private_key
+      POLICY_IDENTITY_URL: http://identity-service:3001
+      POLICY_LISTEN: 0.0.0.0:3002
+      OPENPC_POLICY_CORE_BIN: /usr/local/bin/openpc-policy-evaluator
+    secrets:
+      - policy_runtime_db_password
+      - policy_fact_db_password
+      - policy_fact_verify_key
+      - policy_internal_token
+      - identity_internal_token
+      - policy_artifact_signer_public_key
+      - policy_artifact_signer_private_key
+      - identity_runtime_signing_public_key
+    volumes: ["${OPENPC_LOCAL_DATA_ROOT:?}/module-releases:/app/module-releases:ro"]
+    depends_on:
+      fact-migrate: { condition: service_completed_successfully }
+      control-migrate: { condition: service_completed_successfully }
+      identity-service: { condition: service_healthy }
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cpus: 1.0
+    mem_limit: 1g
+    pids_limit: 256
+    networks: [openpc-local]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3002/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  fact-service:
+    image: openpc-r1-dev/fact-service:local
+    env_file:
+      - path: "${OPENPC_LOCAL_DATA_ROOT:?}/fact-bridge/fact.env"
+        required: false
+    build:
+      labels:
+        io.openpc.image.owner: openpc-r1-local-runtime-v1
+        io.openpc.image.service: fact-service
+      context: ../../..
+      dockerfile: services/fact-service/Dockerfile
+      network: host
+      entitlements: [network.host]
+    platform: linux/amd64
+    environment:
+      OPENPC_LOCAL_RUNTIME: "1"
+      OPENPC_FACT_DATABASE_HOST: fact-pg
+      OPENPC_FACT_DATABASE_PORT: "5432"
+      OPENPC_FACT_DATABASE_NAME: openpc_facts
+      OPENPC_FACT_DATABASE_USER: openpc_fact_runtime
+      OPENPC_FACT_DATABASE_PASSWORD_FILE: /run/secrets/fact_runtime_db_password
+      OPENPC_FACT_CAPABILITY_SECRET_FILE: /run/secrets/fact_capability_secret
+      OPENPC_FACT_SIGNING_SECRET_FILE: /run/secrets/fact_signing_secret
+      OPENPC_FACT_INTERNAL_TOKEN_FILE: /run/secrets/fact_internal_token
+      OPENPC_FACT_LISTEN: 0.0.0.0:8081
+    secrets: [fact_runtime_db_password, fact_capability_secret, fact_signing_secret, fact_internal_token]
+    volumes:
+      - "${OPENPC_LOCAL_DATA_ROOT:?}/fact-bridge/config:/fact-bridge:ro"
+      - "${OPENPC_LOCAL_DATA_ROOT:?}/fact-bridge/connections:/fact-connections"
+      - "${OPENPC_LOCAL_DATA_ROOT:?}/fact-bridge/artifacts:/fact-artifacts"
+      - "${OPENPC_LOCAL_DATA_ROOT:?}/provider-probe-source:/provider-sources:ro"
+    depends_on:
+      fact-migrate: { condition: service_completed_successfully }
+      identity-service: { condition: service_healthy }
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cpus: 1.0
+    # Observed local gate peak 9 MiB; database memory has its own cap.
+    mem_limit: 256m
+    pids_limit: 256
+    networks: [openpc-local]
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/openpc-fact-local-runtime", "healthcheck"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  admin-web:
+    image: openpc-r1-dev/admin-web:local
+    build:
+      labels:
+        io.openpc.image.owner: openpc-r1-local-runtime-v1
+        io.openpc.image.service: admin-web
+      context: ../../..
+      dockerfile: apps/admin-web/Dockerfile
+    platform: linux/amd64
+    environment:
+      OPENPC_LOCAL_RUNTIME: "1"
+      OPENPC_EVALUATION_UI: "${OPENPC_EVALUATION_UI:-0}"
+      OPENPC_LOCAL_RUNTIME_QA_FIXTURE: ${OPENPC_LOCAL_RUNTIME_QA_FIXTURE:-0}
+      OPENPC_LOCAL_QA_PLATFORM_ADMIN_TTL_MAX_SECONDS: ${OPENPC_LOCAL_QA_PLATFORM_ADMIN_TTL_MAX_SECONDS:-}
+      OPENPC_LOCAL_QA_PLATFORM_ADMIN_TTL_SECONDS: ${OPENPC_LOCAL_QA_PLATFORM_ADMIN_TTL_SECONDS:-}
+      OPENPC_PUBLIC_API_INTERNAL_URL: http://envoy:8080
+      OPENPC_IDENTITY_INTERNAL_URL: http://identity-service:3001
+      OPENPC_FACT_INTERNAL_URL: http://fact-service:8081
+      OPENPC_POLICY_INTERNAL_URL: http://policy-service:3002
+      OPENPC_OIDC_PUBLIC_AUTHORIZATION_URL: http://127.0.0.1:53006/authorize
+      OPENPC_IDENTITY_INTERNAL_TOKEN_FILE: /run/secrets/identity_internal_token
+      OPENPC_FACT_INTERNAL_TOKEN_FILE: /run/secrets/fact_internal_token
+      OPENPC_POLICY_INTERNAL_TOKEN_FILE: /run/secrets/policy_internal_token
+      OPENPC_BFF_COOKIE_KEY_FILE: /run/secrets/bff_cookie_key
+    secrets: [identity_internal_token, fact_internal_token, policy_internal_token, bff_cookie_key]
+    depends_on:
+      identity-service: { condition: service_healthy }
+      fact-service: { condition: service_healthy }
+      policy-service: { condition: service_healthy }
+      candidate-index-migrate: { condition: service_completed_successfully }
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cpus: 0.75
+    mem_limit: 768m
+    pids_limit: 256
+    networks: [openpc-local]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/v1/ui/local-session').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  envoy:
+    image: docker.io/envoyproxy/envoy:v1.39.0@sha256:f6e2f57b1bef8235083a2553b523508cf97d8991c893fd2aae3a94a6b21096a2
+    platform: linux/amd64
+    user: "101:101"
+    command: ["-c", "/etc/envoy/envoy.yaml", "--log-level", "warning"]
+    ports: ["127.0.0.1:8080:8080", "127.0.0.1:9901:9901"]
+    volumes: [./envoy/local-gateway.yaml:/etc/envoy/envoy.yaml:ro]
+    depends_on:
+      admin-web: { condition: service_healthy }
+      participant-service: { condition: service_healthy }
+      identity-service: { condition: service_healthy }
+      policy-service: { condition: service_healthy }
+      control-api: { condition: service_healthy }
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cpus: 0.5
+    mem_limit: 256m
+    pids_limit: 128
+    networks: [openpc-local]
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bash",
+          "-c",
+          "exec 3<>/dev/tcp/127.0.0.1/9901; printf 'GET /ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; IFS= read -r status <&3 && body=\"$$(cat <&3 | tr -d '\\r')\" && [ \"$$status\" = $$'HTTP/1.1 200 OK\\r' ] && printf '%s\\n' \"$$body\" | grep -qx LIVE",
+        ]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  runtime-envoy:
+    image: docker.io/envoyproxy/envoy:v1.39.0@sha256:f6e2f57b1bef8235083a2553b523508cf97d8991c893fd2aae3a94a6b21096a2
+    platform: linux/amd64
+    profiles: ["astra05"]
+    user: "101:65532"
+    command: ["-c", "/runtime/envoy.json", "--concurrency", "1", "--log-level", "warning"]
+    ports: ["127.0.0.1:18545:18545", "127.0.0.1:19901:9901"]
+    volumes: ["${OPENPC_LOCAL_DATA_ROOT:?}/runtime:/runtime:ro"]
+    depends_on:
+      control-worker: { condition: service_healthy }
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cpus: 0.5
+    mem_limit: 384m
+    pids_limit: 128
+    networks: [openpc-local]
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/9901; printf 'GET /ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; IFS= read -r status <&3 && body=\"$$(cat <&3 | tr -d '\\r')\" && [ \"$$status\" = $$'HTTP/1.1 200 OK\\r' ] && printf '%s\\n' \"$$body\" | grep -qx LIVE"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  runtime-target:
+    image: openpc-r1-dev/control-worker:local
+    platform: linux/amd64
+    profiles: ["astra05"]
+    command: ["runtime-target"]
+    restart: on-failure
+    environment:
+      OPENPC_TARGET_RUNTIME_ID: "${OPENPC_LOCAL_TARGET_ID:-unconfigured}"
+      OPENPC_MANAGED_DEPLOYMENT_ENABLED: "${OPENPC_MANAGED_DEPLOYMENT_ENABLED:-false}"
+      OPENPC_TARGET_BOOTSTRAP_DIRECTORY: "/runtime/target-bootstrap/${OPENPC_LOCAL_TARGET_ID:-unconfigured}"
+      OPENPC_TARGET_BOOTSTRAP_PUBLIC_KEY_FILE: /runtime/trust/fleet-bootstrap.pub
+      OPENPC_TARGET_DISPOSITION_ENDPOINT: https://control-worker:18000
+      OPENPC_TARGET_DISPOSITION_SERVER_NAME: control-worker
+      OPENPC_TARGET_DISPOSITION_CA_FILE: /runtime/tls/ads-ca.pem
+      OPENPC_TARGET_DISPOSITION_CERT_FILE: /runtime/tls/ads-client.pem
+      OPENPC_TARGET_DISPOSITION_TLS_KEY_FILE: /runtime/tls/ads-client.key
+      OPENPC_TARGET_DISPOSITION_CONTROL_PUBLIC_KEY_FILE: /runtime/trust/fleet-bootstrap.pub
+      OPENPC_TARGET_DISPOSITION_ACK_SECRET_FILE: /run/secrets/runtime_agent_signing_secret
+      OPENPC_TARGET_AGENT_SIGNING_SECRET_FILE: /run/secrets/runtime_agent_signing_secret
+      OPENPC_TARGET_EVIDENCE_ENCRYPTION_KEY_FILE: /run/secrets/runtime_target_evidence_encryption_key
+      OPENPC_TARGET_PDS_SIGNING_SECRET_FILE: /run/secrets/runtime_target_pds_signing_secret
+      OPENPC_TARGET_ANCHOR_SIGNING_SECRET_FILE: /run/secrets/runtime_target_anchor_signing_secret
+      OPENPC_TARGET_WITNESS_SIGNING_SECRET_FILE: /run/secrets/runtime_target_witness_signing_secret
+      OPENPC_TARGET_WITNESS_SET_SIGNING_SECRET_FILE: /run/secrets/runtime_target_witness_set_signing_secret
+      OPENPC_TARGET_PROVIDER_SOURCE_DIRECTORY: /provider-sources
+      OPENPC_TARGET_SOURCE_CONTROL_HOST: control-pg
+      OPENPC_TARGET_SOURCE_CONTROL_PORT: "5432"
+      OPENPC_TARGET_SOURCE_CONTROL_USER: openpc_source_control_reader
+      OPENPC_TARGET_SOURCE_CONTROL_PASSWORD_FILE: /run/secrets/source_control_db_password
+      OPENPC_TARGET_RUNTIME_ROOT: /runtime
+      OPENPC_TARGET_FACT_DATABASE_HOST: fact-pg
+      OPENPC_TARGET_FACT_DATABASE_PORT: "5432"
+      OPENPC_TARGET_FACT_DATABASE_NAME: openpc_facts
+      OPENPC_TARGET_FACT_DATABASE_USER: openpc_policy_fact_runtime
+      OPENPC_TARGET_FACT_DATABASE_PASSWORD_FILE: /run/secrets/policy_fact_db_password
+      OPENPC_TARGET_PDS_SOCKET: /runtime/ipc/pds.sock
+      OPENPC_TARGET_BROKER_SOCKET: /runtime/ipc/broker.sock
+      OPENPC_TARGET_ENVOY_UID: "101"
+    volumes:
+      - "${OPENPC_LOCAL_DATA_ROOT:?}/provider-probe-source:/provider-sources:ro"
+      - "${OPENPC_LOCAL_DATA_ROOT:?}/runtime:/runtime"
+    secrets:
+      - runtime_agent_signing_secret
+      - runtime_target_pds_signing_secret
+      - runtime_target_anchor_signing_secret
+      - runtime_target_witness_signing_secret
+      - runtime_target_witness_set_signing_secret
+      - runtime_target_evidence_encryption_key
+      - policy_fact_db_password
+      - source_control_db_password
+    depends_on:
+      fact-migrate: { condition: service_completed_successfully }
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cpus: 0.75
+    mem_limit: 512m
+    pids_limit: 192
+    networks: [openpc-local]
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/openpc-control-worker", "runtime-target-ready"]
+      interval: 1s
+      timeout: 2s
+      retries: 45
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.159.0@sha256:1f2c54a30e713fac6b3ae77a1ec84010c2007e29ced8ec666214fc2f6739c1cc
+    platform: linux/amd64
+    profiles: ["i09-observability"]
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    volumes: [../../../containers/i09-local-otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro]
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cpus: 0.5
+    mem_limit: 512m
+    pids_limit: 128
+    networks: [openpc-local]
+
+  # Genuinely external local provider substitute, not an additional production unit.
+  workload-issuer:
+    image: docker.io/library/node:24.19.0-alpine@sha256:2a49bdf71e9fd965a58c1703fd9ddd205b34e5782b692a72dd1d248abb0beb43
+    platform: linux/amd64
+    user: "${OPENPC_LOCAL_UID:-1000}:${OPENPC_LOCAL_GID:-1000}"
+    command: ["node", "/app/server.mjs"]
+    environment:
+      OPENPC_WORKLOAD_ISSUER_LISTEN: 0.0.0.0:3008
+      OPENPC_WORKLOAD_ISSUER_MANIFEST: /issuer/manifest.json
+      OPENPC_WORKLOAD_ISSUER_TOKEN_FILE: /run/secrets/workload_issuer_token
+    ports: ["127.0.0.1:53008:3008"]
+    volumes:
+      - "${OPENPC_LOCAL_WORKLOAD_ISSUER_BUNDLE:-./workload-issuer-runtime.mjs}:/app/server.mjs:ro"
+      - "${OPENPC_LOCAL_WORKLOAD_ISSUER_MANIFEST:-./workload-issuer-manifest.json}:/issuer/manifest.json:ro"
+    secrets: [workload_issuer_token]
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cpus: 0.25
+    mem_limit: 128m
+    pids_limit: 64
+    networks: [openpc-local]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3008/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  # Genuinely external local provider substitute, not an additional production unit.
+  rpc-provider:
+    image: docker.io/library/node:24.19.0-alpine@sha256:2a49bdf71e9fd965a58c1703fd9ddd205b34e5782b692a72dd1d248abb0beb43
+    platform: linux/amd64
+    user: "${OPENPC_LOCAL_UID:-1000}:${OPENPC_LOCAL_GID:-1000}"
+    command: ["node", "/app/server.mjs"]
+    environment:
+      OPENPC_RPC_PROVIDER_ROOT: /provider
+    volumes:
+      - "../../../tests/integration/local-runtime/rpc-provider-fixture.mjs:/app/server.mjs:ro"
+      - "../../../tests/integration/local-runtime/rpc-deployment-fixture.mjs:/app/rpc-deployment-fixture.mjs:ro"
+      - "../../../tests/integration/local-runtime/rpc-cigl-fixture.mjs:/app/rpc-cigl-fixture.mjs:ro"
+      - "../../../tests/integration/local-runtime/rpc-source-header-fixture.mjs:/app/rpc-source-header-fixture.mjs:ro"
+      - "${OPENPC_LOCAL_DATA_ROOT:?}/rpc-provider:/provider"
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cpus: 0.25
+    mem_limit: 128m
+    pids_limit: 64
+    networks:
+      openpc-local:
+        aliases: [rpc-provider.openpc.test]
+    healthcheck:
+      test: ["CMD", "node", "-e", "const s=require('node:net').connect(3008,'127.0.0.1',()=>{s.end();process.exit(0)});s.on('error',()=>process.exit(1))"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  signing-provider:
+    image: docker.io/library/node:24.19.0-alpine@sha256:2a49bdf71e9fd965a58c1703fd9ddd205b34e5782b692a72dd1d248abb0beb43
+    platform: linux/amd64
+    user: "${OPENPC_LOCAL_UID:-1000}:${OPENPC_LOCAL_GID:-1000}"
+    command: ["node", "/app/server.mjs"]
+    environment:
+      OPENPC_SIGNING_PROVIDER_STATE_ROOT: /provider
+      OPENPC_LOCAL_BOOTSTRAP_PRIVACY_DOMAIN_ID: "${OPENPC_LOCAL_BOOTSTRAP_PRIVACY_DOMAIN_ID:-018f0000-0000-7000-8000-000000000201}"
+    ports: ["127.0.0.1:53007:3007"]
+    volumes:
+      - "${OPENPC_LOCAL_SIGNING_PROVIDER_BUNDLE:-./signing-provider-runtime.mjs}:/app/server.mjs:ro"
+      - "${OPENPC_LOCAL_DATA_ROOT:-./volumes}/signing-provider:/provider"
+    secrets: [business_provider_ca, business_provider_server_cert, business_provider_server_key, business_api_cert, business_worker_cert]
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cpus: 0.25
+    mem_limit: 128m
+    pids_limit: 64
+    networks: [openpc-local]
+    healthcheck:
+      test: ["CMD", "node", "-e", "const s=require('node:net').connect(3007,'127.0.0.1',()=>{s.end();process.exit(0)});s.on('error',()=>process.exit(1))"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+secrets:
+  runtime_ads_ca: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/runtime_ads_ca.pem" }
+  runtime_ads_server_cert: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/runtime_ads_server_cert.pem" }
+  runtime_ads_server_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/runtime_ads_server_key.pem" }
+  business_provider_ca: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/business_provider_ca.pem" }
+  business_provider_server_cert: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/business_provider_server_cert.pem" }
+  business_provider_server_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/business_provider_server_key.pem" }
+  business_api_cert: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/business_api_cert.pem" }
+  business_api_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/business_api_key.pem" }
+  business_worker_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/business_worker_key.pem" }
+  business_worker_cert: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/business_worker_cert.pem" }
+  control_pg_password: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/control_pg_password.txt" }
+  fact_pg_password: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/fact_pg_password.txt" }
+  fact_runtime_db_password: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/fact_runtime_db_password.txt" }
+  policy_fact_db_password: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/policy_fact_db_password.txt" }
+  policy_fact_verify_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/policy_fact_verify_key.sec1" }
+  indexer_manager_db_password: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/indexer_manager_db_password.txt" }
+  indexer_writer_db_password: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/indexer_writer_db_password.txt" }
+  fact_bridge_reader_db_password: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/fact_bridge_reader_db_password.txt" }
+  candidate_index_reader_db_password: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/candidate_index_reader_db_password.txt" }
+  candidate_index_pg_password: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/candidate_index_pg_password.txt" }
+  identity_runtime_db_password: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/identity_runtime_db_password.txt" }
+  participant_runtime_db_password: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/participant_runtime_db_password.txt" }
+  control_api_runtime_db_password: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/control_api_runtime_db_password.txt" }
+  control_worker_runtime_db_password: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/control_worker_runtime_db_password.txt" }
+  source_control_db_password: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/source_control_db_password.txt" }
+  fleet_controller_signing_secret: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/fleet_controller_signing_secret.txt" }
+  runtime_agent_signing_secret: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/runtime_agent_signing_secret.txt" }
+  runtime_agent_projection_public_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/runtime_agent_projection_public_key.txt" }
+  runtime_analysis_target_keys: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/runtime_analysis_target_keys.json" }
+  fleet_deployment_rejection_public_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/fleet_deployment_rejection_public_key.txt" }
+  runtime_target_pds_signing_secret: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/runtime_target_pds_signing_secret.txt" }
+  runtime_target_anchor_signing_secret: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/runtime_target_anchor_signing_secret.txt" }
+  runtime_target_witness_signing_secret: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/runtime_target_witness_signing_secret.txt" }
+  runtime_target_witness_set_signing_secret: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/runtime_target_witness_set_signing_secret.txt" }
+  runtime_target_evidence_encryption_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/runtime_target_evidence_encryption_key.txt" }
+  policy_runtime_db_password: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/policy_runtime_db_password.txt" }
+  identity_internal_token: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/identity_internal_token.txt" }
+  workload_issuer_token: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/workload_issuer_token.txt" }
+  identity_continuation_private_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/identity_continuation_private_key.der" }
+  identity_continuation_public_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/identity_continuation_public_key.der" }
+  identity_runtime_signing_private_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/identity_runtime_signing_private_key.der" }
+  identity_runtime_signing_public_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/identity_runtime_signing_public_key.der" }
+  policy_internal_token: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/policy_internal_token.txt" }
+  policy_artifact_signer_public_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/policy_artifact_signer_public_key.pem" }
+  policy_artifact_signer_private_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/policy_artifact_signer_private_key.pem" }
+  fact_internal_token: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/fact_internal_token.txt" }
+  fact_capability_secret: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/fact_capability_secret.txt" }
+  fleet_fact_failure_signing_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/fleet_fact_failure_signing_key.txt" }
+  fleet_fact_admission_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/fleet_fact_admission_key.txt" }
+  runtime_target_disposition_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/runtime_target_disposition_key.txt" }
+  candidate_retirement_capability_secret: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/candidate_retirement_capability_secret.txt" }
+  fact_signing_secret: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/fact_signing_secret.txt" }
+  bff_cookie_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/bff_cookie_key.txt" }
+  local_operator_credential: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/local_operator_credential.txt" }
+  local_viewer_credential: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/local_viewer_credential.txt" }
+  identity_mtls_ca: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/identity_mtls_ca.pem" }
+  identity_mtls_server_cert: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/identity_mtls_server_cert.pem" }
+  identity_mtls_server_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/identity_mtls_server_key.pem" }
+  identity_mtls_rotated_cert: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/identity_mtls_rotated_cert.pem" }
+  identity_mtls_rotated_key: { file: "${OPENPC_LOCAL_SECRET_ROOT:-./secrets}/identity_mtls_rotated_key.pem" }
+
+configs:
+  postgres_final_healthcheck:
+    file: ./postgres-final-healthcheck.sh
+
+networks:
+  openpc-local:
+    driver: bridge
+    enable_ipv6: false
+    ipam:
+      driver: default
+      config:
+        - subnet: '${OPENPC_LOCAL_RUNTIME_NETWORK_SUBNET:?Run the guarded local runtime entrypoint}'
+          gateway: '${OPENPC_LOCAL_RUNTIME_NETWORK_GATEWAY:?Run the guarded local runtime entrypoint}'
+    labels:
+      io.openpc.network.schema: openpc-local-network-v1
+      io.openpc.network.owner: '${OPENPC_LOCAL_RUNTIME_NETWORK_OWNER:?Runner network owner is required}'
+      io.openpc.network.root: '${OPENPC_LOCAL_RUNTIME_NETWORK_ROOT:?Runner network root is required}'

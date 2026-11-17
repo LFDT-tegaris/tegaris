@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [
+      1,
+      2,
+      3,
+      4,
+      100,
+      101,
+      102,
+      103
+    ],
+    "criticalFields": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "extensionAuthority": "POST_C17_ASTRA_12_WORKLOAD_NOTIFICATION_ADMISSION",
+  "name": "pc.notification-delivery-cancellation-receipt.v1",
+  "schemaId": 24028,
+  "typeName": "NotificationDeliveryCancellationReceiptV1",
+  "purpose": {
+    "name": "pc.cose.notification-delivery-cancellation-receipt.v1",
+    "code": 365
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "environmentId",
+      "type": "text160"
+    },
+    {
+      "key": 2,
+      "name": "participantId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 3,
+      "name": "privacyDomainId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 4,
+      "name": "receiptId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 5,
+      "name": "operationId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 6,
+      "name": "notificationOccurrenceId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 7,
+      "name": "payloadDigest",
+      "type": "H32"
+    },
+    {
+      "key": 8,
+      "name": "sourceEventId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 9,
+      "name": "sourceReceiptDigest",
+      "type": "H32"
+    },
+    {
+      "key": 10,
+      "name": "workerProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 11,
+      "name": "routingProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 12,
+      "name": "authoritySnapshotDigest",
+      "type": "H32"
+    },
+    {
+      "key": 13,
+      "name": "endpointId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 14,
+      "name": "endpointRevision",
+      "type": "u64p"
+    },
+    {
+      "key": 15,
+      "name": "causeOperationId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 16,
+      "name": "causeAction",
+      "type": "enum ACT-NOTIFICATION_ENDPOINTS_UPDATE_RESOURCE-V1=1"
+    },
+    {
+      "key": 17,
+      "name": "causeProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 18,
+      "name": "causeReceiptDigest",
+      "type": "H32"
+    },
+    {
+      "key": 19,
+      "name": "causeBeforeStateDigest",
+      "type": "H32"
+    },
+    {
+      "key": 20,
+      "name": "causeAfterStateDigest",
+      "type": "H32"
+    },
+    {
+      "key": 21,
+      "name": "causeEndpointRevision",
+      "type": "u64p"
+    },
+    {
+      "key": 22,
+      "name": "deliveryRevision",
+      "type": "u64p"
+    },
+    {
+      "key": 23,
+      "name": "beforeStateDigest",
+      "type": "H32"
+    },
+    {
+      "key": 24,
+      "name": "afterStateDigest",
+      "type": "H32"
+    },
+    {
+      "key": 25,
+      "name": "beforeDeliveryState",
+      "type": "enum PENDING=1 RETRY_WAIT=2 STARTED=3 AMBIGUOUS=4"
+    },
+    {
+      "key": 26,
+      "name": "afterDeliveryState",
+      "type": "enum CANCELLED=1 STARTED=2 AMBIGUOUS=3"
+    },
+    {
+      "key": 27,
+      "name": "attemptCount",
+      "type": "safe_uint"
+    },
+    {
+      "key": 28,
+      "name": "disposition",
+      "type": "enum CANCELLED_BEFORE_START=1 PREVENT_LATER_ATTEMPTS=2 RECONCILE_ORIGINAL=3"
+    },
+    {
+      "key": 29,
+      "name": "recordedAtMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 30,
+      "name": "signerKeyId",
+      "type": "H32"
+    }
+  ],
+  "requirements": [
+    "AF-27 ASYNC-NOTIFICATION: cancellation is durable intent, never erasure, delivery success or proof of no gateway effect.",
+    "Bounded initiating trigger: committed CFG-OP-UPDATE-NOTIFICATION-ENDPOINT under ACT-NOTIFICATION_ENDPOINTS_UPDATE_RESOURCE-V1, actual authenticated Participant user authorization, fresh WebAuthn <=5m, and original signed Control business transition. ACK is never cancellation; no new public cancel action is invented.",
+    "The source owner must verify original operation SUCCEEDED, native business receipt and complete before/after endpoint state preimages in the same Participant/privacy scope: occurrence endpointId and endpointRevision equal the replaced predecessor, successor revision is exactly predecessor+1, verification is cleared and successor is DISABLED or preserves QUARANTINED. Bind the actual operation UUID, profile digest, receipt payload digest and both state digests. A caller digest/descriptor or the current endpoint row alone is not authority.",
+    "The cancellation owner uses actual TLS/Identity and the installed LS-NOTIFICATION delivery worker, original occurrence/request/source custody and current worker authority. It must not require send capacity, active replaced endpoint, delivery credential bytes, KMS unwrap or a gateway call to record this restricting intent.",
+    "Canonical delivery before/after preimages bind the exact delivery row, revision, original attempt/start/dispatch and authenticated outcome lineage. For PENDING with attemptCount=0, CANCELLED_BEFORE_START sets cancelRequested and CANCELLED. RETRY_WAIT requires the original authenticated RETRYABLE_NO_EFFECT outcome before PREVENT_LATER_ATTEMPTS may set CANCELLED. STARTED/AMBIGUOUS sets cancelRequested but preserves the exact original state, attempt, claim, signed bytes and RECONCILE_ORIGINAL. Missing claim, absent/expired lease, timeout, transport loss or cancellation cannot establish no effect.",
+    "Hold existing evidence lifecycle then delivery row fences, serialize with material/dispatch, and atomically commit the signed transition, immutable cause binding, revision+1 and durable readback. No caller-fabricated success, generic UPDATE or copied capability. Actual signer admission for this distinct purpose remains required; wire registration grants no signing or SQL authority.",
+    "Idempotency is exact occurrence plus cause operation; preserve original receipt/payload/COSE and resulting revision across lost ACK/restart. Readback verifies original installed signer and complete state/cause chain, returns cancellation disposition separately from gateway outcome, and never remints a send/claim. Terminal replay returns the original; a new terminal cancellation is not manufactured."
+  ]
+}

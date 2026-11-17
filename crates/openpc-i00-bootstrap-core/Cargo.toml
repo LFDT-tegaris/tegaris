@@ -1,0 +1,10 @@
+[package]
+name = "openpc-i00-bootstrap-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+path = "src/lib.rs"

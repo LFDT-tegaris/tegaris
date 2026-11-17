@@ -1,0 +1,926 @@
+{
+  "$defs": {
+    "capability": {
+      "additionalProperties": false,
+      "properties": {
+        "capabilityId": {
+          "pattern": "^urn:openpc:module-capability:",
+          "type": "string"
+        },
+        "providerModuleId": {
+          "pattern": "^pc\\.[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+          "type": "string"
+        },
+        "traceSetId": {
+          "pattern": "^TS-MOD-[A-Z-]+$",
+          "type": "string"
+        },
+        "version": {
+          "const": "1.0.0"
+        }
+      },
+      "required": [
+        "capabilityId",
+        "version",
+        "providerModuleId",
+        "traceSetId"
+      ],
+      "type": "object"
+    },
+    "configField": {
+      "additionalProperties": false,
+      "properties": {
+        "changeClass": {
+          "enum": [
+            "STARTUP_IMMUTABLE",
+            "VERSIONED_DOMAIN_RECORD"
+          ]
+        },
+        "default": {},
+        "key": {
+          "type": "string"
+        },
+        "secret": {
+          "type": "boolean"
+        },
+        "traceSetId": {
+          "pattern": "^TS-MOD-[A-Z-]+$",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "boolean",
+            "integer",
+            "string",
+            "duration",
+            "uri",
+            "string-array"
+          ]
+        }
+      },
+      "required": [
+        "key",
+        "type",
+        "default",
+        "secret",
+        "changeClass",
+        "traceSetId"
+      ],
+      "type": "object"
+    },
+    "dependency": {
+      "additionalProperties": false,
+      "properties": {
+        "capabilityId": {
+          "pattern": "^urn:openpc:module-capability:",
+          "type": "string"
+        },
+        "edgeId": {
+          "pattern": "^INSTALL-",
+          "type": "string"
+        },
+        "manifestDigest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "moduleId": {
+          "pattern": "^pc\\.[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+          "type": "string"
+        },
+        "providerModuleId": {
+          "pattern": "^pc\\.[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+          "type": "string"
+        },
+        "traceSetId": {
+          "pattern": "^TS-MOD-[A-Z-]+$",
+          "type": "string"
+        },
+        "version": {
+          "const": "1.0.0"
+        }
+      },
+      "required": [
+        "edgeId",
+        "moduleId",
+        "version",
+        "manifestDigest",
+        "capabilityId",
+        "providerModuleId",
+        "traceSetId"
+      ],
+      "type": "object"
+    },
+    "supplyChain": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "releaseEvidenceState": {
+                "const": "SPECIFIED_NOT_BUILT"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "artifactDigest": {
+                "const": null
+              },
+              "buildReceiptId": {
+                "const": null
+              },
+              "provenanceDigest": {
+                "const": null
+              },
+              "sbomDigest": {
+                "const": null
+              },
+              "signature": {
+                "const": null
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "releaseEvidenceState": {
+                "const": "RELEASE_CANDIDATE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "artifactDigest": {
+                "pattern": "^sha256:[0-9a-f]{64}$",
+                "type": "string"
+              },
+              "buildReceiptId": {
+                "pattern": "^urn:openpc:[a-z][a-z0-9-]{0,62}:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+                "type": "string"
+              },
+              "provenanceDigest": {
+                "pattern": "^sha256:[0-9a-f]{64}$",
+                "type": "string"
+              },
+              "sbomDigest": {
+                "pattern": "^sha256:[0-9a-f]{64}$",
+                "type": "string"
+              },
+              "signature": {
+                "minLength": 1,
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "artifactDigest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "buildReceiptId": {
+          "pattern": "^urn:openpc:[a-z][a-z0-9-]{0,62}:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "provenanceDigest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "releaseEvidenceState": {
+          "enum": [
+            "SPECIFIED_NOT_BUILT",
+            "RELEASE_CANDIDATE"
+          ]
+        },
+        "requiredBeforeAdmission": {
+          "const": true
+        },
+        "sbomDigest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "signature": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "traceSetId": {
+          "pattern": "^TS-MOD-[A-Z-]+$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "releaseEvidenceState",
+        "artifactDigest",
+        "signature",
+        "sbomDigest",
+        "provenanceDigest",
+        "buildReceiptId",
+        "requiredBeforeAdmission",
+        "traceSetId"
+      ],
+      "type": "object"
+    },
+    "tracedEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "schemaVersion": {
+          "const": "1.0"
+        },
+        "traceSetId": {
+          "pattern": "^TS-MOD-[A-Z-]+$",
+          "type": "string"
+        },
+        "type": {
+          "pattern": "^openpc\\.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "schemaVersion",
+        "traceSetId"
+      ],
+      "type": "object"
+    },
+    "tracedOperation": {
+      "additionalProperties": false,
+      "properties": {
+        "actionIntentId": {
+          "pattern": "^ACT-[A-Z0-9]+_[A-Z0-9_]+-V[1-9][0-9]*$",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "traceSetId": {
+          "pattern": "^TS-MOD-[A-Z-]+$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "traceSetId"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "urn:openpc:schema:module-manifest:v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "const": "../module-manifest.schema.json"
+    },
+    "apiVersion": {
+      "const": "openpc.io/module-manifest/v1"
+    },
+    "capabilities": {
+      "additionalProperties": false,
+      "properties": {
+        "crossCuttingRequirements": {
+          "items": {
+            "pattern": "^XCAP-",
+            "type": "string"
+          },
+          "maxItems": 11,
+          "minItems": 11,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "provided": {
+          "items": {
+            "$ref": "#/$defs/capability"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "required": {
+          "items": {
+            "$ref": "#/$defs/capability"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "provided",
+        "required",
+        "crossCuttingRequirements"
+      ],
+      "type": "object"
+    },
+    "certification": {
+      "additionalProperties": false,
+      "properties": {
+        "executionState": {
+          "const": "SPECIFIED_NOT_IMPLEMENTED"
+        },
+        "requestedLevel": {
+          "const": "GOVERNED"
+        },
+        "targetProfiles": {
+          "items": false,
+          "prefixItems": [
+            {
+              "const": "local"
+            },
+            {
+              "const": "development"
+            },
+            {
+              "const": "test"
+            },
+            {
+              "const": "staging"
+            },
+            {
+              "const": "production"
+            }
+          ],
+          "type": "array"
+        },
+        "traceSetId": {
+          "pattern": "^TS-MOD-[A-Z-]+$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "requestedLevel",
+        "targetProfiles",
+        "executionState",
+        "traceSetId"
+      ],
+      "type": "object"
+    },
+    "claimCeilingIds": {
+      "items": false,
+      "maxItems": 6,
+      "minItems": 6,
+      "prefixItems": [
+        {
+          "const": "CC-GLOBAL-AUTHORITY-TRUTH"
+        },
+        {
+          "const": "CC-EXACT-COMPATIBILITY-PROFILE"
+        },
+        {
+          "const": "CC-ADMITTED-LOCAL-FACT-SOURCE-NEUTRAL"
+        },
+        {
+          "const": "CC-PC-SEPARATE-PRODUCT-INTEGRATION"
+        },
+        {
+          "const": "CC-NUMERIC-SLA-CERTIFICATION"
+        },
+        {
+          "const": "CC-ACCESSIBILITY-RESPONSIVE-EXPLAINABILITY"
+        }
+      ],
+      "type": "array"
+    },
+    "compatibility": {
+      "additionalProperties": false,
+      "properties": {
+        "controlApi": {
+          "const": "1.0.0"
+        },
+        "freezeId": {
+          "const": "C03-ARCHITECTURE-SHARED-PRIMITIVES-FREEZE-20260824-01"
+        },
+        "guardPlan": {
+          "const": "1.0.0"
+        },
+        "manifestSchemaDigest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "matchingRule": {
+          "const": "EXACT_VERSION_AND_DIGEST"
+        },
+        "runtimeCapsule": {
+          "const": "1.0.0"
+        },
+        "semanticKernel": {
+          "const": "1.0.0"
+        },
+        "stackLockDigest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "stackLockId": {
+          "const": "OPENPC-STACK-LOCK-C03-20260824-01"
+        },
+        "uiShell": {
+          "const": "1.0.0"
+        }
+      },
+      "required": [
+        "freezeId",
+        "stackLockId",
+        "stackLockDigest",
+        "manifestSchemaDigest",
+        "semanticKernel",
+        "guardPlan",
+        "runtimeCapsule",
+        "controlApi",
+        "uiShell",
+        "matchingRule"
+      ],
+      "type": "object"
+    },
+    "configuration": {
+      "additionalProperties": false,
+      "properties": {
+        "emptyReason": {
+          "const": "NO_C03_MODULE_SPECIFIC_CONFIGURATION_KEY_ASSIGNED"
+        },
+        "fields": {
+          "items": {
+            "$ref": "#/$defs/configField"
+          },
+          "type": "array"
+        },
+        "inlineSecrets": {
+          "const": "FORBIDDEN"
+        },
+        "schemaId": {
+          "pattern": "^urn:openpc:schema:module-config:",
+          "type": "string"
+        },
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "traceSetId": {
+          "pattern": "^TS-MOD-[A-Z-]+$",
+          "type": "string"
+        },
+        "unknownKeys": {
+          "const": "REJECT"
+        }
+      },
+      "required": [
+        "schemaId",
+        "schemaVersion",
+        "unknownKeys",
+        "inlineSecrets",
+        "fields",
+        "emptyReason",
+        "traceSetId"
+      ],
+      "type": "object"
+    },
+    "conflicts": {
+      "additionalProperties": false,
+      "properties": {
+        "declaredEmpty": {
+          "const": true
+        },
+        "moduleIds": {
+          "maxItems": 0,
+          "type": "array"
+        },
+        "traceSetId": {
+          "pattern": "^TS-MOD-[A-Z-]+$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "moduleIds",
+        "declaredEmpty",
+        "traceSetId"
+      ],
+      "type": "object"
+    },
+    "conformance": {
+      "additionalProperties": false,
+      "properties": {
+        "negativeTestIds": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 8,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "requiredTestIds": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 14,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "traceSetId": {
+          "pattern": "^TS-MOD-[A-Z-]+$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "requiredTestIds",
+        "negativeTestIds",
+        "traceSetId"
+      ],
+      "type": "object"
+    },
+    "dataOwnership": {
+      "additionalProperties": false,
+      "properties": {
+        "crossModuleWrite": {
+          "const": "FORBIDDEN"
+        },
+        "namespace": {
+          "pattern": "^urn:openpc:module-data:",
+          "type": "string"
+        },
+        "physicalStoreIdsOwned": {
+          "maxItems": 0,
+          "type": "array"
+        },
+        "physicalStoreOwnerRule": {
+          "const": "C03_LOGICAL_SERVICE_OWNERSHIP_UNCHANGED"
+        },
+        "retentionRule": {
+          "const": "OWNER_TRANSACTION_AND_LEGAL_HOLD_BOUND"
+        },
+        "traceSetId": {
+          "pattern": "^TS-MOD-[A-Z-]+$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "physicalStoreIdsOwned",
+        "physicalStoreOwnerRule",
+        "crossModuleWrite",
+        "retentionRule",
+        "traceSetId"
+      ],
+      "type": "object"
+    },
+    "dependencies": {
+      "items": {
+        "$ref": "#/$defs/dependency"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "deployment": {
+      "additionalProperties": false,
+      "properties": {
+        "boundaryIds": {
+          "items": {
+            "pattern": "^COM-[0-9]{3}$",
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "declaredExecutionHostIds": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "futureOnlyExecutionHostIds": {
+          "items": {
+            "enum": [
+              "DU-SUBQUERY"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "r1AdmittedExecutionHostIds": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "traceSetId": {
+          "pattern": "^TS-MOD-[A-Z-]+$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "declaredExecutionHostIds",
+        "r1AdmittedExecutionHostIds",
+        "futureOnlyExecutionHostIds",
+        "boundaryIds",
+        "traceSetId"
+      ],
+      "type": "object"
+    },
+    "events": {
+      "items": {
+        "$ref": "#/$defs/tracedEvent"
+      },
+      "minItems": 3,
+      "type": "array"
+    },
+    "kind": {
+      "const": "OpenPCModule"
+    },
+    "lifecycle": {
+      "additionalProperties": false,
+      "properties": {
+        "dataDisposition": {
+          "const": "ENUMERATE_EXPORT_ARCHIVE_HOLD_DELETE_OR_CRYPTO_ERASE"
+        },
+        "migrationProfiles": {
+          "items": false,
+          "prefixItems": [
+            {
+              "const": "MIG-GREENFIELD-V1"
+            },
+            {
+              "const": "MIG-PREDECESSOR-V1"
+            }
+          ],
+          "type": "array"
+        },
+        "operations": {
+          "items": {
+            "$ref": "#/$defs/tracedOperation"
+          },
+          "maxItems": 7,
+          "minItems": 7,
+          "type": "array"
+        },
+        "traceSetId": {
+          "pattern": "^TS-MOD-[A-Z-]+$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "operations",
+        "migrationProfiles",
+        "dataDisposition",
+        "traceSetId"
+      ],
+      "type": "object"
+    },
+    "metadata": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "displayName": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^pc\\.[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+          "type": "string"
+        },
+        "immutableAfterRelease": {
+          "const": true
+        },
+        "license": {
+          "const": "Apache-2.0"
+        },
+        "moduleType": {
+          "enum": [
+            "BASE",
+            "POLICY",
+            "POLICY_BRIDGE",
+            "BRIDGE_POLICY",
+            "BRIDGE_OBSERVATION"
+          ]
+        },
+        "riskTier": {
+          "const": "HIGH"
+        },
+        "version": {
+          "const": "1.0.0"
+        }
+      },
+      "required": [
+        "id",
+        "displayName",
+        "description",
+        "version",
+        "moduleType",
+        "riskTier",
+        "license",
+        "immutableAfterRelease"
+      ],
+      "type": "object"
+    },
+    "observability": {
+      "additionalProperties": false,
+      "properties": {
+        "authoritative": {
+          "const": false
+        },
+        "privacy": {
+          "const": "NO_SECRET_OR_DENIED_RESOURCE_DISCLOSURE"
+        },
+        "signals": {
+          "items": {
+            "$ref": "#/$defs/tracedOperation"
+          },
+          "minItems": 3,
+          "type": "array"
+        },
+        "traceSetId": {
+          "pattern": "^TS-MOD-[A-Z-]+$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "signals",
+        "authoritative",
+        "privacy",
+        "traceSetId"
+      ],
+      "type": "object"
+    },
+    "policyContract": {
+      "additionalProperties": false,
+      "properties": {
+        "compositionMode": {
+          "const": "TYPED_DETERMINISTIC_INTERSECTION"
+        },
+        "priorityRule": {
+          "const": "CONSTRAINED_WITHIN_NON_TERMINAL_PEERS_ONLY"
+        },
+        "simulatorParity": {
+          "const": "SAME_EVALUATOR_AND_IMMUTABLE_INPUTS"
+        },
+        "terminalBounds": {
+          "const": "PLATFORM_PARTICIPANT_DELEGATION_SCOPE_EPOCH_PRIVACY_DENIAL"
+        },
+        "traceSetId": {
+          "pattern": "^TS-MOD-[A-Z-]+$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "compositionMode",
+        "priorityRule",
+        "terminalBounds",
+        "simulatorParity",
+        "traceSetId"
+      ],
+      "type": "object"
+    },
+    "scope": {
+      "additionalProperties": false,
+      "properties": {
+        "futureComponentsExcluded": {
+          "items": {
+            "enum": [
+              "DU-SUBQUERY",
+              "LS-INDEXER"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "nonLeakage": {
+          "const": "EXISTENCE_AND_PAYLOAD_SEPARATE"
+        },
+        "r1Disposition": {
+          "enum": [
+            "R1",
+            "R1_WITH_FUTURE_HOST_EXCLUDED"
+          ]
+        },
+        "terminalDenial": {
+          "const": "MONOTONIC_TERMINAL"
+        }
+      },
+      "required": [
+        "r1Disposition",
+        "futureComponentsExcluded",
+        "terminalDenial",
+        "nonLeakage"
+      ],
+      "type": "object"
+    },
+    "secretAbsenceReason": {
+      "const": "NO_SECRET_VALUE_OR_REFERENCE_EMBEDDED_IN_SPECIFICATION_MANIFEST"
+    },
+    "secrets": {
+      "items": {
+        "pattern": "^secret://[a-z0-9-]+/[A-Za-z0-9._-]+#[A-Za-z0-9._-]+$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "services": {
+      "additionalProperties": false,
+      "properties": {
+        "absenceReason": {
+          "const": "NO_C03_MODULE_TO_LOGICAL_SERVICE_OWNERSHIP_EDGE"
+        },
+        "logicalServiceIdsOwned": {
+          "maxItems": 0,
+          "type": "array"
+        },
+        "traceSetId": {
+          "pattern": "^TS-MOD-[A-Z-]+$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "logicalServiceIdsOwned",
+        "absenceReason",
+        "traceSetId"
+      ],
+      "type": "object"
+    },
+    "supplyChain": {
+      "$ref": "#/$defs/supplyChain"
+    },
+    "traceSetId": {
+      "pattern": "^TS-MOD-[A-Z-]+$",
+      "type": "string"
+    },
+    "ui": {
+      "additionalProperties": false,
+      "properties": {
+        "absenceReason": {
+          "const": "NO_C03_UI_CONTRIBUTION_OWNERSHIP_ASSIGNED"
+        },
+        "contributions": {
+          "maxItems": 0,
+          "type": "array"
+        },
+        "directBackendAccess": {
+          "const": "FORBIDDEN"
+        },
+        "remoteCode": {
+          "const": "FORBIDDEN"
+        },
+        "traceSetId": {
+          "pattern": "^TS-MOD-[A-Z-]+$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "contributions",
+        "absenceReason",
+        "remoteCode",
+        "directBackendAccess",
+        "traceSetId"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "$schema",
+    "apiVersion",
+    "kind",
+    "metadata",
+    "scope",
+    "compatibility",
+    "deployment",
+    "services",
+    "capabilities",
+    "dependencies",
+    "conflicts",
+    "policyContract",
+    "configuration",
+    "secrets",
+    "secretAbsenceReason",
+    "dataOwnership",
+    "lifecycle",
+    "events",
+    "observability",
+    "ui",
+    "supplyChain",
+    "certification",
+    "conformance",
+    "claimCeilingIds",
+    "traceSetId"
+  ],
+  "title": "OpenPC Module Manifest v1",
+  "type": "object"
+}

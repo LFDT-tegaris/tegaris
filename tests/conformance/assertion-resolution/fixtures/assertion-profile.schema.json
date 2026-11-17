@@ -1,0 +1,213 @@
+{
+  "$id": "urn:openpc:assertion-profile:1.1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "assertionProfileId": {
+      "pattern": "^AP-[A-Z0-9-]+$"
+    },
+    "descriptorBindings": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "assertionValueFields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "conditionalStageConsumers": {
+            "type": "array"
+          },
+          "constantStageConsumers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "expectedFields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "inventory": {
+            "enum": [
+              "AF30_R1",
+              "UI"
+            ]
+          },
+          "negativeFixtureFields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "positiveFixtureFields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "rowAnchorPrefix": {
+            "pattern": "^pkg://",
+            "type": "string"
+          },
+          "rowIdField": {
+            "pattern": "^/",
+            "type": "string"
+          },
+          "sourceAnchorFields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "stageConsumerFields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "sourceAnchorFields",
+          "positiveFixtureFields",
+          "negativeFixtureFields",
+          "assertionValueFields",
+          "expectedFields",
+          "stageConsumerFields",
+          "constantStageConsumers",
+          "conditionalStageConsumers",
+          "inventory",
+          "rowIdField",
+          "rowAnchorPrefix"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "family": {
+      "type": "string"
+    },
+    "globalInvariantRefs": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 2,
+      "type": "array"
+    },
+    "globalInvariantRule": {
+      "const": "GLOBAL_INVARIANTS_ARE_CONJUNCTIVE_NOT_SOLE_ORACLE"
+    },
+    "normativeResolverSemantics": {
+      "const": "SELECT_ALL_MATCHING_PROFILES_CONJUNCTIVELY_AND_PROJECT_EXACT_SOURCE_FIELDS"
+    },
+    "requiredDescriptorFields": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 9,
+      "type": "array"
+    },
+    "schemaVersion": {
+      "const": "1.1"
+    },
+    "selectionRules": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "all": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "field": {
+                  "pattern": "^/",
+                  "type": "string"
+                },
+                "operator": {
+                  "enum": [
+                    "EXISTS",
+                    "EQUALS",
+                    "NOT_EQUALS",
+                    "IN",
+                    "NOT_IN",
+                    "ARRAY_INTERSECTS",
+                    "STRING_CONTAINS_ANY"
+                  ]
+                },
+                "value": {}
+              },
+              "required": [
+                "field",
+                "operator"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "any": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "field": {
+                  "pattern": "^/",
+                  "type": "string"
+                },
+                "operator": {
+                  "enum": [
+                    "EXISTS",
+                    "EQUALS",
+                    "NOT_EQUALS",
+                    "IN",
+                    "NOT_IN",
+                    "ARRAY_INTERSECTS",
+                    "STRING_CONTAINS_ANY"
+                  ]
+                },
+                "value": {}
+              },
+              "required": [
+                "field",
+                "operator"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "inventory": {
+            "enum": [
+              "AF30_R1",
+              "UI"
+            ]
+          }
+        },
+        "required": [
+          "inventory",
+          "all",
+          "any"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "sourceSemanticsRule": {
+      "const": "ROW_SPECIFIC_SEMANTICS_REMAIN_AUTHORITATIVE"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "assertionProfileId",
+    "family",
+    "normativeResolverSemantics",
+    "sourceSemanticsRule",
+    "globalInvariantRule",
+    "selectionRules",
+    "descriptorBindings",
+    "globalInvariantRefs",
+    "requiredDescriptorFields"
+  ],
+  "type": "object"
+}

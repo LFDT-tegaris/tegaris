@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: openpc-i09-default-deny
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: openpc-i09-collector-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: openpc-i09-otel
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              openpc.io/otlp-producer: "true"
+      ports:
+        - {protocol: TCP, port: 4318}

@@ -1,0 +1,14 @@
+[package]
+name = "pc-redaction"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+pc-contracts = { path = "../pc-contracts" }
+pc-request-narrowing = { path = "../pc-request-narrowing" }
+serde_json.workspace = true
+thiserror.workspace = true
+time = { workspace = true, features = ["parsing"] }

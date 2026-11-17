@@ -1,0 +1,120 @@
+// C04 normative wire projection. Signed semantics are PC-CBOR-1 only.
+// JSON projections MUST validate the frozen AF-08 schemas; protobuf bytes are never an alternate signature preimage.
+// Every caller supplies grpc-timeout. The server applies min(caller deadline, signed service-profile maximum).
+// Missing/expired authority metadata fails before method execution. Unknown enum values never relax denial.
+syntax = "proto3";
+package openpc.common.v1;
+
+option java_multiple_files = true;
+option java_package = "io.openpc.common.v1";
+
+message Af08UuidV7 {
+  string value = 1; // frozen AF-08 UuidV7 lowercase text
+  reserved 100 to 199;
+}
+
+message Af08OpenPcUrn {
+  string value = 1; // frozen AF-08 OpenPcUrn
+  reserved 100 to 199;
+}
+
+message Af08Sha256Digest {
+  string value = 1; // frozen AF-08 Sha256Digest
+  reserved 100 to 199;
+}
+
+message Af08Rfc3339MicrosUtc {
+  string value = 1; // frozen AF-08 Rfc3339MicrosUtc
+  reserved 100 to 199;
+}
+
+message Af08UInt64String {
+  string value = 1; // frozen AF-08 UInt64String JSON projection
+  reserved 100 to 199;
+}
+
+enum TruthStateV1 {
+  TRUTH_STATE_V1_UNSPECIFIED = 0;
+  TRUTH_STATE_V1_SUCCESS = 1;
+  TRUTH_STATE_V1_AUTHORIZED_EMPTY = 2;
+  TRUTH_STATE_V1_DENIED = 3;
+  TRUTH_STATE_V1_LOADING = 4;
+  TRUTH_STATE_V1_UNKNOWN = 5;
+  TRUTH_STATE_V1_UNAVAILABLE = 6;
+  TRUTH_STATE_V1_STALE = 7;
+  TRUTH_STATE_V1_REORG = 8;
+  TRUTH_STATE_V1_PARTIAL = 9;
+  TRUTH_STATE_V1_CONFLICTING = 10;
+  TRUTH_STATE_V1_DEGRADED = 11;
+  TRUTH_STATE_V1_FAILED = 12;
+  TRUTH_STATE_V1_RETRY_ELIGIBLE = 13;
+  TRUTH_STATE_V1_FAILOVER_ELIGIBLE = 14;
+  TRUTH_STATE_V1_WRITE_AMBIGUITY = 15;
+  TRUTH_STATE_V1_RECOVERY = 16;
+  TRUTH_STATE_V1_ROLLBACK = 17;
+  TRUTH_STATE_V1_RETIREMENT = 18;
+  TRUTH_STATE_V1_UNINSTALL = 19;
+  TRUTH_STATE_V1_DECOMMISSION = 20;
+}
+
+message AuthorityContextV1 {
+  Af08OpenPcUrn principal_id = 1;
+  Af08OpenPcUrn participant_id = 2;
+  Af08OpenPcUrn privacy_domain_id = 3;
+  Af08OpenPcUrn session_id = 4;
+  Af08OpenPcUrn authority_envelope_id = 5;
+  Af08UInt64String authority_epoch = 6;
+  Af08UInt64String delegation_epoch = 7;
+  string action_intent_id = 8;
+  Af08Sha256Digest policy_generation_digest = 9;
+  Af08Sha256Digest fact_generation_digest = 10;
+  reserved 100 to 199;
+}
+
+message RequestMetaV1 {
+  Af08UuidV7 request_id = 1;
+  Af08UuidV7 correlation_id = 2;
+  AuthorityContextV1 authority = 3;
+  optional string idempotency_key = 4;
+  optional Af08Sha256Digest action_intent_digest = 5;
+  uint64 deadline_monotonic_budget_ms = 6;
+  reserved 100 to 199;
+}
+
+message PageRequestV1 {
+  RequestMetaV1 meta = 1;
+  optional string cursor = 2;
+  uint32 limit = 3;
+  optional string registered_filter = 4;
+  optional string registered_sort = 5;
+  reserved 100 to 199;
+}
+
+message SafeProblemV1 {
+  string type_uri = 1;
+  string title = 2;
+  uint32 status = 3;
+  string code = 4;
+  Af08UuidV7 trace_id = 5;
+  TruthStateV1 truth_state = 6;
+  bool retryable = 7;
+  optional string disclosure_authorized_detail = 8;
+  reserved 100 to 199;
+}
+
+message OperationViewV1 {
+  Af08UuidV7 operation_id = 1;
+  optional Af08OpenPcUrn resource_ref = 2;
+  string action_intent_id = 3;
+  Af08Sha256Digest intent_digest = 4;
+  string idempotency_key = 5;
+  string state = 6;
+  TruthStateV1 truth_state = 7;
+  Af08Rfc3339MicrosUtc created_at = 8;
+  Af08Rfc3339MicrosUtc updated_at = 9;
+  reserved 100 to 199;
+}
+
+message EmptyV1 {
+  reserved 100 to 199;
+}

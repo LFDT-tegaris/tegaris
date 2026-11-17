@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [
+      1,
+      2,
+      3,
+      4,
+      100,
+      101,
+      102,
+      103
+    ],
+    "criticalFields": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "extensionAuthority": "POST_C17_ASTRA_12_REGISTERED_EVIDENCE_EXPORT_PRODUCER",
+  "name": "pc.evidence-export-completion-receipt.v1",
+  "schemaId": 24013,
+  "typeName": "EvidenceExportCompletionReceiptV1",
+  "purpose": {
+    "name": "pc.cose.evidence-export-completion-receipt.v1",
+    "code": 350
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "environmentId",
+      "type": "text160"
+    },
+    {
+      "key": 2,
+      "name": "participantId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 3,
+      "name": "privacyDomainId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 4,
+      "name": "eventId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 5,
+      "name": "sourceId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 6,
+      "name": "evidenceExportId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 7,
+      "name": "startOperationId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 8,
+      "name": "causationId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 9,
+      "name": "sequence",
+      "type": "u64p"
+    },
+    {
+      "key": 10,
+      "name": "recordedAtNs",
+      "type": "u64p"
+    },
+    {
+      "key": 11,
+      "name": "requestDigest",
+      "type": "H32"
+    },
+    {
+      "key": 12,
+      "name": "checkpoint",
+      "type": "u64p"
+    },
+    {
+      "key": 13,
+      "name": "outputDigest",
+      "type": "H32"
+    },
+    {
+      "key": 14,
+      "name": "recordCount",
+      "type": "u64p"
+    },
+    {
+      "key": 15,
+      "name": "dataDigest",
+      "type": "H32"
+    },
+    {
+      "key": 16,
+      "name": "authoritySnapshotDigest",
+      "type": "H32"
+    },
+    {
+      "key": 17,
+      "name": "signerTrustSnapshotDigest",
+      "type": "H32"
+    },
+    {
+      "key": 18,
+      "name": "signerKeyId",
+      "type": "keyId"
+    }
+  ],
+  "event": {
+    "owner": "LS-EVIDENCE-EXPORT",
+    "type": "io.openpc.evidence.export.completed.v1",
+    "dataSchemaUri": "https://schemas.openpc.local/event-payloads.schema.json#/$defs/EvidenceExportCompleted",
+    "source": "urn:openpc:service:<sourceId>; exact installed workload source identity, never inferred from logical service name",
+    "subject": "urn:openpc:resource:<evidenceExportId>",
+    "correlationId": "startOperationId",
+    "causationId": "exact retained original governed export-start outbox event ID",
+    "orderingKey": "evidenceExportId",
+    "sequence": "positive u64 in EVIDENCE_EXPORT_COMPLETION_V1; one immutable successful completion per export identity",
+    "dataPreimage": "PC-CBOR-1 map with exactly 0=evidenceExportId as canonical resource URN text, 1=checkpoint as unsigned u64, 2=outputDigest as H32 bytes, 3=recordCount as unsigned u64; dataDigest=SHA256 of those bytes",
+    "dataJson": "exact registered EvidenceExportCompleted projection; counters serialize as canonical decimal strings",
+    "recordedAtNs": "positive u64, divisible by 1000; envelope time is the exact UTC timestamp with six fractional digits"
+  },
+  "admission": {
+    "source": "actual scoped control.evidence_export_request SUCCEEDED and immutable control.evidence_export_output; exact approved start operation, retained selection/request digest, final checkpoint, artifact digest and actual minimized record count",
+    "identity": "event ID, sequence, source identity and signing input reserved durably once by the export owner; signer or network uncertainty retains that original identity and bytes",
+    "authority": "separate current LS-EVIDENCE-EXPORT workload/credential, scope, purpose-bound signing grant, key lifecycle and source transaction fences; authoritySnapshotDigest and signerTrustSnapshotDigest bind retained independently verified snapshots",
+    "signature": "cryptographic verification is historical evidence only; no caller-supplied key, receipt, snapshot digest or decoded claim confers current producer or consumer authority",
+    "commit": "completed output, immutable completion receipt, evidence and exact registered event/outbox are bound by the owning SQL transaction; no CommandCommitted or LEGACY substitution; no unsigned success event",
+    "privacy": "only registered minimized completion metadata is emitted; no artifact contents, source records, protected payload, key material or recipient is included",
+    "recovery": "exact replay/readback preserves signed bytes and IDs; no fresh signing intent or output after ambiguous commit; completion does not authorize routing or delivery"
+  }
+}

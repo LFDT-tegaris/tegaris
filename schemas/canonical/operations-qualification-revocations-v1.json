@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [
+      1,
+      2,
+      3,
+      4,
+      100,
+      101,
+      102,
+      103
+    ],
+    "criticalFields": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "extensionAuthority": "POST_C17_ASTRA_14_16_OPERATIONS_QUALIFICATION",
+  "name": "pc.operations-qualification-revocations.v1",
+  "schemaId": 24027,
+  "typeName": "OperationsQualificationRevocationsV1",
+  "purpose": {
+    "name": "pc.cose.operations-qualification-revocations.v1",
+    "code": 364
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "authorityId",
+      "type": "dns_label"
+    },
+    {
+      "key": 2,
+      "name": "snapshotId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 3,
+      "name": "sequence",
+      "type": "u64p"
+    },
+    {
+      "key": 4,
+      "name": "revocationDocumentDigest",
+      "type": "H32"
+    },
+    {
+      "key": 5,
+      "name": "rootKeyId",
+      "type": "H32"
+    },
+    {
+      "key": 6,
+      "name": "rootEpoch",
+      "type": "u64p"
+    },
+    {
+      "key": 7,
+      "name": "issuedAtMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 8,
+      "name": "validUntilMs",
+      "type": "safe_uint"
+    }
+  ],
+  "fieldConstraints": {
+    "dns_label": "ASCII ^[a-z][a-z0-9-]{2,31}$",
+    "qualification_slot": "exact QINPUT-<selected profile uppercased>-PROVIDER-READ-RETRY-V1",
+    "qualification_ref": "qualification://<authorityId>/<inputId>@sha256:<exact input PC-CBOR payload SHA256 lowercase hex>",
+    "nfc_text_1_128": "valid NFC UTF-8, 1..128 bytes, no control characters",
+    "uint_0_3": "unsigned integer 0..3, never boolean/string/float",
+    "safe_uint": "unsigned safe integer 0..9007199254740991; time intervals strictly ordered",
+    "u64p": "decimal API string 1..18446744073709551615, canonical CBOR uint",
+    "H32": "exact 32-byte CBOR byte string; sha256:<64 lowercase hex> in API",
+    "uuidv7": "exact 16-byte canonical UUIDv7 with RFC variant"
+  },
+  "sourceRefs": [
+    "QUALITY/qualification-authority-profile.yaml",
+    "QUALITY/schemas/qualification-receipt.schema.json",
+    "QUALITY/schemas/qualification-keyset.schema.json",
+    "QUALITY/schemas/qualification-revocation.schema.json",
+    "SPECIFICATIONS/OPERATIONS/configuration-precedence.md",
+    "SPECIFICATIONS/OPERATIONS/configuration.schema.json"
+  ],
+  "authorityRules": [
+    "revocationDocumentDigest authenticates RFC8785 JSON with exactly schemaVersion,authorityId,revocations; schemaVersion is 1.0. revocations is an array of at most 4096 unique keyId/keyEpoch records ordered by keyId then numeric keyEpoch. An empty list is legal only as an explicitly root-authenticated complete snapshot, never as a missing/default response.",
+    "Each record matches QUALITY/schemas/qualification-revocation.schema.json with exactly schemaVersion,authorityId,keyId,keyEpoch,state,effectiveAt,receiptEffect,evidenceRetention,signatureEnvelope. schemaVersion is 1.0, state is REVOKED, receiptEffect is INVALIDATE_RECEIPTS_COVERED_BY_REVOKED_KEY_EPOCH and evidenceRetention is PRESERVE_NEVER_DELETE_OR_RESIGN. authorityId matches the snapshot; keyId is the exact P-256 SPKI sha256 identity and keyEpoch a positive safe JSON integer. signatureEnvelope is the fixed five-field descriptor; the enclosing dedicated root signature authenticates every record.",
+    "Effective revocation invalidates every receipt covered by that key epoch while retaining the original evidence and signed bytes; never repair by silent re-signing. The durable current-state owner preserves every previously admitted revocation and rejects rollback, key-epoch substitution, omission and ambiguous roots.",
+    "issuedAtMs/validUntilMs are finite ordered safe milliseconds, issuedAtMs <= database now < validUntilMs. Exact current durable sequence/root pins and the keyset snapshot binding establish freshness; this signed map alone is not a currentness token.",
+    "Implements only an internal adapter contract for authenticated operations qualification under the adopted ASTRA-14/16 plan. The delivered C17 authority remains DESIGNED_NOT_CONSTITUTED with keys UNPROVISIONED; local external test signers prove adapter behavior only. No production qualification, certification, SLO/SLA or product claim promotion follows.",
+    "Use existing PC-CBOR-1 and COSE_Sign1 ES256/P-256/SHA-256 profile 2, exact schema definition/AAD/purpose and exact original bytes. The verifier rejects unknown/duplicate/noncanonical fields, malformed identities, type coercion, key/purpose substitution, mutable references and ambiguous signature outcomes. Retain first failures and originals.",
+    "For JSON document digest preimages use RFC8785 with duplicate-key/NFC rejection and exact closed schemas. Every fixed signatureEnvelope descriptor is exactly {format:COSE_Sign1,algorithm:ES256,curve:P-256,hash:SHA-256,canonicalization:PC-CBOR-1}. ISO times are canonical UTC YYYY-MM-DDTHH:mm:ss.sssZ representing the exact signed millisecond field. Document digest fields use the prefix-free form required by C17; signed H32 claims use the canonical sha256: representation.",
+    "Privileged durable installation, RLS/tenant context, independent issuer eligibility, actual execution/reviewer evidence, current keyset/revocation checks and the exact generation binding remain separate required owners. These public wire declarations do not create tables, grants, runtime APIs, qualification success, effective configuration or any signing/send effect.",
+    "Bound and copy document bytes before parsing: input payload 65536 bytes, receipt document 524288 bytes, keyset document 131072 bytes and revocation document 4194304 bytes maximum. Unknown fields, duplicate keys, non-NFC strings, malformed entries and partial snapshots fail closed before database allocation."
+  ]
+}

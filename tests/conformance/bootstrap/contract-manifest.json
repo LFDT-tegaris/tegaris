@@ -1,0 +1,779 @@
+{
+  "schemaVersion": "1.1",
+  "files": [
+    {
+      "path": "proto/openpc/README.md",
+      "sha256": "9caf366401836b0cab9465c1c7635dd03fdcd1d3333ba7e8bc875f01446ecad8"
+    },
+    {
+      "path": "proto/openpc/common/v1/common.proto",
+      "sha256": "d297f58139aa558cefbebf4e08033fcfe27be5ed9288ac6f1ce214e5284eb8cd"
+    },
+    {
+      "path": "proto/openpc/control/v1/control.proto",
+      "sha256": "76aba8005f8b582c4c3b53d88e0d4853c7939bccdfe9b64dfa5a32f5d5691614"
+    },
+    {
+      "path": "proto/openpc/evidence/v1/evidence.proto",
+      "sha256": "a2cdcfde2fa66e06864e1aecf670c8d7ef203ee2b5302cbbfca57e719f0f31e8"
+    },
+    {
+      "path": "proto/openpc/facts/v1/facts.proto",
+      "sha256": "fb2bd81447fdd9620a8970f85a3a62a42e72d1c0a41af36128f5948d98136ba6"
+    },
+    {
+      "path": "proto/openpc/fleet/v1/fleet.proto",
+      "sha256": "b95f011b4d69fe566eabbf930385c2421f71d6d9d37ed43ba61553e438e7c67b"
+    },
+    {
+      "path": "proto/openpc/runtime/v1/runtime.proto",
+      "sha256": "f4d7adb48f45fb2272142c662671c7be441d50b9eee536b19a308b903621544a"
+    },
+    {
+      "path": "schemas/asyncapi/openpc-events.asyncapi.yaml",
+      "sha256": "bbc53c25ee9336bfbf64031d8a7874369c4fe2f083e1ea8b4aec1f1b40f91e22"
+    },
+    {
+      "path": "schemas/json/action-intent-registry.schema.json",
+      "sha256": "35b5520abeafb05164eb0960d0ef2ad0e1ab1c66f694237d6cbf70e02ae243ce"
+    },
+    {
+      "path": "schemas/json/adapter-interface.schema.json",
+      "sha256": "ce2f657c062a340e73b0b4500c082a2c44861b554bd39b0e8bbee341c45c95cb"
+    },
+    {
+      "path": "schemas/json/authority-context.schema.json",
+      "sha256": "8a3c08e1d55cf34a132956601a251ec64c4dffc2980b9d87b395f79c04dd3869"
+    },
+    {
+      "path": "schemas/json/control-api.schema.json",
+      "sha256": "88f402a651d3372e50617d56908655e97bcf9c7cc19fb5e0432d2a325199caf4"
+    },
+    {
+      "path": "schemas/json/error-registry.schema.json",
+      "sha256": "177cd12c0f76a3a3ec0dda39893d23d96a9695917f93662233a5cffa1630488b"
+    },
+    {
+      "path": "schemas/json/event-envelope.schema.json",
+      "sha256": "be5b76bff43f5a19fa9718caa670cf8b0919f05b34d12cc8295f2e678c3e7351"
+    },
+    {
+      "path": "schemas/json/event-payloads.schema.json",
+      "sha256": "c9c2cb5df7c680ff51429a17f36afd57a32ca40c4bdebd71cdc013af92f95b87"
+    },
+    {
+      "path": "schemas/json/jsonrpc-runtime.schema.json",
+      "sha256": "20aaa63d00ada53380a4a64ac15bae6ee849148d6d7a7386a4f2fb6cff43c3c1"
+    },
+    {
+      "path": "schemas/json/privacy-explorer.schema.json",
+      "sha256": "7ca5fe66c4f99b206fbc0512a84e842b25cc5226118fd46ffa296b381550be0d"
+    },
+    {
+      "path": "schemas/json/problem.schema.json",
+      "sha256": "127b4b8fc1d13c1d2f4ffe72aba3046f507562acce39da4818ec66ddb602c71a"
+    },
+    {
+      "path": "schemas/json/shared-primitives.schema.json",
+      "sha256": "bc1ed970a22ffcdd2cb7ad39f2ac2fab4fbeb77f18c5612972d078832674769a"
+    },
+    {
+      "path": "schemas/json/signing-key-rotation.schema.json",
+      "sha256": "942bd4034f3ab502d31a8d73b9464ed7076502478068b65b8b0271f5cfcda3a0"
+    },
+    {
+      "path": "schemas/json/sse-subscription.schema.json",
+      "sha256": "6d6dab764dcd793228631b8820113f54feb126b0e31590a249940e6b48da23fe"
+    },
+    {
+      "path": "schemas/json/ui-bff.schema.json",
+      "sha256": "dfba568dd0bd32d0bad03b5820b726ee93921a87606e52f4d95cd29dd25c8384"
+    },
+    {
+      "path": "schemas/openapi/OPENAPI_REGISTRY.json",
+      "sha256": "0e49e269c93f1cc01714db566c5735fbe5254b188882916a800cf3061798360f"
+    },
+    {
+      "path": "schemas/openapi/openpc-control-api.openapi.yaml",
+      "sha256": "d30d06405e5924c4b7d66a425906f72e1057fe75cfff9127d4759b3664f02f5a"
+    },
+    {
+      "path": "schemas/openapi/openpc-legacy-compatibility-v1.openapi.json",
+      "sha256": "d693cad89ed0974c630a151300b2aadc7359adae82e795e306235dddb51cccbf"
+    },
+    {
+      "path": "schemas/openapi/openpc-privacy-explorer.openapi.yaml",
+      "sha256": "49c6bdf30a5b1bd633bf52124d912194f71535834a3fc3e611894455cfde2cc9"
+    },
+    {
+      "path": "tests/conformance/bootstrap/test-obligations.yaml",
+      "sha256": "fc77f268c7a9538ea36b6fc6eaebad57cfb26bddb3a060281219a3cb1dc143c5"
+    }
+  ],
+  "sourceOutputs": [
+    {
+      "source": "schemas/json/action-intent-registry.schema.json",
+      "sourceSha256": "35b5520abeafb05164eb0960d0ef2ad0e1ab1c66f694237d6cbf70e02ae243ce",
+      "generator": "json-schema-to-typescript",
+      "generatorVersion": "15.0.4",
+      "argv": [
+        "pnpm",
+        "exec",
+        "json2ts",
+        "--input",
+        "<schema>",
+        "--output",
+        "<external-staging-output>",
+        "--cwd",
+        "schemas/json",
+        "--unknownAny"
+      ],
+      "preservationMode": "VERIFY_ONLY_IMMUTABLE_PREDECESSOR",
+      "outputs": [
+        {
+          "path": "generated/typescript/json-schema/action-intent-registry.d.ts",
+          "sha256": "8d29eb236bb4e53d447d69bf04c4c7dcd75569a97fe1ba023106aaa57b7ab5ff"
+        }
+      ]
+    },
+    {
+      "source": "schemas/json/adapter-interface.schema.json",
+      "sourceSha256": "ce2f657c062a340e73b0b4500c082a2c44861b554bd39b0e8bbee341c45c95cb",
+      "generator": "json-schema-to-typescript",
+      "generatorVersion": "15.0.4",
+      "argv": [
+        "pnpm",
+        "exec",
+        "json2ts",
+        "--input",
+        "<schema>",
+        "--output",
+        "<external-staging-output>",
+        "--cwd",
+        "schemas/json",
+        "--unknownAny"
+      ],
+      "preservationMode": "VERIFY_ONLY_IMMUTABLE_PREDECESSOR",
+      "outputs": [
+        {
+          "path": "generated/typescript/json-schema/adapter-interface.d.ts",
+          "sha256": "669d3da110375ddf86feb18f087c9fe13a81b7b82a362c3dc3402dc8e39ad7f0"
+        }
+      ]
+    },
+    {
+      "source": "schemas/json/authority-context.schema.json",
+      "sourceSha256": "8a3c08e1d55cf34a132956601a251ec64c4dffc2980b9d87b395f79c04dd3869",
+      "generator": "json-schema-to-typescript",
+      "generatorVersion": "15.0.4",
+      "argv": [
+        "pnpm",
+        "exec",
+        "json2ts",
+        "--input",
+        "<schema>",
+        "--output",
+        "<external-staging-output>",
+        "--cwd",
+        "schemas/json",
+        "--unknownAny"
+      ],
+      "preservationMode": "VERIFY_ONLY_IMMUTABLE_PREDECESSOR",
+      "outputs": [
+        {
+          "path": "generated/typescript/json-schema/authority-context.d.ts",
+          "sha256": "1bc533183c1920101450be782b0e743bddb6bd20979c8c1148be91552754a077"
+        }
+      ]
+    },
+    {
+      "source": "schemas/json/control-api.schema.json",
+      "sourceSha256": "88f402a651d3372e50617d56908655e97bcf9c7cc19fb5e0432d2a325199caf4",
+      "generator": "json-schema-to-typescript",
+      "generatorVersion": "15.0.4",
+      "argv": [
+        "pnpm",
+        "exec",
+        "json2ts",
+        "--input",
+        "<schema>",
+        "--output",
+        "<external-staging-output>",
+        "--cwd",
+        "schemas/json",
+        "--unknownAny"
+      ],
+      "preservationMode": "PUBLISH_EXACT_ALLOWLIST",
+      "outputs": [
+        {
+          "path": "generated/typescript/json-schema/control-api.d.ts",
+          "sha256": "1caf23cd04b57a73bfd76a2e9923793012daa275b97469a30de1e877d8aa9618"
+        }
+      ]
+    },
+    {
+      "source": "schemas/json/error-registry.schema.json",
+      "sourceSha256": "177cd12c0f76a3a3ec0dda39893d23d96a9695917f93662233a5cffa1630488b",
+      "generator": "json-schema-to-typescript",
+      "generatorVersion": "15.0.4",
+      "argv": [
+        "pnpm",
+        "exec",
+        "json2ts",
+        "--input",
+        "<schema>",
+        "--output",
+        "<external-staging-output>",
+        "--cwd",
+        "schemas/json",
+        "--unknownAny"
+      ],
+      "preservationMode": "VERIFY_ONLY_IMMUTABLE_PREDECESSOR",
+      "outputs": [
+        {
+          "path": "generated/typescript/json-schema/error-registry.d.ts",
+          "sha256": "4801d6d41b128e95bc6f5ced51913460396440ed4f86794a2b92d5f226d788e9"
+        }
+      ]
+    },
+    {
+      "source": "schemas/json/event-envelope.schema.json",
+      "sourceSha256": "be5b76bff43f5a19fa9718caa670cf8b0919f05b34d12cc8295f2e678c3e7351",
+      "generator": "json-schema-to-typescript",
+      "generatorVersion": "15.0.4",
+      "argv": [
+        "pnpm",
+        "exec",
+        "json2ts",
+        "--input",
+        "<schema>",
+        "--output",
+        "<external-staging-output>",
+        "--cwd",
+        "schemas/json",
+        "--unknownAny"
+      ],
+      "preservationMode": "VERIFY_ONLY_IMMUTABLE_PREDECESSOR",
+      "outputs": [
+        {
+          "path": "generated/typescript/json-schema/event-envelope.d.ts",
+          "sha256": "c54ecf2ccc23a54dcc576c9cb85863066db8805070450d5427800b56e354e991"
+        }
+      ]
+    },
+    {
+      "source": "schemas/json/event-payloads.schema.json",
+      "sourceSha256": "c9c2cb5df7c680ff51429a17f36afd57a32ca40c4bdebd71cdc013af92f95b87",
+      "generator": "json-schema-to-typescript",
+      "generatorVersion": "15.0.4",
+      "argv": [
+        "pnpm",
+        "exec",
+        "json2ts",
+        "--input",
+        "<schema>",
+        "--output",
+        "<external-staging-output>",
+        "--cwd",
+        "schemas/json",
+        "--unknownAny"
+      ],
+      "preservationMode": "PUBLISH_EXACT_ALLOWLIST",
+      "outputs": [
+        {
+          "path": "generated/typescript/json-schema/event-payloads.d.ts",
+          "sha256": "db085e24716bca978bbb83811887c9d0d90b26866226a6ebb7394801eda66f4b"
+        }
+      ]
+    },
+    {
+      "source": "schemas/json/jsonrpc-runtime.schema.json",
+      "sourceSha256": "20aaa63d00ada53380a4a64ac15bae6ee849148d6d7a7386a4f2fb6cff43c3c1",
+      "generator": "json-schema-to-typescript",
+      "generatorVersion": "15.0.4",
+      "argv": [
+        "pnpm",
+        "exec",
+        "json2ts",
+        "--input",
+        "<schema>",
+        "--output",
+        "<external-staging-output>",
+        "--cwd",
+        "schemas/json",
+        "--unknownAny"
+      ],
+      "preservationMode": "VERIFY_ONLY_IMMUTABLE_PREDECESSOR",
+      "outputs": [
+        {
+          "path": "generated/typescript/json-schema/jsonrpc-runtime.d.ts",
+          "sha256": "9a1a4414f5a6c418d9016cf9a29c9ea3fb69778f6ca20959127b86664d968e3b"
+        }
+      ]
+    },
+    {
+      "source": "schemas/json/problem.schema.json",
+      "sourceSha256": "127b4b8fc1d13c1d2f4ffe72aba3046f507562acce39da4818ec66ddb602c71a",
+      "generator": "json-schema-to-typescript",
+      "generatorVersion": "15.0.4",
+      "argv": [
+        "pnpm",
+        "exec",
+        "json2ts",
+        "--input",
+        "<schema>",
+        "--output",
+        "<external-staging-output>",
+        "--cwd",
+        "schemas/json",
+        "--unknownAny"
+      ],
+      "preservationMode": "VERIFY_ONLY_IMMUTABLE_PREDECESSOR",
+      "outputs": [
+        {
+          "path": "generated/typescript/json-schema/problem.d.ts",
+          "sha256": "7cdfc56fe2bba6504c9eb301c05c95c51bcbb0cb59efcb5f8ac9a61fdf13b0bc"
+        }
+      ]
+    },
+    {
+      "source": "schemas/json/shared-primitives.schema.json",
+      "sourceSha256": "bc1ed970a22ffcdd2cb7ad39f2ac2fab4fbeb77f18c5612972d078832674769a",
+      "generator": "json-schema-to-typescript",
+      "generatorVersion": "15.0.4",
+      "argv": [
+        "pnpm",
+        "exec",
+        "json2ts",
+        "--input",
+        "<schema>",
+        "--output",
+        "<external-staging-output>",
+        "--cwd",
+        "schemas/json",
+        "--unknownAny"
+      ],
+      "preservationMode": "VERIFY_ONLY_IMMUTABLE_PREDECESSOR",
+      "outputs": [
+        {
+          "path": "generated/typescript/json-schema/shared-primitives.d.ts",
+          "sha256": "a8e55f063051a460741245ea6a01fbd8d4ae718de411fc3957ecc9649e768741"
+        }
+      ]
+    },
+    {
+      "source": "schemas/json/sse-subscription.schema.json",
+      "sourceSha256": "6d6dab764dcd793228631b8820113f54feb126b0e31590a249940e6b48da23fe",
+      "generator": "json-schema-to-typescript",
+      "generatorVersion": "15.0.4",
+      "argv": [
+        "pnpm",
+        "exec",
+        "json2ts",
+        "--input",
+        "<schema>",
+        "--output",
+        "<external-staging-output>",
+        "--cwd",
+        "schemas/json",
+        "--unknownAny"
+      ],
+      "preservationMode": "VERIFY_ONLY_IMMUTABLE_PREDECESSOR",
+      "outputs": [
+        {
+          "path": "generated/typescript/json-schema/sse-subscription.d.ts",
+          "sha256": "b33146f7c9fd6ac8a1bbbb7d71c82eb8fd22e40c0e3759d082c589044b535e27"
+        }
+      ]
+    },
+    {
+      "source": "schemas/json/ui-bff.schema.json",
+      "sourceSha256": "dfba568dd0bd32d0bad03b5820b726ee93921a87606e52f4d95cd29dd25c8384",
+      "generator": "json-schema-to-typescript",
+      "generatorVersion": "15.0.4",
+      "argv": [
+        "pnpm",
+        "exec",
+        "json2ts",
+        "--input",
+        "<schema>",
+        "--output",
+        "<external-staging-output>",
+        "--cwd",
+        "schemas/json",
+        "--unknownAny"
+      ],
+      "preservationMode": "VERIFY_ONLY_IMMUTABLE_PREDECESSOR",
+      "outputs": [
+        {
+          "path": "generated/typescript/json-schema/ui-bff.d.ts",
+          "sha256": "5fb8622b5019b20f142c6298fb26b33a947d0304ce03b92be660aae2b96edd95"
+        }
+      ]
+    },
+    {
+      "source": "schemas/json/signing-key-rotation.schema.json",
+      "sourceSha256": "942bd4034f3ab502d31a8d73b9464ed7076502478068b65b8b0271f5cfcda3a0",
+      "generator": "json-schema-to-typescript",
+      "generatorVersion": "15.0.4",
+      "argv": [
+        "pnpm",
+        "exec",
+        "json2ts",
+        "--input",
+        "<schema>",
+        "--output",
+        "<external-staging-output>",
+        "--cwd",
+        "schemas/json",
+        "--unknownAny"
+      ],
+      "preservationMode": "PUBLISH_EXACT_ALLOWLIST",
+      "outputs": [
+        {
+          "path": "generated/typescript/json-schema/signing-key-rotation.d.ts",
+          "sha256": "aada8aa45337cbc8271a71f5b09930e7d8caaf00f86d0196606951edfeb54080"
+        }
+      ]
+    },
+    {
+      "source": "schemas/json/privacy-explorer.schema.json",
+      "sourceSha256": "7ca5fe66c4f99b206fbc0512a84e842b25cc5226118fd46ffa296b381550be0d",
+      "generator": "json-schema-to-typescript",
+      "generatorVersion": "15.0.4",
+      "argv": [
+        "pnpm",
+        "exec",
+        "json2ts",
+        "--input",
+        "<schema>",
+        "--output",
+        "<external-staging-output>",
+        "--cwd",
+        "schemas/json",
+        "--unknownAny"
+      ],
+      "preservationMode": "PUBLISH_EXACT_ALLOWLIST",
+      "outputs": [
+        {
+          "path": "generated/typescript/json-schema/privacy-explorer.d.ts",
+          "sha256": "c36549a4b147145ec85511b60c81b7908cc5be24062d6cf688474f42ad2ed243"
+        }
+      ]
+    },
+    {
+      "source": "generated/typescript/README.md",
+      "sourceSha256": "4d753fc5064b8cc22d373e561126af111bde32c15fcaccbfa598b9156c36a11f",
+      "generator": "I01 immutable generated-contract notice",
+      "generatorVersion": "1.0",
+      "argv": ["NOT_RUN_BY_I07"],
+      "preservationMode": "VERIFY_ONLY_IMMUTABLE_PREDECESSOR",
+      "outputs": [
+        {
+          "path": "generated/typescript/README.md",
+          "sha256": "4d753fc5064b8cc22d373e561126af111bde32c15fcaccbfa598b9156c36a11f"
+        }
+      ]
+    },
+    {
+      "source": "schemas/json/privacy-explorer.schema.json",
+      "sourceSha256": "7ca5fe66c4f99b206fbc0512a84e842b25cc5226118fd46ffa296b381550be0d",
+      "generator": "I07 Privacy Explorer extension generator",
+      "generatorVersion": "1.0",
+      "argv": [
+        "node",
+        "scripts/contracts/run-with-toolchain.mjs",
+        "run-tsx",
+        "tests/conformance/bootstrap/scripts/generate-typescript-contracts.ts"
+      ],
+      "preservationMode": "PUBLISH_EXACT_ALLOWLIST",
+      "outputs": [
+        {
+          "path": "generated/typescript/json-schema/privacy-explorer.validator.mjs",
+          "sha256": "96c8f7a354f99d4f5c8dab63f7832da556e8bce7c7eb64ecea05360238dd673f"
+        },
+        {
+          "path": "generated/typescript/privacy-explorer/execution-registry.ts",
+          "sha256": "710b076f7289f51bcfa05b0ff0ab9bb5c234cb3a48983d6d592865e96a049bf6"
+        }
+      ]
+    },
+    {
+      "source": "schemas/openapi/openpc-control-api.openapi.yaml",
+      "sourceSha256": "d30d06405e5924c4b7d66a425906f72e1057fe75cfff9127d4759b3664f02f5a",
+      "generator": "@hey-api/openapi-ts",
+      "generatorVersion": "0.99.0",
+      "argv": [
+        "pnpm",
+        "exec",
+        "openapi-ts",
+        "--input",
+        "schemas/openapi/openpc-control-api.openapi.yaml",
+        "--output",
+        "<external-staging-output>",
+        "--client",
+        "@hey-api/client-fetch",
+        "--no-log-file",
+        "--silent"
+      ],
+      "preservationMode": "PUBLISH_SIGNING_ALLOWLIST_PRESERVE_UNRELATED_OUTPUTS",
+      "outputs": [
+        {
+          "path": "generated/typescript/openapi/client.gen.ts",
+          "sha256": "11888b753b0176fce45a47c81753c80206c391e27f8b365023c812a76312a212"
+        },
+        {
+          "path": "generated/typescript/openapi/client/client.gen.ts",
+          "sha256": "426ff1c11a0dee9bac79568e2b2093ef697cf3828dfe9dba5258a31d3e38568d"
+        },
+        {
+          "path": "generated/typescript/openapi/client/index.ts",
+          "sha256": "acd2b749181050a8297f24ac3db4f3941ca0a66c049e5b984f29f0e98c8329f8"
+        },
+        {
+          "path": "generated/typescript/openapi/client/types.gen.ts",
+          "sha256": "8a353b3ee2450c26415ec2816491cf4e82262a87597180f1b97dd989c9102f96"
+        },
+        {
+          "path": "generated/typescript/openapi/client/utils.gen.ts",
+          "sha256": "f21c22bd8f37a0d0fa4008c4d70bb7e7a4b74afa8c5b9d05dda9b39f1c89424c"
+        },
+        {
+          "path": "generated/typescript/openapi/core/auth.gen.ts",
+          "sha256": "4b4aca5bd9b2c43a112bb74617295278d84f86360ada71a8db57f09cd0c254f4"
+        },
+        {
+          "path": "generated/typescript/openapi/core/bodySerializer.gen.ts",
+          "sha256": "c9739bff031dce1781a56ab9072791d4bd52bd0896cc989d4ad1cd03f71b282b"
+        },
+        {
+          "path": "generated/typescript/openapi/core/params.gen.ts",
+          "sha256": "097c75f6e269c6c8680641091832a69b38e8828e8ee8465318d32a177593330f"
+        },
+        {
+          "path": "generated/typescript/openapi/core/pathSerializer.gen.ts",
+          "sha256": "6e80a19627d36fd2a9e8daee113713b2e047d107d42ead9b4a9ab344690b998c"
+        },
+        {
+          "path": "generated/typescript/openapi/core/queryKeySerializer.gen.ts",
+          "sha256": "adc570c9357a08624cce81dc503abd8d8ff60a76d25bd4d3a4afbe349d82d1f0"
+        },
+        {
+          "path": "generated/typescript/openapi/core/serverSentEvents.gen.ts",
+          "sha256": "09dc8417b03b92849cc7582d2c8e5a610cc002d447a93b0cef721dcdbd09ff12"
+        },
+        {
+          "path": "generated/typescript/openapi/core/types.gen.ts",
+          "sha256": "11742d13e9417ed7f71e78e6062873c83340beeae766666a04a3e56726bc3567"
+        },
+        {
+          "path": "generated/typescript/openapi/core/utils.gen.ts",
+          "sha256": "ef50364c77d213864515776ee4abaf2f3a1a309d106c2db000e2fc4b6080e78c"
+        },
+        {
+          "path": "generated/typescript/openapi/index.ts",
+          "sha256": "de07624fb6f1a509325b40392dd65fbf24ec3eff2a05d85f836855b2bd3314d8"
+        },
+        {
+          "path": "generated/typescript/openapi/sdk.gen.ts",
+          "sha256": "4c855343d48bd0ea9dfd88f9a6cf6a12b9efe191b6fb7280bc30698170273b1a"
+        },
+        {
+          "path": "generated/typescript/openapi/types.gen.ts",
+          "sha256": "70229f43c2ff49dd4610b0145f96efb4a13c595f7543d7ae8abf0df4c1f76bba"
+        }
+      ]
+    },
+    {
+      "source": "schemas/openapi/openpc-privacy-explorer.openapi.yaml",
+      "sourceSha256": "49c6bdf30a5b1bd633bf52124d912194f71535834a3fc3e611894455cfde2cc9",
+      "generator": "@hey-api/openapi-ts",
+      "generatorVersion": "0.99.0",
+      "argv": [
+        "pnpm",
+        "exec",
+        "openapi-ts",
+        "--input",
+        "schemas/openapi/openpc-privacy-explorer.openapi.yaml",
+        "--output",
+        "<external-staging-output>",
+        "--client",
+        "@hey-api/client-fetch",
+        "--no-log-file",
+        "--silent"
+      ],
+      "preservationMode": "PUBLISH_EXACT_ALLOWLIST",
+      "outputs": [
+        {
+          "path": "packages/api-client/generated/privacy-explorer/client.gen.ts",
+          "sha256": "43ec166f92f8494c3215aaeed0f9a4c002999d45ddc54a25cda300f7a2a68951"
+        },
+        {
+          "path": "packages/api-client/generated/privacy-explorer/client/client.gen.ts",
+          "sha256": "426ff1c11a0dee9bac79568e2b2093ef697cf3828dfe9dba5258a31d3e38568d"
+        },
+        {
+          "path": "packages/api-client/generated/privacy-explorer/client/index.ts",
+          "sha256": "acd2b749181050a8297f24ac3db4f3941ca0a66c049e5b984f29f0e98c8329f8"
+        },
+        {
+          "path": "packages/api-client/generated/privacy-explorer/client/types.gen.ts",
+          "sha256": "8a353b3ee2450c26415ec2816491cf4e82262a87597180f1b97dd989c9102f96"
+        },
+        {
+          "path": "packages/api-client/generated/privacy-explorer/client/utils.gen.ts",
+          "sha256": "f21c22bd8f37a0d0fa4008c4d70bb7e7a4b74afa8c5b9d05dda9b39f1c89424c"
+        },
+        {
+          "path": "packages/api-client/generated/privacy-explorer/core/auth.gen.ts",
+          "sha256": "4b4aca5bd9b2c43a112bb74617295278d84f86360ada71a8db57f09cd0c254f4"
+        },
+        {
+          "path": "packages/api-client/generated/privacy-explorer/core/bodySerializer.gen.ts",
+          "sha256": "c9739bff031dce1781a56ab9072791d4bd52bd0896cc989d4ad1cd03f71b282b"
+        },
+        {
+          "path": "packages/api-client/generated/privacy-explorer/core/params.gen.ts",
+          "sha256": "097c75f6e269c6c8680641091832a69b38e8828e8ee8465318d32a177593330f"
+        },
+        {
+          "path": "packages/api-client/generated/privacy-explorer/core/pathSerializer.gen.ts",
+          "sha256": "6e80a19627d36fd2a9e8daee113713b2e047d107d42ead9b4a9ab344690b998c"
+        },
+        {
+          "path": "packages/api-client/generated/privacy-explorer/core/queryKeySerializer.gen.ts",
+          "sha256": "adc570c9357a08624cce81dc503abd8d8ff60a76d25bd4d3a4afbe349d82d1f0"
+        },
+        {
+          "path": "packages/api-client/generated/privacy-explorer/core/serverSentEvents.gen.ts",
+          "sha256": "09dc8417b03b92849cc7582d2c8e5a610cc002d447a93b0cef721dcdbd09ff12"
+        },
+        {
+          "path": "packages/api-client/generated/privacy-explorer/core/types.gen.ts",
+          "sha256": "11742d13e9417ed7f71e78e6062873c83340beeae766666a04a3e56726bc3567"
+        },
+        {
+          "path": "packages/api-client/generated/privacy-explorer/core/utils.gen.ts",
+          "sha256": "ef50364c77d213864515776ee4abaf2f3a1a309d106c2db000e2fc4b6080e78c"
+        },
+        {
+          "path": "packages/api-client/generated/privacy-explorer/index.ts",
+          "sha256": "994b599c6f6349d4572c8bd46fcf6fde5e93f03a99f22c8de68e05af67c1dc6e"
+        },
+        {
+          "path": "packages/api-client/generated/privacy-explorer/sdk.gen.ts",
+          "sha256": "427e62275124fc4b997546909f55d4117684cee1a6b17f863e33a354ab869603"
+        },
+        {
+          "path": "packages/api-client/generated/privacy-explorer/types.gen.ts",
+          "sha256": "534785d8f681c3ebd550bcb8c769f9ab6dcfbfa12b814f9198db53162231521e"
+        }
+      ]
+    },
+    {
+      "source": "schemas/json",
+      "sourceSha256": "425d23d7a07b1a8b21dbc34a61a75d3a4e3a6eb8d783ba6b74c68ebd2226ae5a",
+      "generator": "pc-contracts generate-rust-contracts",
+      "generatorVersion": "pc-contracts 2.0.0 / typify 0.7.0",
+      "argv": [
+        "cargo",
+        "run",
+        "--locked",
+        "-p",
+        "pc-contracts",
+        "--bin",
+        "generate-rust-contracts",
+        "--",
+        "--output-root",
+        "<external-staging-root>"
+      ],
+      "preservationMode": "PUBLISH_EXACT_ALLOWLIST",
+      "outputs": [
+        {
+          "path": "generated/rust/json-schema/openpc_contracts.rs",
+          "sha256": "d6eeecf77337f6dd7d02f4e0de6e0705590def418c8c221a5cfef109fb43f2d1"
+        },
+        {
+          "path": "generated/rust/json-schema/mod.rs",
+          "sha256": "f03db1bd5cdfc3f4a52cfb73b22caf89ef2353b751840b1ff6448815b628f56f"
+        },
+        {
+          "path": "generated/rust/privacy-explorer/execution_registry.rs",
+          "sha256": "feb357b22b6544d0144c2aed01137c22e302743dc4396288cf9150ef1f3dd5b1"
+        },
+        {
+          "path": "generated/rust/privacy-explorer/mod.rs",
+          "sha256": "da5a49f93268b71a80dd433688f18de87d09af24deac63c9b71ad4defd65a782"
+        }
+      ]
+    },
+    {
+      "source": "proto/openpc",
+      "sourceSha256": "4c8f3a855a9d83c8f4d64b34a3412c84f8c2cebd273631c32721ab636f755bbd",
+      "generator": "pc-contracts generate-rust-contracts",
+      "generatorVersion": "pc-contracts 2.0.0 / typify 0.7.0",
+      "argv": [
+        "cargo",
+        "run",
+        "--locked",
+        "-p",
+        "pc-contracts",
+        "--bin",
+        "generate-rust-contracts",
+        "--",
+        "--output-root",
+        "<external-staging-root>"
+      ],
+      "preservationMode": "VERIFY_ONLY_IMMUTABLE_PREDECESSOR",
+      "outputs": [
+        {
+          "path": "generated/rust/proto/mod.rs",
+          "sha256": "37f3f5e73214cf7100aee1fd4ac92157fee762b2f3f72a2c177368a60106d98f"
+        },
+        {
+          "path": "generated/rust/proto/openpc.common.v1.rs",
+          "sha256": "ea0a03f6226a93d0353915fc9cf168737b262e4818ad50ff6113b9514d89d530"
+        },
+        {
+          "path": "generated/rust/proto/openpc.control.v1.rs",
+          "sha256": "1fdcb7cf7e5022dfa790dd70b2c5866c2675e3b2d1a17afc4072de9a4ee07fb6"
+        },
+        {
+          "path": "generated/rust/proto/openpc.evidence.v1.rs",
+          "sha256": "4088c453b3a0bc9aaebd23222e727c3a2674094439de6b5936dd2deeb741ef46"
+        },
+        {
+          "path": "generated/rust/proto/openpc.facts.v1.rs",
+          "sha256": "47b2b4bd1c06517bbc3692301d37b2468d874bc5d7258c9c853d0de9ed5b9f46"
+        },
+        {
+          "path": "generated/rust/proto/openpc.fleet.v1.rs",
+          "sha256": "edef855ecefaf93ba1e3cbcf9ec816214c2f99f0f54525b66cb986a95260c474"
+        },
+        {
+          "path": "generated/rust/proto/openpc.runtime.v1.rs",
+          "sha256": "a43c97c6fcf93cfa16d2c575165897aeba6199f0318e6e55cbe7cd35f6b329ca"
+        }
+      ]
+    },
+    {
+      "source": "generated",
+      "sourceSha256": "bd53e058d96eaccec63a252034bb727a3fa3b5af57c2798450c11ff1e0641690",
+      "generator": "I07 generated-tree closure",
+      "generatorVersion": "1.0",
+      "argv": [
+        "node",
+        "scripts/contracts/run-with-toolchain.mjs",
+        "run-tsx",
+        "tests/conformance/bootstrap/scripts/generate-typescript-contracts.ts"
+      ],
+      "preservationMode": "PUBLISH_CHECKSUM_AFTER_ATOMIC_OUTPUTS",
+      "outputs": [
+        {
+          "path": "generated/contract-tree.sha256",
+          "sha256": "bd53e058d96eaccec63a252034bb727a3fa3b5af57c2798450c11ff1e0641690"
+        }
+      ]
+    }
+  ]
+}

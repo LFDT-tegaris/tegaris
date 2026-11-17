@@ -1,0 +1,116 @@
+{
+  "profileId": "pc.control.signing-rotation.recover",
+  "profileVersion": 1,
+  "schemaDefinitionDigest": "sha256:4e7de36861819909275bdec8103d1df04984c03b34cb593437dfe68f5c2c1d9a",
+  "actionIntentId": "ACT-SIGNING_KEY_ROTATIONS_RECOVER_RESOURCE-V1",
+  "catalogOperationId": "OPS-OP-RECOVER-SIGNING-KEY-ROTATION",
+  "resourceType": "signing-key-rotation",
+  "aggregateType": "signing-key-rotation",
+  "sequenceNamespace": "CONTROL_BUSINESS_TRANSITION_V1",
+  "transitionKind": 1,
+  "operationEffect": "SIGNING_ROTATION_RECOVER",
+  "authority": {
+    "actor": "authenticated participant user session; current operation authority is fenced",
+    "approval": "Exact immutable creation approval or effective replacement authorization generation; replacement requires its own server-derived candidate, current maker and distinct live checker through the existing WebAuthn approval owner. Historical approvals never authorize new effects after revocation.",
+    "evidence": [
+      {
+        "kind": 2,
+        "owner": "control.mutation_evidence",
+        "format": "IDENTITY_RUNTIME_ASSERTION_3002_2_13",
+        "binding": "actual session, actor, participant, privacy domain, action, operation, rotation, input and expected revision"
+      }
+    ],
+    "snapshot": "current caller and original maker/checker paths, workload identities and live epochs"
+  },
+  "state": {
+    "owner": "control.signing_key_rotation",
+    "historyOwner": "control.signing_rotation_history",
+    "identity": [
+      "participant_id",
+      "privacy_domain_id",
+      "rotation_id"
+    ],
+    "revision": "revision:u64",
+    "digest": "pc.control.transition-state.v1; SHA-256 over canonical typed CBOR",
+    "projection": {
+      "0": {
+        "type": "TEXT",
+        "column": "state"
+      },
+      "1": {
+        "type": "H32",
+        "column": "candidate_digest"
+      },
+      "2": {
+        "type": "H32",
+        "column": "history_digest"
+      },
+      "3": {
+        "type": "TEXT",
+        "column": "request.signerRole"
+      },
+      "4": {
+        "type": "H32",
+        "column": "old_signer_id"
+      },
+      "5": {
+        "type": "UINT_ENUM",
+        "values": {
+          "0": "ABSENT",
+          "1": "PRESENT"
+        },
+        "column": "new_signer_id presence"
+      },
+      "6": {
+        "type": "H32",
+        "column": "new_signer_id",
+        "presence": "required iff field 5 is 1; omitted iff field 5 is 0; null, empty and all-zero sentinels rejected"
+      }
+    }
+  },
+  "transition": {
+    "before": "PRESENT_AT_CURRENT_LIFECYCLE_REVISION",
+    "after": "PRESENT_REVISION_PLUS_ONE",
+    "command": "RECOVER",
+    "binding": "A fresh observation RECOVER binds the original pending ADVANCE, exact provider attempt and prior observation digest. New trusted knowledge commits RECOVERING without an advance effect. For an authority hold or signed FAILED state, the first request stages a server-derived candidate binding current state/revision, hold, original operation and authority, observations, selection/fence and prior authorization generation. Exact replay after distinct-checker approval signs a same-state authority renewal or FAILED-to-RECOVERING forward plan and atomically activates the replacement generation. The caller cannot select a target; intervening state, authority, hold or observation change requires a fresh request.",
+    "noOp": "SUCCEEDED_NO_NEW_OBSERVATION_WITHOUT_REVISION_HISTORY_RECEIPT_OR_EVENT"
+  },
+  "events": [],
+  "eventPayload": "canonical identities and fingerprints only; no secret references or provider bodies",
+  "signer": {
+    "role": "LIFECYCLE_EVIDENCE",
+    "purpose": "pc.cose.control-business-transition.v1",
+    "grants": "exact ADVANCE/RECOVER profiles only",
+    "targetBinding": "history separately binds target signer role/ID and the attesting lifecycle evidence signer/epoch",
+    "selfRotation": "old lifecycle signer attests atomic CUTOVER_FENCED; new signer attests subsequent states; old public trust retained"
+  },
+  "requestBinding": {
+    "domain": "pc.control.configuration-request.v1",
+    "encoding": "UTF-8 domain plus NUL; each field prefixed by uint32 big-endian UTF-8 byte length; SHA-256",
+    "fields": [
+      "participantId",
+      "privacyDomainId",
+      "principalId",
+      "actionIntentId",
+      "catalogOperationId",
+      "aggregateType",
+      "aggregateId",
+      "expectedRevision (canonical u64 decimal)",
+      "candidateDigest (sha256: lowercase hex)",
+      "idempotencyKey"
+    ]
+  },
+  "lifecycle": {
+    "idempotency": "RECOVER uses a new key; identical-key replay returns the stored success or retryable failure without provider lookup. Fresh polling uses a fresh key. Lookup unavailability or invalid observations never imply NO_NEW_OBSERVATION.",
+    "provider": "worker-owned lifecycle mutations; commit attempt before dispatch; lookup-only reconciliation after uncertainty",
+    "rollback": "A missing recovery signature leaves the signed state unchanged, retains provider knowledge and the original admission fence, and fails only the recovery operation. Committed recovery supersedes unsigned prior-revision receipt proposals while retaining their immutable bytes. No provider mutation is redispatched.",
+    "consumer": "verify exact 24001@2 receipt/COSE/profile/trust and contiguous CONTROL_SIGNING_LIFECYCLE_V1 receipt ordinal, independently of outbox aggregate sequences; persist inbox before checkpoint",
+    "governance": "Approval alone changes neither signed state nor effective authority. Clear a hold only with the exact signed recovery, approval consumption and protected evidence. Preserve original actors/candidates/approvals/attempts/receipts. Reject self approval, cross-privacy reuse, stale generations and post-cutover rollback. Renewals emit zero secret lifecycle events."
+  },
+  "privacy": {
+    "placement": "same explicit participant and privacy domain as rotation",
+    "read": "current scoped authorization; receipts never grant authority",
+    "retention": "immutable lifecycle history, public trust, receipt/evidence/outbox and original provider observations; no private key bytes"
+  },
+  "definitionDigest": "sha256:d711d975d1702ba4cebbf04d802023c1d573cdcd911dd511367292cc524f2aa8"
+}

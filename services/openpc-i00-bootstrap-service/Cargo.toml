@@ -1,0 +1,11 @@
+[package]
+name = "openpc-i00-bootstrap-service"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[[bin]]
+name = "openpc-i00-bootstrap-service"
+path = "src/main.rs"

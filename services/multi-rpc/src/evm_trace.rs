@@ -1,0 +1,90 @@
+//! Shared closed opcode vocabulary for bounded EVM evidence inspection.
+pub(crate) fn ordinary_opcode(op: &str) -> bool {
+    matches!(
+        op,
+        "STOP"
+            | "RETURN"
+            | "ADD"
+            | "MUL"
+            | "SUB"
+            | "DIV"
+            | "SDIV"
+            | "MOD"
+            | "SMOD"
+            | "ADDMOD"
+            | "MULMOD"
+            | "EXP"
+            | "SIGNEXTEND"
+            | "LT"
+            | "GT"
+            | "SLT"
+            | "SGT"
+            | "EQ"
+            | "ISZERO"
+            | "AND"
+            | "OR"
+            | "XOR"
+            | "NOT"
+            | "BYTE"
+            | "SHL"
+            | "SHR"
+            | "SAR"
+            | "KECCAK256"
+            | "SHA3"
+            | "ADDRESS"
+            | "BALANCE"
+            | "ORIGIN"
+            | "CALLER"
+            | "CALLVALUE"
+            | "CALLDATALOAD"
+            | "CALLDATASIZE"
+            | "CALLDATACOPY"
+            | "CODESIZE"
+            | "CODECOPY"
+            | "GASPRICE"
+            | "EXTCODESIZE"
+            | "EXTCODECOPY"
+            | "RETURNDATASIZE"
+            | "RETURNDATACOPY"
+            | "EXTCODEHASH"
+            | "BLOCKHASH"
+            | "COINBASE"
+            | "TIMESTAMP"
+            | "NUMBER"
+            | "DIFFICULTY"
+            | "PREVRANDAO"
+            | "GASLIMIT"
+            | "CHAINID"
+            | "SELFBALANCE"
+            | "BASEFEE"
+            | "BLOBHASH"
+            | "BLOBBASEFEE"
+            | "POP"
+            | "MLOAD"
+            | "MSTORE"
+            | "MSTORE8"
+            | "SLOAD"
+            | "SSTORE"
+            | "JUMP"
+            | "JUMPI"
+            | "PC"
+            | "MSIZE"
+            | "GAS"
+            | "JUMPDEST"
+            | "TLOAD"
+            | "TSTORE"
+            | "MCOPY"
+            | "PUSH0"
+    ) || [
+        ("PUSH", 1, 32),
+        ("DUP", 1, 16),
+        ("SWAP", 1, 16),
+        ("LOG", 0, 4),
+    ]
+    .iter()
+    .any(|(prefix, min, max)| {
+        op.strip_prefix(prefix)
+            .and_then(|suffix| suffix.parse::<u8>().ok())
+            .is_some_and(|n| (*min..=*max).contains(&n) && op == format!("{prefix}{n}"))
+    })
+}

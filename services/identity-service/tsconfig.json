@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node", "vitest/globals"]
+  },
+  "include": [
+    "drizzle.config.ts",
+    "src/**/*.ts",
+    "vitest.config.ts",
+    "../../tests/integration/local-runtime/signing-provider-*.ts"
+  ]
+}

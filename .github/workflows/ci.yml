@@ -1,0 +1,146 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  runner-configuration:
+    name: Required runner configuration
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Check the required runner label
+        env:
+          TEGARIS_CI_RUNNER: ${{ vars.TEGARIS_CI_RUNNER }}
+        run: |
+          if [[ -z "${TEGARIS_CI_RUNNER//[[:space:]]/}" ]]; then
+            echo '::error::Configure TEGARIS_CI_RUNNER with an approved ephemeral runner before running the full suite. See docs/development/testing.md#ci-runner-capacity. Standard Ubuntu runners do not meet the declared disk reserve.'
+            exit 1
+          fi
+
+  quality:
+    needs: runner-configuration
+    runs-on: ${{ vars.TEGARIS_CI_RUNNER || 'ubuntu-24.04' }}
+    env:
+      OPENPC_CONTRACT_TOOLCHAIN_BIN: ${{ github.workspace }}/.openpc-toolchain/bin
+      OPENPC_PNC_TMP_ROOT: ${{ github.workspace }}/.openpc-tmp
+      CARGO_BUILD_JOBS: 2
+      OPENPC_SYSTEM_SCOPE: 1
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Install test prerequisites
+        run: sudo apt-get update && sudo apt-get install --yes --no-install-recommends ripgrep
+      - name: Configure job scratch paths
+        run: |
+          echo "OPENPC_TEST_TMP_ROOT=$RUNNER_TEMP/openpc-tests" >> "$GITHUB_ENV"
+          echo "pnpm_config_cache_dir=$RUNNER_TEMP/openpc-pnpm-cache" >> "$GITHUB_ENV"
+      - name: Test policy testing CLI without Docker workloads
+        run: PYTHONDONTWRITEBYTECODE=1 python3 scripts/operations/test_policy_testing.py
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.19.0
+      - name: Test dedicated server resource admission and builder identity
+        run: PYTHONDONTWRITEBYTECODE=1 python3 scripts/maintenance/test_server_capacity.py
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          version: 11.20.0
+      - name: Locate pnpm store
+        id: pnpm-store
+        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: |
+            ${{ steps.pnpm-store.outputs.path }}
+            ${{ env.pnpm_config_cache_dir }}
+          key: ${{ runner.os }}-pnpm-11.20.0-${{ hashFiles('pnpm-lock.yaml') }}-metadata-v1
+          restore-keys: ${{ runner.os }}-pnpm-11.20.0-${{ hashFiles('pnpm-lock.yaml') }}
+      - uses: dtolnay/rust-toolchain@5059963b1731bf1580991b5f3b1eecfb5da406c0 # 1.98.0
+      - name: Install locked dependencies
+        run: bash scripts/maintenance/run-project.sh -- pnpm install --frozen-lockfile --ignore-scripts --strict-peer-dependencies
+      - name: Install isolated locked contract dependencies
+        run: bash scripts/maintenance/run-project.sh -- pnpm run contracts:install
+      - name: Acquire pinned contract tools
+        run: bash scripts/maintenance/run-project.sh -- bash scripts/ci/install-contract-toolchain.sh "$OPENPC_CONTRACT_TOOLCHAIN_BIN"
+      - name: Fetch locked Rust dependencies for portable offline tests
+        run: bash scripts/maintenance/run-project.sh -- cargo fetch --locked
+      - name: Install the pinned browser for authenticator unit tests
+        run: bash scripts/maintenance/run-project.sh -- pnpm exec playwright install --with-deps chromium
+      - name: Quality checks
+        run: |
+          mkdir -p "$OPENPC_TEST_TMP_ROOT"
+          pnpm run format
+          pnpm run lint
+          pnpm run check
+          pnpm run test
+          bash scripts/maintenance/run-project.sh -- cargo fmt --all -- --check
+          bash scripts/maintenance/run-project.sh --profile focused --memory-gib 8 --peak-disk-gib 40 -- cargo clippy --workspace --all-targets --locked -- -D warnings
+          bash scripts/maintenance/run-project.sh --profile focused --memory-gib 8 --peak-disk-gib 40 -- cargo test --workspace --locked
+      - name: Contract checks
+        run: pnpm run contracts:check
+      - name: Public module source and generated-output checks
+        run: bash scripts/maintenance/run-project.sh -- pnpm --filter @openpc/module-registry run generate:public:check
+      - name: Real Fact secret tmpfs publication
+        run: |
+          bash scripts/maintenance/run-project.sh --profile focused --external-memory-gib 0.25 -- \
+            docker run --rm --network none --memory 256m --memory-swap 256m --cpus 1 \
+              --pids-limit 128 --shm-size 16m --cap-drop ALL --cap-add SETUID --cap-add SETGID \
+              --cap-add CHOWN --cap-add DAC_OVERRIDE --security-opt no-new-privileges \
+              --env OPENPC_REQUIRE_FACT_SECRET_MOUNT=1 --env OPENPC_REQUIRE_FACT_SECRET_DELIVERY=1 \
+              --mount "type=bind,src=$PWD,dst=/workspace,readonly" --workdir /workspace \
+              docker.io/library/node:24.19.0-alpine@sha256:2a49bdf71e9fd965a58c1703fd9ddd205b34e5782b692a72dd1d248abb0beb43 \
+              node --import tsx --test --test-concurrency=1 scripts/operations/test-fact-secret-mount.test.mjs scripts/operations/test-fact-secret-delivery.test.mjs
+
+  runtime-integration:
+    needs: runner-configuration
+    runs-on: ${{ vars.TEGARIS_CI_RUNNER || 'ubuntu-24.04' }}
+    timeout-minutes: 45
+    env:
+      CARGO_BUILD_JOBS: 2
+      OPENPC_SYSTEM_SCOPE: 1
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Install test prerequisites
+        run: sudo apt-get update && sudo apt-get install --yes --no-install-recommends ripgrep
+      - name: Configure job scratch paths
+        run: |
+          echo "OPENPC_LOCAL_RUNTIME_TMP_ROOT=$RUNNER_TEMP/openpc-local-runtime" >> "$GITHUB_ENV"
+          echo "OPENPC_DECISION_OWNER_TMP_ROOT=$RUNNER_TEMP/openpc-decision-owner" >> "$GITHUB_ENV"
+          echo "OPENPC_TEST_TMP_ROOT=$RUNNER_TEMP/openpc-runtime-tests" >> "$GITHUB_ENV"
+          echo "pnpm_config_cache_dir=$RUNNER_TEMP/openpc-pnpm-cache" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.19.0
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          version: 11.20.0
+      - name: Locate pnpm store
+        id: pnpm-store
+        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: |
+            ${{ steps.pnpm-store.outputs.path }}
+            ${{ env.pnpm_config_cache_dir }}
+          key: ${{ runner.os }}-pnpm-11.20.0-${{ hashFiles('pnpm-lock.yaml') }}-metadata-v1
+          restore-keys: ${{ runner.os }}-pnpm-11.20.0-${{ hashFiles('pnpm-lock.yaml') }}
+      - name: Install locked host test dependencies
+        run: bash scripts/maintenance/run-project.sh -- pnpm install --frozen-lockfile --ignore-scripts --strict-peer-dependencies
+      - uses: dtolnay/rust-toolchain@5059963b1731bf1580991b5f3b1eecfb5da406c0 # 1.98.0
+      - name: Fetch locked Rust dependencies for runtime policy tests
+        run: bash scripts/maintenance/run-project.sh -- cargo fetch --locked
+      - name: Install the pinned browser and system dependencies
+        run: bash scripts/maintenance/run-project.sh -- pnpm exec playwright install --with-deps chromium
+      - name: Prepare owned runtime scratch
+        run: mkdir -p "$OPENPC_LOCAL_RUNTIME_TMP_ROOT"
+      - name: Populated migration and real configuration vertical
+        shell: bash
+        run: |
+          mkdir -p "$OPENPC_TEST_TMP_ROOT"
+          # The suite includes pinned Envoy and provider probes, retains a failed
+          # aggregate and continues independent scenarios under one bounded owner.
+          pnpm run test:integration:runtime

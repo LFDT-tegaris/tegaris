@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [
+      1,
+      2,
+      3,
+      4,
+      100,
+      101,
+      102,
+      103
+    ],
+    "criticalFields": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "extensionAuthority": "POST_C17_ASTRA_12_NOTIFICATION_GATEWAY",
+  "name": "pc.notification-routing-profile.v1",
+  "schemaId": 24014,
+  "typeName": "NotificationRoutingProfileV1",
+  "purpose": {
+    "name": "pc.cose.notification-routing-profile.v1",
+    "code": 351
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "environmentId",
+      "type": "text160"
+    },
+    {
+      "key": 2,
+      "name": "participantId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 3,
+      "name": "privacyDomainId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 4,
+      "name": "profileId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 5,
+      "name": "revision",
+      "type": "u64p"
+    },
+    {
+      "key": 6,
+      "name": "validFromMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 7,
+      "name": "validUntilMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 8,
+      "name": "sourceEvent",
+      "type": "enum EvidenceExportCompleted=1 NotificationDeliveryRequested=2"
+    },
+    {
+      "key": 9,
+      "name": "endpointId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 10,
+      "name": "endpointRevision",
+      "type": "u64p"
+    },
+    {
+      "key": 11,
+      "name": "signedChannelProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 12,
+      "name": "templateDigest",
+      "type": "H32"
+    },
+    {
+      "key": 13,
+      "name": "recipientSetDigest",
+      "type": "H32"
+    },
+    {
+      "key": 14,
+      "name": "redactionProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 15,
+      "name": "preferenceGeneration",
+      "type": "u64p"
+    },
+    {
+      "key": 16,
+      "name": "encryptionProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 17,
+      "name": "payloadKeyPolicyDigest",
+      "type": "H32"
+    },
+    {
+      "key": 18,
+      "name": "issuerKeyId",
+      "type": "H32"
+    }
+  ],
+  "authorityRules": [
+    "Implements accepted WSP-09 pinned generations/digests, safe rendering and non-authorizing observations (REQ-SR01-B0-LEDGER-SEM-359) under the adopted ASTRA-12 routing package. It does not promote the non-R1 empirical decision REQ-SR01-B0-LEDGER-DEC-792.",
+    "Initial installation independently pins the exact signed profile digest, issuer and environment/participant/privacy scope. Profile signature verification alone is historical integrity, never current routing, producer, endpoint, key or delivery authority. A request or source event cannot install trust, choose a recipient or replace a profile.",
+    "The installed immutable route pins one registered source event family, exact endpoint identity/revision and signed channel profile, governed immutable template digest/version, recipient-set digest, redaction profile and preference generation. Current restriction, replacement, cancellation, validity and module/installation fences must be reloaded by the durable owner through commit before new occurrence or attempt admission.",
+    "EvidenceExportCompleted uses only its four registered metadata fields evidenceExportId, checkpoint, outputDigest and recordCount after authenticated governed-source validation and field authorization. No export bytes, receipt body, credential, arbitrary template execution or unregistered field is admitted by this profile. NotificationDeliveryRequested references an already committed original occurrence and payload; its event fields cannot supply expected authority or rewrite that intent.",
+    "encryptionProfileDigest selects the Evidence-owned notification encryption profile. payloadKeyPolicyDigest pins the separately admitted Evidence/KMS custody policy, never a transport credential or unwrapped key. Each payload retains its exact immutable wrapped-object-key identity and complete AAD; this profile does not establish KMS access, key creation, destruction, retention eligibility or historic-key dispatch permission.",
+    "Any absent binding blocks new dispatch. Existing original payload, occurrence, STARTED/AMBIGUOUS attempt and authenticated observation survive revocation, replacement and restart for exact readback/reconciliation; signature expiry cannot authorize resubmission or erase unresolved state.",
+    "Installation and governed revision/revocation persistence, actual minimized rendering, object-key custody, source/outbox atomicity and final current admission require their real owners and runtime acceptance. This canonical wire contract supplies none of those effects."
+  ]
+}

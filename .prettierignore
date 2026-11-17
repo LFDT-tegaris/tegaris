@@ -1,0 +1,39 @@
+.git/
+node_modules/
+# Explicit administration CLI owners are deferred to the R1.1 opt-in quality gate.
+apps/admin-cli/
+tests/integration/local-runtime/transaction-cli.mjs
+tests/integration/local-runtime/administration-cli-readback.mjs
+coverage/
+dist/
+target/
+generated/
+artifacts/
+schemas/
+proto/
+tests/conformance/bootstrap/fixtures/
+tests/conformance/bootstrap/test-obligations.yaml
+tests/conformance/assertion-resolution/fixtures/
+config/profiles/
+programme-control/
+# The authenticated I05 Gate4 provenance wrapper is intentionally compact canonical JSON.
+governance/CODEX_APP_PROJECT_BINDING.json
+# Preserve the sealed controller admission record referenced by its commit hash.
+governance/audits/I08_V2_EXECUTION_ADMISSION_BLOCK_20260907.md
+deploy/
+deploy/compose/local/secrets/*.txt
+deploy/compose/local/volumes/**
+pnpm-lock.yaml
+# Drizzle-owned metadata is byte-preserved and validated by the owning db:generate commands.
+migrations/postgres/*/meta/*.json
+
+# Installation schema is consumed verbatim by the installer.
+config/schema/effective-configuration.schema.json
+
+# Source custody metadata is consumed by the installation source authenticator.
+config/source-authentication/
+
+# Public module source inputs are pinned byte for byte by their versioned baseline.
+policies/modules/source/definitions/
+policies/modules/source/authority-catalog.json
+policies/modules/source/baseline.json

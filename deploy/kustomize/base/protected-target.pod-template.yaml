@@ -1,0 +1,90 @@
+# Kubernetes PodTemplateSpec projection for every protected target. The owning
+# target controller embeds spec.template; LANE-RUNTIME owns the referenced
+# Envoy/PDS/Broker semantics. This lane owns only exact placement/lifecycle.
+metadata:
+  labels:
+    app.kubernetes.io/name: openpc-protected-target
+    openpc.io/protected-target: "true"
+    openpc.io/target-id: "OPENPC_INPUT_TARGET_ID"
+    openpc.io/runtime-cohort: "OPENPC_INPUT_RUNTIME_COHORT_DIGEST"
+  annotations:
+    openpc.io/envoy-bootstrap-digest: "OPENPC_INPUT_AF16_ENVOY_BOOTSTRAP_DIGEST"
+    openpc.io/runtime-contract-digest: "OPENPC_INPUT_AF17_RUNTIME_CONTRACT_DIGEST"
+spec:
+  serviceAccountName: "OPENPC_INPUT_TARGET_SERVICE_ACCOUNT"
+  automountServiceAccountToken: false
+  topologySpreadConstraints:
+    - {maxSkew: 1, topologyKey: "OPENPC_INPUT_TOPOLOGY_KEY", whenUnsatisfiable: DoNotSchedule, labelSelector: {matchLabels: {app.kubernetes.io/name: openpc-protected-target, openpc.io/target-id: "OPENPC_INPUT_TARGET_ID"}}}
+  shareProcessNamespace: false
+  hostNetwork: false
+  hostPID: false
+  hostIPC: false
+  terminationGracePeriodSeconds: OPENPC_INPUT_TOPOLOGY_TERMINATION_GRACE_SECONDS
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65532
+    runAsGroup: 65532
+    fsGroup: 65532
+    seccompProfile: {type: RuntimeDefault}
+  containers:
+    - name: protected-target
+      image: "OPENPC_INPUT_IMAGES_PROTECTED_TARGET"
+      imagePullPolicy: IfNotPresent
+      ports: [{name: https, containerPort: 8443, protocol: TCP}]
+      securityContext: {allowPrivilegeEscalation: false, privileged: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+      resources:
+        requests: {cpu: "OPENPC_INPUT_RESOURCES_PROTECTED_TARGET_CPU_REQUEST", memory: "OPENPC_INPUT_RESOURCES_PROTECTED_TARGET_MEMORY_REQUEST", ephemeral-storage: "OPENPC_INPUT_RESOURCES_PROTECTED_TARGET_EPHEMERAL_STORAGE_REQUEST"}
+        limits: {cpu: "OPENPC_INPUT_RESOURCES_PROTECTED_TARGET_CPU_LIMIT", memory: "OPENPC_INPUT_RESOURCES_PROTECTED_TARGET_MEMORY_LIMIT", ephemeral-storage: "OPENPC_INPUT_RESOURCES_PROTECTED_TARGET_EPHEMERAL_STORAGE_LIMIT"}
+      startupProbe: {httpGet: {path: /health/startup, port: https, scheme: HTTPS}, periodSeconds: 2, failureThreshold: 150, timeoutSeconds: 1}
+      readinessProbe: {httpGet: {path: /health/readiness, port: https, scheme: HTTPS}, periodSeconds: 5, failureThreshold: 2, timeoutSeconds: 2}
+      livenessProbe: {httpGet: {path: /health/liveness, port: https, scheme: HTTPS}, periodSeconds: 10, failureThreshold: 3, timeoutSeconds: 2}
+      lifecycle: {preStop: {httpGet: {path: /lifecycle/drain, port: https, scheme: HTTPS}}}
+      volumeMounts: [{name: tmp-target, mountPath: /tmp}]
+    - name: openpc-runtime
+      image: "OPENPC_INPUT_IMAGES_RUNTIME"
+      imagePullPolicy: IfNotPresent
+      env:
+        - {name: OPENPC_PROFILE, value: "OPENPC_INPUT_PROFILE"}
+        - {name: OPENPC_TRUST_BUNDLE_REF, value: "OPENPC_INPUT_SECRETREFS_WORKLOAD_PKI"}
+        - {name: OPENPC_OCI_CREDENTIAL_REF, value: "OPENPC_INPUT_SECRETREFS_OCI"}
+        - {name: OPENPC_EVIDENCE_VAULT_REF, value: "OPENPC_INPUT_SECRETREFS_EVIDENCE_VAULT"}
+      securityContext: {allowPrivilegeEscalation: false, privileged: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+      resources:
+        requests: {cpu: "OPENPC_INPUT_RESOURCES_RUNTIME_CPU_REQUEST", memory: "OPENPC_INPUT_RESOURCES_RUNTIME_MEMORY_REQUEST", ephemeral-storage: "OPENPC_INPUT_RESOURCES_RUNTIME_EPHEMERAL_STORAGE_REQUEST"}
+        limits: {cpu: "OPENPC_INPUT_RESOURCES_RUNTIME_CPU_LIMIT", memory: "OPENPC_INPUT_RESOURCES_RUNTIME_MEMORY_LIMIT", ephemeral-storage: "OPENPC_INPUT_RESOURCES_RUNTIME_EPHEMERAL_STORAGE_LIMIT"}
+      startupProbe: {exec: {command: [/openpc/runtime, health, startup]}, periodSeconds: 2, failureThreshold: 150, timeoutSeconds: 1}
+      readinessProbe: {exec: {command: [/openpc/runtime, health, readiness]}, periodSeconds: 5, failureThreshold: 2, timeoutSeconds: 2}
+      livenessProbe: {exec: {command: [/openpc/runtime, health, liveness]}, periodSeconds: 10, failureThreshold: 3, timeoutSeconds: 2}
+      lifecycle: {preStop: {exec: {command: [/openpc/runtime, lifecycle, drain]}}}
+      volumeMounts:
+        - {name: runtime-sockets, mountPath: /run/openpc}
+        - {name: runtime-artifacts, mountPath: /var/lib/openpc/artifacts}
+        - {name: runtime-evidence, mountPath: /var/lib/openpc/evidence}
+        - {name: tmp-runtime, mountPath: /tmp}
+        - {name: secret-provider, mountPath: /run/openpc/secrets, readOnly: true}
+    - name: envoy
+      image: "OPENPC_INPUT_IMAGES_ENVOY"
+      imagePullPolicy: IfNotPresent
+      args: ["-c", "/etc/openpc-envoy/bootstrap.yaml", "--service-cluster", "openpc-protected-target", "--service-node", "OPENPC_INPUT_TARGET_ID", "--log-level", "warning"]
+      ports: [{name: protected-https, containerPort: 8443, protocol: TCP}]
+      securityContext: {allowPrivilegeEscalation: false, privileged: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+      resources:
+        requests: {cpu: "OPENPC_INPUT_RESOURCES_ENVOY_CPU_REQUEST", memory: "OPENPC_INPUT_RESOURCES_ENVOY_MEMORY_REQUEST", ephemeral-storage: "OPENPC_INPUT_RESOURCES_ENVOY_EPHEMERAL_STORAGE_REQUEST"}
+        limits: {cpu: "OPENPC_INPUT_RESOURCES_ENVOY_CPU_LIMIT", memory: "OPENPC_INPUT_RESOURCES_ENVOY_MEMORY_LIMIT", ephemeral-storage: "OPENPC_INPUT_RESOURCES_ENVOY_EPHEMERAL_STORAGE_LIMIT"}
+      startupProbe: {httpGet: {path: /ready, port: 9901, host: 127.0.0.1}, periodSeconds: 2, failureThreshold: 150, timeoutSeconds: 1}
+      readinessProbe: {httpGet: {path: /ready, port: 9901, host: 127.0.0.1}, periodSeconds: 5, failureThreshold: 2, timeoutSeconds: 2}
+      livenessProbe: {tcpSocket: {port: 9901, host: 127.0.0.1}, periodSeconds: 10, failureThreshold: 3, timeoutSeconds: 2}
+      lifecycle: {preStop: {httpGet: {path: /healthcheck/fail, port: 9901, host: 127.0.0.1}}}
+      volumeMounts:
+        - {name: runtime-sockets, mountPath: /run/openpc}
+        - {name: envoy-bootstrap, mountPath: /etc/openpc-envoy, readOnly: true}
+        - {name: tmp-envoy, mountPath: /tmp}
+  volumes:
+    - {name: runtime-sockets, emptyDir: {medium: Memory, sizeLimit: "OPENPC_INPUT_RUNTIME_SOCKET_VOLUME_LIMIT"}}
+    - {name: runtime-artifacts, persistentVolumeClaim: {claimName: "OPENPC_INPUT_RUNTIME_ARTIFACT_PVC"}}
+    - {name: runtime-evidence, persistentVolumeClaim: {claimName: "OPENPC_INPUT_RUNTIME_EVIDENCE_PVC"}}
+    - {name: envoy-bootstrap, configMap: {name: "OPENPC_INPUT_AF16_ENVOY_CONFIGMAP", items: [{key: bootstrap.yaml, path: bootstrap.yaml}]}}
+    - {name: secret-provider, csi: {driver: "OPENPC_INPUT_SECRET_CSI_DRIVER", readOnly: true, volumeAttributes: {secretProviderClass: openpc-runtime}}}
+    - {name: tmp-target, emptyDir: {medium: Memory, sizeLimit: "OPENPC_INPUT_RESOURCES_PROTECTED_TARGET_EPHEMERAL_STORAGE_LIMIT"}}
+    - {name: tmp-runtime, emptyDir: {medium: Memory, sizeLimit: "OPENPC_INPUT_RESOURCES_RUNTIME_EPHEMERAL_STORAGE_LIMIT"}}
+    - {name: tmp-envoy, emptyDir: {medium: Memory, sizeLimit: "OPENPC_INPUT_RESOURCES_ENVOY_EPHEMERAL_STORAGE_LIMIT"}}

@@ -1,0 +1,17 @@
+[package]
+name = "openpc-policy-compiler"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+openpc-multi-rpc = { path = "../multi-rpc" }
+pc-module-sdk = { path = "../../crates/pc-module-sdk" }
+pc-policy-core = { path = "../../crates/pc-policy-core" }
+pc-runtime-types = { path = "../../crates/pc-runtime-types" }
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+sha2.workspace = true
+thiserror.workspace = true

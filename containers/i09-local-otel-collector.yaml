@@ -1,0 +1,66 @@
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 128
+    spike_limit_mib: 32
+  transform/closed_schema:
+    error_mode: propagate
+    metric_statements:
+      - context: resource
+        statements:
+          - keep_keys(attributes, ["service.name", "service.version", "service.instance.id", "deployment.environment.name", "openpc.deployment_unit_id", "openpc.effective_generation", "openpc.build_digest"])
+      - context: datapoint
+        statements:
+          - keep_keys(attributes, ["deployment_unit", "service_version", "build_digest", "profile", "capability", "state", "boundary", "operation_class", "outcome", "data_class", "lane", "reason", "owner", "channel", "store", "signal", "resource"])
+    log_statements:
+      - context: resource
+        statements:
+          - keep_keys(attributes, ["service.name", "service.version", "service.instance.id", "deployment.environment.name", "openpc.deployment_unit_id", "openpc.effective_generation", "openpc.build_digest"])
+      - context: log
+        statements:
+          - keep_keys(attributes, ["openpc.schema_version", "timestamp", "severity", "service", "deployment_unit_id", "event_name", "outcome", "diagnostic_id", "correlation_id", "trace_id", "profile", "desired_generation", "effective_generation", "data_class", "message_template", "span_id", "boundary_id", "component_id", "state_from", "state_to", "attempt_number", "duration_ms", "error_code", "retry_class", "quarantine_reason"])
+    trace_statements:
+      - context: resource
+        statements:
+          - keep_keys(attributes, ["service.name", "service.version", "service.instance.id", "deployment.environment.name", "openpc.deployment_unit_id", "openpc.effective_generation", "openpc.build_digest"])
+      - context: span
+        statements:
+          - keep_keys(attributes, ["openpc.schema_version", "openpc.boundary_id", "openpc.operation_class", "openpc.outcome", "openpc.profile", "openpc.data_class", "openpc.desired_generation", "openpc.effective_generation", "openpc.correlation_class"])
+  batch:
+    timeout: 200ms
+    send_batch_size: 4
+    send_batch_max_size: 8
+
+exporters:
+  debug/retained:
+    verbosity: detailed
+
+service:
+  extensions: [health_check]
+  telemetry:
+    logs:
+      level: info
+      encoding: json
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, transform/closed_schema, batch]
+      exporters: [debug/retained]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, transform/closed_schema, batch]
+      exporters: [debug/retained]
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, transform/closed_schema, batch]
+      exporters: [debug/retained]

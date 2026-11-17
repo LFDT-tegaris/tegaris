@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [
+      1,
+      2,
+      3,
+      4,
+      100,
+      101,
+      102,
+      103
+    ],
+    "criticalFields": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "extensionAuthority": "POST_C17_ASTRA_14_16_OPERATIONS_QUALIFICATION",
+  "name": "pc.operations-qualification-keyset.v1",
+  "schemaId": 24026,
+  "typeName": "OperationsQualificationKeysetV1",
+  "purpose": {
+    "name": "pc.cose.operations-qualification-keyset.v1",
+    "code": 363
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "authorityId",
+      "type": "dns_label"
+    },
+    {
+      "key": 2,
+      "name": "keysetId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 3,
+      "name": "sequence",
+      "type": "u64p"
+    },
+    {
+      "key": 4,
+      "name": "keysetDocumentDigest",
+      "type": "H32"
+    },
+    {
+      "key": 5,
+      "name": "revocationPayloadDigest",
+      "type": "H32"
+    },
+    {
+      "key": 6,
+      "name": "policySigner",
+      "type": "enum OFFLINE_TRUST_ROOT=1 THRESHOLD_TRUST_ROOT=2"
+    },
+    {
+      "key": 7,
+      "name": "rootKeyId",
+      "type": "H32"
+    },
+    {
+      "key": 8,
+      "name": "rootEpoch",
+      "type": "u64p"
+    },
+    {
+      "key": 9,
+      "name": "issuedAtMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 10,
+      "name": "validUntilMs",
+      "type": "safe_uint"
+    }
+  ],
+  "fieldConstraints": {
+    "dns_label": "ASCII ^[a-z][a-z0-9-]{2,31}$",
+    "qualification_slot": "exact QINPUT-<selected profile uppercased>-PROVIDER-READ-RETRY-V1",
+    "qualification_ref": "qualification://<authorityId>/<inputId>@sha256:<exact input PC-CBOR payload SHA256 lowercase hex>",
+    "nfc_text_1_128": "valid NFC UTF-8, 1..128 bytes, no control characters",
+    "uint_0_3": "unsigned integer 0..3, never boolean/string/float",
+    "safe_uint": "unsigned safe integer 0..9007199254740991; time intervals strictly ordered",
+    "u64p": "decimal API string 1..18446744073709551615, canonical CBOR uint",
+    "H32": "exact 32-byte CBOR byte string; sha256:<64 lowercase hex> in API",
+    "uuidv7": "exact 16-byte canonical UUIDv7 with RFC variant"
+  },
+  "sourceRefs": [
+    "QUALITY/qualification-authority-profile.yaml",
+    "QUALITY/schemas/qualification-receipt.schema.json",
+    "QUALITY/schemas/qualification-keyset.schema.json",
+    "QUALITY/schemas/qualification-revocation.schema.json",
+    "SPECIFICATIONS/OPERATIONS/configuration-precedence.md",
+    "SPECIFICATIONS/OPERATIONS/configuration.schema.json"
+  ],
+  "authorityRules": [
+    "Root trust is explicitly installed through a separately controlled privileged bootstrap, outside the signed body and public callers. No caller JWK, self-signed keyset, online signing key, site issuer or secret observer can supply its own root authority. Offline/threshold designations require their real configured root owner; labels alone grant no control.",
+    "keysetDocumentDigest authenticates RFC8785 JSON matching QUALITY/schemas/qualification-keyset.schema.json. The closed document keys are schemaVersion,authorityId,policySigner,keys,issuedAt,signatureEnvelope; signatureEnvelope is the fixed five-field descriptor, not signature bytes. schemaVersion is 1.0; all projected identities/times/policySigner must match the signed map.",
+    "keys is a nonempty array of at most 64 unique keyId/epoch entries sorted by keyId then numeric epoch. Each entry has exactly keyId,epoch,state,purpose,nonExportable,backend,publicKeySpkiHex,validFromMs,validUntilMs. keyId is sha256 of exact P-256 SPKI bytes; epoch is a positive safe JSON integer; state is DRAFT,ACTIVE,SUSPENDED,RETIRED or REVOKED. purpose is exactly one of the two dedicated input or executed-receipt COSE purposes; publicKeySpkiHex is a canonical P-256 SPKI, nonExportable is true, backend is KMS or HSM, and validity is finite ordered safe milliseconds. Neither metadata nor local software test keys establish real production KMS/HSM custody.",
+    "The durable owner enforces strictly monotonic sequence and root epoch, exact immutable replay, no replacement/removal of still-relevant historical key epochs, offline/online key separation and revoked-epoch persistence. New issuance requires ACTIVE eligible purpose-bound online key; historical verification of RETIRED keys is limited to their actual issuance interval and current revocation state.",
+    "revocationPayloadDigest binds the exact root-signed revocation snapshot for this keyset, which must share authority/root epoch and be fresh at use. The snapshot contains no keyset digest, avoiding circularity. Both current keyset and snapshot must be installed atomically and match latest durable sequence; no caller-current flag, expired snapshot, rollback or silent fallback.",
+    "Implements only an internal adapter contract for authenticated operations qualification under the adopted ASTRA-14/16 plan. The delivered C17 authority remains DESIGNED_NOT_CONSTITUTED with keys UNPROVISIONED; local external test signers prove adapter behavior only. No production qualification, certification, SLO/SLA or product claim promotion follows.",
+    "Use existing PC-CBOR-1 and COSE_Sign1 ES256/P-256/SHA-256 profile 2, exact schema definition/AAD/purpose and exact original bytes. The verifier rejects unknown/duplicate/noncanonical fields, malformed identities, type coercion, key/purpose substitution, mutable references and ambiguous signature outcomes. Retain first failures and originals.",
+    "For JSON document digest preimages use RFC8785 with duplicate-key/NFC rejection and exact closed schemas. Every fixed signatureEnvelope descriptor is exactly {format:COSE_Sign1,algorithm:ES256,curve:P-256,hash:SHA-256,canonicalization:PC-CBOR-1}. ISO times are canonical UTC YYYY-MM-DDTHH:mm:ss.sssZ representing the exact signed millisecond field. Document digest fields use the prefix-free form required by C17; signed H32 claims use the canonical sha256: representation.",
+    "Privileged durable installation, RLS/tenant context, independent issuer eligibility, actual execution/reviewer evidence, current keyset/revocation checks and the exact generation binding remain separate required owners. These public wire declarations do not create tables, grants, runtime APIs, qualification success, effective configuration or any signing/send effect.",
+    "Bound and copy document bytes before parsing: input payload 65536 bytes, receipt document 524288 bytes, keyset document 131072 bytes and revocation document 4194304 bytes maximum. Unknown fields, duplicate keys, non-NFC strings, malformed entries and partial snapshots fail closed before database allocation."
+  ]
+}

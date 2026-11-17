@@ -1,0 +1,40 @@
+# Docker Hub image identities retrieved for linux/amd64 on 2026-08-27.
+# The compose file uses the immutable platform-manifest digest. The index digest
+# is retained here so an operator can independently inspect the source manifest.
+images:
+  postgres:
+    repository: docker.io/library/postgres
+    tag: "18.6"
+    indexDigest: sha256:4ef4dbc939d61acea57712655ddb4b4ab27419c913f94cca0cd57cb3ea3c2280
+    platform: linux/amd64
+    platformManifestDigest: sha256:7341002d2b8c7c5bdd7542a671a95b36196c0b5b888daf454ae4fc33ba5346d7
+  envoy:
+    repository: docker.io/envoyproxy/envoy
+    tag: v1.39.0
+    indexDigest: sha256:d59f7f5fa10cff6d5892b6c5e7df5c9297ddfb2c3683e33fbfb82da24de4fa66
+    platform: linux/amd64
+    platformManifestDigest: sha256:f6e2f57b1bef8235083a2553b523508cf97d8991c893fd2aae3a94a6b21096a2
+  node:
+    repository: docker.io/library/node
+    tag: 24.19.0-alpine
+    indexDigest: sha256:d32cdf619f63fe0471182d08996dd516c6275bb5fd31ae06e55a570bd9e1ad43
+    platform: linux/amd64
+    platformManifestDigest: sha256:2a49bdf71e9fd965a58c1703fd9ddd205b34e5782b692a72dd1d248abb0beb43
+  rust:
+    repository: docker.io/library/rust
+    tag: 1.98.0-bookworm
+    indexDigest: sha256:82150a52ec202c1b14d7817e14516c392bb7f5cfebd88f1ed531cb37ebd39922
+    platform: linux/amd64
+    platformManifestDigest: sha256:4e4a7e7939c17991ab35f2b8c2e67593980f771d28f6b1254b1850f860fd0c7f
+  debian:
+    repository: docker.io/library/debian
+    tag: bookworm-slim
+    indexDigest: sha256:88200866dfff7ea7f5cbcb6ec7c8a701889efe6fe859fe64d6990e4b07ea4171
+    platform: linux/amd64
+    platformManifestDigest: sha256:5ae3c39ebd15e229dcedd5cee596b2497182493d41ff162e824ba13fc1b2b867
+  valkey:
+    repository: docker.io/valkey/valkey
+    tag: 9.1.1
+    indexDigest: sha256:70739f85ad2ee01a726a965584a0f94895f01b0c60b3cc8b0aeef11eaa6888cf
+    platform: linux/amd64
+    platformManifestDigest: sha256:c7f03d95d897f97eef7ec2d4a6a1e2c0cbe62a36a56b00f304aa536cbe3ec9c1

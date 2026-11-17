@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "extensionAuthority": "POST_C17_ASTRA_11_SIGNED_CONSUMER_RETRY",
+  "name": "pc.fact-consumer-profile.v1",
+  "schemaId": 24006,
+  "typeName": "FactConsumerProfileV1",
+  "purpose": { "name": "pc.cose.fact-consumer-profile.v1", "code": 343 },
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": ["unknown or duplicate keys", "noncanonical encoding", "null or boolean", "non-NFC text", "trailing data"]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [1, 2, 3, 4, 100, 101, 102, 103],
+    "criticalFields": [100, 101, 102, 103],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "fields": [
+    { "key": 0, "name": "schemaDefinitionDigest", "type": "H32" },
+    { "key": 1, "name": "environmentId", "type": "text160" },
+    { "key": 2, "name": "participantId", "type": "uuid" },
+    { "key": 3, "name": "privacyDomainId", "type": "uuid" },
+    { "key": 4, "name": "profileId", "type": "text160" },
+    { "key": 5, "name": "revision", "type": "u64p" },
+    { "key": 6, "name": "consumerId", "type": "registered FactCandidateAdmitted consumer" },
+    { "key": 7, "name": "subscriptionId", "type": "matching registered FactCandidateAdmitted subscription" },
+    { "key": 8, "name": "validFromMs", "type": "safe_uint" },
+    { "key": 9, "name": "validUntilMs", "type": "safe_uint" },
+    { "key": 10, "name": "issuerKeyId", "type": "H32" },
+    { "key": 11, "name": "workloadCredentialId", "type": "uuidv7" },
+    { "key": 12, "name": "workloadCredentialEpoch", "type": "u64" },
+    { "key": 13, "name": "databaseRole", "type": "postgres identifier" },
+    { "key": 14, "name": "maximumAttempts", "type": "uint 1..1000" },
+    { "key": 15, "name": "initialBackoffMs", "type": "uint 1..3600000" },
+    { "key": 16, "name": "maximumBackoffMs", "type": "uint initialBackoffMs..3600000" }
+  ],
+  "authorityRules": [
+    "The installer pins the exact signed profile digest and issuer, environment, tenant, privacy, profile identity/revision, subscription, workload credential/epoch and database login. Public requests cannot supply installation authority.",
+    "The only admitted subscriptions are SUB-FACTCANDIDATEADMITTED-CONTROL_WORK-V1 for LS-CONTROL-WORK and SUB-FACTCANDIDATEADMITTED-FLEET_CONTROL-V1 for LS-FLEET-CONTROL.",
+    "Profile verification is not live workload authorization, mTLS authentication, effect authorization, source verification, an ACK or cursor advancement. Each effect rechecks its own authority.",
+    "maximumAttempts includes the first attempt. After failed attempt n the delay is min(maximumBackoffMs, initialBackoffMs * 2^(n-1)). Exhaustion quarantines the original identity with a safe problem and work item; it never marks delivery.",
+    "The finite numeric ceilings are implementation admission limits, not throughput or availability claims. Capacity refusal consumes no effect attempt and releases the lease without acknowledgement.",
+    "A retry at or after profile expiry is blocked pending valid installation authority. Installing a successor never resets consumed attempt count or replaces the original envelope/digest/business identity."
+  ]
+}

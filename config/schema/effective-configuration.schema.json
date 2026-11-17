@@ -1,0 +1,1612 @@
+{
+  "$defs": {
+    "Bcp47": {
+      "maxLength": 35,
+      "minLength": 2,
+      "pattern": "^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$",
+      "type": "string"
+    },
+    "Duration": {
+      "pattern": "^(0|[1-9][0-9]*)(ms|s|m|h|d)$",
+      "type": "string"
+    },
+    "IanaTimezone": {
+      "maxLength": 64,
+      "minLength": 1,
+      "pattern": "^(UTC|[A-Za-z_+-]+(?:/[A-Za-z0-9_+.-]+)+)$",
+      "type": "string"
+    },
+    "ProfileRef": {
+      "pattern": "^profile://[a-z][a-z0-9-]{1,31}/[A-Za-z0-9._/-]{1,192}@sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "PublisherSetRef": {
+      "pattern": "^publisher-set://[a-z][a-z0-9-]{1,31}/[A-Za-z0-9._/-]{1,192}@sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "QualificationRef": {
+      "pattern": "^qualification://[a-z][a-z0-9-]{1,31}/[A-Za-z0-9._/-]{1,192}@sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "SecretRef": {
+      "pattern": "^secret://[a-z][a-z0-9-]{1,31}/[A-Za-z0-9._/-]{1,192}#[A-Za-z0-9._-]{1,96}$",
+      "type": "string"
+    },
+    "Sha256Digest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "TypedUrn": {
+      "pattern": "^urn:openpc:[a-z][a-z0-9-]{1,31}:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "type": "string"
+    }
+  },
+  "$id": "urn:openpc:schema:effective-configuration:1.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Final AF-25 effective configuration. Profile-required values have no invented default and must be supplied by a signed, qualified input before this schema is evaluated.",
+  "properties": {
+    "environmentId": {
+      "pattern": "^[a-z][a-z0-9-]{2,31}$",
+      "type": "string"
+    },
+    "features": {
+      "additionalProperties": false,
+      "properties": {
+        "clientIndexerCompatibility": {
+          "default": false,
+          "type": "boolean"
+        },
+        "explorerFactSource": {
+          "default": false,
+          "type": "boolean"
+        },
+        "optionalValkeyCache": {
+          "default": false,
+          "type": "boolean"
+        },
+        "privacyExplorerIntegration": {
+          "default": false,
+          "type": "boolean"
+        },
+        "subqueryConditional": {
+          "const": false
+        }
+      },
+      "required": [
+        "privacyExplorerIntegration",
+        "explorerFactSource",
+        "clientIndexerCompatibility",
+        "subqueryConditional",
+        "optionalValkeyCache"
+      ],
+      "type": "object"
+    },
+    "generation": {
+      "additionalProperties": false,
+      "properties": {
+        "baseGenerationId": {
+          "$ref": "#/$defs/TypedUrn"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/Sha256Digest"
+        },
+        "generationId": {
+          "$ref": "#/$defs/TypedUrn"
+        }
+      },
+      "required": [
+        "generationId",
+        "baseGenerationId",
+        "contentDigest"
+      ],
+      "type": "object"
+    },
+    "identity": {
+      "additionalProperties": false,
+      "properties": {
+        "clientId": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "clientSecretRef": {
+          "$ref": "#/$defs/SecretRef"
+        },
+        "oidcIssuer": {
+          "format": "uri",
+          "pattern": "^https://",
+          "type": "string"
+        },
+        "scimEnabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "oidcIssuer",
+        "clientId",
+        "clientSecretRef",
+        "scimEnabled"
+      ],
+      "type": "object"
+    },
+    "pki": {
+      "additionalProperties": false,
+      "properties": {
+        "signingKeySecretRef": {
+          "$ref": "#/$defs/SecretRef"
+        },
+        "trustBundleSecretRef": {
+          "$ref": "#/$defs/SecretRef"
+        }
+      },
+      "required": [
+        "trustBundleSecretRef",
+        "signingKeySecretRef"
+      ],
+      "type": "object"
+    },
+    "postgres": {
+      "additionalProperties": false,
+      "properties": {
+        "candidateIndexDsnSecretRef": {
+          "$ref": "#/$defs/SecretRef"
+        },
+        "controlDsnSecretRef": {
+          "$ref": "#/$defs/SecretRef"
+        },
+        "factsDsnSecretRef": {
+          "$ref": "#/$defs/SecretRef"
+        }
+      },
+      "required": [
+        "controlDsnSecretRef",
+        "factsDsnSecretRef",
+        "candidateIndexDsnSecretRef"
+      ],
+      "type": "object"
+    },
+    "profile": {
+      "enum": [
+        "local",
+        "development",
+        "test",
+        "staging",
+        "production"
+      ]
+    },
+    "publicBaseUrl": {
+      "format": "uri",
+      "pattern": "^https://",
+      "type": "string"
+    },
+    "qualificationInputBindings": {
+      "additionalProperties": false,
+      "patternProperties": {
+        "^(ui\\.export_row_limit|runtime\\.local_artifact_capacity|runtime\\.decision_deadline|evidence\\.local_spool_capacity|evidence\\.retention_profile|provider\\.read_retry_limit|facts\\.maximum_staleness|facts\\.reorg_retained_tail|module\\.allowed_publishers|module\\.ui_slot_budget)$": {
+          "$ref": "#/$defs/QualificationRef"
+        }
+      },
+      "required": [
+        "ui.export_row_limit",
+        "runtime.local_artifact_capacity",
+        "runtime.decision_deadline",
+        "evidence.local_spool_capacity",
+        "evidence.retention_profile",
+        "provider.read_retry_limit",
+        "facts.maximum_staleness",
+        "facts.reorg_retained_tail",
+        "module.allowed_publishers",
+        "module.ui_slot_budget"
+      ],
+      "type": "object"
+    },
+    "runtimePaths": {
+      "additionalProperties": false,
+      "properties": {
+        "artifactRoot": {
+          "const": "/var/lib/openpc/artifacts"
+        },
+        "brokerUdsPath": {
+          "const": "/run/openpc/broker.sock"
+        },
+        "envoyAdminBind": {
+          "const": "127.0.0.1:9901"
+        },
+        "evidenceRoot": {
+          "const": "/var/lib/openpc/evidence"
+        },
+        "pdsUdsPath": {
+          "const": "/run/openpc/pds.sock"
+        }
+      },
+      "required": [
+        "envoyAdminBind",
+        "pdsUdsPath",
+        "brokerUdsPath",
+        "artifactRoot",
+        "evidenceRoot"
+      ],
+      "type": "object"
+    },
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "settings": {
+      "additionalProperties": false,
+      "properties": {
+        "approval.default_expiry": {
+          "$ref": "#/$defs/Duration",
+          "default": "24h",
+          "x-openpc-maxMilliseconds": 2592000000,
+          "x-openpc-minMilliseconds": 300000
+        },
+        "approval.protected_action_min_checkers": {
+          "default": 2,
+          "maximum": 9,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "evidence.critical_watermark": {
+          "default": 95,
+          "maximum": 99,
+          "minimum": 51,
+          "type": "integer"
+        },
+        "evidence.export_retry_limit": {
+          "default": 20,
+          "maximum": 1000,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "evidence.high_watermark": {
+          "default": 80,
+          "maximum": 98,
+          "minimum": 50,
+          "type": "integer"
+        },
+        "evidence.local_spool_capacity": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "evidence.retention_profile": {
+          "$ref": "#/$defs/ProfileRef"
+        },
+        "facts.maximum_staleness": {
+          "$ref": "#/$defs/Duration",
+          "x-openpc-minMilliseconds": 1
+        },
+        "facts.reorg_retained_tail": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "facts.shard_entry_limit": {
+          "default": 1000000,
+          "maximum": 1000000,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "identity.clock_skew_tolerance": {
+          "$ref": "#/$defs/Duration",
+          "default": "30s",
+          "x-openpc-maxMilliseconds": 120000,
+          "x-openpc-minMilliseconds": 0
+        },
+        "identity.context_assertion_ttl": {
+          "$ref": "#/$defs/Duration",
+          "default": "2m",
+          "x-openpc-maxMilliseconds": 600000,
+          "x-openpc-minMilliseconds": 10000
+        },
+        "identity.external_group_freshness_max": {
+          "$ref": "#/$defs/Duration",
+          "default": "15m",
+          "x-openpc-maxMilliseconds": 86400000,
+          "x-openpc-minMilliseconds": 60000
+        },
+        "identity.scim_mass_change_threshold": {
+          "default": 5,
+          "maximum": 100,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "module.allowed_publishers": {
+          "$ref": "#/$defs/PublisherSetRef"
+        },
+        "module.require_provenance": {
+          "const": true,
+          "default": true
+        },
+        "module.require_sbom": {
+          "const": true,
+          "default": true
+        },
+        "module.ui_slot_budget": {
+          "maximum": 65535,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "operations.incident_restriction_lease": {
+          "$ref": "#/$defs/Duration",
+          "default": "15m",
+          "x-openpc-maxMilliseconds": 86400000,
+          "x-openpc-minMilliseconds": 60000
+        },
+        "operations.notification_delivery_limit": {
+          "default": 10,
+          "maximum": 100,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "participant.envelope_expiry_warning": {
+          "$ref": "#/$defs/Duration",
+          "default": "30d",
+          "x-openpc-maxMilliseconds": 31536000000,
+          "x-openpc-minMilliseconds": 86400000
+        },
+        "participant.first_admin_invite_ttl": {
+          "$ref": "#/$defs/Duration",
+          "default": "24h",
+          "x-openpc-maxMilliseconds": 604800000,
+          "x-openpc-minMilliseconds": 900000
+        },
+        "participant.review_default_period": {
+          "$ref": "#/$defs/Duration",
+          "default": "90d",
+          "x-openpc-maxMilliseconds": 63072000000,
+          "x-openpc-minMilliseconds": 86400000
+        },
+        "policy.conflict_severity_block_threshold": {
+          "default": "ERROR",
+          "enum": [
+            "WARNING",
+            "ERROR",
+            "CRITICAL"
+          ]
+        },
+        "policy.draft_inactivity_expiry": {
+          "$ref": "#/$defs/Duration",
+          "default": "90d",
+          "x-openpc-maxMilliseconds": 63072000000,
+          "x-openpc-minMilliseconds": 604800000
+        },
+        "policy.simulation_case_limit": {
+          "default": 10000,
+          "maximum": 4294967295,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "provider.health_observation_window": {
+          "$ref": "#/$defs/Duration",
+          "default": "60s",
+          "x-openpc-maxMilliseconds": 3600000,
+          "x-openpc-minMilliseconds": 5000
+        },
+        "provider.quarantine_on_fingerprint_drift": {
+          "default": true,
+          "type": "boolean"
+        },
+        "provider.read_retry_limit": {
+          "maximum": 3,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "provider.write_retry_after_attempt_start": {
+          "const": 0,
+          "default": 0
+        },
+        "release.activation_token_ttl": {
+          "$ref": "#/$defs/Duration",
+          "default": "2m",
+          "x-openpc-maxMilliseconds": 600000,
+          "x-openpc-minMilliseconds": 10000
+        },
+        "release.mandatory_target_policy": {
+          "const": "ALL_ELIGIBLE",
+          "default": "ALL_ELIGIBLE"
+        },
+        "release.receipt_recovery_window": {
+          "$ref": "#/$defs/Duration",
+          "default": "24h",
+          "x-openpc-maxMilliseconds": 2592000000,
+          "x-openpc-minMilliseconds": 3600000
+        },
+        "release.stage_timeout": {
+          "$ref": "#/$defs/Duration",
+          "default": "10m",
+          "x-openpc-maxMilliseconds": 86400000,
+          "x-openpc-minMilliseconds": 30000
+        },
+        "runtime.capsule_retained_active_generations": {
+          "default": 2,
+          "maximum": 10,
+          "minimum": 2,
+          "type": "integer"
+        },
+        "runtime.decision_deadline": {
+          "$ref": "#/$defs/Duration",
+          "x-openpc-minMilliseconds": 1
+        },
+        "runtime.fail_closed_on_unknown_version": {
+          "const": true,
+          "default": true
+        },
+        "runtime.local_artifact_capacity": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "runtime.staged_generation_limit": {
+          "default": 2,
+          "maximum": 10,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "security.audit_reason_required": {
+          "const": true,
+          "default": true
+        },
+        "security.sensitive_copy_disabled": {
+          "default": true,
+          "type": "boolean"
+        },
+        "session.absolute_timeout": {
+          "$ref": "#/$defs/Duration",
+          "default": "12h",
+          "x-openpc-maxMilliseconds": 604800000
+        },
+        "session.idle_timeout": {
+          "$ref": "#/$defs/Duration",
+          "default": "30m",
+          "x-openpc-maxMilliseconds": 86400000,
+          "x-openpc-minMilliseconds": 60000
+        },
+        "session.step_up_validity": {
+          "$ref": "#/$defs/Duration",
+          "default": "5m",
+          "x-openpc-maxMilliseconds": 1800000,
+          "x-openpc-minMilliseconds": 0
+        },
+        "telemetry.metric_card_stale_after": {
+          "$ref": "#/$defs/Duration",
+          "default": "5m",
+          "x-openpc-maxMilliseconds": 86400000,
+          "x-openpc-minMilliseconds": 10000
+        },
+        "telemetry.payload_capture_enabled": {
+          "const": false,
+          "default": false
+        },
+        "ui.default_density": {
+          "default": "COMFORTABLE",
+          "enum": [
+            "COMFORTABLE",
+            "COMPACT"
+          ]
+        },
+        "ui.default_locale": {
+          "$ref": "#/$defs/Bcp47",
+          "default": "en"
+        },
+        "ui.default_theme": {
+          "default": "SYSTEM",
+          "enum": [
+            "SYSTEM",
+            "LIGHT",
+            "DARK",
+            "HIGH_CONTRAST"
+          ]
+        },
+        "ui.default_timezone": {
+          "$ref": "#/$defs/IanaTimezone",
+          "default": "UTC"
+        },
+        "ui.export_row_limit": {
+          "maximum": 4294967295,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "ui.page_size_default": {
+          "default": 50,
+          "maximum": 200,
+          "minimum": 10,
+          "type": "integer"
+        },
+        "ui.page_size_max": {
+          "default": 200,
+          "maximum": 1000,
+          "minimum": 50,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "ui.default_locale",
+        "ui.default_timezone",
+        "ui.default_density",
+        "ui.default_theme",
+        "ui.page_size_default",
+        "ui.page_size_max",
+        "ui.export_row_limit",
+        "session.idle_timeout",
+        "session.absolute_timeout",
+        "session.step_up_validity",
+        "identity.context_assertion_ttl",
+        "identity.clock_skew_tolerance",
+        "identity.scim_mass_change_threshold",
+        "identity.external_group_freshness_max",
+        "approval.default_expiry",
+        "approval.protected_action_min_checkers",
+        "participant.first_admin_invite_ttl",
+        "participant.envelope_expiry_warning",
+        "participant.review_default_period",
+        "policy.draft_inactivity_expiry",
+        "policy.simulation_case_limit",
+        "policy.conflict_severity_block_threshold",
+        "release.mandatory_target_policy",
+        "release.stage_timeout",
+        "release.activation_token_ttl",
+        "release.receipt_recovery_window",
+        "runtime.capsule_retained_active_generations",
+        "runtime.staged_generation_limit",
+        "runtime.local_artifact_capacity",
+        "runtime.decision_deadline",
+        "runtime.fail_closed_on_unknown_version",
+        "evidence.local_spool_capacity",
+        "evidence.high_watermark",
+        "evidence.critical_watermark",
+        "evidence.export_retry_limit",
+        "evidence.retention_profile",
+        "provider.health_observation_window",
+        "provider.quarantine_on_fingerprint_drift",
+        "provider.read_retry_limit",
+        "provider.write_retry_after_attempt_start",
+        "facts.maximum_staleness",
+        "facts.reorg_retained_tail",
+        "facts.shard_entry_limit",
+        "module.allowed_publishers",
+        "module.require_sbom",
+        "module.require_provenance",
+        "module.ui_slot_budget",
+        "operations.incident_restriction_lease",
+        "operations.notification_delivery_limit",
+        "security.audit_reason_required",
+        "security.sensitive_copy_disabled",
+        "telemetry.payload_capture_enabled",
+        "telemetry.metric_card_stale_after"
+      ],
+      "type": "object"
+    },
+    "telemetry": {
+      "additionalProperties": false,
+      "properties": {
+        "collectorVersion": {
+          "const": "0.159.0"
+        },
+        "otlpEndpoint": {
+          "format": "uri",
+          "pattern": "^(https|grpc)://",
+          "type": "string"
+        },
+        "privacyProfile": {
+          "const": "STRICT_REDACTED"
+        }
+      },
+      "required": [
+        "otlpEndpoint",
+        "privacyProfile",
+        "collectorVersion"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "profile",
+    "environmentId",
+    "publicBaseUrl",
+    "generation",
+    "postgres",
+    "identity",
+    "pki",
+    "runtimePaths",
+    "telemetry",
+    "qualificationInputBindings",
+    "features",
+    "settings"
+  ],
+  "title": "OpenPC closed effective deployment configuration",
+  "type": "object",
+  "x-openpc-crossConstraints": [
+    "settings['ui.page_size_default'] <= settings['ui.page_size_max']",
+    "duration(settings['session.idle_timeout']) < duration(settings['session.absolute_timeout'])",
+    "duration(settings['session.step_up_validity']) <= duration(settings['session.idle_timeout'])",
+    "duration(settings['identity.context_assertion_ttl']) > duration(settings['identity.clock_skew_tolerance'])",
+    "settings['evidence.high_watermark'] < settings['evidence.critical_watermark']",
+    "profile != 'production' || settings['provider.quarantine_on_fingerprint_drift'] == true",
+    "profile != 'production' || settings['security.sensitive_copy_disabled'] == true"
+  ],
+  "x-openpc-settingCatalog": [
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-WORKBENCH"
+      ],
+      "dataType": "BCP47",
+      "default": "en",
+      "key": "ui.default_locale",
+      "range": "registered supported locale",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-UI_DEFAULT_LOCALE"
+      ],
+      "settingId": "SET-UI_DEFAULT_LOCALE",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-UI_DEFAULT_LOCALE"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-WORKBENCH"
+      ],
+      "dataType": "IANA_TIMEZONE",
+      "default": "UTC",
+      "key": "ui.default_timezone",
+      "range": "registered IANA timezone",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-UI_DEFAULT_TIMEZONE"
+      ],
+      "settingId": "SET-UI_DEFAULT_TIMEZONE",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-UI_DEFAULT_TIMEZONE"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-WORKBENCH"
+      ],
+      "dataType": "ENUM",
+      "default": "COMFORTABLE",
+      "key": "ui.default_density",
+      "range": [
+        "COMFORTABLE",
+        "COMPACT"
+      ],
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-UI_DEFAULT_DENSITY"
+      ],
+      "settingId": "SET-UI_DEFAULT_DENSITY",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-UI_DEFAULT_DENSITY"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-WORKBENCH"
+      ],
+      "dataType": "ENUM",
+      "default": "SYSTEM",
+      "key": "ui.default_theme",
+      "range": [
+        "SYSTEM",
+        "LIGHT",
+        "DARK",
+        "HIGH_CONTRAST"
+      ],
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-UI_DEFAULT_THEME"
+      ],
+      "settingId": "SET-UI_DEFAULT_THEME",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-UI_DEFAULT_THEME"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-WORKBENCH",
+        "LS-CONTROL-API"
+      ],
+      "dataType": "UINT16",
+      "default": 50,
+      "key": "ui.page_size_default",
+      "range": "10..200 and <= ui.page_size_max",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-UI_PAGE_SIZE_DEFAULT"
+      ],
+      "settingId": "SET-UI_PAGE_SIZE_DEFAULT",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-UI_PAGE_SIZE_DEFAULT"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-WORKBENCH",
+        "LS-CONTROL-API"
+      ],
+      "dataType": "UINT16",
+      "default": 200,
+      "key": "ui.page_size_max",
+      "range": "50..1000",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-UI_PAGE_SIZE_MAX"
+      ],
+      "settingId": "SET-UI_PAGE_SIZE_MAX",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-UI_PAGE_SIZE_MAX"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-WORKBENCH",
+        "LS-EVIDENCE-EXPORT"
+      ],
+      "dataType": "UINT32",
+      "defaultDisposition": "REQUIRED_SIGNED_PROFILE_VALUE",
+      "key": "ui.export_row_limit",
+      "range": "1..qualified profile capacity",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-UI_EXPORT_ROW_LIMIT"
+      ],
+      "settingId": "SET-UI_EXPORT_ROW_LIMIT",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-UI_EXPORT_ROW_LIMIT"
+      ]
+    },
+    {
+      "changeClass": "SECURITY_APPROVAL",
+      "componentRefs": [
+        "LS-IDENTITY"
+      ],
+      "dataType": "DURATION",
+      "default": "30m",
+      "key": "session.idle_timeout",
+      "range": "1m..24h and < session.absolute_timeout",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-SESSION_IDLE_TIMEOUT"
+      ],
+      "settingId": "SET-SESSION_IDLE_TIMEOUT",
+      "sourceDefaultSuperseded": "15m",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-SESSION_IDLE_TIMEOUT"
+      ]
+    },
+    {
+      "changeClass": "SECURITY_APPROVAL",
+      "componentRefs": [
+        "LS-IDENTITY"
+      ],
+      "dataType": "DURATION",
+      "default": "12h",
+      "key": "session.absolute_timeout",
+      "range": "session.idle_timeout < value <= 7d",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-SESSION_ABSOLUTE_TIMEOUT"
+      ],
+      "settingId": "SET-SESSION_ABSOLUTE_TIMEOUT",
+      "sourceDefaultSuperseded": "8h",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-SESSION_ABSOLUTE_TIMEOUT"
+      ]
+    },
+    {
+      "changeClass": "SECURITY_APPROVAL",
+      "componentRefs": [
+        "LS-IDENTITY"
+      ],
+      "dataType": "DURATION",
+      "default": "5m",
+      "key": "session.step_up_validity",
+      "range": "0..30m",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-SESSION_STEP_UP_VALIDITY"
+      ],
+      "settingId": "SET-SESSION_STEP_UP_VALIDITY",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-SESSION_STEP_UP_VALIDITY"
+      ]
+    },
+    {
+      "changeClass": "SECURITY_APPROVAL",
+      "componentRefs": [
+        "LS-IDENTITY"
+      ],
+      "dataType": "DURATION",
+      "default": "2m",
+      "key": "identity.context_assertion_ttl",
+      "range": "10s..10m",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-IDENTITY_CONTEXT_ASSERTION_TTL"
+      ],
+      "settingId": "SET-IDENTITY_CONTEXT_ASSERTION_TTL",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-IDENTITY_CONTEXT_ASSERTION_TTL"
+      ]
+    },
+    {
+      "changeClass": "SECURITY_APPROVAL",
+      "componentRefs": [
+        "LS-IDENTITY"
+      ],
+      "dataType": "DURATION",
+      "default": "30s",
+      "key": "identity.clock_skew_tolerance",
+      "range": "0..120s",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-IDENTITY_CLOCK_SKEW_TOLERANCE"
+      ],
+      "settingId": "SET-IDENTITY_CLOCK_SKEW_TOLERANCE",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-IDENTITY_CLOCK_SKEW_TOLERANCE"
+      ]
+    },
+    {
+      "changeClass": "SECURITY_APPROVAL",
+      "componentRefs": [
+        "LS-IDENTITY"
+      ],
+      "dataType": "PERCENTAGE_INTEGER",
+      "default": 5,
+      "key": "identity.scim_mass_change_threshold",
+      "range": "0..100; production value explicitly approved",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-IDENTITY_SCIM_MASS_CHANGE_THRESHOLD"
+      ],
+      "settingId": "SET-IDENTITY_SCIM_MASS_CHANGE_THRESHOLD",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-IDENTITY_SCIM_MASS_CHANGE_THRESHOLD"
+      ]
+    },
+    {
+      "changeClass": "SECURITY_APPROVAL",
+      "componentRefs": [
+        "LS-IDENTITY"
+      ],
+      "dataType": "DURATION",
+      "default": "15m",
+      "key": "identity.external_group_freshness_max",
+      "range": "1m..24h",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-IDENTITY_EXTERNAL_GROUP_FRESHNESS_MAX"
+      ],
+      "settingId": "SET-IDENTITY_EXTERNAL_GROUP_FRESHNESS_MAX",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-IDENTITY_EXTERNAL_GROUP_FRESHNESS_MAX"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-CONTROL-WORK"
+      ],
+      "dataType": "DURATION",
+      "default": "24h",
+      "key": "approval.default_expiry",
+      "range": "5m..30d",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-APPROVAL_DEFAULT_EXPIRY"
+      ],
+      "settingId": "SET-APPROVAL_DEFAULT_EXPIRY",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-APPROVAL_DEFAULT_EXPIRY"
+      ]
+    },
+    {
+      "changeClass": "SECURITY_APPROVAL",
+      "componentRefs": [
+        "LS-CONTROL-WORK"
+      ],
+      "dataType": "UINT8",
+      "default": 2,
+      "key": "approval.protected_action_min_checkers",
+      "range": "1..9 and separation-of-duty compatible",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-APPROVAL_PROTECTED_ACTION_MIN_CHECKERS"
+      ],
+      "settingId": "SET-APPROVAL_PROTECTED_ACTION_MIN_CHECKERS",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-APPROVAL_PROTECTED_ACTION_MIN_CHECKERS"
+      ]
+    },
+    {
+      "changeClass": "SECURITY_APPROVAL",
+      "componentRefs": [
+        "LS-PARTICIPANT"
+      ],
+      "dataType": "DURATION",
+      "default": "24h",
+      "key": "participant.first_admin_invite_ttl",
+      "range": "15m..7d",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-PARTICIPANT_FIRST_ADMIN_INVITE_TTL"
+      ],
+      "settingId": "SET-PARTICIPANT_FIRST_ADMIN_INVITE_TTL",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-PARTICIPANT_FIRST_ADMIN_INVITE_TTL"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-PARTICIPANT"
+      ],
+      "dataType": "DURATION",
+      "default": "30d",
+      "key": "participant.envelope_expiry_warning",
+      "range": "1d..365d",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-PARTICIPANT_ENVELOPE_EXPIRY_WARNING"
+      ],
+      "settingId": "SET-PARTICIPANT_ENVELOPE_EXPIRY_WARNING",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-PARTICIPANT_ENVELOPE_EXPIRY_WARNING"
+      ]
+    },
+    {
+      "changeClass": "COMPLIANCE_APPROVAL",
+      "componentRefs": [
+        "LS-PARTICIPANT"
+      ],
+      "dataType": "DURATION",
+      "default": "90d",
+      "key": "participant.review_default_period",
+      "range": "1d..730d",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-PARTICIPANT_REVIEW_DEFAULT_PERIOD"
+      ],
+      "settingId": "SET-PARTICIPANT_REVIEW_DEFAULT_PERIOD",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-PARTICIPANT_REVIEW_DEFAULT_PERIOD"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-POLICY-LIFECYCLE"
+      ],
+      "dataType": "DURATION",
+      "default": "90d",
+      "key": "policy.draft_inactivity_expiry",
+      "range": "7d..730d",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-POLICY_DRAFT_INACTIVITY_EXPIRY"
+      ],
+      "settingId": "SET-POLICY_DRAFT_INACTIVITY_EXPIRY",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-POLICY_DRAFT_INACTIVITY_EXPIRY"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-SIMULATOR"
+      ],
+      "dataType": "UINT32",
+      "default": 10000,
+      "key": "policy.simulation_case_limit",
+      "range": "1..qualified profile capacity",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-POLICY_SIMULATION_CASE_LIMIT"
+      ],
+      "settingId": "SET-POLICY_SIMULATION_CASE_LIMIT",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-POLICY_SIMULATION_CASE_LIMIT"
+      ]
+    },
+    {
+      "changeClass": "SECURITY_APPROVAL",
+      "componentRefs": [
+        "LS-POLICY-LIFECYCLE"
+      ],
+      "dataType": "ENUM",
+      "default": "ERROR",
+      "key": "policy.conflict_severity_block_threshold",
+      "range": [
+        "WARNING",
+        "ERROR",
+        "CRITICAL"
+      ],
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-POLICY_CONFLICT_SEVERITY_BLOCK_THRESHOLD"
+      ],
+      "settingId": "SET-POLICY_CONFLICT_SEVERITY_BLOCK_THRESHOLD",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-POLICY_CONFLICT_SEVERITY_BLOCK_THRESHOLD"
+      ]
+    },
+    {
+      "changeClass": "SEALED_PROFILE",
+      "componentRefs": [
+        "LS-FLEET-CONTROL"
+      ],
+      "dataType": "ENUM",
+      "default": "ALL_ELIGIBLE",
+      "key": "release.mandatory_target_policy",
+      "range": [
+        "ALL_ELIGIBLE"
+      ],
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-RELEASE_MANDATORY_TARGET_POLICY"
+      ],
+      "settingId": "SET-RELEASE_MANDATORY_TARGET_POLICY",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-RELEASE_MANDATORY_TARGET_POLICY"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-FLEET-CONTROL",
+        "LS-RUNTIME-AGENT"
+      ],
+      "dataType": "DURATION",
+      "default": "10m",
+      "key": "release.stage_timeout",
+      "range": "30s..24h",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-RELEASE_STAGE_TIMEOUT"
+      ],
+      "settingId": "SET-RELEASE_STAGE_TIMEOUT",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-RELEASE_STAGE_TIMEOUT"
+      ]
+    },
+    {
+      "changeClass": "SECURITY_APPROVAL",
+      "componentRefs": [
+        "LS-FLEET-CONTROL",
+        "LS-RUNTIME-AGENT"
+      ],
+      "dataType": "DURATION",
+      "default": "2m",
+      "key": "release.activation_token_ttl",
+      "range": "10s..10m",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-RELEASE_ACTIVATION_TOKEN_TTL"
+      ],
+      "settingId": "SET-RELEASE_ACTIVATION_TOKEN_TTL",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-RELEASE_ACTIVATION_TOKEN_TTL"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-FLEET-CONTROL",
+        "LS-RUNTIME-AGENT"
+      ],
+      "dataType": "DURATION",
+      "default": "24h",
+      "key": "release.receipt_recovery_window",
+      "range": "1h..30d",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-RELEASE_RECEIPT_RECOVERY_WINDOW"
+      ],
+      "settingId": "SET-RELEASE_RECEIPT_RECOVERY_WINDOW",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-RELEASE_RECEIPT_RECOVERY_WINDOW"
+      ]
+    },
+    {
+      "changeClass": "SECURITY_APPROVAL",
+      "componentRefs": [
+        "LS-RUNTIME-AGENT"
+      ],
+      "dataType": "UINT8",
+      "default": 2,
+      "key": "runtime.capsule_retained_active_generations",
+      "range": "2..10",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-RUNTIME_CAPSULE_RETAINED_ACTIVE_GENERATIONS"
+      ],
+      "settingId": "SET-RUNTIME_CAPSULE_RETAINED_ACTIVE_GENERATIONS",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-RUNTIME_CAPSULE_RETAINED_ACTIVE_GENERATIONS"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-RUNTIME-AGENT"
+      ],
+      "dataType": "UINT8",
+      "default": 2,
+      "key": "runtime.staged_generation_limit",
+      "range": "1..10",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-RUNTIME_STAGED_GENERATION_LIMIT"
+      ],
+      "settingId": "SET-RUNTIME_STAGED_GENERATION_LIMIT",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-RUNTIME_STAGED_GENERATION_LIMIT"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-RUNTIME-AGENT",
+        "STORE-LOCAL-ARTIFACT"
+      ],
+      "dataType": "BYTES",
+      "defaultDisposition": "REQUIRED_SIGNED_PROFILE_VALUE",
+      "key": "runtime.local_artifact_capacity",
+      "range": "positive named capacity with qualified headroom",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-RUNTIME_LOCAL_ARTIFACT_CAPACITY"
+      ],
+      "settingId": "SET-RUNTIME_LOCAL_ARTIFACT_CAPACITY",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-RUNTIME_LOCAL_ARTIFACT_CAPACITY"
+      ]
+    },
+    {
+      "changeClass": "SEALED_PROFILE",
+      "componentRefs": [
+        "LS-PDS",
+        "LS-BROKER"
+      ],
+      "dataType": "DURATION",
+      "defaultDisposition": "REQUIRED_SIGNED_PROFILE_VALUE",
+      "key": "runtime.decision_deadline",
+      "range": "positive and within exact qualified latency budget",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-RUNTIME_DECISION_DEADLINE"
+      ],
+      "settingId": "SET-RUNTIME_DECISION_DEADLINE",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-RUNTIME_DECISION_DEADLINE"
+      ]
+    },
+    {
+      "changeClass": "SEALED_SETTING",
+      "componentRefs": [
+        "LS-RUNTIME-AGENT",
+        "LS-PDS",
+        "LS-BROKER"
+      ],
+      "dataType": "BOOLEAN",
+      "default": true,
+      "key": "runtime.fail_closed_on_unknown_version",
+      "range": [
+        true
+      ],
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-RUNTIME_FAIL_CLOSED_ON_UNKNOWN_VERSION"
+      ],
+      "settingId": "SET-RUNTIME_FAIL_CLOSED_ON_UNKNOWN_VERSION",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-RUNTIME_FAIL_CLOSED_ON_UNKNOWN_VERSION"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-EVIDENCE-EXPORT",
+        "STORE-LOCAL-EVIDENCE"
+      ],
+      "dataType": "BYTES",
+      "defaultDisposition": "REQUIRED_SIGNED_PROFILE_VALUE",
+      "key": "evidence.local_spool_capacity",
+      "range": "positive named capacity with high/critical watermarks",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-EVIDENCE_LOCAL_SPOOL_CAPACITY"
+      ],
+      "settingId": "SET-EVIDENCE_LOCAL_SPOOL_CAPACITY",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-EVIDENCE_LOCAL_SPOOL_CAPACITY"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-EVIDENCE-EXPORT"
+      ],
+      "dataType": "PERCENTAGE_INTEGER",
+      "default": 80,
+      "key": "evidence.high_watermark",
+      "range": "50..< evidence.critical_watermark",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-EVIDENCE_HIGH_WATERMARK"
+      ],
+      "settingId": "SET-EVIDENCE_HIGH_WATERMARK",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-EVIDENCE_HIGH_WATERMARK"
+      ]
+    },
+    {
+      "changeClass": "SECURITY_APPROVAL",
+      "componentRefs": [
+        "LS-EVIDENCE-EXPORT"
+      ],
+      "dataType": "PERCENTAGE_INTEGER",
+      "default": 95,
+      "key": "evidence.critical_watermark",
+      "range": "evidence.high_watermark < value < 100",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-EVIDENCE_CRITICAL_WATERMARK"
+      ],
+      "settingId": "SET-EVIDENCE_CRITICAL_WATERMARK",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-EVIDENCE_CRITICAL_WATERMARK"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-EVIDENCE-EXPORT"
+      ],
+      "dataType": "UINT16",
+      "default": 20,
+      "key": "evidence.export_retry_limit",
+      "range": "0..1000",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-EVIDENCE_EXPORT_RETRY_LIMIT"
+      ],
+      "settingId": "SET-EVIDENCE_EXPORT_RETRY_LIMIT",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-EVIDENCE_EXPORT_RETRY_LIMIT"
+      ]
+    },
+    {
+      "changeClass": "COMPLIANCE_APPROVAL",
+      "componentRefs": [
+        "LS-EVIDENCE-EXPORT",
+        "STORE-EVIDENCE-VAULT"
+      ],
+      "dataType": "PROFILE_REF",
+      "defaultDisposition": "REQUIRED_SIGNED_PROFILE_VALUE",
+      "key": "evidence.retention_profile",
+      "range": "accepted signed profile",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-EVIDENCE_RETENTION_PROFILE"
+      ],
+      "settingId": "SET-EVIDENCE_RETENTION_PROFILE",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-EVIDENCE_RETENTION_PROFILE"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-BROKER"
+      ],
+      "dataType": "DURATION",
+      "default": "60s",
+      "key": "provider.health_observation_window",
+      "range": "5s..1h",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-PROVIDER_HEALTH_OBSERVATION_WINDOW"
+      ],
+      "settingId": "SET-PROVIDER_HEALTH_OBSERVATION_WINDOW",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-PROVIDER_HEALTH_OBSERVATION_WINDOW"
+      ]
+    },
+    {
+      "changeClass": "SECURITY_APPROVAL",
+      "componentRefs": [
+        "LS-BROKER"
+      ],
+      "dataType": "BOOLEAN",
+      "default": true,
+      "key": "provider.quarantine_on_fingerprint_drift",
+      "range": "true in production",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-PROVIDER_QUARANTINE_ON_FINGERPRINT_DRIFT"
+      ],
+      "settingId": "SET-PROVIDER_QUARANTINE_ON_FINGERPRINT_DRIFT",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-PROVIDER_QUARANTINE_ON_FINGERPRINT_DRIFT"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-BROKER"
+      ],
+      "dataType": "UINT8",
+      "defaultDisposition": "REQUIRED_SIGNED_PROFILE_VALUE",
+      "key": "provider.read_retry_limit",
+      "range": "0..3 and exact method profile retry-safe",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-PROVIDER_READ_RETRY_LIMIT"
+      ],
+      "settingId": "SET-PROVIDER_READ_RETRY_LIMIT",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-PROVIDER_READ_RETRY_LIMIT"
+      ]
+    },
+    {
+      "changeClass": "SEALED_SETTING",
+      "componentRefs": [
+        "LS-BROKER"
+      ],
+      "dataType": "UINT8",
+      "default": 0,
+      "key": "provider.write_retry_after_attempt_start",
+      "range": [
+        0
+      ],
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-PROVIDER_WRITE_RETRY_AFTER_ATTEMPT_START"
+      ],
+      "settingId": "SET-PROVIDER_WRITE_RETRY_AFTER_ATTEMPT_START",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-PROVIDER_WRITE_RETRY_AFTER_ATTEMPT_START"
+      ]
+    },
+    {
+      "changeClass": "SECURITY_APPROVAL",
+      "componentRefs": [
+        "LS-FACT-BRIDGE"
+      ],
+      "dataType": "DURATION",
+      "defaultDisposition": "REQUIRED_SIGNED_PROFILE_VALUE",
+      "key": "facts.maximum_staleness",
+      "range": "positive and exact fact-profile-specific",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-FACTS_MAXIMUM_STALENESS"
+      ],
+      "settingId": "SET-FACTS_MAXIMUM_STALENESS",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-FACTS_MAXIMUM_STALENESS"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-FACT-BRIDGE",
+        "STORE-FACT-PG"
+      ],
+      "dataType": "UINT64",
+      "defaultDisposition": "REQUIRED_SIGNED_PROFILE_VALUE",
+      "key": "facts.reorg_retained_tail",
+      "range": "positive and exact network/finality-profile-compatible",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-FACTS_REORG_RETAINED_TAIL"
+      ],
+      "settingId": "SET-FACTS_REORG_RETAINED_TAIL",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-FACTS_REORG_RETAINED_TAIL"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-FACT-BRIDGE",
+        "LS-RUNTIME-AGENT"
+      ],
+      "dataType": "UINT64",
+      "default": 1000000,
+      "key": "facts.shard_entry_limit",
+      "range": "1..1000000 for accepted qualification profile",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-FACTS_SHARD_ENTRY_LIMIT",
+        "REQ-SR01-B0-REQ-PERF-001"
+      ],
+      "settingId": "SET-FACTS_SHARD_ENTRY_LIMIT",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-FACTS_SHARD_ENTRY_LIMIT"
+      ]
+    },
+    {
+      "changeClass": "SECURITY_APPROVAL",
+      "componentRefs": [
+        "LS-MODULE-REGISTRY"
+      ],
+      "dataType": "PUBLISHER_SET_REF",
+      "defaultDisposition": "REQUIRED_SIGNED_PROFILE_VALUE",
+      "key": "module.allowed_publishers",
+      "range": "accepted immutable publisher set",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-MODULE_ALLOWED_PUBLISHERS"
+      ],
+      "settingId": "SET-MODULE_ALLOWED_PUBLISHERS",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-MODULE_ALLOWED_PUBLISHERS"
+      ]
+    },
+    {
+      "changeClass": "SEALED_SETTING",
+      "componentRefs": [
+        "LS-MODULE-REGISTRY"
+      ],
+      "dataType": "BOOLEAN",
+      "default": true,
+      "key": "module.require_sbom",
+      "range": [
+        true
+      ],
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-MODULE_REQUIRE_SBOM"
+      ],
+      "settingId": "SET-MODULE_REQUIRE_SBOM",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-MODULE_REQUIRE_SBOM"
+      ]
+    },
+    {
+      "changeClass": "SEALED_SETTING",
+      "componentRefs": [
+        "LS-MODULE-REGISTRY"
+      ],
+      "dataType": "BOOLEAN",
+      "default": true,
+      "key": "module.require_provenance",
+      "range": [
+        true
+      ],
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-MODULE_REQUIRE_PROVENANCE"
+      ],
+      "settingId": "SET-MODULE_REQUIRE_PROVENANCE",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-MODULE_REQUIRE_PROVENANCE"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-MODULE-REGISTRY",
+        "LS-WORKBENCH"
+      ],
+      "dataType": "UINT16",
+      "defaultDisposition": "REQUIRED_SIGNED_PROFILE_VALUE",
+      "key": "module.ui_slot_budget",
+      "range": "0..registered platform maximum",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-MODULE_UI_SLOT_BUDGET"
+      ],
+      "settingId": "SET-MODULE_UI_SLOT_BUDGET",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-MODULE_UI_SLOT_BUDGET"
+      ]
+    },
+    {
+      "changeClass": "SECURITY_APPROVAL",
+      "componentRefs": [
+        "LS-CONTROL-WORK"
+      ],
+      "dataType": "DURATION",
+      "default": "15m",
+      "key": "operations.incident_restriction_lease",
+      "range": "1m..24h",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-OPERATIONS_INCIDENT_RESTRICTION_LEASE"
+      ],
+      "settingId": "SET-OPERATIONS_INCIDENT_RESTRICTION_LEASE",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-OPERATIONS_INCIDENT_RESTRICTION_LEASE"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "LS-NOTIFICATION"
+      ],
+      "dataType": "UINT16",
+      "default": 10,
+      "key": "operations.notification_delivery_limit",
+      "range": "0..100",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-OPERATIONS_NOTIFICATION_DELIVERY_LIMIT"
+      ],
+      "settingId": "SET-OPERATIONS_NOTIFICATION_DELIVERY_LIMIT",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-OPERATIONS_NOTIFICATION_DELIVERY_LIMIT"
+      ]
+    },
+    {
+      "changeClass": "SEALED_SETTING",
+      "componentRefs": [
+        "LS-CONTROL-API",
+        "LS-EVIDENCE-EXPORT"
+      ],
+      "dataType": "BOOLEAN",
+      "default": true,
+      "key": "security.audit_reason_required",
+      "range": [
+        true
+      ],
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-SECURITY_AUDIT_REASON_REQUIRED"
+      ],
+      "settingId": "SET-SECURITY_AUDIT_REASON_REQUIRED",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-SECURITY_AUDIT_REASON_REQUIRED"
+      ]
+    },
+    {
+      "changeClass": "SECURITY_APPROVAL",
+      "componentRefs": [
+        "LS-WORKBENCH"
+      ],
+      "dataType": "BOOLEAN",
+      "default": true,
+      "key": "security.sensitive_copy_disabled",
+      "range": "true in production",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-SECURITY_SENSITIVE_COPY_DISABLED"
+      ],
+      "settingId": "SET-SECURITY_SENSITIVE_COPY_DISABLED",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-SECURITY_SENSITIVE_COPY_DISABLED"
+      ]
+    },
+    {
+      "changeClass": "SEALED_SETTING",
+      "componentRefs": [
+        "DU-OTEL-COLLECTOR"
+      ],
+      "dataType": "BOOLEAN",
+      "default": false,
+      "key": "telemetry.payload_capture_enabled",
+      "range": [
+        false
+      ],
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-TELEMETRY_PAYLOAD_CAPTURE_ENABLED"
+      ],
+      "settingId": "SET-TELEMETRY_PAYLOAD_CAPTURE_ENABLED",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-TELEMETRY_PAYLOAD_CAPTURE_ENABLED"
+      ]
+    },
+    {
+      "changeClass": "GOVERNED_RESTARTLESS",
+      "componentRefs": [
+        "DU-OTEL-COLLECTOR",
+        "LS-WORKBENCH"
+      ],
+      "dataType": "DURATION",
+      "default": "5m",
+      "key": "telemetry.metric_card_stale_after",
+      "range": "10s..24h",
+      "requirementRefs": [
+        "REQ-SR01-B0-REQ-SETREQ-TELEMETRY_METRIC_CARD_STALE_AFTER"
+      ],
+      "settingId": "SET-TELEMETRY_METRIC_CARD_STALE_AFTER",
+      "testRefs": [
+        "TEST-OPS-CONFIG-SET-TELEMETRY_METRIC_CARD_STALE_AFTER"
+      ]
+    }
+  ],
+  "x-openpc-settingMetadataDefaults": {
+    "deprecatedAliases": [],
+    "environmentApplicability": [
+      "local",
+      "development",
+      "test",
+      "staging",
+      "production"
+    ],
+    "failureBehavior": "Reject invalid or unauthorized value, preserve the last accepted effective generation, and expose desired/effective truth.",
+    "featureFlagRefs": [],
+    "mutability": "VERSIONED_GOVERNED_GENERATION",
+    "restartRequirement": "NONE_AFTER_ATOMIC_GENERATION_SWITCH",
+    "secretValueAllowed": false,
+    "sensitivity": "NON_SECRET",
+    "sourcePrecedence": [
+      "COMPILED_SAFE_DEFAULT",
+      "NAMED_PROFILE",
+      "SITE_FILE"
+    ]
+  },
+  "x-openpc-traceDefaults": {
+    "claimCeilingRefs": [
+      "CC-GLOBAL-AUTHORITY-TRUTH",
+      "CC-NUMERIC-SLA-CERTIFICATION"
+    ],
+    "decisionRefs": [
+      "DEC-C03-005",
+      "DEC-C03-013",
+      "AD-SR04-014-SECURITY-OPERATIONS"
+    ],
+    "sourceUnitRefs": [
+      "SU-6f5576487c22b7c024cc0130",
+      "SU-10162f2c32bc27deb7624a29"
+    ]
+  }
+}

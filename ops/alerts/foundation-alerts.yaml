@@ -1,0 +1,17 @@
+schemaVersion: '1.0'
+scope: I09_FOUNDATION_ONLY
+notDeployable: true
+alerts:
+  - id: OPENPC_CONFIGURATION_GENERATION_MISMATCH
+    when: openpc_configuration_generation_mismatch_total > 0
+    severity: warning
+    action: Keep the prior generation effective and investigate the typed validation failure.
+  - id: OPENPC_EVIDENCE_CAPACITY_CRITICAL
+    when: openpc_evidence_capacity_ratio >= 0.9
+    severity: critical
+    action: Fail protected release before durability exhaustion; do not discard evidence.
+  - id: OPENPC_RECOVERY_REHEARSAL_FAILED
+    when: openpc_recovery_rehearsal_status == 0
+    severity: critical
+    action: Preserve evidence and block recovery-readiness claims.
+redaction: STRICT_REDACTED_NO_PAYLOADS_OR_SECRETS

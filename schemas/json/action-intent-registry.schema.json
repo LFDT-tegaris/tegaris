@@ -1,0 +1,232 @@
+{
+  "$id": "https://schemas.openpc.local/action-intent-registry.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "entries": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "actionIntentId": {
+            "pattern": "^ACT-[A-Z][A-Z0-9_]*-V[1-9][0-9]*$",
+            "type": "string"
+          },
+          "evidenceClass": {
+            "pattern": "^[A-Z][A-Z0-9_]{2,63}$",
+            "type": "string"
+          },
+          "existenceDisclosure": {
+            "enum": [
+              "NONE",
+              "AUTHORIZED_TYPE_ONLY",
+              "AUTHORIZED_FULL"
+            ]
+          },
+          "idempotency": {
+            "enum": [
+              "READ_ONLY",
+              "KEY_UNTIL_TERMINAL",
+              "KEY_24H_MINIMUM",
+              "NEVER_REPLAY_EFFECT"
+            ]
+          },
+          "makerChecker": {
+            "type": "boolean"
+          },
+          "operationClass": {
+            "enum": [
+              "READ",
+              "CREATE",
+              "UPDATE",
+              "DELETE",
+              "APPROVE",
+              "ACTIVATE",
+              "ROLLBACK",
+              "EXPORT",
+              "RECOVER",
+              "UNINSTALL"
+            ]
+          },
+          "operationId": {
+            "pattern": "^[a-z][A-Za-z0-9]{2,127}$",
+            "type": "string"
+          },
+          "payloadDisclosure": {
+            "enum": [
+              "NONE",
+              "AUTHORIZED_MINIMAL",
+              "AUTHORIZED_FULL"
+            ]
+          },
+          "resourceType": {
+            "pattern": "^urn:openpc:resource-type:[a-z][a-z0-9-]{1,62}$",
+            "type": "string"
+          },
+          "riskClass": {
+            "enum": [
+              "LOW",
+              "STANDARD",
+              "HIGH",
+              "BREAK_GLASS"
+            ]
+          },
+          "stepUp": {
+            "enum": [
+              "NONE",
+              "FRESH_WEBAUTHN_MAX_5M",
+              "BREAK_GLASS_PROFILE"
+            ]
+          },
+          "surface": {
+            "enum": [
+              "OPENAPI",
+              "JSONRPC",
+              "GRPC",
+              "ASYNCAPI"
+            ]
+          },
+          "trace": {
+            "additionalProperties": false,
+            "properties": {
+              "componentIds": {
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "decisionIds": {
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "requirementIds": {
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "sourceUnitIds": {
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array",
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "requirementIds",
+              "decisionIds",
+              "componentIds",
+              "sourceUnitIds"
+            ],
+            "title": "Trace",
+            "type": "object",
+            "x-openpc-trace": {
+              "componentIds": [
+                "COM-001",
+                "LS-CONTROL-API",
+                "ROLE-CONTROL-API"
+              ],
+              "decisionIds": [
+                "AD-SR04-001-B0-FREEZE",
+                "AD-SR04-004-AUTHORITY-INTERSECTION",
+                "AD-SR04-006-INVOCATION-CAPABILITY",
+                "AD-SR04-007-EXECUTION-EVIDENCE",
+                "AD-SR04-009-DYNAMIC-EVENT",
+                "AD-SR04-014-SECURITY-OPERATIONS",
+                "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY"
+              ],
+              "requirementIds": [
+                "REQ-SR01-B0-REQ-DEV-006",
+                "REQ-SR01-B0-REQ-SEC-005",
+                "REQ-SR01-B0-REQ-SEC-007",
+                "REQ-SR01-B0-REQ-TARCH-007",
+                "REQ-SR01-B0-REQ-TARCH-COM-001"
+              ],
+              "sourceUnitIds": [
+                "SU-REQ-446f6cb0783b05c8f0fdc6ee",
+                "SU-REQ-2a611b162f4ed9681a193389",
+                "SU-REQ-72a9edfb8ccea4e8749fa052",
+                "SU-REQ-4e0a8087b502c98f658f255c",
+                "SU-REQ-2c33a9ca8c81aa15e89a5e4c"
+              ]
+            }
+          }
+        },
+        "required": [
+          "actionIntentId",
+          "operationId",
+          "surface",
+          "resourceType",
+          "operationClass",
+          "riskClass",
+          "makerChecker",
+          "stepUp",
+          "idempotency",
+          "existenceDisclosure",
+          "payloadDisclosure",
+          "evidenceClass",
+          "trace"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "freezeId": {
+      "const": "C03-ARCHITECTURE-SHARED-PRIMITIVES-FREEZE-20260824-01"
+    },
+    "rule": {
+      "const": "Every OpenAPI operation is registered exactly once. An absent or mismatched registry entry is terminal denial and is never inferred from path, verb, role, or UI state."
+    },
+    "schemaVersion": {
+      "const": "1.0"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "freezeId",
+    "rule",
+    "entries"
+  ],
+  "title": "OpenPC action intent registry v1",
+  "type": "object",
+  "x-openpc-trace": {
+    "componentIds": [
+      "COM-001",
+      "LS-CONTROL-API",
+      "ROLE-CONTROL-API"
+    ],
+    "decisionIds": [
+      "AD-SR04-001-B0-FREEZE",
+      "AD-SR04-004-AUTHORITY-INTERSECTION",
+      "AD-SR04-006-INVOCATION-CAPABILITY",
+      "AD-SR04-007-EXECUTION-EVIDENCE",
+      "AD-SR04-009-DYNAMIC-EVENT",
+      "AD-SR04-014-SECURITY-OPERATIONS",
+      "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY"
+    ],
+    "requirementIds": [
+      "REQ-SR01-B0-REQ-DEV-006",
+      "REQ-SR01-B0-REQ-SEC-005",
+      "REQ-SR01-B0-REQ-SEC-007",
+      "REQ-SR01-B0-REQ-TARCH-007",
+      "REQ-SR01-B0-REQ-TARCH-COM-001"
+    ],
+    "sourceUnitIds": [
+      "SU-REQ-446f6cb0783b05c8f0fdc6ee",
+      "SU-REQ-2a611b162f4ed9681a193389",
+      "SU-REQ-72a9edfb8ccea4e8749fa052",
+      "SU-REQ-4e0a8087b502c98f658f255c",
+      "SU-REQ-2c33a9ca8c81aa15e89a5e4c"
+    ]
+  }
+}

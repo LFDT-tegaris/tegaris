@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: openpc-i04-local-custody
+  labels:
+    openpc.io/custody: signer-only-local-agents-tmp-mount
+spec:
+  accessModes: ["ReadWriteOnce"]
+  capacity:
+    storage: 32Mi
+  hostPath:
+    path: /openpc-i04-custody
+    type: Directory
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: openpc-i04-local-custody
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: openpc-i04-local-custody
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 32Mi
+  storageClassName: openpc-i04-local-custody
+  volumeMode: Filesystem
+  volumeName: openpc-i04-local-custody

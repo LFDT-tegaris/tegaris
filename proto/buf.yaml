@@ -1,0 +1,8 @@
+version: v1
+name: buf.build/openpc/r1
+lint:
+  use:
+    - BASIC
+breaking:
+  use:
+    - FILE

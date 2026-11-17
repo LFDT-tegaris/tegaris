@@ -1,0 +1,1209 @@
+{
+  "$defs": {
+    "CommandCommitted": {
+      "additionalProperties": false,
+      "properties": {
+        "actionIntentId": {
+          "type": "string"
+        },
+        "aggregateRef": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        },
+        "commandId": {
+          "$ref": "shared-primitives.schema.json#/$defs/UuidV7"
+        },
+        "intentDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        }
+      },
+      "required": [
+        "commandId",
+        "aggregateRef",
+        "actionIntentId",
+        "intentDigest"
+      ],
+      "title": "CommandCommittedDataV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-CONTROL-API",
+          "LS-CONTROL-WORK"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-004-AUTHORITY-INTERSECTION",
+          "AD-SR04-014-SECURITY-OPERATIONS",
+          "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-REQ-TARCH-COM-003"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-62eca98a0a9e10ea90981863"
+        ]
+      }
+    },
+    "CompilationCompleted": {
+      "additionalProperties": false,
+      "properties": {
+        "artifactDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "commandId": {
+          "$ref": "shared-primitives.schema.json#/$defs/UuidV7"
+        },
+        "inputDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "releaseBundleId": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        },
+        "result": {
+          "enum": [
+            "SUCCEEDED",
+            "FAILED",
+            "QUARANTINED"
+          ]
+        }
+      },
+      "required": [
+        "commandId",
+        "releaseBundleId",
+        "inputDigest",
+        "artifactDigest",
+        "result"
+      ],
+      "title": "CompilationCompletedDataV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-COMPILER",
+          "LS-CONTROL-WORK"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-004-AUTHORITY-INTERSECTION",
+          "AD-SR04-006-INVOCATION-CAPABILITY",
+          "AD-SR04-007-EXECUTION-EVIDENCE",
+          "AD-SR04-009-DYNAMIC-EVENT",
+          "AD-SR04-014-SECURITY-OPERATIONS",
+          "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-REQ-TARCH-COM-004"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-714ef70243624c78fb73c335"
+        ]
+      }
+    },
+    "CompilationRequested": {
+      "additionalProperties": false,
+      "properties": {
+        "commandId": {
+          "$ref": "shared-primitives.schema.json#/$defs/UuidV7"
+        },
+        "compilerProfileDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "inputDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "releaseBundleId": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        }
+      },
+      "required": [
+        "commandId",
+        "releaseBundleId",
+        "inputDigest",
+        "compilerProfileDigest"
+      ],
+      "title": "CompilationRequestedDataV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-COMPILER",
+          "LS-CONTROL-WORK"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-004-AUTHORITY-INTERSECTION",
+          "AD-SR04-006-INVOCATION-CAPABILITY",
+          "AD-SR04-007-EXECUTION-EVIDENCE",
+          "AD-SR04-009-DYNAMIC-EVENT",
+          "AD-SR04-014-SECURITY-OPERATIONS",
+          "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-REQ-TARCH-COM-004"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-714ef70243624c78fb73c335"
+        ]
+      }
+    },
+    "DesiredGenerationChanged": {
+      "additionalProperties": false,
+      "properties": {
+        "capsuleDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "expectedPreviousGenerationDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "occurrenceId": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        },
+        "targetId": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        },
+        "xdsSnapshotDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        }
+      },
+      "required": [
+        "targetId",
+        "occurrenceId",
+        "capsuleDigest",
+        "xdsSnapshotDigest",
+        "expectedPreviousGenerationDigest"
+      ],
+      "title": "DesiredGenerationChangedDataV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-FLEET-CONTROL",
+          "LS-RUNTIME-AGENT"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-004-AUTHORITY-INTERSECTION",
+          "AD-SR04-005-POLICY-LIFECYCLE",
+          "AD-SR04-006-INVOCATION-CAPABILITY",
+          "AD-SR04-007-EXECUTION-EVIDENCE",
+          "AD-SR04-009-DYNAMIC-EVENT",
+          "AD-SR04-014-SECURITY-OPERATIONS",
+          "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-REQ-TARCH-COM-006"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-5cfae5333123b471a2d8fe17"
+        ]
+      }
+    },
+    "EvidenceExportCompleted": {
+      "additionalProperties": false,
+      "properties": {
+        "checkpoint": {
+          "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+        },
+        "evidenceExportId": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        },
+        "outputDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "recordCount": {
+          "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+        }
+      },
+      "required": [
+        "evidenceExportId",
+        "checkpoint",
+        "outputDigest",
+        "recordCount"
+      ],
+      "title": "EvidenceExportCompletedDataV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-CONTROL-WORK",
+          "LS-EVIDENCE-EXPORT",
+          "LS-NOTIFICATION"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-014-SECURITY-OPERATIONS",
+          "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY"
+        ],
+        "requirementIds": [
+          "REQ-SR01-PROVENANCE-SR01-PQ-000272"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-0d6ec1216526a340a5579eea"
+        ]
+      }
+    },
+    "EvidenceExportRequested": {
+      "additionalProperties": false,
+      "properties": {
+        "evidenceExportId": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        },
+        "fromSequence": {
+          "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+        },
+        "queryDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "redactionProfileDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "throughSequence": {
+          "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+        }
+      },
+      "required": [
+        "evidenceExportId",
+        "queryDigest",
+        "redactionProfileDigest",
+        "fromSequence",
+        "throughSequence"
+      ],
+      "title": "EvidenceExportRequestedDataV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-CONTROL-WORK",
+          "LS-EVIDENCE-EXPORT"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-004-AUTHORITY-INTERSECTION",
+          "AD-SR04-006-INVOCATION-CAPABILITY",
+          "AD-SR04-007-EXECUTION-EVIDENCE",
+          "AD-SR04-009-DYNAMIC-EVENT",
+          "AD-SR04-014-SECURITY-OPERATIONS"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-REQ-TARCH-COM-013"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-8f7548107d9a85a393c9201e"
+        ]
+      }
+    },
+    "FactArtifactInvalidated": {
+      "additionalProperties": false,
+      "properties": {
+        "factArtifactId": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        },
+        "invalidatedGenerationDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "reasonCode": {
+          "type": "string"
+        },
+        "replacementGenerationDigest": {
+          "oneOf": [
+            {
+              "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "factArtifactId",
+        "invalidatedGenerationDigest",
+        "replacementGenerationDigest",
+        "reasonCode"
+      ],
+      "title": "FactArtifactInvalidatedDataV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-FACT-BRIDGE",
+          "LS-FLEET-CONTROL",
+          "LS-RUNTIME-AGENT"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-005-POLICY-LIFECYCLE",
+          "AD-SR04-006-INVOCATION-CAPABILITY",
+          "AD-SR04-007-EXECUTION-EVIDENCE",
+          "AD-SR04-009-DYNAMIC-EVENT",
+          "AD-SR04-010-CLIENT-INDEXER",
+          "AD-SR04-014-SECURITY-OPERATIONS"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-REQ-SEC-002"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-09b19909a87bad746b27b2e3"
+        ]
+      }
+    },
+    "FactCandidateAdmitted": {
+      "additionalProperties": false,
+      "properties": {
+        "artifactDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "candidateId": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        },
+        "factArtifactId": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        },
+        "sourceNeutral": {
+          "const": true,
+          "type": "boolean"
+        },
+        "sourceProfileDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        }
+      },
+      "required": [
+        "candidateId",
+        "factArtifactId",
+        "artifactDigest",
+        "sourceProfileDigest",
+        "sourceNeutral"
+      ],
+      "title": "FactCandidateAdmittedDataV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-CONTROL-WORK",
+          "LS-FACT-BRIDGE",
+          "LS-FLEET-CONTROL"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-005-POLICY-LIFECYCLE",
+          "AD-SR04-006-INVOCATION-CAPABILITY",
+          "AD-SR04-007-EXECUTION-EVIDENCE",
+          "AD-SR04-008-RGRA",
+          "AD-SR04-009-DYNAMIC-EVENT",
+          "AD-SR04-010-CLIENT-INDEXER",
+          "AD-SR04-011-EXPLORER-FACT-SOURCE",
+          "AD-SR04-012-POLICY-FACT-PROJECTION",
+          "AD-SR04-014-SECURITY-OPERATIONS"
+        ],
+        "requirementIds": [
+          "REQ-SR01-U00-UD-011"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-c5ed1f35c895485ae0943e6a"
+        ]
+      }
+    },
+    "CandidateInclusiveRangeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "end": {
+          "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+        },
+        "start": {
+          "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "type": "object"
+    },
+    "CandidatePartitionUrnV1": {
+      "pattern": "^urn:openpc:candidate-partition:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "type": "string"
+    },
+    "CandidateUrnV1": {
+      "pattern": "^urn:openpc:candidate:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "type": "string"
+    },
+    "IndexerProfileUrnV1": {
+      "pattern": "^urn:openpc:indexer-profile:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "type": "string"
+    },
+    "ProjectionGenerationUrnV1": {
+      "pattern": "^urn:openpc:projection-generation:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "type": "string"
+    },
+    "CandidateDecodeFailureV1": {
+      "additionalProperties": false,
+      "properties": {
+        "errorDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "evidenceDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "sequence": {
+          "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+        },
+        "sourceId": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "sourceId",
+        "sequence",
+        "errorDigest",
+        "evidenceDigest"
+      ],
+      "type": "object"
+    },
+    "CandidateAnchorV1": {
+      "additionalProperties": false,
+      "properties": {
+        "blockHash": {
+          "$ref": "shared-primitives.schema.json#/$defs/Bytes32"
+        },
+        "blockNumber": {
+          "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+        },
+        "chainId": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "genesisHash": {
+          "$ref": "shared-primitives.schema.json#/$defs/Bytes32"
+        },
+        "networkId": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "pendingAuthorizedByProfile": {
+          "const": false,
+          "type": "boolean"
+        },
+        "selectorKind": {
+          "const": "PINNED",
+          "type": "string"
+        }
+      },
+      "required": [
+        "chainId",
+        "genesisHash",
+        "networkId",
+        "selectorKind",
+        "blockNumber",
+        "blockHash",
+        "pendingAuthorizedByProfile"
+      ],
+      "type": "object"
+    },
+    "IndexerProjectionSourceFenced": {
+      "additionalProperties": false,
+      "properties": {
+        "candidatePartitionId": { "$ref": "#/$defs/CandidatePartitionUrnV1" },
+        "projectionGenerationId": { "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn" },
+        "publicationDigest": { "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest" },
+        "reasonCode": { "const": "GOVERNED_SOURCE_NOT_CURRENT", "type": "string" },
+        "authority": { "const": "CANDIDATE_ONLY", "type": "string" }
+      },
+      "required": ["candidatePartitionId", "projectionGenerationId", "publicationDigest", "reasonCode", "authority"],
+      "title": "IndexerProjectionSourceFencedDataV1",
+      "type": "object"
+    },
+    "IndexerProjectionCandidateInvalidated": {
+      "additionalProperties": false,
+      "properties": {
+        "affectedCandidateIds": {
+          "items": {
+            "$ref": "#/$defs/CandidateUrnV1"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "affectedRange": {
+          "$ref": "#/$defs/CandidateInclusiveRangeV1"
+        },
+        "authority": {
+          "const": "CANDIDATE_ONLY",
+          "type": "string"
+        },
+        "candidatePartitionId": {
+          "$ref": "#/$defs/CandidatePartitionUrnV1"
+        },
+        "invalidationId": {
+          "$ref": "shared-primitives.schema.json#/$defs/UuidV7"
+        },
+        "newAnchor": {
+          "$ref": "#/$defs/CandidateAnchorV1"
+        },
+        "oldAnchor": {
+          "$ref": "#/$defs/CandidateAnchorV1"
+        },
+        "reorgEvidenceDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        }
+      },
+      "required": [
+        "candidatePartitionId",
+        "affectedCandidateIds",
+        "oldAnchor",
+        "newAnchor",
+        "affectedRange",
+        "invalidationId",
+        "reorgEvidenceDigest",
+        "authority"
+      ],
+      "title": "IndexerProjectionCandidateInvalidatedDataV1",
+      "type": "object"
+    },
+    "IndexerProjectionCheckpointCompleted": {
+      "additionalProperties": false,
+      "properties": {
+        "authority": {
+          "const": "CANDIDATE_ONLY",
+          "type": "string"
+        },
+        "authoritativeEmpty": {
+          "type": "boolean"
+        },
+        "batchDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "batchId": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "candidatePartitionId": {
+          "$ref": "#/$defs/CandidatePartitionUrnV1"
+        },
+        "checkpointDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "decodeFailures": {
+          "items": {
+            "$ref": "#/$defs/CandidateDecodeFailureV1"
+          },
+          "type": "array"
+        },
+        "indexerProfileId": {
+          "$ref": "#/$defs/IndexerProfileUrnV1"
+        },
+        "missingIntervals": {
+          "items": {
+            "$ref": "#/$defs/CandidateInclusiveRangeV1"
+          },
+          "type": "array"
+        },
+        "orderedObservationEvidence": {
+          "items": {
+            "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+          },
+          "type": "array"
+        },
+        "predecessorBatchDigest": {
+          "oneOf": [
+            {
+              "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "projectionGenerationId": {
+          "$ref": "#/$defs/ProjectionGenerationUrnV1"
+        },
+        "range": {
+          "$ref": "#/$defs/CandidateInclusiveRangeV1"
+        },
+        "recordCount": {
+          "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+        }
+      },
+      "required": [
+        "candidatePartitionId",
+        "indexerProfileId",
+        "projectionGenerationId",
+        "batchId",
+        "batchDigest",
+        "predecessorBatchDigest",
+        "range",
+        "checkpointDigest",
+        "orderedObservationEvidence",
+        "missingIntervals",
+        "decodeFailures",
+        "recordCount",
+        "authoritativeEmpty",
+        "authority"
+      ],
+      "title": "IndexerProjectionCheckpointCompletedDataV1",
+      "type": "object"
+    },
+    "IndexerProjectionCandidateObserved": {
+      "additionalProperties": false,
+      "properties": {
+        "authority": {
+          "const": "CANDIDATE_ONLY",
+          "type": "string"
+        },
+        "candidateDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "candidateId": {
+          "$ref": "#/$defs/CandidateUrnV1"
+        },
+        "indexerProfileId": {
+          "$ref": "#/$defs/IndexerProfileUrnV1"
+        },
+        "sourceCursorDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        }
+      },
+      "required": [
+        "indexerProfileId",
+        "candidateId",
+        "sourceCursorDigest",
+        "candidateDigest",
+        "authority"
+      ],
+      "title": "IndexerProjectionCandidateObservedDataV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-FACT-BRIDGE",
+          "LS-INDEXER-MANAGER"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-005-POLICY-LIFECYCLE",
+          "AD-SR04-006-INVOCATION-CAPABILITY",
+          "AD-SR04-007-EXECUTION-EVIDENCE",
+          "AD-SR04-008-RGRA",
+          "AD-SR04-009-DYNAMIC-EVENT",
+          "AD-SR04-010-CLIENT-INDEXER",
+          "AD-SR04-011-EXPLORER-FACT-SOURCE",
+          "AD-SR04-012-POLICY-FACT-PROJECTION",
+          "AD-SR04-014-SECURITY-OPERATIONS"
+        ],
+        "requirementIds": [
+          "REQ-SR01-U00-UD-011"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-c5ed1f35c895485ae0943e6a"
+        ]
+      }
+    },
+    "NotificationDeliveryCompleted": {
+      "additionalProperties": false,
+      "properties": {
+        "attemptCount": {
+          "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+        },
+        "deliveryReceiptDigest": {
+          "oneOf": [
+            {
+              "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "notificationOccurrenceId": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        },
+        "state": {
+          "enum": [
+            "DELIVERED",
+            "FAILED",
+            "QUARANTINED"
+          ]
+        }
+      },
+      "required": [
+        "notificationOccurrenceId",
+        "state",
+        "attemptCount",
+        "deliveryReceiptDigest"
+      ],
+      "title": "NotificationDeliveryCompletedDataV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-CONTROL-WORK",
+          "LS-NOTIFICATION"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-014-SECURITY-OPERATIONS"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-REQ-TARCH-FAIL-027"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-3683eb095b707e2bcde48a93"
+        ]
+      }
+    },
+    "NotificationDeliveryRequested": {
+      "additionalProperties": false,
+      "properties": {
+        "endpointId": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        },
+        "notificationOccurrenceId": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        },
+        "payloadDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "templateDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        }
+      },
+      "required": [
+        "notificationOccurrenceId",
+        "endpointId",
+        "templateDigest",
+        "payloadDigest"
+      ],
+      "title": "NotificationDeliveryRequestedDataV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-CONTROL-WORK",
+          "LS-NOTIFICATION"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-014-SECURITY-OPERATIONS"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-REQ-TARCH-COM-023"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-643368a57e75bbaa76f569ab"
+        ]
+      }
+    },
+    "ReorgGenerationOpened": {
+      "additionalProperties": false,
+      "properties": {
+        "chainId": {
+          "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+        },
+        "invalidFromBlock": {
+          "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+        },
+        "priorCanonicalDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "reorgGenerationId": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        },
+        "replacementCanonicalDigest": {
+          "oneOf": [
+            {
+              "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "reorgGenerationId",
+        "chainId",
+        "invalidFromBlock",
+        "priorCanonicalDigest",
+        "replacementCanonicalDigest"
+      ],
+      "title": "ReorgGenerationOpenedDataV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-CONTROL-WORK",
+          "LS-FACT-BRIDGE",
+          "LS-FLEET-CONTROL",
+          "LS-RUNTIME-AGENT"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-008-RGRA",
+          "AD-SR04-011-EXPLORER-FACT-SOURCE",
+          "AD-SR04-012-POLICY-FACT-PROJECTION",
+          "AD-SR04-014-SECURITY-OPERATIONS"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-REQ-TARCH-FAIL-025"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-2ad0f0cd473ecf650563dd83"
+        ]
+      }
+    },
+    "RuntimeGenerationActivated": {
+      "additionalProperties": false,
+      "properties": {
+        "generationDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "journalSequence": {
+          "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+        },
+        "previousGenerationDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "targetId": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        },
+        "xdsVersionDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        }
+      },
+      "required": [
+        "targetId",
+        "generationDigest",
+        "xdsVersionDigest",
+        "previousGenerationDigest",
+        "journalSequence"
+      ],
+      "title": "RuntimeGenerationActivatedDataV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-EVIDENCE-EXPORT",
+          "LS-FLEET-CONTROL",
+          "LS-RUNTIME-AGENT"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-014-SECURITY-OPERATIONS"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-LEDGER-RTP-238"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-85df9adce2643b210e911f02"
+        ]
+      }
+    },
+    "RuntimeGenerationActivationFailed": {
+      "additionalProperties": false,
+      "properties": {
+        "desiredGenerationDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "pcCode": {
+          "pattern": "^PC-[A-Z][A-Z0-9]{1,15}-[0-9]{4}$",
+          "type": "string"
+        },
+        "quarantined": {
+          "type": "boolean"
+        },
+        "retainedGenerationDigest": {
+          "oneOf": [
+            {
+              "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "targetId": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        }
+      },
+      "required": [
+        "targetId",
+        "desiredGenerationDigest",
+        "pcCode",
+        "retainedGenerationDigest",
+        "quarantined"
+      ],
+      "title": "RuntimeGenerationActivationFailedDataV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-EVIDENCE-EXPORT",
+          "LS-FLEET-CONTROL",
+          "LS-RUNTIME-AGENT"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-014-SECURITY-OPERATIONS"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-REQ-TARCH-FAIL-016"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-d3465dc0c9dc5742fb820f4a"
+        ]
+      }
+    },
+    "TargetReceiptRecorded": {
+      "additionalProperties": false,
+      "properties": {
+        "activeGenerationDigest": {
+          "oneOf": [
+            {
+              "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "desiredGenerationDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "receiptId": {
+          "$ref": "shared-primitives.schema.json#/$defs/UuidV7"
+        },
+        "state": {
+          "enum": [
+            "OFFLINE",
+            "DISCOVERED",
+            "STAGING",
+            "PREPARED",
+            "XDS_PENDING",
+            "XDS_ACKED_NOT_ACTIVE",
+            "ACTIVATING",
+            "ACTIVE_MATCHED",
+            "ACTIVE_MISMATCH",
+            "NACKED",
+            "FAILED",
+            "ROLLING_BACK",
+            "ROLLED_BACK",
+            "QUARANTINED",
+            "INCOMPATIBLE"
+          ]
+        },
+        "targetId": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        },
+        "xdsVersionDigest": {
+          "oneOf": [
+            {
+              "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "receiptId",
+        "targetId",
+        "desiredGenerationDigest",
+        "activeGenerationDigest",
+        "xdsVersionDigest",
+        "state"
+      ],
+      "title": "TargetReceiptRecordedDataV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-FLEET-CONTROL",
+          "LS-RUNTIME-AGENT"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-004-AUTHORITY-INTERSECTION",
+          "AD-SR04-006-INVOCATION-CAPABILITY",
+          "AD-SR04-007-EXECUTION-EVIDENCE",
+          "AD-SR04-009-DYNAMIC-EVENT",
+          "AD-SR04-014-SECURITY-OPERATIONS",
+          "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-REQ-TARCH-COM-008"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-99535639d7cefc9993d108a2"
+        ]
+      }
+    },
+    "UiStateChanged": {
+      "additionalProperties": false,
+      "properties": {
+        "replaceable": {
+          "type": "boolean"
+        },
+        "resourceRef": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        },
+        "snapshotRevision": {
+          "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+        },
+        "topic": {
+          "enum": [
+            "operations",
+            "work-items",
+            "notifications",
+            "fleet",
+            "policy",
+            "evidence",
+            "facts"
+          ]
+        },
+        "truthState": {
+          "$ref": "shared-primitives.schema.json#/$defs/TruthState"
+        }
+      },
+      "required": [
+        "topic",
+        "resourceRef",
+        "snapshotRevision",
+        "truthState",
+        "replaceable"
+      ],
+      "title": "UiStateChangedDataV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "LS-CONTROL-API",
+          "LS-WORKBENCH"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-004-AUTHORITY-INTERSECTION",
+          "AD-SR04-014-SECURITY-OPERATIONS",
+          "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-REQ-TARCH-COM-024"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-3b7d5dff1c7a2777eef5afd7"
+        ]
+      }
+    },
+    "SecretRevoked": {
+      "additionalProperties": false,
+      "properties": {
+        "rotationId": {
+          "$ref": "shared-primitives.schema.json#/$defs/UuidV7"
+        },
+        "signerRole": {
+          "type": "string",
+          "enum": [
+            "BUSINESS_EFFECT",
+            "LIFECYCLE_EVIDENCE"
+          ]
+        },
+        "oldFingerprint": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "newFingerprint": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        }
+      },
+      "required": [
+        "rotationId",
+        "signerRole",
+        "oldFingerprint",
+        "newFingerprint"
+      ],
+      "title": "SecretRevokedDataV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "requirementIds": [
+          "REQ-SR01-B0-REQ-SEC-012"
+        ],
+        "decisionIds": [
+          "DEC-C03-004",
+          "DEC-C03-005",
+          "DEC-C03-013"
+        ],
+        "componentIds": [
+          "LS-CONTROL-API",
+          "LS-CONTROL-WORK"
+        ],
+        "sourceUnitIds": [
+          "SU-6be38cab62935c180d93c2a6",
+          "SU-f6196eca66145278e891aff6"
+        ]
+      }
+    },
+    "SecretRotated": {
+      "additionalProperties": false,
+      "properties": {
+        "rotationId": {
+          "$ref": "shared-primitives.schema.json#/$defs/UuidV7"
+        },
+        "signerRole": {
+          "type": "string",
+          "enum": [
+            "BUSINESS_EFFECT",
+            "LIFECYCLE_EVIDENCE"
+          ]
+        },
+        "oldFingerprint": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "newFingerprint": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        }
+      },
+      "required": [
+        "rotationId",
+        "signerRole",
+        "oldFingerprint",
+        "newFingerprint"
+      ],
+      "title": "SecretRotatedDataV1",
+      "type": "object",
+      "x-openpc-trace": {
+        "requirementIds": [
+          "REQ-SR01-B0-REQ-SEC-012"
+        ],
+        "decisionIds": [
+          "DEC-C03-004",
+          "DEC-C03-005",
+          "DEC-C03-013"
+        ],
+        "componentIds": [
+          "LS-CONTROL-API",
+          "LS-CONTROL-WORK"
+        ],
+        "sourceUnitIds": [
+          "SU-6be38cab62935c180d93c2a6",
+          "SU-f6196eca66145278e891aff6"
+        ]
+      }
+    }
+  },
+  "$id": "https://schemas.openpc.local/event-payloads.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "title": "OpenPC event payload types v1",
+  "type": "object",
+  "x-openpc-trace": {
+    "componentIds": [
+      "LS-CONTROL-WORK",
+      "LS-FLEET-CONTROL",
+      "LS-RUNTIME-AGENT",
+      "LS-WORKBENCH"
+    ],
+    "decisionIds": [
+      "AD-SR04-001-B0-FREEZE",
+      "AD-SR04-004-AUTHORITY-INTERSECTION",
+      "AD-SR04-006-INVOCATION-CAPABILITY",
+      "AD-SR04-007-EXECUTION-EVIDENCE",
+      "AD-SR04-009-DYNAMIC-EVENT",
+      "AD-SR04-014-SECURITY-OPERATIONS",
+      "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY"
+    ],
+    "requirementIds": [
+      "REQ-SR01-B0-REQ-DEV-006",
+      "REQ-SR01-B0-REQ-TARCH-COM-003",
+      "REQ-SR01-B0-REQ-TARCH-COM-008",
+      "REQ-SR01-B0-REQ-TARCH-COM-024"
+    ],
+    "sourceUnitIds": [
+      "SU-REQ-3b7d5dff1c7a2777eef5afd7",
+      "SU-REQ-446f6cb0783b05c8f0fdc6ee",
+      "SU-REQ-62eca98a0a9e10ea90981863",
+      "SU-REQ-99535639d7cefc9993d108a2"
+    ]
+  }
+}

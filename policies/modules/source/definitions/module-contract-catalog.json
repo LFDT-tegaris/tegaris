@@ -1,0 +1,981 @@
+{
+  "c03ActionIntentRegistry": {
+    "path": "pkg://interfaces/action-intent-registry.yaml",
+    "sha256": "d8143b3c70b7defa52739948807488286a45c166c3e6f9dd5ae661372e1e17fc"
+  },
+  "catalogId": "OPENPC-C04-MODULE-CONTRACT-CATALOG-20260824-01",
+  "claimCeilingIds": [
+    "CC-GLOBAL-AUTHORITY-TRUTH",
+    "CC-EXACT-COMPATIBILITY-PROFILE",
+    "CC-ADMITTED-LOCAL-FACT-SOURCE-NEUTRAL",
+    "CC-PC-SEPARATE-PRODUCT-INTEGRATION",
+    "CC-NUMERIC-SLA-CERTIFICATION",
+    "CC-ACCESSIBILITY-RESPONSIVE-EXPLAINABILITY"
+  ],
+  "configuration": [
+    {
+      "id": "MOD-CFG-PROFILE",
+      "key": "openpc.profile",
+      "kind": "CONFIG",
+      "name": "Named immutable startup profile",
+      "precedence": [
+        "compiled-safe-defaults",
+        "named-profile",
+        "site-file",
+        "allowlisted-environment",
+        "secret-provider-reference"
+      ],
+      "traceSetId": "TS-MOD-OPERATIONS",
+      "type": "enum",
+      "values": [
+        "local",
+        "development",
+        "test",
+        "staging",
+        "production"
+      ]
+    },
+    {
+      "id": "MOD-CFG-APPROVAL-EXPIRY",
+      "key": "approval.default_expiry",
+      "kind": "CONFIG",
+      "name": "Approval default expiry",
+      "range": "PT5M..P30D",
+      "secret": false,
+      "traceSetId": "TS-MOD-POLICY",
+      "type": "duration"
+    },
+    {
+      "id": "MOD-CFG-SIMULATION-LIMIT",
+      "key": "policy.simulation_case_limit",
+      "kind": "CONFIG",
+      "maximum": "10000",
+      "minimum": "1",
+      "name": "Policy simulation case limit",
+      "secret": false,
+      "traceSetId": "TS-MOD-SIMULATION",
+      "type": "uint32"
+    }
+  ],
+  "errors": [
+    {
+      "format": "RFC9457",
+      "httpStatus": 422,
+      "id": "PC-MODULE-7000",
+      "kind": "ERROR",
+      "name": "Manifest validation failed",
+      "retryable": false,
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "format": "RFC9457",
+      "httpStatus": 422,
+      "id": "PC-MODULE-7001",
+      "kind": "ERROR",
+      "name": "Required dependency missing",
+      "retryable": false,
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "format": "RFC9457",
+      "httpStatus": 409,
+      "id": "PC-MODULE-7002",
+      "kind": "ERROR",
+      "name": "Dependency cycle detected",
+      "retryable": false,
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "format": "RFC9457",
+      "httpStatus": 409,
+      "id": "PC-MODULE-7003",
+      "kind": "ERROR",
+      "name": "Exact version or digest incompatible",
+      "retryable": false,
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "format": "RFC9457",
+      "httpStatus": 409,
+      "id": "PC-MODULE-7004",
+      "kind": "ERROR",
+      "name": "Provider binding ambiguous or conflicting",
+      "retryable": false,
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "format": "RFC9457",
+      "httpStatus": 409,
+      "id": "PC-MODULE-7005",
+      "kind": "ERROR",
+      "name": "Active dependent prevents operation",
+      "retryable": false,
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "format": "RFC9457",
+      "httpStatus": 409,
+      "id": "PC-MODULE-7006",
+      "kind": "ERROR",
+      "name": "Data custody or retention closure incomplete",
+      "retryable": false,
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "format": "RFC9457",
+      "httpStatus": 409,
+      "id": "PC-MODULE-7007",
+      "kind": "ERROR",
+      "name": "Future component attempted to satisfy R1",
+      "retryable": false,
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "format": "RFC9457",
+      "httpStatus": 422,
+      "id": "PC-MODULE-7008",
+      "kind": "ERROR",
+      "name": "Supply-chain evidence absent or invalid",
+      "retryable": false,
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "format": "RFC9457",
+      "httpStatus": 409,
+      "id": "PC-MODULE-7009",
+      "kind": "ERROR",
+      "name": "Lifecycle transition invalid",
+      "retryable": false,
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "format": "RFC9457",
+      "httpStatus": 422,
+      "id": "PC-POLICY-2000",
+      "kind": "ERROR",
+      "name": "Policy composition type mismatch",
+      "retryable": false,
+      "traceSetId": "TS-MOD-POLICY"
+    },
+    {
+      "format": "RFC9457",
+      "httpStatus": 422,
+      "id": "PC-POLICY-2001",
+      "kind": "ERROR",
+      "name": "Terminal denial conflict",
+      "retryable": false,
+      "traceSetId": "TS-MOD-POLICY"
+    },
+    {
+      "format": "RFC9457",
+      "httpStatus": 409,
+      "id": "PC-POLICY-2002",
+      "kind": "ERROR",
+      "name": "Constrained priority conflict",
+      "retryable": false,
+      "traceSetId": "TS-MOD-POLICY"
+    },
+    {
+      "format": "RFC9457",
+      "httpStatus": 409,
+      "id": "PC-POLICY-2003",
+      "kind": "ERROR",
+      "name": "Simulation input stale or incomplete",
+      "retryable": false,
+      "traceSetId": "TS-MOD-POLICY"
+    },
+    {
+      "format": "RFC9457",
+      "httpStatus": 409,
+      "id": "PC-POLICY-2004",
+      "kind": "ERROR",
+      "name": "Approval digest or maker-checker invalid",
+      "retryable": false,
+      "traceSetId": "TS-MOD-POLICY"
+    },
+    {
+      "format": "RFC9457",
+      "httpStatus": 409,
+      "id": "PC-POLICY-2005",
+      "kind": "ERROR",
+      "name": "Generation activation incompatible",
+      "retryable": false,
+      "traceSetId": "TS-MOD-POLICY"
+    }
+  ],
+  "events": [
+    {
+      "duplicateRule": "SAME_DIGEST_IDEMPOTENT_DIFFERENT_DIGEST_TAMPER",
+      "envelope": "CloudEvents-1.0.2",
+      "eventType": "openpc.module.lifecycle.requested.v1",
+      "gapRule": "BLOCK_COMPLETENESS",
+      "id": "MOD-EVT-LIFECYCLE-REQUESTED",
+      "kind": "EVENT",
+      "name": "openpc.module.lifecycle.requested.v1",
+      "ordering": "PER_AGGREGATE_SEQUENCE",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "duplicateRule": "SAME_DIGEST_IDEMPOTENT_DIFFERENT_DIGEST_TAMPER",
+      "envelope": "CloudEvents-1.0.2",
+      "eventType": "openpc.module.state.changed.v1",
+      "gapRule": "BLOCK_COMPLETENESS",
+      "id": "MOD-EVT-STATE-CHANGED",
+      "kind": "EVENT",
+      "name": "openpc.module.state.changed.v1",
+      "ordering": "PER_AGGREGATE_SEQUENCE",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "duplicateRule": "SAME_DIGEST_IDEMPOTENT_DIFFERENT_DIGEST_TAMPER",
+      "envelope": "CloudEvents-1.0.2",
+      "eventType": "openpc.module.admission.rejected.v1",
+      "gapRule": "BLOCK_COMPLETENESS",
+      "id": "MOD-EVT-ADMISSION-REJECTED",
+      "kind": "EVENT",
+      "name": "openpc.module.admission.rejected.v1",
+      "ordering": "PER_AGGREGATE_SEQUENCE",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "duplicateRule": "SAME_DIGEST_IDEMPOTENT_DIFFERENT_DIGEST_TAMPER",
+      "envelope": "CloudEvents-1.0.2",
+      "eventType": "openpc.module.provider.bound.v1",
+      "gapRule": "BLOCK_COMPLETENESS",
+      "id": "MOD-EVT-PROVIDER-BOUND",
+      "kind": "EVENT",
+      "name": "openpc.module.provider.bound.v1",
+      "ordering": "PER_AGGREGATE_SEQUENCE",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "duplicateRule": "SAME_DIGEST_IDEMPOTENT_DIFFERENT_DIGEST_TAMPER",
+      "envelope": "CloudEvents-1.0.2",
+      "eventType": "openpc.policy.version.created.v1",
+      "gapRule": "BLOCK_COMPLETENESS",
+      "id": "POL-EVT-VERSION-CREATED",
+      "kind": "EVENT",
+      "name": "openpc.policy.version.created.v1",
+      "ordering": "PER_AGGREGATE_SEQUENCE",
+      "traceSetId": "TS-MOD-POLICY"
+    },
+    {
+      "duplicateRule": "SAME_DIGEST_IDEMPOTENT_DIFFERENT_DIGEST_TAMPER",
+      "envelope": "CloudEvents-1.0.2",
+      "eventType": "openpc.policy.release.created.v1",
+      "gapRule": "BLOCK_COMPLETENESS",
+      "id": "POL-EVT-RELEASE-CREATED",
+      "kind": "EVENT",
+      "name": "openpc.policy.release.created.v1",
+      "ordering": "PER_AGGREGATE_SEQUENCE",
+      "traceSetId": "TS-MOD-POLICY"
+    },
+    {
+      "duplicateRule": "SAME_DIGEST_IDEMPOTENT_DIFFERENT_DIGEST_TAMPER",
+      "envelope": "CloudEvents-1.0.2",
+      "eventType": "openpc.policy.generation.activated.v1",
+      "gapRule": "BLOCK_COMPLETENESS",
+      "id": "POL-EVT-GENERATION-ACTIVATED",
+      "kind": "EVENT",
+      "name": "openpc.policy.generation.activated.v1",
+      "ordering": "PER_AGGREGATE_SEQUENCE",
+      "traceSetId": "TS-MOD-POLICY"
+    },
+    {
+      "duplicateRule": "SAME_DIGEST_IDEMPOTENT_DIFFERENT_DIGEST_TAMPER",
+      "envelope": "CloudEvents-1.0.2",
+      "eventType": "openpc.policy.conflict.detected.v1",
+      "gapRule": "BLOCK_COMPLETENESS",
+      "id": "POL-EVT-CONFLICT-DETECTED",
+      "kind": "EVENT",
+      "name": "openpc.policy.conflict.detected.v1",
+      "ordering": "PER_AGGREGATE_SEQUENCE",
+      "traceSetId": "TS-MOD-POLICY"
+    },
+    {
+      "duplicateRule": "SAME_DIGEST_IDEMPOTENT_DIFFERENT_DIGEST_TAMPER",
+      "envelope": "CloudEvents-1.0.2",
+      "eventType": "openpc.policy.simulation.completed.v1",
+      "gapRule": "BLOCK_COMPLETENESS",
+      "id": "SIM-EVT-COMPLETED",
+      "kind": "EVENT",
+      "name": "openpc.policy.simulation.completed.v1",
+      "ordering": "PER_AGGREGATE_SEQUENCE",
+      "traceSetId": "TS-MOD-SIMULATION"
+    },
+    {
+      "duplicateRule": "SAME_DIGEST_IDEMPOTENT_DIFFERENT_DIGEST_TAMPER",
+      "envelope": "CloudEvents-1.0.2",
+      "eventType": "openpc.participant.delegation.changed.v1",
+      "gapRule": "BLOCK_COMPLETENESS",
+      "id": "PART-EVT-DELEGATION-CHANGED",
+      "kind": "EVENT",
+      "name": "openpc.participant.delegation.changed.v1",
+      "ordering": "PER_AGGREGATE_SEQUENCE",
+      "traceSetId": "TS-MOD-PARTICIPANT"
+    }
+  ],
+  "freezeId": "C03-ARCHITECTURE-SHARED-PRIMITIVES-FREEZE-20260824-01",
+  "migrations": [
+    {
+      "activeAuthorityGenerations": "AT_MOST_ONE",
+      "id": "MIG-GREENFIELD-V1",
+      "kind": "MIGRATION",
+      "method": "EXPAND_MIGRATE_CONTRACT",
+      "name": "Greenfield module installation",
+      "phases": [
+        "M1",
+        "M4"
+      ],
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "activeAuthorityGenerations": "AT_MOST_ONE",
+      "id": "MIG-PREDECESSOR-V1",
+      "kind": "MIGRATION",
+      "method": "EXPAND_MIGRATE_CONTRACT",
+      "name": "Sealed predecessor transition",
+      "phases": [
+        "M0",
+        "M1",
+        "M2",
+        "M3",
+        "M4",
+        "M5"
+      ],
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    }
+  ],
+  "operations": [
+    {
+      "actionIntentId": "ACT-MODULE_CREATE_INSTALL-V1",
+      "actionIntentSource": "C03_AF08_ACTION_INTENT_REGISTRY",
+      "authorization": "ACTION_INTENT_AND_EFFECTIVE_AUTHORITY",
+      "denial": "TERMINAL_NON_LEAKING",
+      "fromState": "ABSENT",
+      "id": "MOD-OP-INSTALL",
+      "idempotency": "EXACT_COMMAND_ID",
+      "kind": "OPERATION",
+      "name": "Install module",
+      "stateMachine": "MODULE",
+      "toState": "INSTALLED_DISABLED",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "actionIntentId": "ACT-MODULE_ACTIVATE_RESOURCE-V1",
+      "actionIntentSource": "C03_AF08_ACTION_INTENT_REGISTRY",
+      "authorization": "ACTION_INTENT_AND_EFFECTIVE_AUTHORITY",
+      "denial": "TERMINAL_NON_LEAKING",
+      "fromState": "INSTALLED_DISABLED",
+      "id": "MOD-OP-ENABLE",
+      "idempotency": "EXACT_COMMAND_ID",
+      "kind": "OPERATION",
+      "name": "Enable module",
+      "stateMachine": "MODULE",
+      "toState": "ENABLED",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "actionIntentId": "ACT-MODULES_UPDATE_RESOURCE-V1",
+      "actionIntentSource": "C03_AF08_ACTION_INTENT_REGISTRY",
+      "authorization": "ACTION_INTENT_AND_EFFECTIVE_AUTHORITY",
+      "denial": "TERMINAL_NON_LEAKING",
+      "fromState": "ENABLED",
+      "id": "MOD-OP-DISABLE",
+      "idempotency": "EXACT_COMMAND_ID",
+      "kind": "OPERATION",
+      "name": "Disable module",
+      "stateMachine": "MODULE",
+      "toState": "INSTALLED_DISABLED",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "actionIntentId": "ACT-MODULES_UPDATE_RESOURCE-V1",
+      "actionIntentSource": "C03_AF08_ACTION_INTENT_REGISTRY",
+      "authorization": "ACTION_INTENT_AND_EFFECTIVE_AUTHORITY",
+      "denial": "TERMINAL_NON_LEAKING",
+      "fromState": "ENABLED",
+      "id": "MOD-OP-UPGRADE",
+      "idempotency": "EXACT_COMMAND_ID",
+      "kind": "OPERATION",
+      "name": "Upgrade module",
+      "stateMachine": "MODULE",
+      "toState": "ENABLED",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "actionIntentId": "ACT-MODULES_UPDATE_RESOURCE-V1",
+      "actionIntentSource": "C03_AF08_ACTION_INTENT_REGISTRY",
+      "authorization": "ACTION_INTENT_AND_EFFECTIVE_AUTHORITY",
+      "denial": "TERMINAL_NON_LEAKING",
+      "fromState": "ENABLED",
+      "id": "MOD-OP-DOWNGRADE",
+      "idempotency": "EXACT_COMMAND_ID",
+      "kind": "OPERATION",
+      "name": "Downgrade module",
+      "stateMachine": "MODULE",
+      "toState": "ENABLED",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "actionIntentId": "ACT-MODULES_UPDATE_RESOURCE-V1",
+      "actionIntentSource": "C03_AF08_ACTION_INTENT_REGISTRY",
+      "authorization": "ACTION_INTENT_AND_EFFECTIVE_AUTHORITY",
+      "denial": "TERMINAL_NON_LEAKING",
+      "fromState": "ENABLED",
+      "id": "MOD-OP-ROLLBACK",
+      "idempotency": "EXACT_COMMAND_ID",
+      "kind": "OPERATION",
+      "name": "Rollback module",
+      "stateMachine": "MODULE",
+      "toState": "ENABLED",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "actionIntentId": "ACT-MODULE_UNINSTALL_RESOURCE-V1",
+      "actionIntentSource": "C03_AF08_ACTION_INTENT_REGISTRY",
+      "authorization": "ACTION_INTENT_AND_EFFECTIVE_AUTHORITY",
+      "denial": "TERMINAL_NON_LEAKING",
+      "fromState": "INSTALLED_DISABLED",
+      "id": "MOD-OP-UNINSTALL",
+      "idempotency": "EXACT_COMMAND_ID",
+      "kind": "OPERATION",
+      "name": "Uninstall module",
+      "stateMachine": "MODULE",
+      "toState": "REMOVED",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "actionIntentId": "ACT-MODULES_READ_RESOURCE-V1",
+      "actionIntentSource": "C03_AF08_ACTION_INTENT_REGISTRY",
+      "authorization": "ACTION_INTENT_AND_EFFECTIVE_AUTHORITY",
+      "denial": "TERMINAL_NON_LEAKING",
+      "fromState": "ADMITTED",
+      "id": "MOD-OP-RESOLVE",
+      "idempotency": "EXACT_COMMAND_ID",
+      "kind": "OPERATION",
+      "name": "Resolve exact dependency/provider closure",
+      "stateMachine": "MODULE",
+      "toState": "ADMITTED",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "actionIntentId": "ACT-POLICY_VERSIONS_CREATE_RESOURCE-V1",
+      "actionIntentSource": "C03_AF08_ACTION_INTENT_REGISTRY",
+      "authorization": "ACTION_INTENT_AND_EFFECTIVE_AUTHORITY",
+      "denial": "TERMINAL_NON_LEAKING",
+      "fromState": "EDITABLE_DRAFT",
+      "id": "POL-OP-CREATE-VERSION",
+      "idempotency": "EXACT_COMMAND_ID",
+      "kind": "OPERATION",
+      "name": "Create immutable policy version",
+      "stateMachine": "POLICY",
+      "toState": "IMMUTABLE_VERSION",
+      "traceSetId": "TS-MOD-POLICY"
+    },
+    {
+      "actionIntentId": "ACT-POLICY_APPROVE_REQUEST-V1",
+      "actionIntentSource": "C03_AF08_ACTION_INTENT_REGISTRY",
+      "authorization": "ACTION_INTENT_AND_EFFECTIVE_AUTHORITY",
+      "denial": "TERMINAL_NON_LEAKING",
+      "fromState": "PENDING_APPROVAL",
+      "id": "POL-OP-APPROVE",
+      "idempotency": "EXACT_COMMAND_ID",
+      "kind": "OPERATION",
+      "name": "Approve exact candidate digest",
+      "stateMachine": "POLICY",
+      "toState": "APPROVED",
+      "traceSetId": "TS-MOD-POLICY"
+    },
+    {
+      "actionIntentId": "ACT-POLICY_ACTIVATE_PUBLISH-V1",
+      "actionIntentSource": "C03_AF08_ACTION_INTENT_REGISTRY",
+      "authorization": "ACTION_INTENT_AND_EFFECTIVE_AUTHORITY",
+      "denial": "TERMINAL_NON_LEAKING",
+      "fromState": "APPROVED",
+      "id": "POL-OP-RELEASE",
+      "idempotency": "EXACT_COMMAND_ID",
+      "kind": "OPERATION",
+      "name": "Create immutable release",
+      "stateMachine": "POLICY",
+      "toState": "IMMUTABLE_RELEASE",
+      "traceSetId": "TS-MOD-POLICY"
+    },
+    {
+      "actionIntentId": "ACT-POLICY_ACTIVATE_RELEASE-V1",
+      "actionIntentSource": "C03_AF08_ACTION_INTENT_REGISTRY",
+      "authorization": "ACTION_INTENT_AND_EFFECTIVE_AUTHORITY",
+      "denial": "TERMINAL_NON_LEAKING",
+      "fromState": "PREPARED",
+      "id": "POL-OP-ACTIVATE",
+      "idempotency": "EXACT_COMMAND_ID",
+      "kind": "OPERATION",
+      "name": "Activate exact prepared generation",
+      "stateMachine": "POLICY",
+      "toState": "ACTIVE",
+      "traceSetId": "TS-MOD-POLICY"
+    },
+    {
+      "actionIntentId": "ACT-POLICY_VERSIONS_UPDATE_RESOURCE-V1",
+      "actionIntentSource": "C03_AF08_ACTION_INTENT_REGISTRY",
+      "authorization": "ACTION_INTENT_AND_EFFECTIVE_AUTHORITY",
+      "denial": "TERMINAL_NON_LEAKING",
+      "fromState": "ACTIVE",
+      "id": "POL-OP-RETIRE",
+      "idempotency": "EXACT_COMMAND_ID",
+      "kind": "OPERATION",
+      "name": "Retire active generation",
+      "stateMachine": "POLICY",
+      "toState": "RETIRED",
+      "traceSetId": "TS-MOD-POLICY"
+    },
+    {
+      "actionIntentId": "ACT-POLICY_CREATE_SIMULATION-V1",
+      "actionIntentSource": "C03_AF08_ACTION_INTENT_REGISTRY",
+      "authorization": "ACTION_INTENT_AND_EFFECTIVE_AUTHORITY",
+      "denial": "TERMINAL_NON_LEAKING",
+      "fromState": "BOUND",
+      "id": "SIM-OP-EVALUATE",
+      "idempotency": "EXACT_COMMAND_ID",
+      "kind": "OPERATION",
+      "name": "Evaluate immutable scenario with production evaluator",
+      "stateMachine": "SIMULATION",
+      "toState": "COMPLETED",
+      "traceSetId": "TS-MOD-SIMULATION"
+    },
+    {
+      "actionIntentId": "ACT-PARTICIPANT_CREATE_MEMBER-V1",
+      "actionIntentSource": "C03_AF08_ACTION_INTENT_REGISTRY",
+      "authorization": "ACTION_INTENT_AND_EFFECTIVE_AUTHORITY",
+      "denial": "TERMINAL_NON_LEAKING",
+      "fromState": "PROPOSED",
+      "id": "PART-OP-DELEGATE",
+      "idempotency": "EXACT_COMMAND_ID",
+      "kind": "OPERATION",
+      "name": "Create downward-bounded delegated administration",
+      "stateMachine": "PARTICIPANT_GOVERNANCE",
+      "toState": "ACTIVE",
+      "traceSetId": "TS-MOD-PARTICIPANT"
+    }
+  ],
+  "schemaVersion": "1.0",
+  "states": [
+    {
+      "id": "MOD-STATE-ABSENT",
+      "kind": "STATE",
+      "name": "Absent",
+      "stateMachine": "MODULE",
+      "traceSetId": "TS-MOD-LIFECYCLE",
+      "value": "ABSENT"
+    },
+    {
+      "id": "MOD-STATE-ADMITTED",
+      "kind": "STATE",
+      "name": "Admitted",
+      "stateMachine": "MODULE",
+      "traceSetId": "TS-MOD-LIFECYCLE",
+      "value": "ADMITTED"
+    },
+    {
+      "id": "MOD-STATE-INSTALLED_DISABLED",
+      "kind": "STATE",
+      "name": "Installed Disabled",
+      "stateMachine": "MODULE",
+      "traceSetId": "TS-MOD-LIFECYCLE",
+      "value": "INSTALLED_DISABLED"
+    },
+    {
+      "id": "MOD-STATE-ENABLING",
+      "kind": "STATE",
+      "name": "Enabling",
+      "stateMachine": "MODULE",
+      "traceSetId": "TS-MOD-LIFECYCLE",
+      "value": "ENABLING"
+    },
+    {
+      "id": "MOD-STATE-ENABLED",
+      "kind": "STATE",
+      "name": "Enabled",
+      "stateMachine": "MODULE",
+      "traceSetId": "TS-MOD-LIFECYCLE",
+      "value": "ENABLED"
+    },
+    {
+      "id": "MOD-STATE-DISABLING",
+      "kind": "STATE",
+      "name": "Disabling",
+      "stateMachine": "MODULE",
+      "traceSetId": "TS-MOD-LIFECYCLE",
+      "value": "DISABLING"
+    },
+    {
+      "id": "MOD-STATE-UPGRADING",
+      "kind": "STATE",
+      "name": "Upgrading",
+      "stateMachine": "MODULE",
+      "traceSetId": "TS-MOD-LIFECYCLE",
+      "value": "UPGRADING"
+    },
+    {
+      "id": "MOD-STATE-DOWNGRADING",
+      "kind": "STATE",
+      "name": "Downgrading",
+      "stateMachine": "MODULE",
+      "traceSetId": "TS-MOD-LIFECYCLE",
+      "value": "DOWNGRADING"
+    },
+    {
+      "id": "MOD-STATE-ROLLING_BACK",
+      "kind": "STATE",
+      "name": "Rolling Back",
+      "stateMachine": "MODULE",
+      "traceSetId": "TS-MOD-LIFECYCLE",
+      "value": "ROLLING_BACK"
+    },
+    {
+      "id": "MOD-STATE-UNINSTALLING",
+      "kind": "STATE",
+      "name": "Uninstalling",
+      "stateMachine": "MODULE",
+      "traceSetId": "TS-MOD-LIFECYCLE",
+      "value": "UNINSTALLING"
+    },
+    {
+      "id": "MOD-STATE-REMOVED",
+      "kind": "STATE",
+      "name": "Removed",
+      "stateMachine": "MODULE",
+      "traceSetId": "TS-MOD-LIFECYCLE",
+      "value": "REMOVED"
+    },
+    {
+      "id": "MOD-STATE-FAILED_FENCED",
+      "kind": "STATE",
+      "name": "Failed Fenced",
+      "stateMachine": "MODULE",
+      "traceSetId": "TS-MOD-LIFECYCLE",
+      "value": "FAILED_FENCED"
+    },
+    {
+      "id": "POL-STATE-EDITABLE_DRAFT",
+      "immutable": false,
+      "kind": "STATE",
+      "name": "Editable Draft",
+      "stateMachine": "POLICY",
+      "traceSetId": "TS-MOD-POLICY",
+      "value": "EDITABLE_DRAFT"
+    },
+    {
+      "id": "POL-STATE-IMMUTABLE_VERSION",
+      "immutable": true,
+      "kind": "STATE",
+      "name": "Immutable Version",
+      "stateMachine": "POLICY",
+      "traceSetId": "TS-MOD-POLICY",
+      "value": "IMMUTABLE_VERSION"
+    },
+    {
+      "id": "POL-STATE-PENDING_APPROVAL",
+      "immutable": false,
+      "kind": "STATE",
+      "name": "Pending Approval",
+      "stateMachine": "POLICY",
+      "traceSetId": "TS-MOD-POLICY",
+      "value": "PENDING_APPROVAL"
+    },
+    {
+      "id": "POL-STATE-APPROVED",
+      "immutable": false,
+      "kind": "STATE",
+      "name": "Approved",
+      "stateMachine": "POLICY",
+      "traceSetId": "TS-MOD-POLICY",
+      "value": "APPROVED"
+    },
+    {
+      "id": "POL-STATE-REJECTED",
+      "immutable": false,
+      "kind": "STATE",
+      "name": "Rejected",
+      "stateMachine": "POLICY",
+      "traceSetId": "TS-MOD-POLICY",
+      "value": "REJECTED"
+    },
+    {
+      "id": "POL-STATE-IMMUTABLE_RELEASE",
+      "immutable": true,
+      "kind": "STATE",
+      "name": "Immutable Release",
+      "stateMachine": "POLICY",
+      "traceSetId": "TS-MOD-POLICY",
+      "value": "IMMUTABLE_RELEASE"
+    },
+    {
+      "id": "POL-STATE-DESIRED",
+      "immutable": false,
+      "kind": "STATE",
+      "name": "Desired",
+      "stateMachine": "POLICY",
+      "traceSetId": "TS-MOD-POLICY",
+      "value": "DESIRED"
+    },
+    {
+      "id": "POL-STATE-PREPARED",
+      "immutable": true,
+      "kind": "STATE",
+      "name": "Prepared",
+      "stateMachine": "POLICY",
+      "traceSetId": "TS-MOD-POLICY",
+      "value": "PREPARED"
+    },
+    {
+      "id": "POL-STATE-ACTIVE",
+      "immutable": true,
+      "kind": "STATE",
+      "name": "Active",
+      "stateMachine": "POLICY",
+      "traceSetId": "TS-MOD-POLICY",
+      "value": "ACTIVE"
+    },
+    {
+      "id": "POL-STATE-RETIRED",
+      "immutable": true,
+      "kind": "STATE",
+      "name": "Retired",
+      "stateMachine": "POLICY",
+      "traceSetId": "TS-MOD-POLICY",
+      "value": "RETIRED"
+    },
+    {
+      "id": "SIM-STATE-BOUND",
+      "kind": "STATE",
+      "name": "Bound",
+      "stateMachine": "SIMULATION",
+      "traceSetId": "TS-MOD-SIMULATION",
+      "value": "BOUND"
+    },
+    {
+      "id": "SIM-STATE-COMPLETED",
+      "immutable": true,
+      "kind": "STATE",
+      "name": "Completed",
+      "stateMachine": "SIMULATION",
+      "traceSetId": "TS-MOD-SIMULATION",
+      "value": "COMPLETED"
+    },
+    {
+      "id": "PART-STATE-PROPOSED",
+      "kind": "STATE",
+      "name": "Proposed",
+      "stateMachine": "PARTICIPANT_GOVERNANCE",
+      "traceSetId": "TS-MOD-PARTICIPANT",
+      "value": "PROPOSED"
+    },
+    {
+      "id": "PART-STATE-ACTIVE",
+      "kind": "STATE",
+      "name": "Active",
+      "stateMachine": "PARTICIPANT_GOVERNANCE",
+      "traceSetId": "TS-MOD-PARTICIPANT",
+      "value": "ACTIVE"
+    }
+  ],
+  "tests": [
+    {
+      "expected": "FAIL_CLOSED_OR_EXACT_SUCCESS",
+      "id": "C04-MODULE-LANE-POSITIVE",
+      "kind": "TEST",
+      "name": "Module lane positive conformance",
+      "traceSetId": "TS-MOD-OPERATIONS"
+    },
+    {
+      "expected": "FAIL_CLOSED_OR_EXACT_SUCCESS",
+      "id": "C04-MODULE-LANE-NEGATIVE",
+      "kind": "TEST",
+      "name": "Module lane negative conformance",
+      "traceSetId": "TS-MOD-OPERATIONS"
+    },
+    {
+      "expected": "FAIL_CLOSED_OR_EXACT_SUCCESS",
+      "id": "C04-MODULE-LANE-UNKNOWN",
+      "kind": "TEST",
+      "name": "Module lane unknown conformance",
+      "traceSetId": "TS-MOD-OPERATIONS"
+    },
+    {
+      "expected": "FAIL_CLOSED_OR_EXACT_SUCCESS",
+      "id": "C04-MODULE-LANE-STALE",
+      "kind": "TEST",
+      "name": "Module lane stale conformance",
+      "traceSetId": "TS-MOD-OPERATIONS"
+    },
+    {
+      "expected": "FAIL_CLOSED_OR_EXACT_SUCCESS",
+      "id": "C04-MODULE-LANE-UNAVAILABLE",
+      "kind": "TEST",
+      "name": "Module lane unavailable conformance",
+      "traceSetId": "TS-MOD-OPERATIONS"
+    },
+    {
+      "expected": "FAIL_CLOSED_OR_EXACT_SUCCESS",
+      "id": "C04-MODULE-LANE-TAMPERED",
+      "kind": "TEST",
+      "name": "Module lane tampered conformance",
+      "traceSetId": "TS-MOD-OPERATIONS"
+    },
+    {
+      "expected": "FAIL_CLOSED_OR_EXACT_SUCCESS",
+      "id": "C04-MODULE-LANE-PARTIAL",
+      "kind": "TEST",
+      "name": "Module lane partial conformance",
+      "traceSetId": "TS-MOD-OPERATIONS"
+    },
+    {
+      "expected": "FAIL_CLOSED_OR_EXACT_SUCCESS",
+      "id": "C04-MODULE-LANE-CONFLICT",
+      "kind": "TEST",
+      "name": "Module lane conflict conformance",
+      "traceSetId": "TS-MOD-OPERATIONS"
+    },
+    {
+      "expected": "FAIL_CLOSED_OR_EXACT_SUCCESS",
+      "id": "C04-MODULE-LANE-REORG",
+      "kind": "TEST",
+      "name": "Module lane reorg conformance",
+      "traceSetId": "TS-MOD-OPERATIONS"
+    },
+    {
+      "expected": "FAIL_CLOSED_OR_EXACT_SUCCESS",
+      "id": "C04-MODULE-LANE-REPLAY",
+      "kind": "TEST",
+      "name": "Module lane replay conformance",
+      "traceSetId": "TS-MOD-OPERATIONS"
+    },
+    {
+      "expected": "FAIL_CLOSED_OR_EXACT_SUCCESS",
+      "id": "C04-MODULE-LANE-ROLLBACK",
+      "kind": "TEST",
+      "name": "Module lane rollback conformance",
+      "traceSetId": "TS-MOD-OPERATIONS"
+    },
+    {
+      "expected": "FAIL_CLOSED_OR_EXACT_SUCCESS",
+      "id": "C04-MODULE-LANE-RECOVERY",
+      "kind": "TEST",
+      "name": "Module lane recovery conformance",
+      "traceSetId": "TS-MOD-OPERATIONS"
+    },
+    {
+      "expected": "FAIL_CLOSED_OR_EXACT_SUCCESS",
+      "id": "C04-MODULE-LANE-RETIREMENT",
+      "kind": "TEST",
+      "name": "Module lane retirement conformance",
+      "traceSetId": "TS-MOD-OPERATIONS"
+    },
+    {
+      "expected": "FAIL_CLOSED_OR_EXACT_SUCCESS",
+      "id": "C04-MODULE-LANE-UNINSTALL",
+      "kind": "TEST",
+      "name": "Module lane uninstall conformance",
+      "traceSetId": "TS-MOD-OPERATIONS"
+    }
+  ],
+  "types": [
+    {
+      "id": "MODULE-MANIFEST",
+      "kind": "TYPE",
+      "name": "Module Manifest",
+      "traceSetId": "TS-MOD-MANIFEST"
+    },
+    {
+      "id": "MODULE-VERSION-REF",
+      "kind": "TYPE",
+      "name": "Module Version Ref",
+      "traceSetId": "TS-MOD-MANIFEST"
+    },
+    {
+      "id": "CAPABILITY-DECLARATION",
+      "kind": "TYPE",
+      "name": "Capability Declaration",
+      "traceSetId": "TS-MOD-MANIFEST"
+    },
+    {
+      "id": "DEPENDENCY-DECLARATION",
+      "kind": "TYPE",
+      "name": "Dependency Declaration",
+      "traceSetId": "TS-MOD-MANIFEST"
+    },
+    {
+      "id": "PROVIDER-BINDING",
+      "kind": "TYPE",
+      "name": "Provider Binding",
+      "traceSetId": "TS-MOD-MANIFEST"
+    },
+    {
+      "id": "DATA-OWNERSHIP-DECLARATION",
+      "kind": "TYPE",
+      "name": "Data Ownership Declaration",
+      "traceSetId": "TS-MOD-MANIFEST"
+    },
+    {
+      "id": "UI-CONTRIBUTION",
+      "kind": "TYPE",
+      "name": "Ui Contribution",
+      "traceSetId": "TS-MOD-MANIFEST"
+    },
+    {
+      "id": "LIFECYCLE-COMMAND",
+      "kind": "TYPE",
+      "name": "Lifecycle Command",
+      "traceSetId": "TS-MOD-MANIFEST"
+    },
+    {
+      "id": "LIFECYCLE-RECORD",
+      "kind": "TYPE",
+      "name": "Lifecycle Record",
+      "traceSetId": "TS-MOD-MANIFEST"
+    },
+    {
+      "id": "POLICY-DRAFT",
+      "kind": "TYPE",
+      "name": "Policy Draft",
+      "traceSetId": "TS-MOD-MANIFEST"
+    },
+    {
+      "id": "POLICY-VERSION",
+      "kind": "TYPE",
+      "name": "Policy Version",
+      "traceSetId": "TS-MOD-MANIFEST"
+    },
+    {
+      "id": "POLICY-RELEASE",
+      "kind": "TYPE",
+      "name": "Policy Release",
+      "traceSetId": "TS-MOD-MANIFEST"
+    },
+    {
+      "id": "TARGET-GENERATION",
+      "kind": "TYPE",
+      "name": "Target Generation",
+      "traceSetId": "TS-MOD-MANIFEST"
+    },
+    {
+      "id": "SIMULATION-REQUEST",
+      "kind": "TYPE",
+      "name": "Simulation Request",
+      "traceSetId": "TS-MOD-MANIFEST"
+    },
+    {
+      "id": "SIMULATION-RESULT",
+      "kind": "TYPE",
+      "name": "Simulation Result",
+      "traceSetId": "TS-MOD-MANIFEST"
+    },
+    {
+      "id": "PARTICIPANT-GOVERNANCE-COMMAND",
+      "kind": "TYPE",
+      "name": "Participant Governance Command",
+      "traceSetId": "TS-MOD-MANIFEST"
+    }
+  ]
+}

@@ -1,0 +1,222 @@
+{
+  "info": {
+    "description": "Each path item references its exact authenticated prior contract. C07 semantic transformation and current-counterpart rules are separately bound by mappingId.",
+    "title": "OpenPC exact prior REST compatibility surface",
+    "version": "1.0.1"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/identity-participant/commands/access-review-complete": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1access-review-complete"
+    },
+    "/api/v1/identity-participant/commands/access-review-start": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1access-review-start"
+    },
+    "/api/v1/identity-participant/commands/delegation-create": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1delegation-create"
+    },
+    "/api/v1/identity-participant/commands/delegation-revoke": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1delegation-revoke"
+    },
+    "/api/v1/identity-participant/commands/directory-reconcile": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1directory-reconcile"
+    },
+    "/api/v1/identity-participant/commands/emergency-restriction": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1emergency-restriction"
+    },
+    "/api/v1/identity-participant/commands/identity-link": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1identity-link"
+    },
+    "/api/v1/identity-participant/commands/identity-unlink": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1identity-unlink"
+    },
+    "/api/v1/identity-participant/commands/invitation-accept": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1invitation-accept"
+    },
+    "/api/v1/identity-participant/commands/invitation-create": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1invitation-create"
+    },
+    "/api/v1/identity-participant/commands/local-identity-publish": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1local-identity-publish"
+    },
+    "/api/v1/identity-participant/commands/membership-remove": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1membership-remove"
+    },
+    "/api/v1/identity-participant/commands/owner-recovery-complete": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1owner-recovery-complete"
+    },
+    "/api/v1/identity-participant/commands/owner-recovery-start": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1owner-recovery-start"
+    },
+    "/api/v1/identity-participant/commands/participant-activate": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1participant-activate"
+    },
+    "/api/v1/identity-participant/commands/participant-archive": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1participant-archive"
+    },
+    "/api/v1/identity-participant/commands/participant-create": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1participant-create"
+    },
+    "/api/v1/identity-participant/commands/participant-delete": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1participant-delete"
+    },
+    "/api/v1/identity-participant/commands/participant-propose": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1participant-propose"
+    },
+    "/api/v1/identity-participant/commands/participant-reactivate": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1participant-reactivate"
+    },
+    "/api/v1/identity-participant/commands/participant-recover": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1participant-recover"
+    },
+    "/api/v1/identity-participant/commands/participant-restrict": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1participant-restrict"
+    },
+    "/api/v1/identity-participant/commands/participant-retire": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1participant-retire"
+    },
+    "/api/v1/identity-participant/commands/participant-shrink": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1participant-shrink"
+    },
+    "/api/v1/identity-participant/commands/participant-suspend": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1participant-suspend"
+    },
+    "/api/v1/identity-participant/commands/participant-transfer": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1participant-transfer"
+    },
+    "/api/v1/identity-participant/commands/role-assign": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1role-assign"
+    },
+    "/api/v1/identity-participant/commands/role-revoke": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1role-revoke"
+    },
+    "/api/v1/identity-participant/commands/session-reauthenticate": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1session-reauthenticate"
+    },
+    "/api/v1/identity-participant/commands/session-revoke": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1session-revoke"
+    },
+    "/api/v1/identity-participant/commands/workload-register": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1workload-register"
+    },
+    "/api/v1/identity-participant/commands/workload-rotate": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1commands~1workload-rotate"
+    },
+    "/api/v1/identity-participant/events": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1events"
+    },
+    "/api/v1/identity-participant/state": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity-participant~1state"
+    },
+    "/api/v1/identity/login/callback": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity~1login~1callback"
+    },
+    "/api/v1/identity/login/start": {
+      "$ref": "../compatibility/prior-contracts/identity_participant_admin_openapi_v1.yaml#/paths/~1api~1v1~1identity~1login~1start"
+    },
+    "/v1/external-decision/requests": {
+      "$ref": "../compatibility/prior-contracts/wsp08c_openapi_v1.yaml#/paths/~1v1~1external-decision~1requests"
+    },
+    "/v1/fact-acquisition-plans": {
+      "$ref": "../compatibility/prior-contracts/fact_indexing_openapi_v1.yaml#/paths/~1v1~1fact-acquisition-plans"
+    },
+    "/v1/fact-acquisition-plans/{planId}": {
+      "$ref": "../compatibility/prior-contracts/fact_indexing_openapi_v1.yaml#/paths/~1v1~1fact-acquisition-plans~1{planId}"
+    },
+    "/v1/fact-operations": {
+      "$ref": "../compatibility/prior-contracts/fact_indexing_openapi_v1.yaml#/paths/~1v1~1fact-operations"
+    },
+    "/v1/fact-operations/events": {
+      "$ref": "../compatibility/prior-contracts/fact_indexing_openapi_v1.yaml#/paths/~1v1~1fact-operations~1events"
+    },
+    "/v1/fact-snapshots/{snapshotId}/leases": {
+      "$ref": "../compatibility/prior-contracts/fact_indexing_openapi_v1.yaml#/paths/~1v1~1fact-snapshots~1{snapshotId}~1leases"
+    },
+    "/v1/integrated-policy/compile": {
+      "$ref": "../compatibility/prior-contracts/wsp08d_openapi_v1.yaml#/paths/~1v1~1integrated-policy~1compile"
+    },
+    "/v1/integrated-policy/decisions/{requestId}": {
+      "$ref": "../compatibility/prior-contracts/wsp08d_openapi_v1.yaml#/paths/~1v1~1integrated-policy~1decisions~1{requestId}"
+    },
+    "/v1/integrated-policy/evaluate-off-path": {
+      "$ref": "../compatibility/prior-contracts/wsp08d_openapi_v1.yaml#/paths/~1v1~1integrated-policy~1evaluate-off-path"
+    },
+    "/v1/integrated-policy/events": {
+      "$ref": "../compatibility/prior-contracts/wsp08d_openapi_v1.yaml#/paths/~1v1~1integrated-policy~1events"
+    },
+    "/v1/integrated-policy/migrations/{migrationId}": {
+      "$ref": "../compatibility/prior-contracts/wsp08d_openapi_v1.yaml#/paths/~1v1~1integrated-policy~1migrations~1{migrationId}"
+    },
+    "/v1/integrated-policy/uninstall:plan": {
+      "$ref": "../compatibility/prior-contracts/wsp08d_openapi_v1.yaml#/paths/~1v1~1integrated-policy~1uninstall:plan"
+    },
+    "/v1/module-catalogue:publish": {
+      "$ref": "../compatibility/prior-contracts/policy_module_openapi_v1.yaml#/paths/~1v1~1module-catalogue:publish"
+    },
+    "/v1/module-configurations:freeze": {
+      "$ref": "../compatibility/prior-contracts/policy_module_openapi_v1.yaml#/paths/~1v1~1module-configurations:freeze"
+    },
+    "/v1/module-events": {
+      "$ref": "../compatibility/prior-contracts/policy_module_openapi_v1.yaml#/paths/~1v1~1module-events"
+    },
+    "/v1/module-generations:activate": {
+      "$ref": "../compatibility/prior-contracts/policy_module_openapi_v1.yaml#/paths/~1v1~1module-generations:activate"
+    },
+    "/v1/module-generations:rollback": {
+      "$ref": "../compatibility/prior-contracts/policy_module_openapi_v1.yaml#/paths/~1v1~1module-generations:rollback"
+    },
+    "/v1/module-generations:upgrade": {
+      "$ref": "../compatibility/prior-contracts/policy_module_openapi_v1.yaml#/paths/~1v1~1module-generations:upgrade"
+    },
+    "/v1/module-installations": {
+      "$ref": "../compatibility/prior-contracts/policy_module_openapi_v1.yaml#/paths/~1v1~1module-installations"
+    },
+    "/v1/module-installations:uninstall": {
+      "$ref": "../compatibility/prior-contracts/policy_module_openapi_v1.yaml#/paths/~1v1~1module-installations:uninstall"
+    },
+    "/v1/module-packages:admit": {
+      "$ref": "../compatibility/prior-contracts/policy_module_openapi_v1.yaml#/paths/~1v1~1module-packages:admit"
+    },
+    "/v1/module-revocations": {
+      "$ref": "../compatibility/prior-contracts/policy_module_openapi_v1.yaml#/paths/~1v1~1module-revocations"
+    },
+    "/v1/policy-family/compile": {
+      "$ref": "../compatibility/prior-contracts/wsp08b_openapi_v1.yaml#/paths/~1v1~1policy-family~1compile"
+    },
+    "/v1/policy-family/deployments/{deploymentId}": {
+      "$ref": "../compatibility/prior-contracts/wsp08b_openapi_v1.yaml#/paths/~1v1~1policy-family~1deployments~1{deploymentId}"
+    },
+    "/v1/policy-family/evidence/{requestId}": {
+      "$ref": "../compatibility/prior-contracts/wsp08b_openapi_v1.yaml#/paths/~1v1~1policy-family~1evidence~1{requestId}"
+    },
+    "/v1/ptv/operations/{operationId}": {
+      "$ref": "../compatibility/prior-contracts/wsp08c_openapi_v1.yaml#/paths/~1v1~1ptv~1operations~1{operationId}"
+    },
+    "/v1/relationship/evaluations": {
+      "$ref": "../compatibility/prior-contracts/wsp08c_openapi_v1.yaml#/paths/~1v1~1relationship~1evaluations"
+    },
+    "/v1/visibility/evaluations": {
+      "$ref": "../compatibility/prior-contracts/wsp08c_openapi_v1.yaml#/paths/~1v1~1visibility~1evaluations"
+    }
+  },
+  "servers": [
+    {
+      "description": "same-origin compatibility facade",
+      "url": "/"
+    }
+  ],
+  "x-openpc-authority": {
+    "automaticExecution": false,
+    "implementation": "PENDING_SEPARATE_IMPLEMENTATION_AUTHORITY",
+    "repositoryEntry": "NOT_AUTHORIZED"
+  },
+  "x-openpc-contract-sources": [
+    "fact_indexing_openapi_v1.yaml",
+    "identity_participant_admin_openapi_v1.yaml",
+    "policy_module_openapi_v1.yaml",
+    "wsp08b_openapi_v1.yaml",
+    "wsp08c_openapi_v1.yaml",
+    "wsp08d_openapi_v1.yaml"
+  ],
+  "x-openpc-semantic-overlay": "pkg://c07-reconciliation/API_COMPATIBILITY_CONTRACTS.jsonl"
+}

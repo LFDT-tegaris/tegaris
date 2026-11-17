@@ -1,0 +1,138 @@
+{
+  "$id": "https://schemas.openpc.local/error-registry.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "entries": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "pattern": "^PC-[A-Z][A-Z0-9]{1,15}-[0-9]{4}$",
+            "type": "string"
+          },
+          "disclosure": {
+            "enum": [
+              "NON_LEAKING_INVARIANT",
+              "AUTHORIZED_DETAIL",
+              "INTERNAL_ONLY"
+            ]
+          },
+          "grpcStatus": {
+            "enum": [
+              "INVALID_ARGUMENT",
+              "DEADLINE_EXCEEDED",
+              "NOT_FOUND",
+              "ALREADY_EXISTS",
+              "PERMISSION_DENIED",
+              "RESOURCE_EXHAUSTED",
+              "FAILED_PRECONDITION",
+              "ABORTED",
+              "INTERNAL",
+              "UNAVAILABLE",
+              "UNAUTHENTICATED"
+            ]
+          },
+          "httpStatus": {
+            "oneOf": [
+              {
+                "maximum": 599,
+                "minimum": 400,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "jsonRpcCode": {
+            "oneOf": [
+              {
+                "maximum": -32000,
+                "minimum": -32768,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "retryable": {
+            "type": "boolean"
+          },
+          "slug": {
+            "pattern": "^[A-Z][A-Z0-9_]{2,95}$",
+            "type": "string"
+          },
+          "trace": {
+            "$ref": "action-intent-registry.schema.json#/properties/entries/items/properties/trace"
+          },
+          "truthState": {
+            "$ref": "shared-primitives.schema.json#/$defs/TruthState"
+          }
+        },
+        "required": [
+          "code",
+          "slug",
+          "httpStatus",
+          "jsonRpcCode",
+          "grpcStatus",
+          "truthState",
+          "retryable",
+          "disclosure",
+          "trace"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "freezeId": {
+      "const": "C03-ARCHITECTURE-SHARED-PRIMITIVES-FREEZE-20260824-01"
+    },
+    "rule": {
+      "const": "Codes instantiate, and do not amend, the frozen AF-08 allocation. Retry requires both retryable=true and the action-specific idempotency/reconciliation law."
+    },
+    "schemaVersion": {
+      "const": "1.0"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "freezeId",
+    "rule",
+    "entries"
+  ],
+  "title": "OpenPC error registry v1",
+  "type": "object",
+  "x-openpc-trace": {
+    "componentIds": [
+      "COM-001",
+      "LS-CONTROL-API",
+      "ROLE-CONTROL-API"
+    ],
+    "decisionIds": [
+      "AD-SR04-001-B0-FREEZE",
+      "AD-SR04-004-AUTHORITY-INTERSECTION",
+      "AD-SR04-006-INVOCATION-CAPABILITY",
+      "AD-SR04-007-EXECUTION-EVIDENCE",
+      "AD-SR04-009-DYNAMIC-EVENT",
+      "AD-SR04-014-SECURITY-OPERATIONS",
+      "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY"
+    ],
+    "requirementIds": [
+      "REQ-SR01-B0-REQ-DEV-006",
+      "REQ-SR01-B0-REQ-SEC-005",
+      "REQ-SR01-B0-REQ-SEC-007",
+      "REQ-SR01-B0-REQ-TARCH-007",
+      "REQ-SR01-B0-REQ-TARCH-COM-001"
+    ],
+    "sourceUnitIds": [
+      "SU-REQ-446f6cb0783b05c8f0fdc6ee",
+      "SU-REQ-2a611b162f4ed9681a193389",
+      "SU-REQ-72a9edfb8ccea4e8749fa052",
+      "SU-REQ-4e0a8087b502c98f658f255c",
+      "SU-REQ-2c33a9ca8c81aa15e89a5e4c"
+    ]
+  }
+}

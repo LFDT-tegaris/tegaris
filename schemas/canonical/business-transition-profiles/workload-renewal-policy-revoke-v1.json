@@ -1,0 +1,134 @@
+{
+  "profileId": "pc.identity.workload-renewal-policy.revoke",
+  "profileVersion": 1,
+  "schemaDefinitionDigest": "sha256:41a877ca7e00e74f32c8becf8daee38f26c12ab9d9dcf6ff80ed8e75608b3c1f",
+  "actionIntentId": "ACT-PARTICIPANTS_UPDATE_RESOURCE-V1",
+  "catalogOperationId": "ID-OP-WORKLOAD-RENEWAL-POLICY-REVOKE",
+  "resourceType": "participant",
+  "aggregateType": "workload-renewal-policy",
+  "sequenceNamespace": "CONTROL_BUSINESS_TRANSITION_V1",
+  "transitionKind": 1,
+  "state": {
+    "owner": "control.workload_renewal_policy_head selecting an immutable control.workload_renewal_policy revision",
+    "identity": [
+      "participant_id",
+      "privacy_domain_id",
+      "policy_id"
+    ],
+    "revision": "current_revision:u64",
+    "absence": {
+      "existence": 0,
+      "revision": 0,
+      "projection": {}
+    },
+    "projection": {
+      "0": {
+        "column": "digest",
+        "type": "H32",
+        "encoding": "SHA-256 over pc.control.definition-json.v1 policy definition"
+      },
+      "1": {
+        "column": "principal_id",
+        "type": "UUID_BYTES"
+      },
+      "2": {
+        "column": "workload_id",
+        "type": "TSTR"
+      },
+      "3": {
+        "column": "state",
+        "type": "TSTR",
+        "values": [
+          "ACTIVE",
+          "SUSPENDED",
+          "REVOKED"
+        ]
+      },
+      "4": {
+        "column": "governance_operation_id",
+        "type": "UUID_BYTES"
+      },
+      "5": {
+        "column": "business_ancestors",
+        "type": "H32",
+        "encoding": "SHA-256 over pc.control.definition-json.v1 actual durable authority array"
+      },
+      "6": {
+        "column": "valid_from",
+        "type": "U64_NANOSECONDS",
+        "encoding": "exact stored UTC microseconds multiplied by 1000"
+      },
+      "7": {
+        "column": "valid_until",
+        "type": "U64_NANOSECONDS",
+        "encoding": "exact stored UTC microseconds multiplied by 1000"
+      }
+    },
+    "digest": "pc.control.transition-state.v1; SHA-256 over canonical typed CBOR; every map field required"
+  },
+  "transition": {
+    "command": "REVOKE",
+    "before": "PRESENT_NONREVOKED_CURRENT_REVISION",
+    "after": "PRESENT_REVOKED_NEXT_REVISION",
+    "change": "append an immutable independently governed revision and atomically select it in the current head; preserve previous definition, operation and receipt bytes; REVOKED cannot be revived",
+    "noOp": "REJECT_WITHOUT_EFFECTS"
+  },
+  "authority": {
+    "actor": "authenticated participant user session",
+    "action": "exact action registry, live scoped authority fence",
+    "evidence": [
+      {
+        "kind": 3,
+        "owner": "control.approval_decision_record",
+        "format": "identity credential signed by the authorized checker",
+        "binding": "exact immutable candidate, action, scope, expected revision and distinct checker; consumed by this operation"
+      },
+      {
+        "kind": 4,
+        "owner": "control.mutation_evidence for ID-OP-WEBAUTHN-VERIFY",
+        "format": "identity owner verified WebAuthn step-up",
+        "binding": "actual operator, session, action, candidate digest and one-time challenge consumed by this operation"
+      }
+    ],
+    "snapshot": "retained exact precommit authority path and live epochs/validity; no session or credential secrets",
+    "approval": "EXACT_CONSUMED_CANDIDATE_WITH_INDEPENDENT_MAKER_CHECKER; deferred owning-row trigger binds approval and before/after state",
+    "stepUp": "FRESH_WEBAUTHN_BOUND_TO_THE_SAME_APPROVAL_AND_OPERATION"
+  },
+  "events": [
+    {
+      "eventType": "io.openpc.control.command.committed.v1",
+      "dataSchemaUri": "https://schemas.openpc.local/event-payloads.schema.json#/$defs/CommandCommitted",
+      "payload": "canonical four-key CommandCommitted CBOR; commandId=operationId, aggregateRef=canonical aggregate URN, actionIntentId, intentDigest=actionIntentDigest",
+      "cardinality": 1,
+      "effect": "local governed policy revision and current head only; no certificate issuance, instance admission, runtime permission or automatic policy resurrection"
+    }
+  ],
+  "privacy": {
+    "placement": "same participant and privacy domain as authoritative aggregate",
+    "read": "current read authorization required; receipt is never authorization",
+    "retention": "retain receipt, typed state/authority inputs, authorization evidence, public trust and operation links under control audit retention; no automatic deletion"
+  },
+  "lifecycle": {
+    "idempotency": "exact replay returns original operation, receipt, evidence and event IDs/bytes/sequences",
+    "rollback": "no domain, evidence, head, event or result effects",
+    "restart": "scoped primary operation reconciliation; preserve UNKNOWN for unresolved COMMIT",
+    "delivery": "qualified namespace and profile required; no legacy cursor merge"
+  },
+  "definitionDigest": "sha256:b2eb7af4bbf9ca7e8609ab763fa542fa7edaf147774f33e0a7a96af9263bf1c1",
+  "requestBinding": {
+    "domain": "pc.control.configuration-request.v1",
+    "encoding": "UTF-8 domain plus NUL; each field prefixed by uint32 big-endian UTF-8 byte length; SHA-256",
+    "fields": [
+      "participantId",
+      "privacyDomainId",
+      "principalId",
+      "actionIntentId",
+      "catalogOperationId",
+      "aggregateType",
+      "aggregateId",
+      "expectedRevision (canonical u64 decimal)",
+      "candidateDigest (sha256: lowercase hex)",
+      "idempotencyKey"
+    ]
+  }
+}

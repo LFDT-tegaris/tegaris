@@ -1,0 +1,26 @@
+# Dedicated OpenPC builder only. Stop it before starting product transactions.
+insecure-entitlements = ["network.host"]
+
+[history]
+maxAge = 604800
+maxEntries = 32
+
+[worker.oci]
+max-parallelism = 2
+gc = true
+reservedSpace = "16GB"
+maxUsedSpace = "64GB"
+minFreeSpace = "100GB"
+
+[[worker.oci.gcpolicy]]
+keepDuration = "168h"
+reservedSpace = "16GB"
+maxUsedSpace = "48GB"
+minFreeSpace = "100GB"
+all = true
+
+[[worker.oci.gcpolicy]]
+reservedSpace = "16GB"
+maxUsedSpace = "64GB"
+minFreeSpace = "100GB"
+all = true

@@ -1,0 +1,238 @@
+{
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "maxNestingDepth": 8,
+    "maxCollectionEntries": 256,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; every listed key required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC or invalid UTF-8",
+      "floating point",
+      "indefinite lengths",
+      "payload tags",
+      "trailing data"
+    ]
+  },
+  "canonicalDefinitionJson": {
+    "encoding": "UTF-8 without BOM or trailing newline",
+    "unicode": "NFC; reject lone surrogates",
+    "numbers": "safe integers excluding negative zero",
+    "objectKeys": "ascending UTF-16 code units",
+    "arrays": "preserve order",
+    "rootOmit": [
+      "definitionDigest",
+      "signature"
+    ],
+    "digest": "SHA-256"
+  },
+  "name": "pc.identity.workload-renewal.request",
+  "typeName": "WorkloadRenewalRequestV1",
+  "schemaId": 24038,
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-IDENTITY",
+  "extensionAuthority": "POST_C17_R1_COORDINATOR_ADOPTION",
+  "purpose": {
+    "name": "pc.cose.identity.workload-renewal-request.v1",
+    "code": 375
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [
+      1,
+      2,
+      3,
+      4,
+      100,
+      101,
+      102,
+      103
+    ],
+    "criticalFields": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1; exact embedded Request bytes; 64-byte P1363 signature",
+    "kid": "UTF-8 sha256:<lowercase SHA-256 of canonical P-256 SPKI DER>"
+  },
+  "scalarTypes": {
+    "definitionDigest": "32-byte SHA-256 of this canonical definition; supplied by codec, never caller",
+    "H32": "32-byte SHA-256; API sha256: plus 64 lowercase hex digits",
+    "uuid": "16-byte RFC network order; lowercase domain UUID versions 1..8 and RFC variant; not an allocation of UUIDv7 identities",
+    "id": "1..160 ASCII characters [A-Za-z0-9][A-Za-z0-9:._/-]*; no wildcard",
+    "u64": "unsigned uint64; API canonical decimal string",
+    "u64p": "positive uint64; API canonical decimal string",
+    "nanos": "uint64 nanoseconds since Unix epoch, divisible by 1000; finite validity only",
+    "requestProfile": {
+      "pc.identity.workload-renewal.request.v1": 1
+    },
+    "authorizationProfile": {
+      "pc.identity.workload-renewal.policy-authorization.v1": 1
+    },
+    "version1": "uint 1 only; API canonical decimal string 1",
+    "policyAuthorized": {
+      "POLICY_AUTHORIZED": 1
+    },
+    "workload": "canonical registered urn:openpc:workload:<lowercase UUID>; existing SAN semantics unchanged",
+    "requestBytes": "exact canonical Request payload as byte string; preserve submitted bytes; decode and reencode equality required"
+  },
+  "types": {
+    "Request": [
+      {
+        "key": 0,
+        "name": "definitionDigest",
+        "type": "definitionDigest"
+      },
+      {
+        "key": 1,
+        "name": "profileId",
+        "type": "requestProfile"
+      },
+      {
+        "key": 2,
+        "name": "profileVersion",
+        "type": "version1"
+      },
+      {
+        "key": 3,
+        "name": "participantId",
+        "type": "uuid"
+      },
+      {
+        "key": 4,
+        "name": "privacyDomainId",
+        "type": "uuid"
+      },
+      {
+        "key": 5,
+        "name": "familyId",
+        "type": "uuid"
+      },
+      {
+        "key": 6,
+        "name": "instanceId",
+        "type": "uuid"
+      },
+      {
+        "key": 7,
+        "name": "instanceGeneration",
+        "type": "u64p"
+      },
+      {
+        "key": 8,
+        "name": "workloadId",
+        "type": "workload"
+      },
+      {
+        "key": 9,
+        "name": "principalId",
+        "type": "uuid"
+      },
+      {
+        "key": 10,
+        "name": "renewalId",
+        "type": "uuid"
+      },
+      {
+        "key": 11,
+        "name": "predecessorCredentialId",
+        "type": "uuid"
+      },
+      {
+        "key": 12,
+        "name": "predecessorGeneration",
+        "type": "u64p"
+      },
+      {
+        "key": 13,
+        "name": "policyId",
+        "type": "uuid"
+      },
+      {
+        "key": 14,
+        "name": "policyRevision",
+        "type": "u64p"
+      },
+      {
+        "key": 15,
+        "name": "policyDigest",
+        "type": "H32"
+      },
+      {
+        "key": 16,
+        "name": "attestationProfileDigest",
+        "type": "H32"
+      },
+      {
+        "key": 17,
+        "name": "attestationDigest",
+        "type": "H32"
+      },
+      {
+        "key": 18,
+        "name": "issuerProfileDigest",
+        "type": "H32"
+      },
+      {
+        "key": 19,
+        "name": "providerQualificationDigest",
+        "type": "H32"
+      },
+      {
+        "key": 20,
+        "name": "newKeyDigest",
+        "type": "H32"
+      },
+      {
+        "key": 21,
+        "name": "challengeId",
+        "type": "uuid"
+      },
+      {
+        "key": 22,
+        "name": "challengeDigest",
+        "type": "H32"
+      },
+      {
+        "key": 23,
+        "name": "requestedCertificateNotBeforeNs",
+        "type": "nanos"
+      },
+      {
+        "key": 24,
+        "name": "requestedCertificateNotAfterNs",
+        "type": "nanos"
+      },
+      {
+        "key": 25,
+        "name": "expectedFamilyRevision",
+        "type": "u64p"
+      },
+      {
+        "key": 26,
+        "name": "requestValidFromNs",
+        "type": "nanos"
+      },
+      {
+        "key": 27,
+        "name": "requestValidUntilNs",
+        "type": "nanos"
+      }
+    ]
+  },
+  "invariants": [
+    "Signature authenticates successor key possession only; it never authenticates current mTLS, independent deployment attestation or governed policy authority.",
+    "All tenant, stable subject, admitted instance/family/generation, current policy/profile, one-use challenge/new-key and finite request/certificate intervals are committed.",
+    "Raw successor SPKI belongs only to the transport request; exact canonical P256 SPKI digest must match newKeyDigest.",
+    "Request interval is positive and at most 120 seconds; exact whole-second requested certificate interval is positive and at most 24 hours."
+  ]
+}

@@ -1,0 +1,2 @@
+export const platformRecoveryApprovalResumeGuardsSql: string;
+export const platformRecoveryApprovalResumeGrantsSql: string;

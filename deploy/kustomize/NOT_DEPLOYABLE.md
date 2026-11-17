@@ -1,0 +1,3 @@
+# OpenPC I09 foundation kustomization
+
+This base kustomization currently contains no deployable resources and is not a release manifest. Under the current rescue authority, prepare and render the required local installation resources alongside stable runtime owners; the historical requirement to keep this base resource-free is superseded. Validate configuration, image identities, secret references, readiness and affected migration/recovery behavior with the accepted toolchain. Authenticate qualification inputs and resolve every required `OPENPC_INPUT_*` binding before claiming release readiness. Missing production inputs do not block local implementation and validation; actual production deployment still requires explicit authority.

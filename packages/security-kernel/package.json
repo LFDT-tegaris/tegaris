@@ -1,0 +1,22 @@
+{
+  "name": "@openpc/security-kernel",
+  "version": "2.0.0-r1",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./business-transition/state": "./src/business-transition/state.ts"
+  },
+  "scripts": {
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "node scripts/generate-business-transition.mjs --check && vitest run --config vitest.config.ts",
+    "generate": "node scripts/generate-business-transition.mjs",
+    "generate:check": "node scripts/generate-business-transition.mjs --check"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.3",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10"
+  }
+}

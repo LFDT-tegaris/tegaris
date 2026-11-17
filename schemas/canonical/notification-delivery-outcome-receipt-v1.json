@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [
+      1,
+      2,
+      3,
+      4,
+      100,
+      101,
+      102,
+      103
+    ],
+    "criticalFields": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "extensionAuthority": "POST_C17_ASTRA_12_WORKLOAD_NOTIFICATION_ADMISSION",
+  "name": "pc.notification-delivery-outcome-receipt.v1",
+  "schemaId": 24029,
+  "typeName": "NotificationDeliveryOutcomeReceiptV1",
+  "purpose": {
+    "name": "pc.cose.notification-delivery-outcome-receipt.v1",
+    "code": 366
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "environmentId",
+      "type": "text160"
+    },
+    {
+      "key": 2,
+      "name": "participantId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 3,
+      "name": "privacyDomainId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 4,
+      "name": "receiptId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 5,
+      "name": "operationId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 6,
+      "name": "notificationOccurrenceId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 7,
+      "name": "attemptId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 8,
+      "name": "startOperationId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 9,
+      "name": "startReceiptDigest",
+      "type": "H32"
+    },
+    {
+      "key": 10,
+      "name": "dispatchClaimDigest",
+      "type": "H32"
+    },
+    {
+      "key": 11,
+      "name": "sourceReceiptDigest",
+      "type": "H32"
+    },
+    {
+      "key": 12,
+      "name": "workerProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 13,
+      "name": "routingProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 14,
+      "name": "authoritySnapshotDigest",
+      "type": "H32"
+    },
+    {
+      "key": 15,
+      "name": "endpointId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 16,
+      "name": "endpointRevision",
+      "type": "u64p"
+    },
+    {
+      "key": 17,
+      "name": "payloadDigest",
+      "type": "H32"
+    },
+    {
+      "key": 18,
+      "name": "gatewayReceiptId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 19,
+      "name": "gatewayReceiptDigest",
+      "type": "H32"
+    },
+    {
+      "key": 20,
+      "name": "gatewayCoseDigest",
+      "type": "H32"
+    },
+    {
+      "key": 21,
+      "name": "observationDigest",
+      "type": "H32"
+    },
+    {
+      "key": 22,
+      "name": "deliveryRevision",
+      "type": "u64p"
+    },
+    {
+      "key": 23,
+      "name": "beforeStateDigest",
+      "type": "H32"
+    },
+    {
+      "key": 24,
+      "name": "afterStateDigest",
+      "type": "H32"
+    },
+    {
+      "key": 25,
+      "name": "outcome",
+      "type": "enum DELIVERED=1 RETRYABLE_NO_EFFECT=2 PERMANENT_FAILURE=3 AMBIGUOUS=4"
+    },
+    {
+      "key": 26,
+      "name": "beforeDeliveryState",
+      "type": "enum STARTED=1 AMBIGUOUS=2"
+    },
+    {
+      "key": 27,
+      "name": "afterDeliveryState",
+      "type": "enum DELIVERED=1 FAILED=2 AMBIGUOUS=3 CANCELLED=4 RETRY_WAIT=5"
+    },
+    {
+      "key": 28,
+      "name": "attemptCount",
+      "type": "safe_uint"
+    },
+    {
+      "key": 29,
+      "name": "attemptLimit",
+      "type": "safe_uint"
+    },
+    {
+      "key": 30,
+      "name": "nextAttemptAtMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 31,
+      "name": "cancelRequested",
+      "type": "enum NO=0 YES=1"
+    },
+    {
+      "key": 32,
+      "name": "observedAtMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 33,
+      "name": "recordedAtMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 34,
+      "name": "signerKeyId",
+      "type": "H32"
+    }
+  ],
+  "requirements": [
+    "AF-27 ASYNC-NOTIFICATION: native gateway observation and Control delivery-state transition are distinct truths. This receipt proves the latter only after its durable owner admits the former and commits the complete atomic result.",
+    "The owner loads and verifies the original signed STARTED, immutable attempt, actual committed CLAIMED dispatch, source custody and first exact native gateway receipt under the installed original channel. startReceiptDigest and gatewayReceiptDigest hash exact canonical payload bytes, gatewayCoseDigest hashes original COSE bytes, observationDigest hashes the canonical complete native observation, and dispatchClaimDigest hashes the canonical original claim including token and timestamp without exposing the token.",
+    "Current TLS/Identity authorizes the historical-read/result worker independently of send capacity, old endpoint usability, current delivery credential/KMS material or a new gateway call. Historical signatures never create current authority. Separate purpose-specific signer installation and durable exclusive signing admission are mandatory; STARTED/cancellation grants cannot authorize this purpose.",
+    "Before/after digests bind complete canonical notificationDeliverySnapshot preimages and exact predecessor/result revisions using pc.notification-delivery.state.v1. Result revision is predecessor+1; original attempt count, original start time and cancellation intent survive reconciliation. Persist the lower admitted configured limit, never reset attempts. Finalization rechecks the actual cancellation/current delivery revision under lifecycle then delivery then dispatch fences.",
+    "Use the existing planNotificationObservation rules: DELIVERED wins over cancellation, PERMANENT_FAILURE is FAILED, authentic AMBIGUOUS stays AMBIGUOUS. Only an authenticated RETRYABLE_NO_EFFECT result may produce CANCELLED on existing cancellation intent, FAILED on exhausted/lowered capacity, or RETRY_WAIT with the exact 5s/30s/2m/10m/30m delay from observedAtMs. nextAttemptAtMs=0 denotes no next attempt and is required outside RETRY_WAIT. Timeout, ABSENT, transport loss or expired authority must never be synthesized into a native no-effect receipt.",
+    "First native observation is unique per original attempt and retains exact signature bytes. Atomically commit its existing-table linkage, separate signed outcome operation, delivery revision/state, required evidence/outbox and native deduplicated failure WorkItem for FAILED. Missing failure-work authority is a blocker; a fabricated work item ID or generic business grant is not acceptable.",
+    "Lost COMMIT/ACK/restart reads the same original attempt, observation, result operation and signed bytes. Conflicting first observations fail; no resend, fresh intent, credential reacquisition or signing remint follows historical lookup. Gateway observation time may be historical; recordedAtMs is at least observedAtMs and must lie within the outcome signer worker profile at recording."
+  ]
+}

@@ -1,0 +1,52 @@
+// Internal host reconciliation transport. It does not replace the frozen C04
+// public Fleet/RuntimeAgent services or define an alternate PC-CBOR signature.
+// Signed bytes carry the closed pc-runtime-types PurposeSigner profiles.
+syntax = "proto3";
+package openpc.internal.runtime.v1;
+
+message ReadDispositionRequest {
+  bytes challenge = 1; // exactly 32 bytes, echoed on this authenticated response
+}
+message ReadDispositionResponse {
+  bytes challenge = 1;
+  bool established = 2; // false is NOT serving authority
+  uint64 revision = 3;
+  string admission_digest = 4;
+  bytes signed_delivery = 5; // empty + established means pending denial
+  bytes signed_acknowledgement = 6;
+}
+message AcknowledgeDispositionRequest {
+  string delivery_digest = 1;
+  bytes signed_acknowledgement = 2;
+}
+// Historical custody only. This response can never satisfy ReadCurrent or
+// establish serving currentness, even after its original ACK is durable.
+message ReadOriginalConfirmationResponse {
+  bytes challenge = 1;
+  uint64 revision = 2;
+  string admission_digest = 3;
+  bytes signed_delivery = 4;
+  bytes signed_acknowledgement = 5;
+}
+message AcknowledgeDispositionResponse {
+  bool inserted = 1; // false is exact original replay
+}
+// Host-operator authority is additional to target mTLS. This creates only a
+// denial; no acknowledgement, serving grant or activation result is fabricated.
+message DenyExpiredActivationRequest {
+  bytes bundle = 1;
+  bytes nonce = 2;
+  bytes operator_mac = 3;
+}
+message DenyExpiredActivationResponse {
+  string delivery_digest = 1;
+}
+service TargetDispositionService {
+  // Every method requires verified TLS workload identity and grpc-timeout.
+  rpc ReadCurrent(ReadDispositionRequest) returns (ReadDispositionResponse);
+  rpc ReadOriginalConfirmation(ReadDispositionRequest) returns (ReadOriginalConfirmationResponse);
+  rpc Acknowledge(AcknowledgeDispositionRequest) returns (AcknowledgeDispositionResponse);
+  rpc DenyExpiredActivation(DenyExpiredActivationRequest) returns (DenyExpiredActivationResponse);
+  rpc HandoverUnsignedExpiredDenial(DenyExpiredActivationRequest) returns (DenyExpiredActivationResponse);
+  rpc HandoverExpiredCredentialDenial(DenyExpiredActivationRequest) returns (DenyExpiredActivationResponse);
+}

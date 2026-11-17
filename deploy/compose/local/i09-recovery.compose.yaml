@@ -1,0 +1,97 @@
+name: openpc-i09-recovery
+
+services:
+  control-pg:
+    image: docker.io/library/postgres:18.6@sha256:7341002d2b8c7c5bdd7542a671a95b36196c0b5b888daf454ae4fc33ba5346d7
+    platform: linux/amd64
+    environment:
+      POSTGRES_DB: openpc_control
+      POSTGRES_USER: openpc_control
+      POSTGRES_PASSWORD_FILE: /run/secrets/control_pg_password
+    secrets: [control_pg_password]
+    volumes:
+      - control-data:/var/lib/postgresql
+      - ../../../migrations/postgres:/migrations/postgres:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openpc_control -d openpc_control"]
+      interval: 1s
+      timeout: 2s
+      retries: 60
+    read_only: true
+    tmpfs: [/tmp, /run/postgresql]
+    security_opt: [no-new-privileges:true]
+
+  fact-pg:
+    image: docker.io/library/postgres:18.6@sha256:7341002d2b8c7c5bdd7542a671a95b36196c0b5b888daf454ae4fc33ba5346d7
+    platform: linux/amd64
+    environment:
+      POSTGRES_DB: openpc_facts
+      POSTGRES_USER: openpc_facts
+      POSTGRES_PASSWORD_FILE: /run/secrets/fact_pg_password
+    secrets: [fact_pg_password]
+    volumes:
+      - fact-data:/var/lib/postgresql
+      - ../../../migrations/postgres:/migrations/postgres:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openpc_facts -d openpc_facts"]
+      interval: 1s
+      timeout: 2s
+      retries: 60
+    read_only: true
+    tmpfs: [/tmp, /run/postgresql]
+    security_opt: [no-new-privileges:true]
+
+  candidate-index-pg:
+    image: docker.io/library/postgres:18.6@sha256:7341002d2b8c7c5bdd7542a671a95b36196c0b5b888daf454ae4fc33ba5346d7
+    platform: linux/amd64
+    environment:
+      POSTGRES_DB: openpc_candidate_index
+      POSTGRES_USER: openpc_candidate_index
+      POSTGRES_PASSWORD_FILE: /run/secrets/candidate_index_pg_password
+    secrets: [candidate_index_pg_password]
+    volumes:
+      - candidate-data:/var/lib/postgresql
+      - ../../../migrations/postgres:/migrations/postgres:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openpc_candidate_index -d openpc_candidate_index"]
+      interval: 1s
+      timeout: 2s
+      retries: 60
+    read_only: true
+    tmpfs: [/tmp, /run/postgresql]
+    security_opt: [no-new-privileges:true]
+
+  valkey:
+    image: docker.io/valkey/valkey:9.1.1@sha256:c7f03d95d897f97eef7ec2d4a6a1e2c0cbe62a36a56b00f304aa536cbe3ec9c1
+    platform: linux/amd64
+    entrypoint: [/bin/sh, -ec]
+    command:
+      - >-
+        exec valkey-server --port 0 --tls-port 6379
+        --tls-cert-file /run/openpc-tls/server.crt
+        --tls-key-file /run/openpc-tls/server.key
+        --tls-ca-cert-file /run/openpc-tls/ca.crt
+        --tls-auth-clients no --appendonly no --save ''
+        --maxmemory 67108864 --maxmemory-policy allkeys-lfu
+        --requirepass "$$(cat /run/secrets/valkey_password)"
+    secrets: [valkey_password]
+    volumes:
+      - ${OPENPC_I09_RUN_ROOT:?required}/valkey-tls:/run/openpc-tls:ro
+    read_only: true
+    tmpfs: [/tmp, /data]
+    security_opt: [no-new-privileges:true]
+
+secrets:
+  control_pg_password:
+    file: ${OPENPC_I09_SECRET_ROOT:?required}/control_pg_password.txt
+  fact_pg_password:
+    file: ${OPENPC_I09_SECRET_ROOT:?required}/fact_pg_password.txt
+  candidate_index_pg_password:
+    file: ${OPENPC_I09_SECRET_ROOT:?required}/candidate_index_pg_password.txt
+  valkey_password:
+    file: ${OPENPC_I09_SECRET_ROOT:?required}/valkey_password.txt
+
+volumes:
+  control-data: {}
+  fact-data: {}
+  candidate-data: {}

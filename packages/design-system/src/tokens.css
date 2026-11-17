@@ -1,0 +1,9 @@
+:root {
+  --openpc-color-action: #1357d4;
+  --openpc-color-action-pressed: #0a3e9f;
+  --openpc-color-focus: #e18b00;
+  --openpc-color-on-action: #ffffff;
+  --openpc-radius-control: 0.375rem;
+  --openpc-space-2: 0.5rem;
+  --openpc-space-3: 0.75rem;
+}

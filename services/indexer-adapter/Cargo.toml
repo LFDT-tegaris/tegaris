@@ -1,0 +1,26 @@
+[package]
+name = "openpc-indexer-adapter"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+ciborium.workspace = true
+hmac.workspace = true
+openpc-multi-rpc = { path = "../multi-rpc" }
+p256 = { workspace = true, features = ["ecdsa", "getrandom"] }
+pc-facts-core = { path = "../../crates/pc-facts-core" }
+pc-provider-api = { path = "../../crates/pc-provider-api" }
+pc-runtime-types = { path = "../../crates/pc-runtime-types" }
+rustls = { workspace = true, features = ["ring"] }
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+sha2.workspace = true
+sqlx = { workspace = true, features = ["postgres", "runtime-tokio", "uuid"] }
+thiserror.workspace = true
+time = { workspace = true, features = ["formatting"] }
+tokio = { workspace = true, features = ["macros", "rt-multi-thread", "net", "io-util", "time"] }
+uuid = { workspace = true, features = ["serde", "v7"] }
+zeroize.workspace = true

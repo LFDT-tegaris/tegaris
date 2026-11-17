@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [
+      1,
+      2,
+      3,
+      4,
+      100,
+      101,
+      102,
+      103
+    ],
+    "criticalFields": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "extensionAuthority": "POST_C17_ASTRA_12_NOTIFICATION_GATEWAY",
+  "name": "pc.notification-channel-profile.v1",
+  "schemaId": 24009,
+  "typeName": "NotificationChannelProfileV1",
+  "purpose": {
+    "name": "pc.cose.notification-channel-profile.v1",
+    "code": 346
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "environmentId",
+      "type": "text160"
+    },
+    {
+      "key": 2,
+      "name": "participantId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 3,
+      "name": "privacyDomainId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 4,
+      "name": "profileId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 5,
+      "name": "revision",
+      "type": "u64p"
+    },
+    {
+      "key": 6,
+      "name": "validFromMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 7,
+      "name": "validUntilMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 8,
+      "name": "transportProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 9,
+      "name": "receiptSignerSpki",
+      "type": "P256_SPKI_DER"
+    },
+    {
+      "key": 10,
+      "name": "issuerKeyId",
+      "type": "H32"
+    }
+  ],
+  "authorityRules": [
+    "Host-installed exact profile digest, issuer key, environment and participant/privacy scope are independent trust. Public requests cannot install or select trust.",
+    "The transport digest binds the strict NotificationGatewayTransportV1 projection, including exact destination and credential references, HTTPS origin, pinned addresses, TLS server key, bounded deadline and byte limits.",
+    "OPENPC_NOTIFICATION_GATEWAY_V1 uses mutual TLS with ordinary CA and hostname verification plus the signed server SPKI digest. No redirects, address fallback, proxy, arbitrary SMTP or queue connection, or automatic transport retry is permitted.",
+    "POST /notifications/v1/deliver sends canonical JSON {attempt,context,payloadBase64}; POST /notifications/v1/readback sends canonical JSON {attempt,context} and MUST NOT deliver. A 200 response carries only canonical JSON {payloadHex,coseHex} for NotificationDeliveryReceiptV1. Missing, malformed, unsigned or mismatched observations never establish no effect.",
+    "Delivery authority belongs to the real durable owner: current Identity, scope, endpoint verification/revision, module/template/payload, secret version, immutable occurrence and STARTED attempt must be admitted before I/O. This profile and AdapterCallContextV1 are not database or business authority.",
+    "Cancellation prevents a new send. STARTED or AMBIGUOUS work reconciles the exact original attempt without changing occurrence, payload, context or idempotency identity. An expired historical profile can authenticate retained receipts but cannot authorize new network activity.",
+    "The idempotency key binds participant, privacy domain, complete notificationOccurrenceId OpenPcUrn and payloadDigest; it remains unchanged across bounded attempts. Transport success never acknowledges a notification for a user and never proves its source business effect.",
+    "Local protocol qualification does not establish production gateway qualification or exactly-once recipient delivery."
+  ]
+}

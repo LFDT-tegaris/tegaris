@@ -1,0 +1,52 @@
+{
+  "$id": "https://schemas.openpc.local/authority-context.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "actionIntentId": {
+      "pattern": "^ACT-[A-Z0-9_]+-V[1-9][0-9]*$",
+      "type": "string"
+    },
+    "authorityEnvelopeId": {
+      "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+    },
+    "authorityEpoch": {
+      "$ref": "shared-primitives.schema.json#/$defs/AuthorityEpoch"
+    },
+    "delegationEpoch": {
+      "$ref": "shared-primitives.schema.json#/$defs/AuthorityEpoch"
+    },
+    "factGenerationDigest": {
+      "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+    },
+    "participantId": {
+      "$ref": "shared-primitives.schema.json#/$defs/ParticipantId"
+    },
+    "policyGenerationDigest": {
+      "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+    },
+    "principalId": {
+      "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+    },
+    "privacyDomainId": {
+      "$ref": "shared-primitives.schema.json#/$defs/PrivacyDomainId"
+    },
+    "sessionId": {
+      "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+    }
+  },
+  "required": [
+    "principalId",
+    "participantId",
+    "privacyDomainId",
+    "sessionId",
+    "authorityEnvelopeId",
+    "authorityEpoch",
+    "delegationEpoch",
+    "actionIntentId",
+    "policyGenerationDigest",
+    "factGenerationDigest"
+  ],
+  "title": "AuthorityContextV1",
+  "type": "object"
+}

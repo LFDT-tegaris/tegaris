@@ -1,0 +1,43 @@
+{
+  "name": "@openpc/admin-web",
+  "version": "2.0.0-r1",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
+    "start": "next start",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --config vitest.config.ts",
+    "test:e2e": "bash ../../scripts/operations/policy-testing.sh run"
+  },
+  "dependencies": {
+    "@openpc/ui-extensions": "workspace:*",
+    "@openpc/ui-shell": "workspace:*",
+    "@tanstack/react-query": "5.102.7",
+    "lucide-react": "1.34.0",
+    "next": "16.3.4",
+    "react": "19.2.7",
+    "react-aria-components": "1.20.0",
+    "react-dom": "19.2.7",
+    "react-hook-form": "7.86.0",
+    "sonner": "2.0.8",
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.60.0",
+    "@tailwindcss/postcss": "4.3.3",
+    "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/user-event": "14.6.6",
+    "@types/node": "24.13.3",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.5",
+    "jsdom": "30.0.1",
+    "tailwindcss": "4.3.3",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10"
+  }
+}

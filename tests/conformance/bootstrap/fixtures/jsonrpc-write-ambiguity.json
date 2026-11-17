@@ -1,0 +1,16 @@
+{
+  "error": {
+    "code": -32005,
+    "data": {
+      "attemptId": "018f1e44-7b2c-7abe-8def-0123456789ad",
+      "pcCode": "PC-RUNTIME-3005",
+      "retryable": false,
+      "signedTransactionHash": "0xdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "traceId": "018f1e44-7b2c-7abd-8def-0123456789ac",
+      "truthState": "WRITE_AMBIGUITY"
+    },
+    "message": "Write outcome requires reconciliation"
+  },
+  "id": "req-0002",
+  "jsonrpc": "2.0"
+}

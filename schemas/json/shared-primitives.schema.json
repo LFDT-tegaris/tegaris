@@ -1,0 +1,109 @@
+{
+  "$defs": {
+    "AuthorityEpoch": {
+      "$ref": "#/$defs/UInt64String"
+    },
+    "Bytes32": {
+      "pattern": "^0x[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "ClaimCeilingId": {
+      "enum": [
+        "CC-GLOBAL-AUTHORITY-TRUTH",
+        "CC-EXACT-COMPATIBILITY-PROFILE",
+        "CC-ADMITTED-LOCAL-FACT-SOURCE-NEUTRAL",
+        "CC-PC-SEPARATE-PRODUCT-INTEGRATION",
+        "CC-NUMERIC-SLA-CERTIFICATION",
+        "CC-ACCESSIBILITY-RESPONSIVE-EXPLAINABILITY"
+      ],
+      "type": "string"
+    },
+    "EvmAddress": {
+      "pattern": "^0x[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "IdempotencyKey": {
+      "maxLength": 128,
+      "minLength": 16,
+      "pattern": "^[A-Za-z0-9._~-]+$",
+      "type": "string"
+    },
+    "Int64String": {
+      "pattern": "^-?(0|[1-9][0-9]{0,18})$",
+      "type": "string"
+    },
+    "OpaqueCursor": {
+      "maxLength": 2048,
+      "pattern": "^pc1\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+$",
+      "type": "string"
+    },
+    "OpenPcUrn": {
+      "pattern": "^urn:openpc:[a-z][a-z0-9-]{0,62}:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "type": "string"
+    },
+    "ParticipantId": {
+      "$ref": "#/$defs/OpenPcUrn"
+    },
+    "PrivacyDomainId": {
+      "$ref": "#/$defs/OpenPcUrn"
+    },
+    "Rfc3339MicrosUtc": {
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$",
+      "type": "string"
+    },
+    "SemanticVersion": {
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$",
+      "type": "string"
+    },
+    "Sha256Digest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "TruthState": {
+      "enum": [
+        "SUCCESS",
+        "AUTHORIZED_EMPTY",
+        "DENIED",
+        "LOADING",
+        "UNKNOWN",
+        "UNAVAILABLE",
+        "STALE",
+        "REORG",
+        "PARTIAL",
+        "CONFLICTING",
+        "DEGRADED",
+        "FAILED",
+        "RETRY_ELIGIBLE",
+        "FAILOVER_ELIGIBLE",
+        "WRITE_AMBIGUITY",
+        "RECOVERY",
+        "ROLLBACK",
+        "RETIREMENT",
+        "UNINSTALL",
+        "DECOMMISSION"
+      ],
+      "type": "string"
+    },
+    "UInt256String": {
+      "pattern": "^(0|[1-9][0-9]{0,77})$",
+      "type": "string"
+    },
+    "UInt64String": {
+      "pattern": "^(0|[1-9][0-9]{0,19})$",
+      "type": "string"
+    },
+    "UuidV7": {
+      "format": "uuid",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "type": "string"
+    }
+  },
+  "$id": "https://schemas.openpc.local/shared-primitives.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "title": "OpenPC shared primitives",
+  "type": "object",
+  "x-openpc-canonicalEncoding": "PC-CBOR-1",
+  "x-openpc-jsonCanonicalization": "RFC8785 only for JSON artifact projections; it does not replace PC-CBOR-1 semantic identity"
+}

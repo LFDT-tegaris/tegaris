@@ -1,0 +1,132 @@
+{
+  "profileId": "pc.control.retention-policy.retire",
+  "profileVersion": 1,
+  "schemaDefinitionDigest": "sha256:41a877ca7e00e74f32c8becf8daee38f26c12ab9d9dcf6ff80ed8e75608b3c1f",
+  "actionIntentId": "ACT-RETENTION_POLICIES_RETIRE_RESOURCE-V1",
+  "catalogOperationId": "CFG-OP-RETIRE-RETENTION-POLICY",
+  "resourceType": "retention-policies",
+  "aggregateType": "retention-policy",
+  "sequenceNamespace": "CONTROL_BUSINESS_TRANSITION_V1",
+  "transitionKind": 1,
+  "state": {
+    "owner": "control.retention_policy",
+    "identity": [
+      "participant_id",
+      "privacy_domain_id",
+      "retention_policy_id"
+    ],
+    "revision": "revision:u64",
+    "absence": {
+      "existence": 0,
+      "revision": 0,
+      "projection": {}
+    },
+    "projection": {
+      "0": {
+        "column": "policy_digest",
+        "type": "H32",
+        "encoding": "sha256-prefixed-lowercase-hex"
+      },
+      "1": {
+        "column": "predecessor_policy_id",
+        "type": "UUID_BYTES_OR_EMPTY_BSTR",
+        "absence": "zero-length byte string"
+      },
+      "2": {
+        "column": "approval_request_id",
+        "type": "UUID_BYTES"
+      },
+      "3": {
+        "column": "activation_operation_id",
+        "type": "UUID_BYTES"
+      },
+      "4": {
+        "column": "retirement_approval_request_id",
+        "type": "UUID_BYTES_OR_EMPTY_BSTR",
+        "absence": "zero-length byte string"
+      },
+      "5": {
+        "column": "retirement_operation_id",
+        "type": "UUID_BYTES_OR_EMPTY_BSTR",
+        "absence": "zero-length byte string"
+      },
+      "6": {
+        "column": "active_from",
+        "type": "U64_NANOSECONDS",
+        "encoding": "exact stored UTC microseconds multiplied by 1000"
+      },
+      "7": {
+        "column": "active_until",
+        "type": "U64_NANOSECONDS_OR_EMPTY_BSTR",
+        "absence": "zero-length byte string",
+        "encoding": "exact stored UTC microseconds multiplied by 1000; terminal interval end"
+      }
+    },
+    "digest": "pc.control.transition-state.v1; SHA-256 over canonical typed CBOR; every map field required"
+  },
+  "transition": {
+    "command": "RETIRE",
+    "before": "PRESENT_ACTIVE_REVISION_1",
+    "after": "PRESENT_RETIRED_REVISION_2",
+    "change": "separate consumed approval and operation close the actual active interval while preserving all version contents",
+    "noOp": "REJECT_WITHOUT_EFFECTS"
+  },
+  "authority": {
+    "actor": "authenticated participant user session",
+    "action": "exact action registry, live scoped authority fence",
+    "evidence": [
+      {
+        "kind": 3,
+        "owner": "control.approval_decision_record",
+        "format": "identity credential signed by the authorized checker",
+        "binding": "exact immutable candidate, action, scope, expected revision and distinct checker; consumed by this operation"
+      },
+      {
+        "kind": 4,
+        "owner": "control.mutation_evidence for ID-OP-WEBAUTHN-VERIFY",
+        "format": "identity owner verified WebAuthn step-up",
+        "binding": "actual operator, session, action, candidate digest and one-time challenge consumed by this operation"
+      }
+    ],
+    "snapshot": "retained exact precommit authority path and live epochs/validity; no session or credential secrets",
+    "approval": "EXACT_CONSUMED_CANDIDATE_WITH_INDEPENDENT_MAKER_CHECKER; deferred owning-row trigger binds approval and before/after state",
+    "stepUp": "FRESH_WEBAUTHN_BOUND_TO_THE_SAME_APPROVAL_AND_OPERATION"
+  },
+  "events": [
+    {
+      "eventType": "io.openpc.control.command.committed.v1",
+      "dataSchemaUri": "https://schemas.openpc.local/event-payloads.schema.json#/$defs/CommandCommitted",
+      "payload": "canonical four-key CommandCommitted CBOR; commandId=operationId, aggregateRef=canonical aggregate URN, actionIntentId, intentDigest=actionIntentDigest",
+      "cardinality": 1,
+      "effect": "local durable control-state transition only"
+    }
+  ],
+  "privacy": {
+    "placement": "same participant and privacy domain as authoritative aggregate",
+    "read": "current read authorization required; receipt is never authorization",
+    "retention": "retain receipt, typed state/authority inputs, authorization evidence, public trust and operation links under control audit retention; no automatic deletion"
+  },
+  "lifecycle": {
+    "idempotency": "exact replay returns original operation, receipt, evidence and event IDs/bytes/sequences",
+    "rollback": "no domain, evidence, head, event or result effects",
+    "restart": "scoped primary operation reconciliation; preserve UNKNOWN for unresolved COMMIT",
+    "delivery": "qualified namespace and profile required; no legacy cursor merge"
+  },
+  "definitionDigest": "sha256:1061d0df60e81533f20a776034df61d3325446fd9ba5024f607d1852c736f351",
+  "requestBinding": {
+    "domain": "pc.control.configuration-request.v1",
+    "encoding": "UTF-8 domain plus NUL; each field prefixed by uint32 big-endian UTF-8 byte length; SHA-256",
+    "fields": [
+      "participantId",
+      "privacyDomainId",
+      "principalId",
+      "actionIntentId",
+      "catalogOperationId",
+      "aggregateType",
+      "aggregateId",
+      "expectedRevision (canonical u64 decimal)",
+      "candidateDigest (sha256: lowercase hex)",
+      "idempotencyKey"
+    ]
+  }
+}

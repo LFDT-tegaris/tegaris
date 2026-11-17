@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1.0",
+  "scope": "I09_FOUNDATION_ONLY",
+  "notLiveMigration": true,
+  "dataClassification": "SYNTHETIC_LOCAL_NON_PRODUCTION_ONLY",
+  "stores": ["openpc_control", "openpc_facts", "openpc_candidate_index"],
+  "invariants": [
+    "RESTORE_EACH_LOGICAL_DATABASE_SEPARATELY",
+    "VERIFY_MIGRATION_AND_FILE_CHECKSUMS",
+    "VERIFY_OWNER_ROLES_PUBLIC_PRIVILEGES_AND_FORCE_RLS",
+    "VERIFY_CONSTRAINTS_INDEXES_AND_SIGNED_CURSOR_CONTINUITY",
+    "CANDIDATE_INDEX_REBUILDS_FROM_AUTHORITATIVE_PROFILES_AND_CHECKPOINTS",
+    "VALKEY_STARTS_EMPTY_AND_NEVER_BECOMES_AUTHORITY"
+  ],
+  "requiredQualificationInput": "QINPUT-<PROFILE>-BACKUP-RESTORE-V1",
+  "claimCeiling": "No backup target, PITR, recovery-time, recovery-point, or production restore has been qualified."
+}

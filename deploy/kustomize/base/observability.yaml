@@ -1,0 +1,98 @@
+schemaVersion: "1.0"
+contractId: AF26-OBSERVABILITY-V1
+collector: {distribution: signed-openpc-collector, upstreamVersion: "0.159.0", deploymentUnitId: DU-OTEL-COLLECTOR}
+claimRule: Telemetry is an operational signal only. It cannot grant, deny, activate, admit a fact, prove evidence durability, or satisfy a benchmark/SLO without the exact executed receipt.
+commonResourceAttributes:
+  required: [service.name, service.version, service.instance.id, deployment.environment.name, openpc.deployment_unit_id, openpc.effective_generation, openpc.build_digest]
+  forbidden: [enduser.id, openpc.participant_id, openpc.privacy_domain_id, openpc.secret_ref, openpc.payload, db.statement, http.request.body, http.response.body, rpc.request.metadata.authorization]
+  cardinality: Every emitted value is an enumerated service/profile/state or version/digest shared by a cohort; subject, request, event, policy, module, fact, wallet, transaction, IP, URL query and diagnostic IDs are forbidden metric labels.
+logs:
+  schemaId: OPENPC-STRUCTURED-LOG-V1
+  requiredFields: [timestamp, severity, service, deployment_unit_id, event_name, outcome, diagnostic_id, correlation_id, trace_id, profile, desired_generation, effective_generation, data_class, message_template]
+  optionalFields: [span_id, boundary_id, component_id, state_from, state_to, attempt_number, duration_ms, error_code, retry_class, quarantine_reason]
+  forbiddenFields: [secret, token, password, cookie, authorization, private_key, payload, request_body, response_body, raw_query, db_statement, hidden_object_name]
+  timestamp: RFC3339_UTC_SIX_FRACTIONAL_DIGITS
+  messageRule: Fixed template plus enumerated fields; no stringified objects, user-controlled payload, or existence-sensitive detail.
+  redactionFailure: Block export, increment openpc_telemetry_rejected_total{reason="redaction_failed"}, and require producer to admit protected OPS_REDACTION_FAILED evidence.
+metrics:
+  - {name: openpc_build_info, type: gauge, unit: "1", labels: [deployment_unit, service_version, build_digest, profile], meaning: One for the running exact build.}
+  - {name: openpc_health_state, type: gauge, unit: "1", labels: [deployment_unit, capability, state, profile], meaning: One for current closed health state; absent/stale renders UNKNOWN.}
+  - {name: openpc_health_transition_total, type: counter, unit: "{transition}", labels: [deployment_unit, capability, from_state, to_state, reason], meaning: Capability transitions.}
+  - {name: openpc_config_generation_info, type: gauge, unit: "1", labels: [deployment_unit, desired_digest, effective_digest, state], meaning: Desired/effective truth; digest cardinality bounded by retained cohorts.}
+  - {name: openpc_config_rejection_total, type: counter, unit: "{rejection}", labels: [deployment_unit, reason], meaning: Closed-schema or generation rejection.}
+  - {name: openpc_secret_resolution_total, type: counter, unit: "{resolution}", labels: [deployment_unit, secret_class, outcome], meaning: Reference resolution outcome; no provider path/name/version label.}
+  - {name: openpc_boundary_requests_total, type: counter, unit: "{request}", labels: [boundary, operation_class, outcome, profile, data_class], meaning: Every COM-001 through COM-024 invocation.}
+  - {name: openpc_boundary_duration_seconds, type: histogram, unit: s, labels: [boundary, operation_class, outcome, profile, data_class], meaning: Boundary elapsed time with profile-defined explicit buckets.}
+  - {name: openpc_boundary_inflight, type: updowncounter, unit: "{request}", labels: [boundary, operation_class], meaning: Current admitted work.}
+  - {name: openpc_admission_rejected_total, type: counter, unit: "{rejection}", labels: [deployment_unit, lane, reason], meaning: Overload/backpressure admission rejection.}
+  - {name: openpc_work_queue_depth, type: gauge, unit: "{item}", labels: [owner, channel, state], meaning: Finite durable work state counts.}
+  - {name: openpc_work_oldest_age_seconds, type: gauge, unit: s, labels: [owner, channel, state], meaning: Age of oldest visible work.}
+  - {name: openpc_work_attempt_total, type: counter, unit: "{attempt}", labels: [owner, channel, outcome, retry_class], meaning: Attempts, including reconciliation and quarantine.}
+  - {name: openpc_work_quarantined_total, type: counter, unit: "{item}", labels: [owner, channel, reason], meaning: Finite-retry terminal quarantine.}
+  - {name: openpc_outbox_sequence_lag, type: gauge, unit: "{event}", labels: [owner, channel], meaning: Highest committed minus delivered sequence.}
+  - {name: openpc_database_pool_connections, type: gauge, unit: "{connection}", labels: [store, state], meaning: Pool usage by C03 store; query text absent.}
+  - {name: openpc_database_transaction_total, type: counter, unit: "{transaction}", labels: [store, outcome, retry_reason], meaning: Commit/conflict/deadlock/unknown outcomes.}
+  - {name: openpc_evidence_spool_bytes, type: gauge, unit: By, labels: [deployment_unit, state], meaning: Used/capacity/high/critical projection.}
+  - {name: openpc_evidence_export_total, type: counter, unit: "{record}", labels: [outcome, retry_class], meaning: Export admission, delivery, duplicate and quarantine.}
+  - {name: openpc_generation_target_state, type: gauge, unit: "1", labels: [target_class, state, desired_digest, effective_digest], meaning: Staging/warming/active/fenced state; target identity is not a label.}
+  - {name: openpc_xds_response_total, type: counter, unit: "{response}", labels: [resource_type, outcome, reason], meaning: ACK/NACK/reconnect; ACK is not activation.}
+  - {name: openpc_provider_attempt_total, type: counter, unit: "{attempt}", labels: [provider_profile, operation_class, outcome], meaning: Read/write attempt outcomes without endpoint, wallet, tx or payload labels.}
+  - {name: openpc_provider_divergence_total, type: counter, unit: "{observation}", labels: [provider_profile, divergence_class], meaning: Exact profile inconsistency observations.}
+  - {name: openpc_provider_unknown_write, type: gauge, unit: "{attempt}", labels: [provider_profile, state], meaning: Unreconciled attempt envelopes.}
+  - {name: openpc_fact_pipeline_position, type: gauge, unit: "{position}", labels: [fact_profile, position_kind], meaning: Source/candidate/admitted/finalized positions; chain identifiers are bounded profile labels.}
+  - {name: openpc_fact_reorg_total, type: counter, unit: "{reorg}", labels: [fact_profile, outcome], meaning: Reorg/invalidation/rebuild outcomes.}
+  - {name: openpc_migration_phase_state, type: gauge, unit: "1", labels: [migration_profile, phase, state], meaning: Current phase; never migration success by itself.}
+  - {name: openpc_migration_differential_mismatch_total, type: counter, unit: "{mismatch}", labels: [migration_profile, behavior_class, disposition], meaning: Golden/differential results.}
+  - {name: openpc_backup_last_success_age_seconds, type: gauge, unit: s, labels: [store, backup_class], meaning: Age from verified completion evidence.}
+  - {name: openpc_restore_state, type: gauge, unit: "1", labels: [store, state], meaning: Isolated restore/reconciliation state.}
+  - {name: openpc_telemetry_rejected_total, type: counter, unit: "{record}", labels: [signal, reason], meaning: Producer/collector schema, redaction or cardinality rejection.}
+  - {name: openpc_telemetry_export_total, type: counter, unit: "{record}", labels: [signal, outcome], meaning: Exported/dropped/retried records; no semantic effect.}
+  - {name: openpc_resource_saturation_ratio, type: gauge, unit: "1", labels: [deployment_unit, resource], meaning: CPU/memory/connection/disk/queue signed-envelope utilization.}
+  - {name: openpc_security_control_total, type: counter, unit: "{occurrence}", labels: [control_id, outcome], meaning: Security control execution; protected event contains attributable evidence.}
+  - {name: openpc_privacy_control_total, type: counter, unit: "{occurrence}", labels: [control_id, outcome], meaning: Privacy control execution without subject/domain labels.}
+histogramProfile:
+  source: SIGNED_QUALIFICATION_INPUT
+  rule: Bucket boundaries are exact per metric/profile and recorded in the qualification receipt; there is no universal default or fabricated observation.
+traces:
+  propagation: W3C_TRACE_CONTEXT_AND_BAGGAGE_ALLOWLIST
+  baggageAllowlist: [openpc.correlation_class, openpc.profile, openpc.data_class]
+  forbiddenBaggage: [participant_id, privacy_domain_id, subject_id, secret, token, payload, policy_id, fact_id, wallet, transaction_hash]
+  rootSpans:
+    - {name: openpc.http.request, boundaries: [COM-001, COM-024]}
+    - {name: openpc.sql.transaction, boundaries: [COM-002, COM-003, COM-015, COM-017, COM-018]}
+    - {name: openpc.compile, boundaries: [COM-004, COM-005]}
+    - {name: openpc.fleet, boundaries: [COM-006, COM-007, COM-008, COM-009]}
+    - {name: openpc.runtime.decision, boundaries: [COM-010]}
+    - {name: openpc.runtime.provider, boundaries: [COM-011, COM-012]}
+    - {name: openpc.evidence.export, boundaries: [COM-013]}
+    - {name: openpc.indexer, boundaries: [COM-014, COM-015, COM-016], r1State: FUTURE_CONDITIONAL}
+    - {name: openpc.fact, boundaries: [COM-017, COM-018, COM-019]}
+    - {name: openpc.identity.external, boundaries: [COM-021]}
+    - {name: openpc.external.decision, boundaries: [COM-022]}
+    - {name: openpc.notification, boundaries: [COM-023]}
+  requiredAttributes: [openpc.schema_version, openpc.boundary_id, openpc.operation_class, openpc.outcome, openpc.profile, openpc.data_class, openpc.desired_generation, openpc.effective_generation]
+  sampling:
+    protectedDenialSecurityMigrationError: ALWAYS_SAMPLE_WITHOUT_PAYLOAD
+    ordinarySuccess: SIGNED_PROFILE_RATIO_HEAD_SAMPLING
+    tailSampling: ERROR_LATENCY_AND_STATE_TRANSITION_RULES_FROM_SIGNED_PROFILE
+    rule: Sampling can reduce telemetry only; protected evidence admission is independent and never sampled.
+events:
+  requiredTypes: [io.openpc.ops.config.staged.v1, io.openpc.ops.config.applied.v1, io.openpc.ops.secret.rotated.v1, io.openpc.ops.secret.revoked.v1, io.openpc.ops.health.transitioned.v1, io.openpc.ops.retry.scheduled.v1, io.openpc.ops.work.quarantined.v1, io.openpc.ops.overload.entered.v1, io.openpc.ops.overload.cleared.v1, io.openpc.ops.backup.completed.v1, io.openpc.ops.restore.verified.v1, io.openpc.ops.failover.fenced.v1, io.openpc.ops.migration.transitioned.v1, io.openpc.ops.differential.recorded.v1, io.openpc.ops.security.evaluated.v1, io.openpc.ops.privacy.evaluated.v1]
+  format: CloudEvents_1_0_2
+retention:
+  logs: QINPUT-TELEMETRY-LOG-RETENTION-V1
+  metrics: QINPUT-TELEMETRY-METRIC-RETENTION-V1
+  traces: QINPUT-TELEMETRY-TRACE-RETENTION-V1
+  protectedEvidence: configuration.settings.evidence.retention_profile
+failureBehavior:
+  missingOrStale: Dashboard/card state UNKNOWN with last observation and impact; never green.
+  collectorUnavailable: Producer uses finite non-blocking telemetry buffer and increments local loss counter; semantic operation is unchanged unless its separate protected evidence admission is unavailable.
+  exporterUnavailable: Bounded queue/retry then declared drop/quarantine per signed telemetry profile; no unbounded memory/disk and no semantic retry.
+  invalidOrSensitiveRecord: Reject before export; protected redaction failure evidence required.
+trace:
+  requirementRefs: [REQ-SR01-B0-REQ-TARCH-COM-020, REQ-SR01-B0-REQ-SETREQ-TELEMETRY_PAYLOAD_CAPTURE_ENABLED, REQ-SR01-B0-REQ-SETREQ-TELEMETRY_METRIC_CARD_STALE_AFTER]
+  decisionRefs: [DEC-C03-003, DEC-C03-007, DEC-C03-013]
+  componentRefs: [DU-OTEL-COLLECTOR, COM-001, COM-002, COM-003, COM-004, COM-005, COM-006, COM-007, COM-008, COM-009, COM-010, COM-011, COM-012, COM-013, COM-014, COM-015, COM-016, COM-017, COM-018, COM-019, COM-020, COM-021, COM-022, COM-023, COM-024]
+  sourceUnitRefs: [SU-4e631802440a7af75fb60175, SU-e94c52e5349af1662f065dbf, SU-d80223457fb0d1d8267d3eb8]
+  testRefs: [TEST-OPS-OTEL-001, TEST-OPS-OTEL-002, TEST-OPS-OTEL-003, TEST-OPS-OTEL-004, TEST-OPS-OTEL-005, TEST-OPS-OTEL-006, TEST-OPS-OTEL-007, TEST-OPS-OTEL-008, TEST-OPS-OTEL-009, TEST-OPS-OTEL-010]
+  claimCeilingRefs: [CC-GLOBAL-AUTHORITY-TRUTH, CC-NUMERIC-SLA-CERTIFICATION, CC-PC-SEPARATE-PRODUCT-INTEGRATION]

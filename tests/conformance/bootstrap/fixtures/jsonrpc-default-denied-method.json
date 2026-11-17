@@ -1,0 +1,6 @@
+{
+  "id": "req-0003",
+  "jsonrpc": "2.0",
+  "method": "eth_sendTransaction",
+  "params": []
+}

@@ -1,0 +1,129 @@
+openapi: 3.1.1
+info:
+  title: OpenPC Privacy Explorer API
+  version: '1.0'
+  license:
+    name: Apache-2.0
+    identifier: Apache-2.0
+servers:
+  - url: https://control-api.openpc.invalid
+components:
+  securitySchemes:
+    bffSession:
+      description: Server-side terminal authorization; the opaque session value is never a request-body field.
+      in: cookie
+      name: __Host-openpc_session
+      type: apiKey
+paths:
+  /v1/privacy-explorer/occurrences/{occurrenceId}:
+    get:
+      operationId: readPrivacyExplorerOccurrence
+      summary: Read authorized disclosure state and its evidence reference
+      description: Metadata only. Release authorization does not assert that the client received bytes. Interrupted executions cannot replay a protected response.
+      x-openpc-action-intent: ACT-PRIVACY_EXPLORER_READ_OCCURRENCE-V1
+      security:
+        - bffSession: []
+      parameters:
+        - name: occurrenceId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: OpenPC-Participant-ID
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: OpenPC-Privacy-Domain-ID
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Current authorized occurrence metadata
+          content:
+            application/json:
+              schema:
+                $ref: ../json/privacy-explorer.schema.json#/$defs/PrivacyExplorerOccurrenceV1
+        '403':
+          description: Occurrence unavailable in the current authority context
+          content:
+            application/problem+json:
+              schema:
+                $ref: ../json/privacy-explorer.schema.json#/$defs/PrivacyExplorerProblemV1
+  /v1/privacy-explorer/projections:read:
+    post:
+      operationId: readPrivacyExplorerProjection
+      summary: Read a governed privacy projection
+      x-openpc-action-intent: ACT-PRIVACY_EXPLORER_READ_PROJECTION-V1
+      security:
+        - bffSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../json/privacy-explorer.schema.json#/$defs/ExplorerProjectionRequestV1
+      responses:
+        '200':
+          description: Locally validated and redacted Privacy Explorer result; never a grant or fact
+          content:
+            application/json:
+              schema:
+                $ref: ../json/privacy-explorer.schema.json#/$defs/PrivacyExplorerResultV1
+        '400':
+          description: Invalid request
+          content:
+            application/problem+json:
+              schema:
+                $ref: ../json/privacy-explorer.schema.json#/$defs/PrivacyExplorerProblemV1
+        '401':
+          description: Missing or invalid terminal authorization
+          content:
+            application/problem+json:
+              schema:
+                $ref: ../json/privacy-explorer.schema.json#/$defs/PrivacyExplorerProblemV1
+        '403':
+          description: Terminal authorization denied
+          content:
+            application/problem+json:
+              schema:
+                $ref: ../json/privacy-explorer.schema.json#/$defs/PrivacyExplorerProblemV1
+        '409':
+          description: Safe conflict or replay problem
+          content:
+            application/problem+json:
+              schema:
+                $ref: ../json/privacy-explorer.schema.json#/$defs/PrivacyExplorerProblemV1
+        '404':
+          description: Safe absent or direct-browser rejection problem
+          content:
+            application/problem+json:
+              schema:
+                $ref: ../json/privacy-explorer.schema.json#/$defs/PrivacyExplorerProblemV1
+        '412':
+          description: Safe stale or reorganization problem
+          content:
+            application/problem+json:
+              schema:
+                $ref: ../json/privacy-explorer.schema.json#/$defs/PrivacyExplorerProblemV1
+        '503':
+          description: Safe unavailable problem
+          content:
+            application/problem+json:
+              schema:
+                $ref: ../json/privacy-explorer.schema.json#/$defs/PrivacyExplorerProblemV1
+        '502':
+          description: Safe upstream contract problem
+          content:
+            application/problem+json:
+              schema:
+                $ref: ../json/privacy-explorer.schema.json#/$defs/PrivacyExplorerProblemV1
+        '504':
+          description: Safe deadline problem
+          content:
+            application/problem+json:
+              schema:
+                $ref: ../json/privacy-explorer.schema.json#/$defs/PrivacyExplorerProblemV1

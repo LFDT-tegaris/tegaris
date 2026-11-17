@@ -1,0 +1,1076 @@
+{
+  "allocationRule": "AF-15 uses 215xx; AF-17 uses 217xx; authenticated facts retain 210xx-224xx; the identity correction closure uses collision-free 225xx; UI uses 230xx. No aliases or collisions.",
+  "entries": [
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:fact-candidate-outbox:v1",
+      "schemaId": 21001,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "CandidateOutboxEnvelopeV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:fact-admission-candidate:v1",
+      "schemaId": 21002,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "FactAdmissionCandidateV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:canonical-fact-identity:v1",
+      "schemaId": 21003,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "CanonicalFactIdentityV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:fact-lineage-action:v1",
+      "schemaId": 21004,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "FactLineageActionV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:fact-admission-receipt:v1",
+      "schemaId": 21005,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "FactAdmissionReceiptV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:fact-record:v1",
+      "schemaId": 21006,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "FactRecordV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:fact-readiness:v1",
+      "schemaId": 21007,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "FactReadinessV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:fact-checkpoint:v1",
+      "schemaId": 21008,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "FactCheckpointV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:fact-shard-manifest:v1",
+      "schemaId": 21009,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "FactShardManifestV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:fact-query-result:v1",
+      "schemaId": 21010,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "FactQueryResultV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:fact-admission-proof:v1",
+      "schemaId": 21011,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "FactAdmissionProofV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:fact-completeness-proof:v1",
+      "schemaId": 21012,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "FactCompletenessProofV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:relationship-profile:v1",
+      "schemaId": 21101,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "RelationshipProfileV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:relationship-candidate:v1",
+      "schemaId": 21102,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "RelationshipCandidateV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:relationship-fact:v1",
+      "schemaId": 21103,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "RelationshipFactV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:relationship-shard:v1",
+      "schemaId": 21104,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "RelationshipShardV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:relationship-lookup:v1",
+      "schemaId": 21105,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "RelationshipLookupV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:relationship-result:v1",
+      "schemaId": 21106,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "RelationshipResultV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:dynamic-event-profile:v1",
+      "schemaId": 21107,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "DynamicEventProfileV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:dynamic-event-candidate:v1",
+      "schemaId": 21108,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "DynamicEventCandidateV1"
+    },
+    {
+      "ownerLane": "LANE-API",
+      "projectionRefs": [
+        "pkg://interfaces/schemas/jsonrpc-runtime.schema.json#/$defs/PreparedTransactionIntentV2"
+      ],
+      "purpose": "openpc:prepared-transaction-intent:v2",
+      "schemaId": 21501,
+      "schemaVersion": "2.0.0",
+      "signatureContextRule": "COSE_Sign1_ES256_OVER_EXACT_PC_CBOR_1_SEMANTIC_PREIMAGE; SCHEMA_ID_VERSION_DIGEST_PURPOSE_AND_KEY_CONTEXT_EXACT",
+      "signed": true,
+      "typeName": "PreparedTransactionIntentV2"
+    },
+    {
+      "ownerLane": "LANE-RUNTIME",
+      "projectionRefs": [
+        "pkg://runtime/runtime-boundary-types.schema.json#/$defs/RuntimeActivationCapsuleManifest"
+      ],
+      "purpose": "openpc:runtime-activation-capsule-manifest:v1",
+      "schemaId": 21701,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "COSE_Sign1_ES256_OVER_EXACT_PC_CBOR_1_SEMANTIC_PREIMAGE; SCHEMA_ID_VERSION_DIGEST_PURPOSE_AND_KEY_CONTEXT_EXACT",
+      "signed": true,
+      "typeName": "RuntimeActivationCapsuleManifestV1"
+    },
+    {
+      "ownerLane": "LANE-RUNTIME",
+      "projectionRefs": [
+        "pkg://runtime/runtime-boundary-types.schema.json#/$defs/XdsSnapshotManifest"
+      ],
+      "purpose": "openpc:xds-snapshot-manifest:v1",
+      "schemaId": 21702,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "COSE_Sign1_ES256_OVER_EXACT_PC_CBOR_1_SEMANTIC_PREIMAGE; SCHEMA_ID_VERSION_DIGEST_PURPOSE_AND_KEY_CONTEXT_EXACT",
+      "signed": true,
+      "typeName": "XdsSnapshotManifestV1"
+    },
+    {
+      "ownerLane": "LANE-RUNTIME",
+      "projectionRefs": [
+        "pkg://runtime/runtime-boundary-types.schema.json#/$defs/ActivationToken"
+      ],
+      "purpose": "openpc:activation-token:v1",
+      "schemaId": 21703,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "COSE_Sign1_ES256_OVER_EXACT_PC_CBOR_1_SEMANTIC_PREIMAGE; SCHEMA_ID_VERSION_DIGEST_PURPOSE_AND_KEY_CONTEXT_EXACT",
+      "signed": true,
+      "typeName": "ActivationTokenV1"
+    },
+    {
+      "ownerLane": "LANE-RUNTIME",
+      "projectionRefs": [
+        "pkg://runtime/runtime-boundary-types.schema.json#/$defs/BrokerCapability"
+      ],
+      "purpose": "openpc:broker-capability:v1",
+      "schemaId": 21704,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "COSE_Sign1_ES256_OVER_EXACT_PC_CBOR_1_SEMANTIC_PREIMAGE; SCHEMA_ID_VERSION_DIGEST_PURPOSE_AND_KEY_CONTEXT_EXACT",
+      "signed": true,
+      "typeName": "BrokerCapabilityV1"
+    },
+    {
+      "ownerLane": "LANE-RUNTIME",
+      "projectionRefs": [
+        "pkg://runtime/runtime-boundary-types.schema.json#/$defs/ActivationReceipt"
+      ],
+      "purpose": "openpc:activation-receipt:v1",
+      "schemaId": 21705,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "COSE_Sign1_ES256_OVER_EXACT_PC_CBOR_1_SEMANTIC_PREIMAGE; SCHEMA_ID_VERSION_DIGEST_PURPOSE_AND_KEY_CONTEXT_EXACT",
+      "signed": true,
+      "typeName": "ActivationReceiptV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:provider-profile:v1",
+      "schemaId": 22001,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "ProviderProfileV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:route-request:v1",
+      "schemaId": 22002,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "RouteRequestV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:chain-read-anchor:v1",
+      "schemaId": 22003,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "ChainReadAnchorV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:provider-attempt:v1",
+      "schemaId": 22004,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "AttemptEnvelopeV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:provider-attempt-resolution:v2",
+      "schemaId": 22005,
+      "schemaVersion": "2.0.0",
+      "signed": true,
+      "typeName": "AttemptResolutionV2"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:request-route-witness:v1",
+      "schemaId": 22006,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "RequestRouteWitnessV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:write-reconciliation:v1",
+      "schemaId": 22007,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "WriteReconciliationV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:client-indexer-profile:v1",
+      "schemaId": 22101,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "ClientIndexerProfileV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:projection-plan:v1",
+      "schemaId": 22102,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "ProjectionPlanV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:candidate-projection-batch:v1",
+      "schemaId": 22103,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "CandidateProjectionBatchV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:explorer-fact-source-profile:v1",
+      "schemaId": 22201,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "ExplorerFactSourceProfileV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:explorer-candidate-page:v1",
+      "schemaId": 22202,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "ExplorerCandidatePageV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:the-graph-manifest-profile:v1",
+      "schemaId": 22301,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "TheGraphManifestProfileV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:the-graph-candidate-batch:v1",
+      "schemaId": 22302,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "TheGraphCandidateBatchV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:subquery-client-profile:v1",
+      "schemaId": 22401,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "SubQueryClientProfileV1"
+    },
+    {
+      "ownerLane": "LANE-FACTS",
+      "projectionRefs": [
+        "pkg://facts/fact-bridge.md"
+      ],
+      "purpose": "openpc:subquery-candidate-batch:v1",
+      "schemaId": 22402,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "SubQueryCandidateBatchV1"
+    },
+    {
+      "ownerLane": "LANE-IDENTITY",
+      "projectionRefs": [
+        "pkg://identity/canonical-vectors.json#/coseSign1"
+      ],
+      "purpose": "openpc:identity-credential:v1",
+      "schemaId": 22501,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "COSE_Sign1_ES256_OVER_EXACT_PC_CBOR_1_SEMANTIC_PREIMAGE; SCHEMA_ID_VERSION_DIGEST_PURPOSE_AND_KEY_CONTEXT_EXACT",
+      "signed": true,
+      "typeName": "IdentityCredentialV1"
+    },
+    {
+      "ownerLane": "LANE-UI",
+      "projectionRefs": [
+        "pkg://ui/module-ui-manifest.schema.json"
+      ],
+      "purpose": "openpc:module-ui-manifest:v1",
+      "schemaDigest": "sha256:bf8edcaa7a11c08d6cba257ab02d25bb5196b2e72617e67da99732d1c6ac9233",
+      "schemaId": 23001,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "ModuleUiManifestV1"
+    },
+    {
+      "ownerLane": "LANE-UI",
+      "projectionRefs": [
+        "pkg://ui/ui-registry.json#/apiContracts/UiProcessAcceptanceReceiptV1"
+      ],
+      "purpose": "openpc:ui-process-acceptance-receipt:v1",
+      "schemaId": 23002,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "UiProcessAcceptanceReceiptV1"
+    },
+    {
+      "ownerLane": "LANE-UI",
+      "projectionRefs": [
+        "governance://i08/C17_I08_ACCEPTANCE_EXECUTION_ADDENDUM/UiProcessAcceptanceReceiptV2"
+      ],
+      "purpose": "openpc:ui-process-acceptance-receipt:v2",
+      "schemaDigest": "sha256:5762f8cc60923ab295d52099dae4ec30f9e2c493e1122fd6bc09fe829e394ef2",
+      "schemaId": 23003,
+      "schemaVersion": "2.0.0",
+      "signatureContextRule": "COSE_Sign1_ES256_OVER_EXACT_PC_CBOR_1_SEMANTIC_PREIMAGE; V2_BINDING_AND_ROW_CLOSURE_REQUIRED",
+      "signed": true,
+      "typeName": "UiProcessAcceptanceReceiptV2"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/control-business-transition-receipt-v1.json"
+      ],
+      "purpose": "pc.cose.control-business-transition.v1",
+      "purposeCode": 338,
+      "schemaDigest": "sha256:41a877ca7e00e74f32c8becf8daee38f26c12ab9d9dcf6ff80ed8e75608b3c1f",
+      "schemaId": 24001,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_PROFILE_AAD_AND_ADMITTED_CONTROL_KEY",
+      "signed": true,
+      "typeName": "ControlBusinessTransitionReceiptV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/control-business-transition-receipt-v2.json"
+      ],
+      "purpose": "pc.cose.control-business-transition.v1",
+      "purposeCode": 338,
+      "schemaDigest": "sha256:4e7de36861819909275bdec8103d1df04984c03b34cb593437dfe68f5c2c1d9a",
+      "schemaId": 24001,
+      "schemaVersion": "2.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_PROFILE_AAD_AND_ADMITTED_CONTROL_KEY",
+      "signed": true,
+      "typeName": "ControlBusinessTransitionReceiptV2"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "services/module-registry/src/domain/module-release.ts#moduleReleaseSchemaPreimage"
+      ],
+      "purpose": "openpc:module-release:v1",
+      "schemaDigest": "sha256:fa9c44a4353cf131d0ac6eef2851b1f5ee23666467c7031aa1a0d503fd90bb0e",
+      "schemaId": 22601,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "COSE_Sign1_ES256_OVER_EXACT_PC_CBOR_1_SEMANTIC_PREIMAGE; SCHEMA_ID_VERSION_DIGEST_PURPOSE_AND_KEY_CONTEXT_EXACT",
+      "signed": true,
+      "typeName": "ModuleReleaseV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/evidence-sink-profile-v1.json"
+      ],
+      "purpose": "pc.cose.evidence-sink-profile.v1",
+      "purposeCode": 339,
+      "schemaDigest": "sha256:86dcf0707192cc456b41e8bf114abebc21180232256159490d74e5db151ac7d3",
+      "schemaId": 24002,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_HOST_ADMITTED_ARCHIVE_KEY",
+      "signed": true,
+      "typeName": "EvidenceSinkProfileV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/evidence-sink-receipt-v1.json"
+      ],
+      "purpose": "pc.cose.evidence-sink-receipt.v1",
+      "purposeCode": 340,
+      "schemaDigest": "sha256:6f1409ec49a98e1416adccd37517e0ed9b402b0e673f398cef40878bb8ea65fc",
+      "schemaId": 24003,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_HOST_ADMITTED_ARCHIVE_KEY",
+      "signed": true,
+      "typeName": "EvidenceSinkReceiptV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/evidence-protected-sink-profile-v1.json"
+      ],
+      "purpose": "pc.cose.evidence-protected-sink-profile.v1",
+      "purposeCode": 341,
+      "schemaDigest": "sha256:2c3a4bb5fdb78858baea6f1ce7074512933880ae2ef6b47e397d852c1ad85fc1",
+      "schemaId": 24004,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_HOST_ADMITTED_ARCHIVE_KEY",
+      "signed": true,
+      "typeName": "EvidenceProtectedSinkProfileV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/evidence-protected-sink-receipt-v1.json"
+      ],
+      "purpose": "pc.cose.evidence-protected-sink-receipt.v1",
+      "purposeCode": 342,
+      "schemaDigest": "sha256:d935f1479b41f87578a183d4cd7024371faae089e338f2abf1aa2c39a4b4445b",
+      "schemaId": 24005,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_HOST_ADMITTED_ARCHIVE_KEY",
+      "signed": true,
+      "typeName": "EvidenceProtectedSinkReceiptV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/fact-consumer-profile-v1.json"
+      ],
+      "purpose": "pc.cose.fact-consumer-profile.v1",
+      "purposeCode": 343,
+      "schemaDigest": "sha256:60c93313ff9d2ead84868b1af9d8d2b469b97f3b4eabbed3d6df6a5f4bd5395d",
+      "schemaId": 24006,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_HOST_ADMITTED_CONSUMER_KEY",
+      "signed": true,
+      "typeName": "FactConsumerProfileV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/fact-consumer-failure-v1.json"
+      ],
+      "purpose": "pc.cose.fact-consumer-failure.v1",
+      "purposeCode": 344,
+      "schemaDigest": "sha256:b9d6f05813ff518d1cbc05ff0cd9a55c9729035bce9f9f8446a914d2098bfbea",
+      "schemaId": 24007,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_ADMITTED_SCOPED_FAILURE_SIGNER",
+      "signed": true,
+      "typeName": "FactConsumerFailureV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/secret-recipient-profile-v1.json"
+      ],
+      "purpose": "pc.cose.secret-recipient-profile.v1",
+      "purposeCode": 345,
+      "schemaDigest": "sha256:df7bdec55af1419a59249bb64b819220e30c72abc9c9a479bdf74ff144983e36",
+      "schemaId": 24008,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_ADMITTED_INSTALLATION_ISSUER",
+      "signed": true,
+      "typeName": "SecretRecipientProfileV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/notification-channel-profile-v1.json"
+      ],
+      "purpose": "pc.cose.notification-channel-profile.v1",
+      "purposeCode": 346,
+      "schemaDigest": "sha256:a4dbed8df3d76b09c9dc6a117b61c3f35d39a3c65d63b4b6dea1505b655613d1",
+      "schemaId": 24009,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_NOTIFICATION_KEY",
+      "signed": true,
+      "typeName": "NotificationChannelProfileV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/notification-delivery-receipt-v1.json"
+      ],
+      "purpose": "pc.cose.notification-delivery-receipt.v1",
+      "purposeCode": 347,
+      "schemaDigest": "sha256:55390e54136620390bb65b020b4114343ecec829725416eb1eb5066292631e17",
+      "schemaId": 24010,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_NOTIFICATION_KEY",
+      "signed": true,
+      "typeName": "NotificationDeliveryReceiptV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/notification-verification-profile-v1.json"
+      ],
+      "purpose": "pc.cose.notification-verification-profile.v1",
+      "purposeCode": 348,
+      "schemaDigest": "sha256:92ed0e0f1563ac42412c13b772fa05a230c249c23aecdd5aa8108943dfca3018",
+      "schemaId": 24011,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_NOTIFICATION_KEY",
+      "signed": true,
+      "typeName": "NotificationVerificationProfileV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/notification-verification-receipt-v1.json"
+      ],
+      "purpose": "pc.cose.notification-verification-receipt.v1",
+      "purposeCode": 349,
+      "schemaDigest": "sha256:8a795d0fababedbd97790f52ddcd71628c0e35a70e46bf8bfa31419308ff1bd5",
+      "schemaId": 24012,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_NOTIFICATION_KEY",
+      "signed": true,
+      "typeName": "NotificationVerificationReceiptV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/evidence-export-completion-receipt-v1.json"
+      ],
+      "purpose": "pc.cose.evidence-export-completion-receipt.v1",
+      "purposeCode": 350,
+      "schemaDigest": "sha256:ee72df3cca5024c26c52c5983b15087426b4faabeb511cace227b92a04d2eb8f",
+      "schemaId": 24013,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_ADMITTED_EVIDENCE_EXPORT_KEY",
+      "signed": true,
+      "typeName": "EvidenceExportCompletionReceiptV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/notification-routing-profile-v1.json"
+      ],
+      "purpose": "pc.cose.notification-routing-profile.v1",
+      "purposeCode": 351,
+      "schemaDigest": "sha256:d3a84209d8c068428d0dd4fc3b7eab6b9ef760aa80a4372afd669276bbdb078e",
+      "schemaId": 24014,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_NOTIFICATION_KEY",
+      "signed": true,
+      "typeName": "NotificationRoutingProfileV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/evidence-kms-profile-v1.json"
+      ],
+      "purpose": "pc.cose.evidence-kms-profile.v1",
+      "purposeCode": 352,
+      "schemaDigest": "sha256:0c1c466ce7dc697f151bfb0d574a8837d11ae52b6c94d7f454b29120546376fe",
+      "schemaId": 24015,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_ADMITTED_EVIDENCE_KMS_ROLE",
+      "signed": true,
+      "typeName": "EvidenceKmsProfileV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/evidence-wrapped-key-record-v1.json"
+      ],
+      "purpose": "pc.cose.evidence-wrapped-key-record.v1",
+      "purposeCode": 353,
+      "schemaDigest": "sha256:b69bd016306d45d700e68aea1ce41225a774556df3070dbfea71d762cde3b700",
+      "schemaId": 24016,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_ADMITTED_EVIDENCE_KMS_ROLE",
+      "signed": true,
+      "typeName": "EvidenceWrappedKeyRecordV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/evidence-kms-receipt-v1.json"
+      ],
+      "purpose": "pc.cose.evidence-kms-receipt.v1",
+      "purposeCode": 354,
+      "schemaDigest": "sha256:2de3abbbc13222bd7473f0aa11d9dcbfb1bb9b538f0e426259d276c17b5d8ad2",
+      "schemaId": 24017,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_ADMITTED_EVIDENCE_KMS_ROLE",
+      "signed": true,
+      "typeName": "EvidenceKmsReceiptV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/notification-worker-profile-v1.json"
+      ],
+      "purpose": "pc.cose.notification-worker-profile.v1",
+      "purposeCode": 355,
+      "schemaDigest": "sha256:913a6fec27e940efaef9c09fcedf631c71f8a8b80ecc213fd026e24266384f25",
+      "schemaId": 24018,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_NOTIFICATION_KEY",
+      "signed": true,
+      "typeName": "NotificationWorkerProfileV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/notification-occurrence-receipt-v1.json"
+      ],
+      "purpose": "pc.cose.notification-occurrence-receipt.v1",
+      "purposeCode": 356,
+      "schemaDigest": "sha256:0bbafea917420f2b049abf8b5c62be5344b09ead9bee1e8a2ebaa137d2f4f709",
+      "schemaId": 24019,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_NOTIFICATION_KEY",
+      "signed": true,
+      "typeName": "NotificationOccurrenceReceiptV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/notification-delivery-requested-receipt-v1.json"
+      ],
+      "purpose": "pc.cose.notification-delivery-requested-receipt.v1",
+      "purposeCode": 357,
+      "schemaDigest": "sha256:be98135a39daef47b880db3a93565b769942e81647836392fbd6fbfc21c3bcf4",
+      "schemaId": 24020,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_NOTIFICATION_KEY",
+      "signed": true,
+      "typeName": "NotificationDeliveryRequestedReceiptV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/notification-delivery-started-receipt-v1.json"
+      ],
+      "purpose": "pc.cose.notification-delivery-started-receipt.v1",
+      "purposeCode": 358,
+      "schemaDigest": "sha256:16d25d491ab1eeef18d69b6cc55062f2a5d0d83e9e58475252582de0c8dea7d0",
+      "schemaId": 24021,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_NOTIFICATION_KEY",
+      "signed": true,
+      "typeName": "NotificationDeliveryStartedReceiptV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/operations-site-document-v1.json"
+      ],
+      "purpose": "pc.cose.operations-site-document.v1",
+      "purposeCode": 359,
+      "schemaDigest": "sha256:573ff4168dc56661db602db2b26ce6fd0eb1b981026995d4c0cc7e66da9b26fe",
+      "schemaId": 24022,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_OPERATIONS_SITE_ISSUER",
+      "signed": true,
+      "typeName": "OperationsSiteDocumentV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/operations-secret-resolution-v1.json"
+      ],
+      "purpose": "pc.cose.operations-secret-resolution.v1",
+      "purposeCode": 360,
+      "schemaDigest": "sha256:5208ec7138953ed482cf113a5472bc9817f344b1892d393150bed647092d2553",
+      "schemaId": 24023,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_TEST_SECRET_RESOLUTION_OBSERVER",
+      "signed": true,
+      "typeName": "OperationsSecretResolutionV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/operations-qualification-input-v1.json"
+      ],
+      "purpose": "pc.cose.operations-qualification-input.v1",
+      "purposeCode": 361,
+      "schemaDigest": "sha256:1d615e22f4fccbcf5a345a78a4e225de7257b8cb2a0fb98c0f61f7043edacb73",
+      "schemaId": 24024,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_QUALIFICATION_PURPOSE_KEY_AND_FRESH_ROOT_STATE",
+      "signed": true,
+      "typeName": "OperationsQualificationInputV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/operations-qualification-executed-receipt-v1.json"
+      ],
+      "purpose": "pc.cose.operations-qualification-executed-receipt.v1",
+      "purposeCode": 362,
+      "schemaDigest": "sha256:d4d4a2318627df3f63969cb28b0d8a63aae6b0107da5f8a6b281892421816557",
+      "schemaId": 24025,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_QUALIFICATION_PURPOSE_KEY_AND_FRESH_ROOT_STATE",
+      "signed": true,
+      "typeName": "OperationsQualificationExecutedReceiptV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/operations-qualification-keyset-v1.json"
+      ],
+      "purpose": "pc.cose.operations-qualification-keyset.v1",
+      "purposeCode": 363,
+      "schemaDigest": "sha256:a5c248c6ba01d2063f149462cff9d41e8b17ad0aff1ca5598e3fb3dd3affb8f8",
+      "schemaId": 24026,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_QUALIFICATION_ROOT_AND_MONOTONIC_STATE",
+      "signed": true,
+      "typeName": "OperationsQualificationKeysetV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/operations-qualification-revocations-v1.json"
+      ],
+      "purpose": "pc.cose.operations-qualification-revocations.v1",
+      "purposeCode": 364,
+      "schemaDigest": "sha256:85987caf4c0b410010264d4b9fed692b043823ba944a17c8f8bb3cce4f18d08c",
+      "schemaId": 24027,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_QUALIFICATION_ROOT_AND_MONOTONIC_STATE",
+      "signed": true,
+      "typeName": "OperationsQualificationRevocationsV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/notification-delivery-cancellation-receipt-v1.json"
+      ],
+      "purpose": "pc.cose.notification-delivery-cancellation-receipt.v1",
+      "purposeCode": 365,
+      "schemaDigest": "sha256:41e381d79d89ea82f47547ed9b1becfa84ef347dd77219f12ecfa950e45269cb",
+      "schemaId": 24028,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_NOTIFICATION_KEY",
+      "signed": true,
+      "typeName": "NotificationDeliveryCancellationReceiptV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/notification-delivery-outcome-receipt-v1.json"
+      ],
+      "purpose": "pc.cose.notification-delivery-outcome-receipt.v1",
+      "purposeCode": 366,
+      "schemaDigest": "sha256:6aca1ff00608e47b22d225c5f8fc4d272fc3ed8527859ebd37a95be65f0af49f",
+      "schemaId": 24029,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_NOTIFICATION_KEY",
+      "signed": true,
+      "typeName": "NotificationDeliveryOutcomeReceiptV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/notification-completion-worker-profile-v1.json"
+      ],
+      "purpose": "pc.cose.notification-completion-worker-profile.v1",
+      "purposeCode": 367,
+      "schemaDigest": "sha256:bd2c4f68fdbc48cbc8982a168d758f614a033742f1b9cea0012e1a455e9194a7",
+      "schemaId": 24030,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_NOTIFICATION_KEY",
+      "signed": true,
+      "typeName": "NotificationCompletionWorkerProfileV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/notification-completion-disposition-receipt-v1.json"
+      ],
+      "purpose": "pc.cose.notification-completion-disposition-receipt.v1",
+      "purposeCode": 368,
+      "schemaDigest": "sha256:b8af9858ca24f16a251e4e27875bded1d2b612a2cebba9cfa9901b43155fca7d",
+      "schemaId": 24031,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_NOTIFICATION_KEY",
+      "signed": true,
+      "typeName": "NotificationCompletionDispositionReceiptV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/operations-notification-async-input-v1.json"
+      ],
+      "purpose": "pc.cose.operations-notification-async-input.v1",
+      "purposeCode": 369,
+      "schemaDigest": "sha256:e382aa9e2f8876d5c962f65d9b1cdb0791e7d2eeb78ca99e6bf7a4e7e34b5698",
+      "schemaId": 24032,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_ASYNC_QUALIFICATION_PURPOSE_KEY_AND_CURRENT_NATIVE_SOURCE_OWNER",
+      "signed": true,
+      "typeName": "OperationsNotificationAsyncInputV1"
+    },
+    {
+      "ownerLane": "LANE-CONTROL",
+      "projectionRefs": [
+        "schemas/canonical/operations-notification-async-capacity-receipt-v1.json"
+      ],
+      "purpose": "pc.cose.operations-notification-async-capacity-receipt.v1",
+      "purposeCode": 370,
+      "schemaDigest": "sha256:7e335994e4f041e2b96cd9b19d9656f2cf94d2fc9413f1b6390e8d2b0043f5b2",
+      "schemaId": 24033,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TAGGED_PAYLOAD_DEFINITION_AAD_AND_INSTALLED_ASYNC_QUALIFICATION_PURPOSE_KEY_AND_CURRENT_NATIVE_EXECUTION_REVIEW_OWNER",
+      "signed": true,
+      "typeName": "OperationsNotificationAsyncCapacityReceiptV1"
+    },
+    {
+      "ownerLane": "LANE-IDENTITY",
+      "projectionRefs": [
+        "schemas/canonical/identity-authority-envelope-v1.json"
+      ],
+      "purpose": "pc.cose.identity-authority-envelope.v1",
+      "purposeCode": 371,
+      "schemaDigest": "sha256:6cf5c91789d9488014d3ec9445d5852c4aa686534305c6516d67210176ea3cc5",
+      "schemaId": 24034,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_TYPED_ENVELOPE_DEFINITION_AAD_AND_ADMITTED_IDENTITY_KEY",
+      "signed": true,
+      "typeName": "IdentityAuthorityEnvelopeV1"
+    },
+    {
+      "ownerLane": "LANE-IDENTITY",
+      "projectionRefs": [
+        "schemas/canonical/workload-renewal-request-v1.json"
+      ],
+      "purpose": "pc.cose.identity.workload-renewal-request.v1",
+      "purposeCode": 375,
+      "schemaDigest": "sha256:3fb38baea7d460c08bc8d05ab888b2a3f03671a23a0a8d7314371aa1ca5adc73",
+      "schemaId": 24038,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "WorkloadRenewalRequestV1",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_RENEWAL_REQUEST_SUCCESSOR_KEY_PROOF_ONLY"
+    },
+    {
+      "ownerLane": "LANE-IDENTITY",
+      "projectionRefs": [
+        "schemas/canonical/workload-renewal-policy-authorization-v1.json"
+      ],
+      "purpose": "pc.cose.identity.workload-renewal-policy-authorization.v1",
+      "purposeCode": 376,
+      "schemaDigest": "sha256:0d9bb7686dc932fc17b4ccfb8700f600b9a46e765cef61e93d68b8e1d7efc10d",
+      "schemaId": 24039,
+      "schemaVersion": "1.0.0",
+      "signed": true,
+      "typeName": "WorkloadRenewalPolicyAuthorizationV1",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ES256_EXACT_POLICY_AUTHORIZATION_AND_ADMITTED_CURRENT_IDENTITY_KEY"
+    },
+    {
+      "ownerLane": "LANE-IDENTITY",
+      "projectionRefs": [
+        "schemas/canonical/workload-signing-handover-admission-authorization-v1.json"
+      ],
+      "purpose": "pc.cose.identity.workload-signing-handover-admission-authorization.v1",
+      "purposeCode": 379,
+      "schemaDigest": "sha256:1ef43404e0afa8ee6c9c688c7fac4a26411cfc139dd1b82bdb7061dc9fb5503a",
+      "schemaId": 24042,
+      "schemaVersion": "1.0.0",
+      "signatureContextRule": "PC_COSE_SIGN1_PROFILE_2_ED25519_EXACT_ADMISSION_AUTHORIZATION_AND_EXPLICIT_SCOPED_IDENTITY_TRUST",
+      "signed": true,
+      "typeName": "WorkloadSigningHandoverAdmissionAuthorizationV1"
+    }
+  ],
+  "identityRule": "A signed type is identified only by the exact tuple (uint32 schemaId, semanticVersion, schemaDigest, purpose). URI/type, schema ID, purpose, signature-context, key-context, or projection substitution is terminal rejection.",
+  "negativeTestIds": [
+    "NEG-URI-TYPE-SUBSTITUTION",
+    "NEG-WRONG-SCHEMA-ID",
+    "NEG-WRONG-PURPOSE",
+    "NEG-SIGNATURE-CONTEXT-MISMATCH"
+  ],
+  "registryId": "OPENPC-C04-PC-CBOR-1-SCHEMA-IDENTITY-REGISTRY-20260824-CORRECTION01",
+  "schemaVersion": "1.0",
+  "status": "FROZEN_CORRECTION_CYCLE_SPECIFICATION_CLOSURE"
+}

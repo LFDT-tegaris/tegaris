@@ -1,0 +1,45 @@
+{
+  "architectureDecisionCount": 0,
+  "authenticatedStackLockSha256": "11c0a9c1f86bb5f6840850030a9c930c3ace58fde02dab814552965d29a40ac1",
+  "c03EntryStackLockSha256": "376e3c715af53b0fb0b11ad787154cad5449cb8fbbe9b70170082087a2e88fee",
+  "checks": [
+    "frozen AF-20-initial hashes",
+    "consumed C00-C03 artifact path/length/hash equality (65)",
+    "33-node/69-edge acyclic DAG and six UI slots",
+    "33 complete manifests, exact dependency/provider/digest closure",
+    "264/264 per-manifest dependency/version/provider/data/uninstall/Future negative fixtures",
+    "10,449 lane requirements; complete requirement/decision/component/source trace; exact C03 action-intent/type/state closure",
+    "ES256/PC-CBOR-1, PKCE S256, Argon2id and URI SAN vectors",
+    "forbidden draft-token and ellipsis negative scan",
+    "identity/session/workload exact-duration controls"
+  ],
+  "crossLaneIntegrationDependency": {
+    "artifactFamily": "AF-25",
+    "lane": "LANE-OPS",
+    "path": "pkg://operations/stack-and-toolchain-lock.yaml",
+    "treatment": "C04 LANE-INTEGRATION RECONCILED ALL 33 MANIFESTS AND THE MODULE REGISTRY FROM THE AUTHENTICATED C03 ENTRY DIGEST TO THE AUTHENTICATED FINAL AF-25 DIGEST; THIS IS AN EXPECTED INTEGRATION DEPENDENCY, NOT C03 DRIFT"
+  },
+  "dagEdgeCount": 69,
+  "dagNodeCount": 33,
+  "identityRequirementCoverage": "4979/4979",
+  "identitySchemaSha256": "ecbab0fff346f6526bdeeb099c1e9fd87a1c436c0287cbe0b4094720035bc711",
+  "integratedAf25StackLockSha256": "11c0a9c1f86bb5f6840850030a9c930c3ace58fde02dab814552965d29a40ac1",
+  "manifestCount": 33,
+  "materialFailureCount": 0,
+  "moduleRequirementCoverage": "5470/5470",
+  "moduleSchemaSha256": "21652374923edec1a2b71f444c40540105dea49256189d678075e1bd2bcaa043",
+  "registrySha256": "d94fc0394a0418a7d92a04f19c48badb694eff407a5c46092de40c7cd08108ca",
+  "schemaVersion": "1.0",
+  "status": "PASS",
+  "traceSummary": {
+    "LANE-IDENTITY": {
+      "count": 4979,
+      "path": "provenance://origin/1cf8c49a412938c7c9b7e0c4982eaefa165bb9fba260f59bc31af6fab2565c2e/identity-traceability.jsonl"
+    },
+    "LANE-MODULE": {
+      "count": 5470,
+      "path": "provenance://origin/7e2b30599d88bc429e6bd79077c81d85a01b40097e2eac1a5948ff8160554163/module-traceability.jsonl"
+    }
+  },
+  "uiSlotCount": 6
+}

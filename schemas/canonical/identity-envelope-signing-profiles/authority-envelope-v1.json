@@ -1,0 +1,12 @@
+{
+  "profileId": "pc.identity.authority-envelope.v1",
+  "profileVersion": 1,
+  "schemaId": 24034,
+  "schemaVersion": 1,
+  "schemaDefinitionDigest": "sha256:6cf5c91789d9488014d3ec9445d5852c4aa686534305c6516d67210176ea3cc5",
+  "purpose": "pc.cose.identity-authority-envelope.v1",
+  "purposeCode": 371,
+  "actionIntentId": "ACT-PARTICIPANT_ACTIVATE_CONTEXT-V1",
+  "catalogOperationId": "ID-OP-ENVELOPE-ACTIVATE",
+  "aggregateType": "authority-envelope"
+}

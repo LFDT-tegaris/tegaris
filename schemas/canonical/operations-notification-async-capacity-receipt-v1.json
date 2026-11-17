@@ -1,0 +1,307 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [
+      1,
+      2,
+      3,
+      4,
+      100,
+      101,
+      102,
+      103
+    ],
+    "criticalFields": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "extensionAuthority": "POST_C17_ASTRA_12_14_16_ASYNC_NOTIFICATION",
+  "name": "pc.operations-notification-async-capacity-receipt.v1",
+  "schemaId": 24033,
+  "typeName": "OperationsNotificationAsyncCapacityReceiptV1",
+  "purpose": {
+    "name": "pc.cose.operations-notification-async-capacity-receipt.v1",
+    "code": 370
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "authorityId",
+      "type": "dns_label"
+    },
+    {
+      "key": 2,
+      "name": "environmentId",
+      "type": "dns_label"
+    },
+    {
+      "key": 3,
+      "name": "profile",
+      "type": "enum local=1 development=2 test=3 staging=4 production=5"
+    },
+    {
+      "key": 4,
+      "name": "participantId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 5,
+      "name": "privacyDomainId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 6,
+      "name": "task",
+      "type": "enum ASYNC-NOTIFICATION=1"
+    },
+    {
+      "key": 7,
+      "name": "generationId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 8,
+      "name": "configurationDigest",
+      "type": "H32"
+    },
+    {
+      "key": 9,
+      "name": "configurationSchemaDigest",
+      "type": "H32"
+    },
+    {
+      "key": 10,
+      "name": "namedProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 11,
+      "name": "buildDigest",
+      "type": "H32"
+    },
+    {
+      "key": 12,
+      "name": "sourceTreeDigest",
+      "type": "H32"
+    },
+    {
+      "key": 13,
+      "name": "workloadIdentityDigest",
+      "type": "H32"
+    },
+    {
+      "key": 14,
+      "name": "environmentIdentityDigest",
+      "type": "H32"
+    },
+    {
+      "key": 15,
+      "name": "storeProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 16,
+      "name": "gatewayProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 17,
+      "name": "ratePolicyDigest",
+      "type": "H32"
+    },
+    {
+      "key": 18,
+      "name": "receiptId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 19,
+      "name": "inputPayloadDigest",
+      "type": "H32"
+    },
+    {
+      "key": 20,
+      "name": "runId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 21,
+      "name": "harnessDigest",
+      "type": "H32"
+    },
+    {
+      "key": 22,
+      "name": "rawEvidenceDigest",
+      "type": "H32"
+    },
+    {
+      "key": 23,
+      "name": "originalSignedOutcomesDigest",
+      "type": "H32"
+    },
+    {
+      "key": 24,
+      "name": "normalizedResultsDigest",
+      "type": "H32"
+    },
+    {
+      "key": 25,
+      "name": "reviewerAttestationDigest",
+      "type": "H32"
+    },
+    {
+      "key": 26,
+      "name": "subjectAuthorPrincipalId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 27,
+      "name": "harnessAuthorPrincipalId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 28,
+      "name": "reviewerPrincipalId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 29,
+      "name": "signerPrincipalId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 30,
+      "name": "measuredConcurrency",
+      "type": "positive_safe_uint"
+    },
+    {
+      "key": 31,
+      "name": "measuredBatchSize",
+      "type": "positive_safe_uint"
+    },
+    {
+      "key": 32,
+      "name": "measuredQueueItems",
+      "type": "positive_safe_uint"
+    },
+    {
+      "key": 33,
+      "name": "measuredQueueBytes",
+      "type": "positive_safe_uint"
+    },
+    {
+      "key": 34,
+      "name": "measuredMaximumPayloadBytes",
+      "type": "positive_safe_uint"
+    },
+    {
+      "key": 35,
+      "name": "measuredDispatchRatePerSecond",
+      "type": "positive_safe_uint"
+    },
+    {
+      "key": 36,
+      "name": "observedMaximumQueueAgeMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 37,
+      "name": "observedMaximumAttemptDurationMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 38,
+      "name": "runStartedAtMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 39,
+      "name": "runCompletedAtMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 40,
+      "name": "keysetPayloadDigest",
+      "type": "H32"
+    },
+    {
+      "key": 41,
+      "name": "revocationPayloadDigest",
+      "type": "H32"
+    },
+    {
+      "key": 42,
+      "name": "issuerKeyId",
+      "type": "H32"
+    },
+    {
+      "key": 43,
+      "name": "issuerEpoch",
+      "type": "u64p"
+    },
+    {
+      "key": 44,
+      "name": "issuedAtMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 45,
+      "name": "expiresAtMs",
+      "type": "safe_uint"
+    }
+  ],
+  "fieldConstraints": {
+    "dns_label": "ASCII ^[a-z][a-z0-9-]{2,31}$",
+    "safe_uint": "unsigned safe integer 0..9007199254740991; time intervals strictly ordered",
+    "u64p": "decimal API string 1..18446744073709551615, canonical CBOR uint",
+    "H32": "exact 32-byte CBOR byte string; sha256:<64 lowercase hex> in API",
+    "uuidv7": "exact 16-byte canonical UUIDv7 with RFC variant",
+    "positive_safe_uint": "Unsigned safe integer 1..9007199254740991; never boolean/string/float.",
+    "five_safe_uints": "Canonical CBOR array of exactly five safe_uint delays in milliseconds, no missing, extra or accessor properties."
+  },
+  "sourceRefs": [
+    "QUALITY/concurrency-and-backpressure.md",
+    "QUALITY/reliability-failure-recovery.md",
+    "QUALITY/qualification-authority-profile.yaml",
+    "QUALITY/schemas/qualification-receipt.schema.json",
+    "SPECIFICATIONS/OPERATIONS/configuration.schema.json"
+  ],
+  "authorityRules": [
+    "Distinct AF-27 QINPUT-ASYNC-NOTIFICATION declarations; neither provider.read_retry_limit qualification nor operations.notification_delivery_limit is an alias for this input. No field has a default and no signature grants readiness or dispatch.",
+    "Inputs state intended limits; capacity receipts bind separately executed measurements and exact original signed outcomes. The native owner independently derives actual run, input, build, environment, scope, generation and evidence identity, authenticated reviewer independence and installed qualification eligibility. Caller-signed claims, sample hashes or a receipt signature cannot mint that authority.",
+    "Concurrency, batch, lease, heartbeat, attempt timeout, domain deadline, queue items/bytes/age, payload and dispatch rate are positive finite safe integers. Exactly five finite nonnegative retry delays are declared; one initial attempt plus five bounded retries is the ceiling, further lowered by the actual current operations.notification_delivery_limit. Heartbeat is strictly less than half the lease; the sum of all six attempt timeouts and five delays fits the original domain deadline and maximum queue age, and all lifetimes remain finite. Current store/provider/rate owners must independently confirm the limits.",
+    "The generation UUID and configurationDigest bind the independently staged exact configuration. Async qualification is an external admission binding to that configuration, not a new setting, self-containing input digest, receipt reference or effective-generation digest inside its own preimage. A changed configuration requires a new governed generation; original receipt bytes and business identities are immutable.",
+    "Capacity receipt measurements must cover intended concurrency, batch, queue items/bytes, payload and dispatch rate, while actual maximum observed queue age and attempt duration stay within the signed input. Raw evidence, original signed outcomes, normalized results and reviewer attestation are mandatory distinct referenced artifacts with independently verified durable owners; hash agreement alone is not execution evidence.",
+    "Current use independently checks installed root/keyset/revocation, exact issuer epoch, eligibility and actual independent reviewer/subject/harness/signer principals, source fences and original validity. Withdrawal, expired or unavailable current authority fails closed without erasing original history. Local external test signatures establish codec behavior only, not production qualification or claim promotion.",
+    "STAGED/EFFECTIVE consumer observations bind the actual paused mounted process/configuration/build and its signed input/capacity artifacts. Neither an observation nor process existence releases dispatch: real same-environment committed generation plus current native async admission are independently required. Unknown or withdrawn consumer ownership denies new effects and preserves original reconciliation.",
+    "PC-CBOR-1 and COSE_Sign1 ES256 profile2 preserve exact original payload bytes, definition digest, purpose, issuer key, critical headers and AAD. Reject unknown/duplicate keys, noncanonical bytes, type coercion, extra fields, malformed identities, purpose/key substitution, unbounded buffers and ambiguous signature outcomes. These declarations introduce no database role, table, generic binding writer or authority shortcut."
+  ]
+}

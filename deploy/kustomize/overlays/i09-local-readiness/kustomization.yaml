@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: openpc-i09-local-readiness
+resources:
+  - namespace.yaml
+  - collector.yaml
+  - networkpolicy.yaml
+configMapGenerator:
+  - name: openpc-i09-otel-config
+    files:
+      - collector.yaml=../../../../containers/i09-local-otel-collector.yaml
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: openpc-i09-local-readiness
+      openpc.io/claim-boundary: local-technical-only

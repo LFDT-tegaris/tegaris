@@ -1,0 +1,122 @@
+{
+  "fixtureId": "I07-GATE2-B3-TS-RUST-PARITY-001",
+  "authority": {
+    "schema": "schemas/json/privacy-explorer.schema.json",
+    "registry": "generated/typescript/privacy-explorer/execution-registry.ts"
+  },
+  "context": {
+    "purpose": "audit",
+    "subject": "subject-a",
+    "resource": "resource-a",
+    "action": "read",
+    "participantId": "participant-a",
+    "privacyDomainId": "privacy-a",
+    "platformId": "platform-a",
+    "workloadId": "workload-a",
+    "profileDigest": "sha256:c6e178f73eaccec71d5430559b2a07d1fc391d3dcfab5b40fcd2298097bdb758",
+    "requestId": "123e4567-e89b-42d3-a456-426614174012",
+    "correlationId": "123e4567-e89b-42d3-a456-426614174011",
+    "allowedFieldIds": ["PEF-A", "PEF-B"],
+    "allowedFilterIds": ["PEFILTER-A", "PEFILTER-B"]
+  },
+  "request": {
+    "operationVersion": "v1",
+    "schemaVersion": "1.0",
+    "issuedAt": "2027-01-01T00:00:00.000Z",
+    "purpose": "audit",
+    "subject": "subject-a",
+    "resource": "resource-a",
+    "action": "read",
+    "scope": {
+      "participantId": "participant-a",
+      "privacyDomainId": "privacy-a",
+      "platformId": "platform-a",
+      "workloadId": "workload-a",
+      "action": "read"
+    },
+    "operationId": "OP-01",
+    "semanticOperationVersion": "1",
+    "dataClassId": "CLASS-READ",
+    "filters": [{ "fieldId": "PEF-A", "filterId": "PEFILTER-A", "value": 7 }],
+    "page": { "limit": 2, "cursor": null },
+    "projectionFields": ["PEF-A", "PEF-B"],
+    "exportProfile": {
+      "id": "local-qualified-profile",
+      "version": "1",
+      "operationVersions": [
+        { "operationId": "OP-01", "version": "1", "acceptedDataClassIds": ["CLASS-READ"] },
+        { "operationId": "OP-02", "version": "1", "acceptedDataClassIds": ["CLASS-READ"] },
+        { "operationId": "OP-03", "version": "1", "acceptedDataClassIds": ["CLASS-READ"] },
+        { "operationId": "OP-04", "version": "1", "acceptedDataClassIds": ["CLASS-READ"] },
+        { "operationId": "OP-05", "version": "1", "acceptedDataClassIds": ["CLASS-READ"] },
+        { "operationId": "OP-06", "version": "1", "acceptedDataClassIds": ["CLASS-READ"] },
+        { "operationId": "OP-07", "version": "1", "acceptedDataClassIds": ["CLASS-READ"] },
+        { "operationId": "OP-08", "version": "1", "acceptedDataClassIds": ["CLASS-READ"] },
+        { "operationId": "OP-09", "version": "1", "acceptedDataClassIds": ["CLASS-READ"] }
+      ],
+      "allowedFieldIds": ["PEF-A", "PEF-B"],
+      "allowedFilterIds": ["PEFILTER-A", "PEFILTER-B"],
+      "maximumPageSize": 200,
+      "responseSchemaVersion": "1.0",
+      "maximumFreshnessAgeMilliseconds": 60000,
+      "provenanceProfileDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "privacyProjectionId": "PROJECTION-LOCAL-1",
+      "redactionProfileId": "REDACTION-LOCAL-1",
+      "evidenceClassId": "EVIDENCE-LOCAL-1",
+      "maximumDeadlineAt": "2028-01-01T00:00:00.000Z",
+      "maximumReadAttempts": 2,
+      "retryBackoffMilliseconds": [0],
+      "digest": "sha256:c6e178f73eaccec71d5430559b2a07d1fc391d3dcfab5b40fcd2298097bdb758"
+    },
+    "queryDigest": "sha256:b1d9884c039ae58d87c95191b9483132d229955bf46440e7973ee7aacaa8b1c8",
+    "occurrence": {
+      "requestId": "123e4567-e89b-42d3-a456-426614174012",
+      "correlationId": "123e4567-e89b-42d3-a456-426614174011"
+    }
+  },
+  "completeRaw": {
+    "schemaVersion": "1.0",
+    "requestDigest": "sha256:e401c0121fafc13303105bb1845511512d4083fc51706ac5a0f4758c274fe9ad",
+    "profileDigest": "sha256:c6e178f73eaccec71d5430559b2a07d1fc391d3dcfab5b40fcd2298097bdb758",
+    "provenanceDigest": "sha256:2e40aa26175e65c018ec6f6afeb7a224e32432b48fa0c7535dd4a456ba7a78ce",
+    "observedAt": "2027-01-01T00:00:00.000Z",
+    "records": [
+      {
+        "id": "record-a",
+        "fields": [
+          { "fieldId": "PEF-A", "value": 7 },
+          { "fieldId": "PEF-B", "value": "visible" }
+        ]
+      },
+      {
+        "id": "record-b",
+        "fields": [
+          { "fieldId": "PEF-A", "value": true },
+          { "fieldId": "PEF-B", "value": null }
+        ]
+      }
+    ],
+    "page": { "cursor": null, "gapFree": true },
+    "completeness": "COMPLETE",
+    "freshness": "FRESH",
+    "conflict": "NONE",
+    "responseDigest": "sha256:68b76b35172428000c3e0be2bee52556fd31dfd94e0824dc01fa7a026708f5a2"
+  },
+  "expected": {
+    "queryCanonical": "{\"action\":\"read\",\"dataClassId\":\"CLASS-READ\",\"exportProfileDigest\":\"sha256:c6e178f73eaccec71d5430559b2a07d1fc391d3dcfab5b40fcd2298097bdb758\",\"filters\":[{\"fieldId\":\"PEF-A\",\"filterId\":\"PEFILTER-A\",\"value\":7}],\"operationId\":\"OP-01\",\"page\":{\"limit\":2},\"projectionFields\":[\"PEF-A\",\"PEF-B\"],\"purpose\":\"audit\",\"resource\":\"resource-a\",\"scope\":{\"action\":\"read\",\"participantId\":\"participant-a\",\"platformId\":\"platform-a\",\"privacyDomainId\":\"privacy-a\",\"workloadId\":\"workload-a\"},\"semanticOperationVersion\":\"1\",\"subject\":\"subject-a\"}",
+    "queryDigest": "sha256:b1d9884c039ae58d87c95191b9483132d229955bf46440e7973ee7aacaa8b1c8",
+    "requestDigest": "sha256:e401c0121fafc13303105bb1845511512d4083fc51706ac5a0f4758c274fe9ad",
+    "resultPreimageCanonical": "{\"outcome\":\"COMPLETE\",\"page\":{\"cursor\":null,\"gapFree\":true},\"profileDigest\":\"sha256:c6e178f73eaccec71d5430559b2a07d1fc391d3dcfab5b40fcd2298097bdb758\",\"queryDigest\":\"sha256:b1d9884c039ae58d87c95191b9483132d229955bf46440e7973ee7aacaa8b1c8\",\"records\":[{\"fields\":[{\"fieldId\":\"PEF-A\",\"value\":7},{\"fieldId\":\"PEF-B\",\"value\":\"visible\"}],\"id\":\"record-a\"},{\"fields\":[{\"fieldId\":\"PEF-A\",\"value\":true},{\"fieldId\":\"PEF-B\",\"value\":null}],\"id\":\"record-b\"}],\"requestDigest\":\"sha256:e401c0121fafc13303105bb1845511512d4083fc51706ac5a0f4758c274fe9ad\",\"schemaVersion\":\"1.0\",\"truthState\":\"TRUE\"}",
+    "resultDigest": "sha256:96fca26fdd483881b19a0ea8965c693d4c535efad70538d8f90602a327e6ca76",
+    "errorCodes": {
+      "binding": "PC-RUNTIME-3009",
+      "scope": "PC-INTEGRATION-5002",
+      "partial": "PC-OPS-9004",
+      "unavailable": "PC-INTEGRATION-5001",
+      "stale": "PC-FACT-4002",
+      "reorg": "PC-FACT-4003",
+      "conflict": "PC-RUNTIME-3011",
+      "absence": "PC-FACT-4001"
+    }
+  }
+}

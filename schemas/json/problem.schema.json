@@ -1,0 +1,71 @@
+{
+  "$id": "https://schemas.openpc.local/problem.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "code": {
+      "pattern": "^PC-[A-Z][A-Z0-9]{1,15}-[0-9]{4}$",
+      "type": "string"
+    },
+    "detail": {
+      "maxLength": 2048,
+      "type": "string"
+    },
+    "fieldErrors": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "code"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "instance": {
+      "format": "uri-reference",
+      "type": "string"
+    },
+    "retryable": {
+      "type": "boolean"
+    },
+    "status": {
+      "maximum": 599,
+      "minimum": 400,
+      "type": "integer"
+    },
+    "title": {
+      "maxLength": 160,
+      "type": "string"
+    },
+    "traceId": {
+      "$ref": "shared-primitives.schema.json#/$defs/UuidV7"
+    },
+    "truthState": {
+      "$ref": "shared-primitives.schema.json#/$defs/TruthState"
+    },
+    "type": {
+      "format": "uri",
+      "type": "string"
+    }
+  },
+  "required": [
+    "type",
+    "title",
+    "status",
+    "code",
+    "traceId",
+    "truthState"
+  ],
+  "title": "OpenPcProblemV1",
+  "type": "object",
+  "x-openpc-nonLeakage": "Titles, status and codes are invariant across hidden/nonexistent resources unless existence disclosure is separately authorized; detail and field errors require disclosure authority."
+}

@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openpc-i04-envoy-config
+data:
+  envoy.yaml: |
+    node:
+      id: openpc-i04-local-qualification
+      cluster: openpc-i04-local-development
+    static_resources: {}
+    admin:
+      access_log_path: /dev/null
+      address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: 9901
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openpc-i04-public-trust-registry
+data:
+  claim-boundary: LOCAL_DEVELOPMENT_ONLY_NOT_PROVIDER_QUALIFICATION
+  signing-backend: SOFTHSM2_PKCS11_SOFTWARE_EMULATION_NOT_CERTIFIED_HARDWARE
+  trust-root: SEPARATE_LOCAL_SOFTHSM_TOKEN_PUBLIC_CHAIN_TRACKED_PRIVATE_TOKEN_AGENTS_TMP_ONLY
+  network-policy: MANIFEST_INTENT_ONLY_ENFORCEMENT_NOT_PROVEN_OPEN

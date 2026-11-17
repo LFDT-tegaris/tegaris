@@ -1,0 +1,84 @@
+// C04 normative wire projection. Signed semantics are PC-CBOR-1 only.
+// JSON projections MUST validate the frozen AF-08 schemas; protobuf bytes are never an alternate signature preimage.
+// Every caller supplies grpc-timeout. The server applies min(caller deadline, signed service-profile maximum).
+// Missing/expired authority metadata fails before method execution. Unknown enum values never relax denial.
+syntax = "proto3";
+package openpc.runtime.v1;
+
+import "openpc/common/v1/common.proto";
+
+option java_multiple_files = true;
+option java_package = "io.openpc.runtime.v1";
+
+enum RuntimeEffectV1 {
+  RUNTIME_EFFECT_V1_UNSPECIFIED = 0;
+  RUNTIME_EFFECT_V1_ALLOW_FORWARD = 1;
+  RUNTIME_EFFECT_V1_DENY_TERMINAL = 2;
+  RUNTIME_EFFECT_V1_AUTHORIZED_EMPTY = 3;
+  RUNTIME_EFFECT_V1_WITHHOLD_STALE = 4;
+  RUNTIME_EFFECT_V1_WRITE_AMBIGUITY = 5;
+}
+
+message JsonRpcRequestV1 {
+  string jsonrpc = 1;
+  string id = 2;
+  string method = 3;
+  bytes params_json_utf8 = 4;
+  openpc.common.v1.Af08Sha256Digest request_digest = 5;
+  reserved 100 to 199;
+}
+
+message EvaluateRuntimeRequestV2 {
+  openpc.common.v1.RequestMetaV1 meta = 1;
+  openpc.common.v1.Af08Sha256Digest active_generation_digest = 2;
+  openpc.common.v1.Af08Sha256Digest route_profile_digest = 3;
+  JsonRpcRequestV1 request = 4;
+  openpc.common.v1.Af08Rfc3339MicrosUtc received_at = 5;
+  reserved 100 to 199;
+}
+
+message RuntimeDecisionResponseV2 {
+  openpc.common.v1.Af08UuidV7 decision_id = 1;
+  RuntimeEffectV1 effect = 2;
+  string pc_code = 3;
+  optional openpc.common.v1.Af08OpenPcUrn selected_provider_profile_id = 4;
+  openpc.common.v1.Af08Sha256Digest active_generation_digest = 5;
+  openpc.common.v1.Af08Sha256Digest decision_input_digest = 6;
+  openpc.common.v1.Af08Sha256Digest decision_digest = 7;
+  bytes broker_capability_cose_sign1_pc_cbor_1 = 8;
+  reserved 100 to 199;
+}
+
+message DispatchJsonRpcRequestV1 {
+  openpc.common.v1.RequestMetaV1 meta = 1;
+  RuntimeDecisionResponseV2 decision = 2;
+  JsonRpcRequestV1 request = 3;
+  reserved 100 to 199;
+}
+
+message AttemptResolutionV1 {
+  openpc.common.v1.Af08UuidV7 attempt_id = 1;
+  openpc.common.v1.Af08Sha256Digest request_digest = 2;
+  openpc.common.v1.Af08Sha256Digest signed_transaction_hash = 3;
+  string state = 4;
+  optional bytes jsonrpc_response_utf8 = 5;
+  optional openpc.common.v1.SafeProblemV1 problem = 6;
+  openpc.common.v1.Af08Sha256Digest evidence_digest = 7;
+  reserved 100 to 199;
+}
+
+message ReconcileAttemptRequestV1 {
+  openpc.common.v1.RequestMetaV1 meta = 1;
+  openpc.common.v1.Af08UuidV7 attempt_id = 2;
+  openpc.common.v1.Af08Sha256Digest signed_transaction_hash = 3;
+  reserved 100 to 199;
+}
+
+service PolicyDecisionService {
+  rpc Evaluate(EvaluateRuntimeRequestV2) returns (RuntimeDecisionResponseV2);
+}
+
+service BrokerService {
+  rpc DispatchJsonRpc(DispatchJsonRpcRequestV1) returns (AttemptResolutionV1);
+  rpc ReconcileAttempt(ReconcileAttemptRequestV1) returns (AttemptResolutionV1);
+}

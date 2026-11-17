@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [1, 2, 3, 4, 100, 101, 102, 103],
+    "criticalFields": [100, 101, 102, 103],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "extensionAuthority": "POST_C17_EVIDENCE_KMS_PREREQUISITE",
+  "name": "pc.evidence-wrapped-key-record.v1",
+  "schemaId": 24016,
+  "typeName": "EvidenceWrappedKeyRecordV1",
+  "purpose": {
+    "name": "pc.cose.evidence-wrapped-key-record.v1",
+    "code": 353
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "environmentId",
+      "type": "text160"
+    },
+    {
+      "key": 2,
+      "name": "participantId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 3,
+      "name": "privacyDomainId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 4,
+      "name": "attemptId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 5,
+      "name": "originalRequestDigest",
+      "type": "H32"
+    },
+    {
+      "key": 6,
+      "name": "objectIntentDigest",
+      "type": "H32"
+    },
+    {
+      "key": 7,
+      "name": "profileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 8,
+      "name": "providerId",
+      "type": "text160"
+    },
+    {
+      "key": 9,
+      "name": "reference",
+      "type": "text331"
+    },
+    {
+      "key": 10,
+      "name": "version",
+      "type": "text96"
+    },
+    {
+      "key": 11,
+      "name": "providerKeyId",
+      "type": "text256"
+    },
+    {
+      "key": 12,
+      "name": "providerKeyVersion",
+      "type": "text96"
+    },
+    {
+      "key": 13,
+      "name": "keyEpoch",
+      "type": "u64p"
+    },
+    {
+      "key": 14,
+      "name": "wrapProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 15,
+      "name": "policyDigest",
+      "type": "H32"
+    },
+    {
+      "key": 16,
+      "name": "recoveryProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 17,
+      "name": "wrappedKey",
+      "type": "bytes8192hex"
+    },
+    {
+      "key": 18,
+      "name": "createdAtMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 19,
+      "name": "signerKeyId",
+      "type": "H32"
+    }
+  ],
+  "authorityRules": [
+    "Authenticate exact original bytes against the separately installed provider receipt signer and all scope, object-intent, request, provider, KEK version and policy bindings. The SHA256 digest of this payload is the keyId consumed by payload encryption; the record never contains its own digest.",
+    "A wrapped record establishes historical authenticity only. It contains no plaintext DEK/KEK and never authorizes current encryption or retained decryption without fresh admission.",
+    "An uncertain prepare reconciles only its original provider attempt. Original wrapped-record bytes and resulting ciphertext are immutable; no reprepare, replacement wrapping, reseal or new business identity is permitted as a retry."
+  ]
+}

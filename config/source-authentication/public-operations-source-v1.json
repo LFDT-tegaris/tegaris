@@ -1,0 +1,37 @@
+{
+  "schema": "pc.operations.public-source-inventory",
+  "schemaVersion": 1,
+  "sourceProfile": "PUBLIC_OPERATIONS_SOURCE_V1",
+  "files": [
+    {
+      "path": "config/profiles/development.yaml",
+      "digest": "sha256:e20a644061a759c38d2c09d29a74adb43c8cc683da852a33ade726b4ae5f989f",
+      "bytes": 3122
+    },
+    {
+      "path": "config/profiles/local.yaml",
+      "digest": "sha256:aad2b9f62d1659cec987be45b5e2e7c8d504a706f8583819675118bef14eaa0c",
+      "bytes": 3014
+    },
+    {
+      "path": "config/profiles/production.yaml",
+      "digest": "sha256:53bd65338e2e8d1334d4ecb3519769ce32a8e706e683f731a0d27263a9d2902a",
+      "bytes": 3134
+    },
+    {
+      "path": "config/profiles/staging.yaml",
+      "digest": "sha256:386955e70c3eb1af05f926fb6385ef523cb96a2b1ac4624f3b8cbbb8a09d252b",
+      "bytes": 3026
+    },
+    {
+      "path": "config/profiles/test.yaml",
+      "digest": "sha256:fc48ee6b68c13821f0fd5b88222629851ad30a21027c69c9cd4a968a301f3c37",
+      "bytes": 3121
+    },
+    {
+      "path": "config/schema/effective-configuration.schema.json",
+      "digest": "sha256:350280220fae0d2fb0c360cb1c5a9011e8c46218e7b10b9a269fba78078496cd",
+      "bytes": 46898
+    }
+  ]
+}

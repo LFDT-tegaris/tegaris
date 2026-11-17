@@ -1,0 +1,23 @@
+.button {
+  align-items: center;
+  background: var(--openpc-color-action);
+  border: 0;
+  border-radius: var(--openpc-radius-control);
+  color: var(--openpc-color-on-action);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  gap: var(--openpc-space-2);
+  justify-content: center;
+  min-block-size: 2.75rem;
+  padding: var(--openpc-space-2) var(--openpc-space-3);
+}
+
+.button:focus-visible {
+  outline: 3px solid var(--openpc-color-focus);
+  outline-offset: 2px;
+}
+
+.button[data-pressed] {
+  background: var(--openpc-color-action-pressed);
+}

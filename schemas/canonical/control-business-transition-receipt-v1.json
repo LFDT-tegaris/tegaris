@@ -1,0 +1,550 @@
+{
+  "name": "pc.control.business-transition-receipt",
+  "schemaId": 24001,
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "extensionAuthority": "POST_C17_ASTRA_01_COORDINATOR_ADOPTION",
+  "purpose": {
+    "name": "pc.cose.control-business-transition.v1",
+    "code": 338
+  },
+  "canonicalJson": {
+    "name": "pc.control.definition-json.v1",
+    "encoding": "UTF-8, no BOM or trailing newline",
+    "objectOrder": "ascending ECMAScript UTF-16 code units",
+    "strings": "NFC required; JSON.stringify escaping; reject lone surrogates",
+    "numbers": "finite safe integers only; reject negative zero",
+    "arrays": "preserve order",
+    "rootOmissions": [
+      "definitionDigest",
+      "signature"
+    ],
+    "digest": "SHA-256 over exact canonical JSON bytes; dependencies included inline or bound by exact digest"
+  },
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "maxNestingDepth": 8,
+    "maxCollectionEntries": 256,
+    "mapOrder": "ascending unsigned integer keys, shortest encoding",
+    "reject": [
+      "null",
+      "boolean",
+      "float",
+      "duplicate keys",
+      "unknown keys",
+      "indefinite length",
+      "trailing data",
+      "non-shortest integer",
+      "invalid UTF-8",
+      "non-NFC text",
+      "tags inside payload",
+      "unknown enums",
+      "unregistered profile or version"
+    ],
+    "requiredFields": [
+      {
+        "key": 0,
+        "name": "receiptId",
+        "type": "uuidv7",
+        "required": true
+      },
+      {
+        "key": 1,
+        "name": "schemaDefinitionDigest",
+        "type": "H32",
+        "required": true
+      },
+      {
+        "key": 2,
+        "name": "transitionProfileId",
+        "type": "text160",
+        "required": true
+      },
+      {
+        "key": 3,
+        "name": "transitionProfileVersion",
+        "type": "u32p",
+        "required": true
+      },
+      {
+        "key": 4,
+        "name": "transitionProfileDigest",
+        "type": "H32",
+        "required": true
+      },
+      {
+        "key": 5,
+        "name": "environmentId",
+        "type": "text160",
+        "required": true
+      },
+      {
+        "key": 6,
+        "name": "participantId",
+        "type": "domainUuid",
+        "required": true
+      },
+      {
+        "key": 7,
+        "name": "privacyDomainId",
+        "type": "domainUuid",
+        "required": true
+      },
+      {
+        "key": 8,
+        "name": "operationId",
+        "type": "uuidv7",
+        "required": true
+      },
+      {
+        "key": 9,
+        "name": "actionIntentId",
+        "type": "actionIntentId",
+        "required": true
+      },
+      {
+        "key": 10,
+        "name": "catalogOperationId",
+        "type": "text160",
+        "required": true
+      },
+      {
+        "key": 11,
+        "name": "aggregateType",
+        "type": "resourceType",
+        "required": true
+      },
+      {
+        "key": 12,
+        "name": "aggregateId",
+        "type": "domainUuid",
+        "required": true
+      },
+      {
+        "key": 13,
+        "name": "actorKeyDigest",
+        "type": "H32",
+        "required": true
+      },
+      {
+        "key": 14,
+        "name": "preCommitAuthorityDigest",
+        "type": "H32",
+        "required": true
+      },
+      {
+        "key": 15,
+        "name": "actionIntentDigest",
+        "type": "H32",
+        "required": true
+      },
+      {
+        "key": 16,
+        "name": "candidateDigest",
+        "type": "H32",
+        "required": true
+      },
+      {
+        "key": 17,
+        "name": "idempotencyRecordId",
+        "type": "uuidv7",
+        "required": true
+      },
+      {
+        "key": 18,
+        "name": "before",
+        "type": "StateRef",
+        "required": true
+      },
+      {
+        "key": 19,
+        "name": "after",
+        "type": "StateRef",
+        "required": true
+      },
+      {
+        "key": 20,
+        "name": "authorizationEvidence",
+        "type": "EvidenceRefs",
+        "required": true
+      },
+      {
+        "key": 21,
+        "name": "outboxEvents",
+        "type": "OutboxRefs",
+        "required": true
+      },
+      {
+        "key": 22,
+        "name": "transitionKind",
+        "type": "TransitionKind",
+        "required": true
+      },
+      {
+        "key": 23,
+        "name": "recordedAtNs",
+        "type": "timestampNs",
+        "required": true
+      },
+      {
+        "key": 24,
+        "name": "signerId",
+        "type": "text160",
+        "required": true
+      },
+      {
+        "key": 25,
+        "name": "signerTrustSnapshotDigest",
+        "type": "H32",
+        "required": true
+      },
+      {
+        "key": 26,
+        "name": "requestDigest",
+        "type": "H32",
+        "required": true
+      }
+    ]
+  },
+  "types": {
+    "H32": {
+      "major": 2,
+      "bytes": 32
+    },
+    "uuidv7": {
+      "major": 2,
+      "bytes": 16,
+      "order": "RFC network byte order",
+      "version": 7,
+      "variant": "RFC 4122"
+    },
+    "domainUuid": {
+      "major": 2,
+      "bytes": 16,
+      "order": "RFC network byte order",
+      "versions": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "variant": "RFC 4122",
+      "constraint": "must satisfy the admitted domain owner UUID contract"
+    },
+    "u64": {
+      "major": 0,
+      "min": "0",
+      "max": "18446744073709551615",
+      "json": "canonical decimal string"
+    },
+    "u64p": {
+      "major": 0,
+      "min": "1",
+      "max": "18446744073709551615",
+      "json": "canonical decimal string"
+    },
+    "u32p": {
+      "major": 0,
+      "min": "1",
+      "max": "4294967295"
+    },
+    "timestampNs": {
+      "type": "u64",
+      "multipleOf": "1000",
+      "meaning": "database observation timestamp, not exact PostgreSQL commit time"
+    },
+    "text160": {
+      "major": 3,
+      "minUtf8Bytes": 1,
+      "maxUtf8Bytes": 160,
+      "normalization": "NFC"
+    },
+    "text512": {
+      "major": 3,
+      "minUtf8Bytes": 1,
+      "maxUtf8Bytes": 512,
+      "normalization": "NFC"
+    },
+    "urn256": {
+      "major": 3,
+      "minUtf8Bytes": 1,
+      "maxUtf8Bytes": 256,
+      "normalization": "NFC",
+      "constraint": "canonical URN admitted by the exact profile"
+    },
+    "actionIntentId": {
+      "type": "text160",
+      "pattern": "^ACT-[A-Z][A-Z0-9_]*-V[1-9][0-9]*$"
+    },
+    "resourceType": {
+      "major": 3,
+      "maxUtf8Bytes": 63,
+      "pattern": "^[a-z][a-z0-9-]{0,62}$"
+    },
+    "TransitionKind": {
+      "major": 0,
+      "values": {
+        "1": "CONTROL_STATE_COMMITTED",
+        "2": "ASYNC_COMMAND_COMMITTED"
+      },
+      "meaning": "control transaction only; never external effect, runtime activation, spool admission or remote custody"
+    },
+    "StateRef": {
+      "major": 5,
+      "fields": [
+        {
+          "key": 0,
+          "name": "existence",
+          "type": "Existence",
+          "required": true
+        },
+        {
+          "key": 1,
+          "name": "revision",
+          "type": "u64",
+          "required": true
+        },
+        {
+          "key": 2,
+          "name": "stateDigest",
+          "type": "H32",
+          "required": true
+        }
+      ],
+      "constraints": [
+        "ABSENT requires revision zero and exact profile absent projection",
+        "legal before/after lifecycle and revision changes are profile selected",
+        "no unexplained unchanged state"
+      ]
+    },
+    "Existence": {
+      "major": 0,
+      "values": {
+        "0": "ABSENT",
+        "1": "PRESENT",
+        "2": "TOMBSTONE"
+      }
+    },
+    "EvidenceRef": {
+      "major": 5,
+      "fields": [
+        {
+          "key": 0,
+          "name": "kind",
+          "type": "EvidenceKind",
+          "required": true
+        },
+        {
+          "key": 1,
+          "name": "evidenceId",
+          "type": "text160",
+          "required": true
+        },
+        {
+          "key": 2,
+          "name": "evidenceDigest",
+          "type": "H32",
+          "required": true
+        }
+      ]
+    },
+    "EvidenceKind": {
+      "major": 0,
+      "values": {
+        "1": "AUTHENTICATION",
+        "2": "AUTHORIZATION",
+        "3": "APPROVAL",
+        "4": "STEP_UP_VERIFICATION",
+        "5": "GRANT_CONSUMPTION"
+      }
+    },
+    "EvidenceRefs": {
+      "major": 4,
+      "minItems": 1,
+      "maxItems": 32,
+      "itemType": "EvidenceRef",
+      "sort": [
+        "kind",
+        "UTF-8 evidenceId bytes",
+        "evidenceDigest bytes"
+      ],
+      "reject": "duplicate tuple",
+      "resolution": "immutable typed owner records with exact actor, context, action, candidate, validity and one-use binding; hash equality alone is insufficient"
+    },
+    "OutboxRef": {
+      "major": 5,
+      "fields": [
+        {
+          "key": 0,
+          "name": "eventId",
+          "type": "uuidv7",
+          "required": true
+        },
+        {
+          "key": 1,
+          "name": "eventType",
+          "type": "text160",
+          "required": true
+        },
+        {
+          "key": 2,
+          "name": "dataSchemaUri",
+          "type": "text512",
+          "required": true
+        },
+        {
+          "key": 3,
+          "name": "source",
+          "type": "urn256",
+          "required": true
+        },
+        {
+          "key": 4,
+          "name": "subject",
+          "type": "urn256",
+          "required": true
+        },
+        {
+          "key": 5,
+          "name": "aggregateSequence",
+          "type": "u64p",
+          "required": true
+        },
+        {
+          "key": 6,
+          "name": "occurredAtNs",
+          "type": "timestampNs",
+          "required": true
+        },
+        {
+          "key": 7,
+          "name": "correlationId",
+          "type": "uuidv7",
+          "required": true
+        },
+        {
+          "key": 8,
+          "name": "causationId",
+          "type": "uuidv7",
+          "required": false
+        },
+        {
+          "key": 9,
+          "name": "payloadDigest",
+          "type": "H32",
+          "required": true
+        },
+        {
+          "key": 10,
+          "name": "authorityGeneration",
+          "type": "H32",
+          "required": false
+        }
+      ]
+    },
+    "OutboxRefs": {
+      "major": 4,
+      "minItems": 1,
+      "maxItems": 16,
+      "itemType": "OutboxRef",
+      "sort": [
+        "aggregateSequence",
+        "eventId bytes"
+      ],
+      "reject": [
+        "duplicate event ID",
+        "duplicate aggregate sequence"
+      ],
+      "scope": "every event belongs to receipt participant, privacy domain and aggregate; sequence allocated under authoritative aggregate-head lock"
+    }
+  },
+  "digests": {
+    "receipt": "SHA-256(exact receipt PC-CBOR-1 bytes)",
+    "state": "SHA-256(PC-CBOR-1([\"pc.control.transition-state.v1\", profileDigest, participantId, privacyDomainId, aggregateType, aggregateId, existence, revision, typedProfileProjection])) unless profile references an existing exact normative digest",
+    "authority": "SHA-256(exact retained typed profile authorization snapshot PC-CBOR-1 bytes); binds actor/workload, scope, session/sender, action/catalog/candidate/request, all relevant epochs/validity/proofs and actual admission decision",
+    "acyclicOrder": [
+      "domain pre/post projection",
+      "authorization snapshot and one-use consumption projection",
+      "semantic operation result and event payload/metadata",
+      "receipt",
+      "database receipt links"
+    ],
+    "forbidden": "No receipt/COSE digest in its own preimage, consumed-grant preimage or receipt-bound event/result preimage"
+  },
+  "cose": {
+    "profile": "pc.cose-sign1-profile@2",
+    "tag": 18,
+    "tagRequired": true,
+    "algorithm": -7,
+    "curve": "P-256",
+    "hash": "SHA-256",
+    "signatureEncoding": "64-byte P1363 r||s",
+    "protected": {
+      "1": -7,
+      "2": [
+        100,
+        101,
+        102,
+        103
+      ],
+      "3": "application/pc+cbor",
+      "4": "bstr(UTF8(keyId))",
+      "100": 24001,
+      "101": 1,
+      "102": 338,
+      "103": 2
+    },
+    "unprotected": {},
+    "keyId": "sha256: + lowercase hex SHA-256(DER-SPKI)",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "sigStructure": "PC-CBOR-1([\"Signature1\", protectedBytes, externalAAD, payloadBytes])",
+    "maxContainerBytes": 66560,
+    "reject": [
+      "untagged representation",
+      "extra headers",
+      "wrong critical labels",
+      "DER signature",
+      "Ed25519 fallback",
+      "empty or supplied AAD",
+      "authentication/WebAuthn purpose key reuse"
+    ]
+  },
+  "profileAdmission": {
+    "selection": "server-selected exact actionIntentId/catalogOperationId/resource triple and registered immutable version/digest",
+    "unknown": "terminal rejection",
+    "dependencies": "each receipt independently binds its registry-known immutable profile digest; profiles include exact projection dependencies",
+    "authority": "profile cannot relax registered action policy, approval or step-up",
+    "publicProjection": "existing CommandCommittedDataV1 and operation contracts remain independent unsigned projections"
+  },
+  "trust": {
+    "owner": "existing identity/key governance under DU-PC-CONTROL",
+    "signer": "purpose-separated control evidence workload key; never caller-nominated",
+    "bindings": [
+      "signerId",
+      "SPKI keyId",
+      "environment",
+      "workload credential",
+      "schema and purpose",
+      "exact profile and action scopes",
+      "key epoch and validity",
+      "governed admission reference",
+      "retained trust snapshot"
+    ],
+    "linearization": "selection, rotation and revocation share commit-time key fence",
+    "historical": "past occurrence only; retained trust/custody needed; backdated claim cannot bypass compromise",
+    "privateMaterial": "versioned SECRET-SIGNING-KEY resolver handle only; absent from database and evidence"
+  },
+  "durability": {
+    "owner": "control.audit_occurrence",
+    "visibility": "current authorization for all signed fields; filtered views are unsigned provenance projections",
+    "provisionalSignature": "private until known commit; signature alone never proves durable occurrence",
+    "legacy": "preserve original bytes and classify; never retro-sign old claims",
+    "compatibility": "additive migration followed by affected writer/consumer capability fence and tightening"
+  }
+}

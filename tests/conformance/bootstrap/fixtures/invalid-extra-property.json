@@ -1,0 +1,13 @@
+{
+  "createdAt": "2026-08-24T00:00:00.000000Z",
+  "epoch": "7",
+  "name": "Example Participant",
+  "participantId": "urn:openpc:participant:018f1e44-7b2c-7abc-8def-0123456789ab",
+  "privacyDomainIds": [
+    "urn:openpc:privacy-domain:018f1e44-7b2c-7abd-8def-0123456789ac"
+  ],
+  "revision": "3",
+  "status": "ACTIVE",
+  "unregisteredField": true,
+  "updatedAt": "2026-08-24T00:00:00.000000Z"
+}

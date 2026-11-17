@@ -1,0 +1,12 @@
+{
+  "actionIntentId": "ACT-PARTICIPANTS_CREATE_RESOURCE-V1",
+  "createdAt": "2026-08-24T00:00:00.000000Z",
+  "idempotencyKey": "pc-example-idempotency-key-0001",
+  "intentDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "operationId": "018f1e44-7b2c-7abe-8def-0123456789ad",
+  "resourceRef": "urn:openpc:participant:018f1e44-7b2c-7abc-8def-0123456789ab",
+  "revision": "1",
+  "state": "SUCCEEDED",
+  "truthState": "SUCCESS",
+  "updatedAt": "2026-08-24T00:00:00.000000Z"
+}

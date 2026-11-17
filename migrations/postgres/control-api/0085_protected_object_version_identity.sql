@@ -1,0 +1,1 @@
+ALTER TABLE "control"."protected_proof_object" ADD CONSTRAINT "protected_proof_object_version_uq" UNIQUE("participant_id","privacy_domain_id","object_id","object_version","object_digest");

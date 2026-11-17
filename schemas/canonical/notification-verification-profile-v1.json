@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [
+      1,
+      2,
+      3,
+      4,
+      100,
+      101,
+      102,
+      103
+    ],
+    "criticalFields": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "extensionAuthority": "POST_C17_ASTRA_12_NOTIFICATION_GATEWAY",
+  "name": "pc.notification-verification-profile.v1",
+  "schemaId": 24011,
+  "typeName": "NotificationVerificationProfileV1",
+  "purpose": {
+    "name": "pc.cose.notification-verification-profile.v1",
+    "code": 348
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "environmentId",
+      "type": "text160"
+    },
+    {
+      "key": 2,
+      "name": "participantId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 3,
+      "name": "privacyDomainId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 4,
+      "name": "profileId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 5,
+      "name": "revision",
+      "type": "u64p"
+    },
+    {
+      "key": 6,
+      "name": "validFromMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 7,
+      "name": "validUntilMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 8,
+      "name": "signedChannelProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 9,
+      "name": "credentialBindingDigest",
+      "type": "H32"
+    },
+    {
+      "key": 10,
+      "name": "verificationSignerSpki",
+      "type": "P256_SPKI_DER"
+    },
+    {
+      "key": 11,
+      "name": "issuerKeyId",
+      "type": "H32"
+    }
+  ],
+  "authorityRules": [
+    "Initial installed trust independently pins this exact signed profile, its issuer, environment and participant/privacy scope. A request cannot provide or replace trust. The issuer and observation signer are distinct.",
+    "The exact installed NotificationChannelProfileV1 still owns destination, credential reference, pinned HTTPS origin/address/server key and bounded mTLS transport. This separate profile explicitly admits only POST /notifications/v1/verify for a non-delivery challenge. Existing delivery profiles alone do not admit endpoint verification.",
+    "The request is canonical JSON {challenge}; the response is canonical JSON {payloadHex,coseHex} containing only NotificationVerificationReceiptV1. Verification MUST NOT create a notification, enqueue delivery or contact the ultimate recipient with a notification payload. There is no redirect, proxy, address fallback, automatic retry or delivery/readback substitution.",
+    "credentialBindingDigest binds the exact current LS-NOTIFICATION SECRET-NOTIFICATION-CREDENTIAL metadata, including scope, channel, destination, immutable reference/version, fingerprint, epoch and validity. Current Identity restrictions, revocation and export admission remain mandatory under their durable owner fence; immutable signed metadata is not current authority.",
+    "The durable owner creates the unpredictable challenge and retains its exact bytes and original business intent before I/O. Scope, endpoint predecessor/result revision, destination, both profile digests, current credential binding, principal, original input and business idempotency digests and freshness are bound by the complete challenge digest.",
+    "No endpoint state changes until authenticated original response bytes are retained and attached once to an internally generated atomic operation under the same current scope, credential and endpoint revision fences. Ambiguous transport or commit results reconcile original durable state, never a replacement intent.",
+    "Local protocol qualification does not establish production gateway qualification."
+  ]
+}

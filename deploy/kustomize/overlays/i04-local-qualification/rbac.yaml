@@ -1,0 +1,136 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: openpc-i04-token-requester
+rules:
+  - apiGroups: [""]
+    resources: ["serviceaccounts/token"]
+    resourceNames: ["openpc-i04-qualification-signer"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: openpc-i04-token-requester
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: openpc-i04-token-requester
+subjects:
+  - kind: ServiceAccount
+    name: openpc-i04-harness-executor
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: openpc-i04-evidence-reader
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "configmaps", "serviceaccounts"]
+    verbs: ["get", "list"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: openpc-i04-evidence-normalizer
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: openpc-i04-evidence-reader
+subjects:
+  - kind: ServiceAccount
+    name: openpc-i04-evidence-normalizer
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: openpc-i04-independent-reviewer
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: openpc-i04-evidence-reader
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    name: openpc-i04-independent-reviewer
+    namespace: openpc-i04-local-qualification
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: openpc-i04-signer-context-reader
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["openpc-i04-public-trust-registry"]
+    verbs: ["get"]
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["rolebindings"]
+    resourceNames: ["openpc-i04-independent-reviewer"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: openpc-i04-signer-context-reader
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: openpc-i04-signer-context-reader
+subjects:
+  - kind: ServiceAccount
+    name: openpc-i04-qualification-signer
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: openpc-i04-local-signer-cluster-context-reader
+rules:
+  - nonResourceURLs: ["/version", "/openid/v1/jwks"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    resourceNames: ["kube-system"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["nodes"]
+    resourceNames: ["minikube"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: openpc-i04-local-signer-cluster-context-reader
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: openpc-i04-local-signer-cluster-context-reader
+subjects:
+  - kind: ServiceAccount
+    name: openpc-i04-qualification-signer
+    namespace: openpc-i04-local-qualification
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: openpc-i04-trust-registry-publisher
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["openpc-i04-public-trust-registry"]
+    verbs: ["get", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: openpc-i04-trust-registry-publisher
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: openpc-i04-trust-registry-publisher
+subjects:
+  - kind: ServiceAccount
+    name: openpc-i04-trust-registry-authority

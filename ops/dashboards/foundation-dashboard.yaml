@@ -1,0 +1,14 @@
+schemaVersion: '1.0'
+scope: I09_FOUNDATION_ONLY
+notDeployable: true
+panels:
+  - id: configuration_generation_mismatch
+    signal: openpc_configuration_generation_mismatch_total
+    purpose: Surface failed-closed configuration staging without exposing configuration values.
+  - id: evidence_capacity
+    signal: openpc_evidence_capacity_ratio
+    purpose: Surface protective degradation before evidence durability exhaustion.
+  - id: recovery_rehearsal
+    signal: openpc_recovery_rehearsal_status
+    purpose: Surface the last synthetic local rehearsal outcome only.
+redaction: STRICT_REDACTED_NO_PAYLOADS_OR_IDENTIFIERS

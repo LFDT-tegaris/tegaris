@@ -1,0 +1,61 @@
+// C04 normative wire projection. Signed semantics are PC-CBOR-1 only.
+// JSON projections MUST validate the frozen AF-08 schemas; protobuf bytes are never an alternate signature preimage.
+// Every caller supplies grpc-timeout. The server applies min(caller deadline, signed service-profile maximum).
+// Missing/expired authority metadata fails before method execution. Unknown enum values never relax denial.
+syntax = "proto3";
+package openpc.facts.v1;
+
+import "openpc/common/v1/common.proto";
+
+option java_multiple_files = true;
+option java_package = "io.openpc.facts.v1";
+
+message FactCandidateV1 {
+  openpc.common.v1.RequestMetaV1 meta = 1;
+  openpc.common.v1.Af08OpenPcUrn candidate_id = 2;
+  openpc.common.v1.Af08OpenPcUrn participant_id = 3;
+  openpc.common.v1.Af08OpenPcUrn privacy_domain_id = 4;
+  openpc.common.v1.Af08Sha256Digest source_record_digest = 5;
+  openpc.common.v1.Af08Sha256Digest candidate_digest = 6;
+  openpc.common.v1.Af08UInt64String source_sequence = 7;
+  string source_profile = 8;
+  reserved 100 to 199;
+}
+
+message FactAdmissionResultV1 {
+  openpc.common.v1.Af08OpenPcUrn candidate_id = 1;
+  string state = 2;
+  optional openpc.common.v1.Af08OpenPcUrn admitted_fact_id = 3;
+  optional openpc.common.v1.Af08Sha256Digest admitted_artifact_digest = 4;
+  openpc.common.v1.TruthStateV1 truth_state = 5;
+  optional openpc.common.v1.SafeProblemV1 problem = 6;
+  reserved 100 to 199;
+}
+
+message FactInvalidationRequestV1 {
+  openpc.common.v1.RequestMetaV1 meta = 1;
+  openpc.common.v1.Af08OpenPcUrn fact_artifact_id = 2;
+  openpc.common.v1.Af08Sha256Digest expected_generation_digest = 3;
+  string reason = 4;
+  reserved 100 to 199;
+}
+
+message IndexerProfileCommandV1 {
+  openpc.common.v1.RequestMetaV1 meta = 1;
+  openpc.common.v1.Af08OpenPcUrn profile_id = 2;
+  openpc.common.v1.Af08Sha256Digest profile_digest = 3;
+  string command = 4;
+  reserved 100 to 199;
+}
+
+service FactBridgeService {
+  rpc AdmitCandidate(FactCandidateV1) returns (FactAdmissionResultV1);
+  rpc InvalidateFacts(FactInvalidationRequestV1) returns (openpc.common.v1.OperationViewV1);
+  rpc StreamAdmissionResults(openpc.common.v1.RequestMetaV1) returns (stream FactAdmissionResultV1);
+}
+
+service IndexerManagerService {
+  rpc RegisterProfile(IndexerProfileCommandV1) returns (openpc.common.v1.OperationViewV1);
+  rpc ReconcilePlan(IndexerProfileCommandV1) returns (openpc.common.v1.OperationViewV1);
+  rpc RetireProfile(IndexerProfileCommandV1) returns (openpc.common.v1.OperationViewV1);
+}

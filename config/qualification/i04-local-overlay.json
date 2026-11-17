@@ -1,0 +1,88 @@
+{
+  "schemaVersion": "1.0",
+  "overlayId": "OPENPC-I04-LOCAL-QUALIFICATION-OVERLAY-R8-LENGTH-DELIMITED-BOUNDARY-20260830-01",
+  "scope": "LOCAL_DEVELOPMENT_TECHNICAL_TEST_ONLY",
+  "baseline": {
+    "c17ArchiveSha256": "36242402f8ace4b1cff124385b0be45e8e2a2c1fed9ceb980be2644052309ed5",
+    "i03RootCommitmentSha256": "860ad27f51fc4178dda85e043f54451e7acdbc70963148631af2d69fd37b98fd"
+  },
+  "substrate": {
+    "kubernetesVersion": "1.36.2",
+    "minikubeVersion": "1.38.1",
+    "envoyVersion": "1.39.0",
+    "envoyImage": "docker.io/envoyproxy/envoy:v1.39.0@sha256:f6e2f57b1bef8235083a2553b523508cf97d8991c893fd2aae3a94a6b21096a2"
+  },
+  "principals": [
+    "openpc-i04-requester",
+    "openpc-i04-harness-executor",
+    "openpc-i04-evidence-normalizer",
+    "openpc-i04-independent-reviewer",
+    "openpc-i04-qualification-signer",
+    "openpc-i04-trust-registry-authority"
+  ],
+  "signingBoundary": {
+    "backend": "SOFTHSM2_PKCS11_LOCAL_EMULATION",
+    "algorithm": "ECDSA_P256_SHA256",
+    "curve": "P-256",
+    "mechanism": "CKM_ECDSA_SHA256_LENGTH_DELIMITED_CANONICAL_PURPOSE_AUTHORITY",
+    "audience": "openpc.i04.local.runtime-qualification",
+    "privateKeyExportApi": false,
+    "workloadPrivateKeyAccess": false,
+    "custodyInterface": "DISTINCT_KUBERNETES_PODS_TLS_LENGTH_DELIMITED_RAW_BYTE_PURPOSE_API",
+    "callerAuthentication": "PURPOSE_AUTHORITY_CRYPTOGRAPHICALLY_VERIFIES_PROJECTED_KUBERNETES_TOKEN",
+    "signerRuntimeUid": 10001,
+    "harnessRuntimeUid": 20001,
+    "pinInProcessMetadata": false,
+    "harnessCredentialAccess": false,
+    "generalSigningInterface": false,
+    "signerSideValidationBeforeUnlock": true,
+    "callerValidityOrDigestGrantInput": false,
+    "callerEnvelopeInput": false,
+    "purposeAuthorityOwnsClock": true,
+    "expiryIndexedReplayFailClosed": true,
+    "replayCapacity": 64,
+    "rootCustodyProvisioningOnly": true,
+    "softwareEnforcedNonExtractability": true,
+    "hardwareNonExtractability": "NOT_PROVEN_OPEN",
+    "c17QualificationProfileCompatible": false,
+    "localAdminOverrideResistance": "NOT_PROVEN_OPEN"
+  },
+  "trustBoundary": {
+    "algorithm": "P-256",
+    "backend": "SEPARATE_SOFTHSM2_PKCS11_ROOT_TOKEN",
+    "privateMaterialLocation": "AGENTS_TMP_ONLY",
+    "softwareEnforcedPrivateKeyNonExportable": true,
+    "organizationalIndependence": "NOT_PROVEN_OPEN",
+    "publicPaths": [
+      "config/qualification/i04-local/public/local-root-ca.pem",
+      "config/qualification/i04-local/public/local-assertion-signer.pem",
+      "config/qualification/i04-local/public/softhsm-key-policy.json"
+    ]
+  },
+  "tokenBinding": {
+    "algorithm": "RS256",
+    "exactSingletonAudience": true,
+    "maximumTtlSeconds": 600,
+    "maximumIssuedAgeSeconds": 120,
+    "signedEnvelopeBindsJwtSha256": true,
+    "trustedJwksPinnedByProvisioner": true,
+    "callerAndTokenJwtVerifiedInsidePurposeAuthority": true,
+    "canonicalRequestByteEqualityRequired": true,
+    "callerTokenInsideCanonicalRequest": true,
+    "lengthDelimitedCredentialSpans": true,
+    "embeddedNulRejectedBeforeJsonOrJwtConversion": true,
+    "malformedUtf8AndControlsRejectedBeforeJsonOrJwtConversion": true,
+    "implicitLengthCredentialRoutinesForbidden": true
+  },
+  "networkPolicy": {
+    "manifestIntent": "PRESENT",
+    "enforcement": "NOT_PROVEN_OPEN",
+    "passClaimPermitted": false
+  },
+  "claimBoundary": {
+    "localTechnicalGate2": "ELIGIBLE_AFTER_VALIDATION_AND_REVIEW",
+    "providerQualification": "NOT_PROVEN_OPEN",
+    "productionBusinessQualification": "NOT_PROVEN_OPEN",
+    "externalAcceptance": "NOT_AUTHORIZED_NOT_PERFORMED"
+  }
+}

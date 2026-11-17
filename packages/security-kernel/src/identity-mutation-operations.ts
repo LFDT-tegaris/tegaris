@@ -1,0 +1,100 @@
+/** Governed identity mutations admitted by the shared authorization owner. */
+export const identityMutationOperations = Object.freeze(
+  (
+    [
+      ['ID-OP-INVITATION-CREATE', 'ACT-PARTICIPANT_CREATE_MEMBER-V1', 'principal', 'CREATE'],
+      ['ID-OP-INVITATION-RESEND', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-INVITATION-REVOKE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-DIRECTORY-PROVISION', 'ACT-PARTICIPANT_CREATE_MEMBER-V1', 'principal', 'CREATE'],
+      ['ID-OP-DIRECTORY-MASS-PROVISION', 'ACT-PARTICIPANT_CREATE_MEMBER-V1', 'principal', 'CREATE'],
+      ['ID-OP-DIRECTORY-RECONCILE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      [
+        'ID-OP-DIRECTORY-MASS-RECONCILE',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      [
+        'ID-OP-DIRECTORY-CONNECTOR-CREATE',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      [
+        'ID-OP-DIRECTORY-CONNECTOR-CONFIGURE',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      [
+        'ID-OP-DIRECTORY-CONNECTOR-SUSPEND',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      [
+        'ID-OP-DIRECTORY-CONNECTOR-RESUME',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      [
+        'ID-OP-DIRECTORY-CONNECTOR-RETIRE',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      ['ID-OP-PRINCIPAL-PROVISION', 'ACT-PARTICIPANT_CREATE_MEMBER-V1', 'principal', 'CREATE'],
+      ['ID-OP-PRINCIPAL-ACTIVATE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-PRINCIPAL-SUSPEND', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-MEMBERSHIP-REMOVE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-WEBAUTHN-REGISTER', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-WORKLOAD-ISSUE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-WORKLOAD-ROTATE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-WORKLOAD-REVOKE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      [
+        'ID-OP-WALLET-BINDING-CREATE',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      [
+        'ID-OP-WALLET-BINDING-REVOKE',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      [
+        'ID-OP-RECOVERY-PRINCIPAL-QUALIFY',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      [
+        'ID-OP-RECOVERY-PRINCIPAL-REVOKE',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      [
+        'ID-OP-RECOVERY-POST-REVIEW',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      ['ID-OP-RECOVERY-BEGIN', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-RECOVERY-APPROVE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-RECOVERY-COMPLETE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+    ] as const
+  ).map(([catalogOperationId, actionIntentId, resourceType, operationClass]) =>
+    Object.freeze({
+      catalogOperationId,
+      actionIntentId,
+      operationClass,
+      resourceType,
+      makerCheckerRequired: true,
+      stepUpRequired: true,
+      aggregateType: 'identity',
+    }),
+  ),
+);

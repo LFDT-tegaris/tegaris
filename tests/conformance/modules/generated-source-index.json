@@ -1,0 +1,245 @@
+{
+  "schemaVersion": "1.0",
+  "generator": "services/module-registry/scripts/generate-module-contracts.mjs",
+  "sourcePackageId": "OPENPC-C17-RECEIVING-AUTHORITY-COHERENCE-20260827-01",
+  "semanticImpact": "EXACT_C17_CONTRACT_PROJECTION_NO_PRODUCT_DECISION",
+  "files": [
+    {
+      "path": "SPECIFICATIONS/MODULES/module-manifest.schema.json",
+      "sha256": "b7fc11a37e3295daaa31222c358e9031dd9ebe8813185fb1c3ca9599ad4a6a03"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/module-registry.json",
+      "sha256": "d94fc0394a0418a7d92a04f19c48badb694eff407a5c46092de40c7cd08108ca"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/module-contract-catalog.json",
+      "sha256": "b3b1a5beee2f02db6db98e09a2683fd6af3fd5a16f82367d03a27876510e5538"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/module-conformance-fixtures.json",
+      "sha256": "10ffec0cf02ad7305567f6d4003bcc8c5ffc0f61492ce00b199a5ce4917c9f34"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/module-trace-sets.json",
+      "sha256": "6b9dd9d47bbe4357a647bc1012482846fd067065fbfab76486106c9022a88ae1"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/module-traceability.jsonl",
+      "sha256": "9a43ad78fabd825eeb36fc87defb0b94985f3f6d0c5266f04626e6e320fc35c6"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/dependency-resolution.md",
+      "sha256": "5045ffeb90c3c4765d822a4d3884c21cb9a4496310fef8e8f9a9bb5d6c9f6852"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/module-lifecycle.md",
+      "sha256": "247b319713179b70927eda3f38d83891ec8efe1a842a98edf9921a16e5475a60"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/policy-composition.md",
+      "sha256": "b76400a0cbf388b3dd6f7ca6ce69690bd4e86ce091a5d63fa8fb18cfa9681686"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/simulator-and-simulation-guard.md",
+      "sha256": "44ba34db5132d6c77db71c3a4d8a3851011a33dcf133c8df334f6c6877a44b1e"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/delegated-participant-governance.md",
+      "sha256": "e616037160441b8281051c748e83e3bb37ec4b45dc30f4715ab10494d5736d67"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/machine-validation-report.json",
+      "sha256": "37385ee53db39c19e942d78253331df955be6cc31aded33ebe34f9ed984c173c"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.config.assets.json",
+      "sha256": "30564e955ba04447d90eab847bb3c6d0d67ec89409c4f4a2b312b43b71faa7ee"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.deployment.governance.json",
+      "sha256": "e6868525f271011b6501620f156b62b532ea0f440160a578482f7678553710f4"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.evidence.json",
+      "sha256": "e11ddffc8dd73994ca39a26936279a06366d38015756ce39ea6bb3d6631df43d"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.external-decision-facts.json",
+      "sha256": "38d9c19c28f54772b5e1a7760ecbe414afc51f3527495305b4a1ac6e252cb99d"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.fact-bridge.json",
+      "sha256": "949a155d9fd7815129d7c03bd26831bd67a50a743d0e415a7be934ac8d05f1fc"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.foundation.kernel.json",
+      "sha256": "dab4b353d766b08c6ea1dd15f0c576ab6c9daf831db2c470f3e67da96e9f2df5"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.identity.json",
+      "sha256": "1309b0b07bd9a98a80a56b185459e4ca876d94b07cf2f2248415791e462d8f60"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.indexing.dedicated-policy.json",
+      "sha256": "01d4cfbd6b315207596510b9a103b549394d77cd7e0f8f58d981bda79fe779b3"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.module.framework.json",
+      "sha256": "a1256b6e517729c1731d7ec2bd693405a187601075be7cc38b465a9672f67cfa"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.multi-rpc.json",
+      "sha256": "9c76cc761da6d328603bad238c09876a0f43d7d38aae7cf7ab964d2b39bb74a0"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.observability.json",
+      "sha256": "e7ba1980acd1efd7d74aa3357918bdc44916c261509933273a5df95369e67b9e"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.participant.governance.json",
+      "sha256": "73b13df55266b05c6f1f0598014320d0c80b78527bd8588793544c61cc64c650"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.argument-guard.json",
+      "sha256": "c43fdfe38519bb2eec4ac4a4fb1bc75c32d249dc058f3308747af8e5cb91bf19"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.cigl.json",
+      "sha256": "b8117e6fcadc02e6b8122216a955d2575cd94a04d89b9b0858f51f1b8a42bf34"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.compiler-distributor.json",
+      "sha256": "6c337482ff7986c0cf87ea9cfdcb2cca3d039703a34f73f1e53d15ab5a6ffcb6"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.contract-method.json",
+      "sha256": "afb2c0f8d70edb9ade3fd922f33892bf7d838e0b63d97edcd1e6c53d5dd90748"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.deployment.json",
+      "sha256": "082bf2ddce1a3bb7f9719fbbc647e28a6ca039c9008df33ca18ea33d4cb5682c"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.dynamic-event-ordering.json",
+      "sha256": "65f1e07a793888dc3f11481a3919b82a61c0d993944b9248f927936a280d6cb4"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.dynamic-event-visibility.json",
+      "sha256": "5d12dc1aefa9a995b419330d33e690fb59a7c2cf19da2a1ebbf05ff2e4f11ee5"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.event-visibility.json",
+      "sha256": "9beabaf59f5b2d3f38a58337ad144c59e8d9597e54fd9828acaaabf6cd7a673e"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.execution-path-observation.json",
+      "sha256": "48020cde714da7ee45d2a326c747cc706aaae178fa26847ec9bc03e4a36b828b"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.external-decision.json",
+      "sha256": "78c6cf2d90ccece51420cb9be287477e5eb67a3ef6ccf025769d42721a81567c"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.invocation-capability.json",
+      "sha256": "5604a1d435bc76e8a5744e1feaeea92daf1f3a682e4488be14cdcf2a566d1216"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.lifecycle.json",
+      "sha256": "90f4e7eace247b07ad992fc0037349f05e05c884675c321ad141bdb5f0a8cb3e"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.ptv.json",
+      "sha256": "7877a8c4faca1dbfe26e4e0939b8fbbc179e46df72aca2763bbfc339b65e5e16"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.relationship-facts.json",
+      "sha256": "26ebb220f87b46aa3b32bace6a67491318cf50d8fa9d42b400fc79631be7d816"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.rpc-surface.json",
+      "sha256": "76e2b4b0c14d34f0f685f63d60dd4156205be6c4b236bee9a1adce653bbc1736"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.runtime-guard.json",
+      "sha256": "714f3f6a7694e97a9baed620a0675df90d3da5ebc8b24f42f6892fd3054691ef"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.selective-disclosure.json",
+      "sha256": "6f7797af2ee2a5b0c98e0ab944d04a3e42c01830ce5d780f5a44a676de1f32f1"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.simulation-guard.json",
+      "sha256": "1a24be8ffc201d0b8fe6c65357b0a2a6133f587ed8434fd054bd92b5a8e78849"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.policy.state-read.json",
+      "sha256": "b2c14cbd5cd03a63229a6b40fc440622b94b1ae9697ed1eadf4e0a0144793cde"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.runtime.json",
+      "sha256": "a3176fd00ff2eb34639e789eacb1210cd17d7e609fe04a69074c61700303bde5"
+    },
+    {
+      "path": "SPECIFICATIONS/MODULES/manifests/pc.transaction.delivery.json",
+      "sha256": "857d7acb666297a8d489c24278b2291a053ee6fa64fca11b3bbda55eb346ffd6"
+    },
+    {
+      "path": "CATALOGS/source-units.jsonl",
+      "sha256": "3fbd1d00639aeb3fb1f568942e89ae505b7ac1cf45b2c4aa2faea2c74e70dd29"
+    },
+    {
+      "path": "GOVERNANCE/decision-and-supersession-map.jsonl",
+      "sha256": "397c0becca904297e172141d8bfe18712b255b05d0bd1b3f0f187da15680aae1"
+    },
+    {
+      "path": "COMPLETE_SCOPE_AND_REQUIREMENTS/PRODUCT/exclusions-and-claim-ceilings.json",
+      "sha256": "b9c866b671a06d475fd601a85ecb75789baca0da8e7356fe7b96dd1195fb0858"
+    },
+    {
+      "path": "COMPLETE_SCOPE_AND_REQUIREMENTS/PRODUCT/normative-requirements.jsonl",
+      "sha256": "e49a27645e39168fdc6b3aad94cea40de0db496d99bb7b6140595d744fcbcafd"
+    },
+    {
+      "path": "CLOSURE/AF31/requirement-closure-22131.jsonl",
+      "sha256": "3fed5ae229aca36f2cd9a48f866ae4918e63310c68026578a7becdeb74932f07"
+    }
+  ],
+  "compatibilitySidecars": [
+    {
+      "path": "policies/modules/generated/module-manifest.compat.schema.json",
+      "sourcePath": "SPECIFICATIONS/MODULES/module-manifest.schema.json",
+      "sourceSha256": "b7fc11a37e3295daaa31222c358e9031dd9ebe8813185fb1c3ca9599ad4a6a03",
+      "sha256": "21652374923edec1a2b71f444c40540105dea49256189d678075e1bd2bcaa043",
+      "correction": "SCHEMA_REFERENCE_CONST_MATCHES_ALL_33_FROZEN_MANIFESTS"
+    },
+    {
+      "path": "policies/modules/generated/module-trace-authority-catalog.json",
+      "sha256": "474a3c7aee75f0cfe7cc064a414ccce4198bc84f3ba919744c933f1ff975a0ce",
+      "correction": "AUTHENTICATED_EXACT_AUTHORITY_RECORD_PROJECTION_FOR_ALL_TRACE_REFERENCES"
+    },
+    {
+      "path": "policies/modules/generated/module-trace-behavior-oracles.jsonl",
+      "sha256": "734cea6be0efaafb5611e541fd2135b030f62a12c197991a27fd418b72688223",
+      "correction": "PER_ROW_AUTHENTICATED_TYPED_SEMANTIC_BEHAVIOR_ORACLE"
+    },
+    {
+      "path": "policies/modules/generated/module-trace-semantic-corpus.jsonl",
+      "sha256": "4da7b2f0a1503550e2bd51e5c6eeecf8e937afceb6e42247bc42eb48361ddaa9",
+      "orderedRecordDigestAggregateSha256": "29d25f66972b4229d0ea12da91280d0aebcd1db31775c2dc08a50d30a9cd87d4",
+      "correction": "MATERIAL_RECONSTRUCTABLE_5470_ROW_TYPED_SEMANTIC_CORPUS"
+    },
+    {
+      "path": "policies/modules/generated/module-trace-corpus-manifest.json",
+      "sha256": "451f550fd3c6e2f15b4f41baf15722245df2b768ec57ed1424971741a3029772",
+      "correction": "CORPUS_PREIMAGE_MANIFEST_RECONSTRUCTION_AND_AGGREGATE_BINDING"
+    }
+  ],
+  "denominator": {
+    "manifests": 33,
+    "dagNodes": 33,
+    "dagEdges": 69,
+    "traceRows": 5470,
+    "negativeCases": 264
+  }
+}

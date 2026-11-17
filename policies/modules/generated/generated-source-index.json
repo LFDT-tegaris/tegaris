@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0",
   "generator": "services/module-registry/scripts/generate-module-contracts.mjs",
-  "sourcePackageId": "OPENPC-C17-RECEIVING-AUTHORITY-COHERENCE-20260827-01",
-  "semanticImpact": "EXACT_C17_CONTRACT_PROJECTION_NO_PRODUCT_DECISION",
+  "sourcePackageId": "tegaris-module-contracts-v2",
+  "semanticImpact": "PUBLIC_CATALOGUE_WORDING_REVISION_UNCHANGED_MODULE_CONTRACTS",
   "files": [
     {
       "path": "SPECIFICATIONS/MODULES/module-manifest.schema.json",
@@ -215,23 +215,23 @@
     },
     {
       "path": "policies/modules/generated/module-trace-authority-catalog.json",
-      "sha256": "474a3c7aee75f0cfe7cc064a414ccce4198bc84f3ba919744c933f1ff975a0ce",
-      "correction": "AUTHENTICATED_EXACT_AUTHORITY_RECORD_PROJECTION_FOR_ALL_TRACE_REFERENCES"
+      "sha256": "325125cb2c77fdb75fd0d06b90584f2b0e02fb6a2ec06187d2d1e6ad0ee031ac",
+      "correction": "PUBLIC_AUTHORITY_RECORD_PROJECTION_WITH_REVISED_WORDING"
     },
     {
       "path": "policies/modules/generated/module-trace-behavior-oracles.jsonl",
-      "sha256": "734cea6be0efaafb5611e541fd2135b030f62a12c197991a27fd418b72688223",
+      "sha256": "da79b16b7b98da56c2516c036e9010adf2cb6d1d1951369e0e558bb19a46b057",
       "correction": "PER_ROW_AUTHENTICATED_TYPED_SEMANTIC_BEHAVIOR_ORACLE"
     },
     {
       "path": "policies/modules/generated/module-trace-semantic-corpus.jsonl",
-      "sha256": "4da7b2f0a1503550e2bd51e5c6eeecf8e937afceb6e42247bc42eb48361ddaa9",
-      "orderedRecordDigestAggregateSha256": "29d25f66972b4229d0ea12da91280d0aebcd1db31775c2dc08a50d30a9cd87d4",
+      "sha256": "f598d199b9f225cafd3a70bbb33138b416985caf83d4dfd7f4f2478f192f828b",
+      "orderedRecordDigestAggregateSha256": "d5017f0d2407e6489284710701d2364ed92d855e387d693a7cbea32ccae21193",
       "correction": "MATERIAL_RECONSTRUCTABLE_5470_ROW_TYPED_SEMANTIC_CORPUS"
     },
     {
       "path": "policies/modules/generated/module-trace-corpus-manifest.json",
-      "sha256": "451f550fd3c6e2f15b4f41baf15722245df2b768ec57ed1424971741a3029772",
+      "sha256": "491a9227a194170317c366e99dda34cb018e5514745a531e945ec33bc2ae6656",
       "correction": "CORPUS_PREIMAGE_MANIFEST_RECONSTRUCTION_AND_AGGREGATE_BINDING"
     }
   ],

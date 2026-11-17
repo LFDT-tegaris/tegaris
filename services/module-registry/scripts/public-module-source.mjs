@@ -5,9 +5,9 @@ import path from 'node:path';
 
 import { withModuleFile } from './module-file-io.mjs';
 
-export const publicModuleProfile = 'TEGARIS_PUBLIC_MODULE_SOURCE_V1';
+export const publicModuleProfile = 'TEGARIS_PUBLIC_MODULE_SOURCE_V2';
 export const publicModuleBaselineSha256 =
-  'f32398631cac109afe00083a5e0beaf9738f3a3b4b97db4143df1d59dc58e915';
+  '84e615abec9dd14a45b4048b9f6a9aa383f63c70fa93ef01130c7b71c1f9522f';
 
 const digest = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const fail = (message) => {
@@ -23,11 +23,11 @@ export function moduleGenerationArguments(args, environment = process.env) {
     if (argument === '--check' && !checkOnly) checkOnly = true;
     else if (argument === '--source-profile' && !selected) {
       profile = args[++index];
-      if (!['public-v1', 'historical-c17'].includes(profile)) fail('unknown source profile');
+      if (!['public-v2', 'historical-c17'].includes(profile)) fail('unknown source profile');
       selected = true;
     } else fail('unknown or repeated argument');
   }
-  if (profile === 'public-v1' && environment.OPENPC_C17_PACKAGE_ROOT !== undefined)
+  if (profile === 'public-v2' && environment.OPENPC_C17_PACKAGE_ROOT !== undefined)
     fail('public and historical source profiles cannot be mixed');
   return { profile, checkOnly };
 }
@@ -118,7 +118,7 @@ export async function loadPublicModuleSource(repositoryRoot) {
       'authority,historicalSourceVerification,inputs,outputs,profileId,schemaVersion,sourcePackageId' ||
     baseline.schemaVersion !== '1.0' ||
     baseline.profileId !== publicModuleProfile ||
-    baseline.sourcePackageId !== 'tegaris-module-contracts-v1' ||
+    baseline.sourcePackageId !== 'tegaris-module-contracts-v2' ||
     baseline.authority !== 'CONTRACT_GENERATION_ONLY' ||
     baseline.historicalSourceVerification !== 'NOT_PERFORMED'
   )

@@ -15,11 +15,6 @@ tests/conformance/bootstrap/fixtures/
 tests/conformance/bootstrap/test-obligations.yaml
 tests/conformance/assertion-resolution/fixtures/
 config/profiles/
-programme-control/
-# The authenticated I05 Gate4 provenance wrapper is intentionally compact canonical JSON.
-governance/CODEX_APP_PROJECT_BINDING.json
-# Preserve the sealed controller admission record referenced by its commit hash.
-governance/audits/I08_V2_EXECUTION_ADMISSION_BLOCK_20260907.md
 deploy/
 deploy/compose/local/secrets/*.txt
 deploy/compose/local/volumes/**

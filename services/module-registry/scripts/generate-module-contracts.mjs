@@ -11,7 +11,7 @@ import { publishModuleOutputs } from './module-generation-output.mjs';
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const { profile, checkOnly } = moduleGenerationArguments(process.argv.slice(2));
 const publicSource =
-  profile === 'public-v1' ? await loadPublicModuleSource(repositoryRoot) : undefined;
+  profile === 'public-v2' ? await loadPublicModuleSource(repositoryRoot) : undefined;
 const packageRoot = publicSource
   ? path.join(repositoryRoot, 'policies/modules/source')
   : process.env.OPENPC_C17_PACKAGE_ROOT;
@@ -1000,8 +1000,12 @@ const generatedIndex = Buffer.from(
     {
       schemaVersion: '1.0',
       generator: 'services/module-registry/scripts/generate-module-contracts.mjs',
-      sourcePackageId: 'OPENPC-C17-RECEIVING-AUTHORITY-COHERENCE-20260827-01',
-      semanticImpact: 'EXACT_C17_CONTRACT_PROJECTION_NO_PRODUCT_DECISION',
+      sourcePackageId: publicSource
+        ? publicSource.baseline.sourcePackageId
+        : 'OPENPC-C17-RECEIVING-AUTHORITY-COHERENCE-20260827-01',
+      semanticImpact: publicSource
+        ? 'PUBLIC_CATALOGUE_WORDING_REVISION_UNCHANGED_MODULE_CONTRACTS'
+        : 'EXACT_C17_CONTRACT_PROJECTION_NO_PRODUCT_DECISION',
       files: sourceIndex,
       compatibilitySidecars: [
         {
@@ -1014,7 +1018,9 @@ const generatedIndex = Buffer.from(
         {
           path: 'policies/modules/generated/module-trace-authority-catalog.json',
           sha256: sha256(authorityCatalogBytes),
-          correction: 'AUTHENTICATED_EXACT_AUTHORITY_RECORD_PROJECTION_FOR_ALL_TRACE_REFERENCES',
+          correction: publicSource
+            ? 'PUBLIC_AUTHORITY_RECORD_PROJECTION_WITH_REVISED_WORDING'
+            : 'AUTHENTICATED_EXACT_AUTHORITY_RECORD_PROJECTION_FOR_ALL_TRACE_REFERENCES',
         },
         {
           path: 'policies/modules/generated/module-trace-behavior-oracles.jsonl',
@@ -1079,7 +1085,7 @@ process.stdout.write(
     mode: checkOnly ? 'CHECK' : 'WRITE',
     ...(publicSource
       ? {
-          sourceProfile: 'TEGARIS_PUBLIC_MODULE_SOURCE_V1',
+          sourceProfile: 'TEGARIS_PUBLIC_MODULE_SOURCE_V2',
           historicalSourceVerification: 'NOT_PERFORMED',
         }
       : {}),

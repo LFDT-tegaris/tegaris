@@ -96,22 +96,23 @@ test('source profiles are explicit, closed and preserve historical default selec
     profile: 'historical-c17',
     checkOnly: true,
   });
-  assert.deepEqual(moduleGenerationArguments(['--source-profile', 'public-v1', '--check'], {}), {
-    profile: 'public-v1',
+  assert.deepEqual(moduleGenerationArguments(['--source-profile', 'public-v2', '--check'], {}), {
+    profile: 'public-v2',
     checkOnly: true,
   });
   for (const args of [
     ['--source-profile'],
     ['--source-profile', 'unknown'],
+    ['--source-profile', 'public-v1'],
     ['--skip-verification'],
     ['--check', '--check'],
-    ['--source-profile', 'public-v1', '--source-profile', 'historical-c17'],
+    ['--source-profile', 'public-v2', '--source-profile', 'historical-c17'],
   ])
     assert.throws(() => moduleGenerationArguments(args, {}));
   for (const historical of ['', '/private-package'])
     assert.throws(
       () =>
-        moduleGenerationArguments(['--source-profile', 'public-v1'], {
+        moduleGenerationArguments(['--source-profile', 'public-v2'], {
           OPENPC_C17_PACKAGE_ROOT: historical,
         }),
       /cannot be mixed/u,
@@ -167,7 +168,7 @@ for (const corruption of [
       await rm(directory, { recursive: true });
       await symlink(outside, directory);
     }
-    const result = invoke(root, ['--source-profile', 'public-v1']);
+    const result = invoke(root, ['--source-profile', 'public-v2']);
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /Public module source:/u);
     await assert.rejects(lstat(path.join(root, 'policies/modules/generated')), { code: 'ENOENT' });
@@ -177,16 +178,16 @@ for (const corruption of [
   });
 }
 
-test('public generation reproduces all original contracts, adds truthful provenance and checks without writing', async (t) => {
+test('public generation reproduces the committed contracts, adds provenance and checks without writing', async (t) => {
   const root = await fixture(t);
   const source = await loadPublicModuleSource(root);
-  const incomplete = invoke(root, ['--source-profile', 'public-v1', '--check']);
+  const incomplete = invoke(root, ['--source-profile', 'public-v2', '--check']);
   assert.notEqual(incomplete.status, 0);
   await assert.rejects(lstat(path.join(root, 'policies/modules/generated')), { code: 'ENOENT' });
-  const generated = invoke(root, ['--source-profile', 'public-v1']);
+  const generated = invoke(root, ['--source-profile', 'public-v2']);
   assert.equal(generated.status, 0, generated.stderr);
   const report = JSON.parse(generated.stdout);
-  assert.equal(report.sourceProfile, 'TEGARIS_PUBLIC_MODULE_SOURCE_V1');
+  assert.equal(report.sourceProfile, 'TEGARIS_PUBLIC_MODULE_SOURCE_V2');
   assert.equal(report.historicalSourceVerification, 'NOT_PERFORMED');
   for (const item of source.baseline.outputs) {
     const bytes = await readFile(path.join(root, item.path));
@@ -203,17 +204,17 @@ test('public generation reproduces all original contracts, adds truthful provena
   assert.equal(proof.runtimeAuthorityGranted, false);
   assert.deepEqual(proof.outputs, source.baseline.outputs);
   const before = await generatedSnapshot(root, source.baseline);
-  const checked = invoke(root, ['--source-profile', 'public-v1', '--check']);
+  const checked = invoke(root, ['--source-profile', 'public-v2', '--check']);
   assert.equal(checked.status, 0, checked.stderr);
   assert.deepEqual(await generatedSnapshot(root, source.baseline), before);
-  const repeated = invoke(root, ['--source-profile', 'public-v1']);
+  const repeated = invoke(root, ['--source-profile', 'public-v2']);
   assert.equal(repeated.status, 0, repeated.stderr);
   assert.deepEqual(await generatedSnapshot(root, source.baseline), before);
   assert.equal((await readdir(path.join(root, 'policies/modules/generated/manifests'))).length, 33);
   const foreign = path.join(root, 'policies/modules/generated/manifests/foreign.json');
   await writeFile(foreign, '{}');
   for (const args of [[], ['--check']]) {
-    const rejected = invoke(root, ['--source-profile', 'public-v1', ...args]);
+    const rejected = invoke(root, ['--source-profile', 'public-v2', ...args]);
     assert.notEqual(rejected.status, 0);
     assert.match(rejected.stderr, /Unexpected generated output/u);
     assert.deepEqual(await generatedSnapshot(root, source.baseline), before);
@@ -223,7 +224,7 @@ test('public generation reproduces all original contracts, adds truthful provena
   const drift = path.join(root, source.baseline.outputs[0].path);
   await writeFile(drift, 'deliberately changed output');
   const withDrift = await generatedSnapshot(root, source.baseline);
-  const rejected = invoke(root, ['--source-profile', 'public-v1', '--check']);
+  const rejected = invoke(root, ['--source-profile', 'public-v2', '--check']);
   assert.notEqual(rejected.status, 0);
   assert.match(rejected.stderr, /Generated output drift/u);
   assert.deepEqual(await generatedSnapshot(root, source.baseline), withDrift);
@@ -353,7 +354,7 @@ test('ordinary generation and CI invoke the explicit public profile without chan
   );
   assert.equal(
     module.scripts['generate:public'],
-    'node scripts/generate-module-contracts.mjs --source-profile public-v1',
+    'node scripts/generate-module-contracts.mjs --source-profile public-v2',
   );
   assert.equal(
     module.scripts['generate:public:check'],

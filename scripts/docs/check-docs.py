@@ -14,7 +14,7 @@ DOCUMENTS = (
     'README.md', 'ONBOARDING.md', 'CONTRIBUTING.md', 'CONTRIBUTION_PROPOSAL.md', 'SECURITY.md',
     'GOVERNANCE.md', 'MAINTAINERS.md', 'CODE_OF_CONDUCT.md', 'ROADMAP.md',
     'RELEASE.md', 'CHANGELOG.md', 'ADOPTERS.md', 'SUPPORT.md', 'docs/README.md',
-    'docs/getting-started.md', 'docs/development/README.md',
+    'docs/getting-started.md', 'docs/demo.md', 'docs/development/README.md',
     'docs/development/integration.md', 'docs/development/proposals.md',
     'docs/development/hosted-demo.md',
     'docs/reference/interfaces.md', 'docs/user-guide/README.md',

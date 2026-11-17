@@ -43,6 +43,7 @@ RUN rm -rf -- /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepa
     /usr/local/bin/tsc /usr/local/bin/tsx
 COPY --from=build --chown=openpc:openpc /workspace/apps/admin-web/.next/standalone ./
 COPY --from=build --chown=openpc:openpc /workspace/apps/admin-web/.next/static ./apps/admin-web/.next/static
+COPY --from=build --chown=openpc:openpc /workspace/apps/admin-web/public ./apps/admin-web/public
 USER openpc
 EXPOSE 3000
 ENV PORT=3000 HOSTNAME=0.0.0.0

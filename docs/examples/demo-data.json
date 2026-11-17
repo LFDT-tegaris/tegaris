@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "name": "Institutional Payments Demo",
+  "dataClassification": "SYNTHETIC",
+  "amountUnit": "test units",
+  "organizations": [
+    {
+      "alias": "bank_alpha",
+      "displayName": "Bank Alpha"
+    },
+    {
+      "alias": "bank_beta",
+      "displayName": "Bank Beta"
+    }
+  ],
+  "wallets": [
+    {
+      "alias": "bank_alpha_treasury",
+      "organization": "bank_alpha"
+    },
+    {
+      "alias": "bank_beta_treasury",
+      "organization": "bank_beta"
+    },
+    {
+      "alias": "unrelated_observer",
+      "organization": null
+    }
+  ],
+  "contracts": [
+    {
+      "contractName": "WorkflowData",
+      "displayName": "Settlement Workflows"
+    },
+    {
+      "contractName": "PaymentRegistry",
+      "displayName": "Payment Register"
+    },
+    {
+      "contractName": "PaymentInfo",
+      "displayName": "Payment Instructions"
+    },
+    {
+      "contractName": "PublicGateway",
+      "displayName": "Application Gateway"
+    },
+    {
+      "contractName": "InternalLogic",
+      "displayName": "Processing Service"
+    },
+    {
+      "contractName": "SensitiveContract",
+      "displayName": "Restricted Reference Data"
+    }
+  ],
+  "workflows": [
+    {
+      "workflowId": 101,
+      "name": "Supplier settlement",
+      "sensitiveData": "DEMO-REFERENCE-ALPHA"
+    },
+    {
+      "workflowId": 102,
+      "name": "Treasury transfer",
+      "sensitiveData": "DEMO-REFERENCE-BETA"
+    },
+    {
+      "workflowId": 103,
+      "name": "Liquidity rebalance",
+      "sensitiveData": "DEMO-REFERENCE-GAMMA"
+    }
+  ],
+  "payments": [
+    {
+      "paymentIdentifier": "PAY-DEMO-1001",
+      "payerWallet": "bank_alpha_treasury",
+      "payeeWallet": "bank_beta_treasury",
+      "amount": "250000",
+      "completeAfterCreation": true
+    },
+    {
+      "paymentIdentifier": "PAY-DEMO-1002",
+      "payerWallet": "bank_beta_treasury",
+      "payeeWallet": "bank_alpha_treasury",
+      "amount": "125000",
+      "completeAfterCreation": true
+    },
+    {
+      "paymentIdentifier": "PAY-DEMO-1003",
+      "payerWallet": "bank_alpha_treasury",
+      "payeeWallet": "bank_beta_treasury",
+      "amount": "500000",
+      "completeAfterCreation": true
+    },
+    {
+      "paymentIdentifier": "PAY-DEMO-1004",
+      "payerWallet": "bank_beta_treasury",
+      "payeeWallet": "bank_alpha_treasury",
+      "amount": "75000",
+      "completeAfterCreation": true
+    },
+    {
+      "paymentIdentifier": "PAY-DEMO-1005",
+      "payerWallet": "bank_alpha_treasury",
+      "payeeWallet": "bank_beta_treasury",
+      "amount": "350000",
+      "completeAfterCreation": false
+    },
+    {
+      "paymentIdentifier": "PAY-DEMO-1006",
+      "payerWallet": "bank_beta_treasury",
+      "payeeWallet": "bank_alpha_treasury",
+      "amount": "90000",
+      "completeAfterCreation": false
+    },
+    {
+      "paymentIdentifier": "PAY-DEMO-1007",
+      "payerWallet": "bank_alpha_treasury",
+      "payeeWallet": "bank_beta_treasury",
+      "amount": "180000",
+      "completeAfterCreation": false
+    },
+    {
+      "paymentIdentifier": "PAY-DEMO-1008",
+      "payerWallet": "bank_beta_treasury",
+      "payeeWallet": "bank_alpha_treasury",
+      "amount": "420000",
+      "completeAfterCreation": false
+    },
+    {
+      "paymentIdentifier": "PAY-DEMO-1009",
+      "payerWallet": "bank_alpha_treasury",
+      "payeeWallet": "bank_beta_treasury",
+      "amount": "60000",
+      "completeAfterCreation": false
+    },
+    {
+      "paymentIdentifier": "PAY-DEMO-1010",
+      "payerWallet": "bank_beta_treasury",
+      "payeeWallet": "bank_alpha_treasury",
+      "amount": "275000",
+      "completeAfterCreation": false
+    },
+    {
+      "paymentIdentifier": "PAY-DEMO-1011",
+      "payerWallet": "bank_alpha_treasury",
+      "payeeWallet": "bank_beta_treasury",
+      "amount": "150000",
+      "completeAfterCreation": false
+    },
+    {
+      "paymentIdentifier": "PAY-DEMO-1012",
+      "payerWallet": "bank_beta_treasury",
+      "payeeWallet": "bank_alpha_treasury",
+      "amount": "310000",
+      "completeAfterCreation": false
+    }
+  ],
+  "instructions": [
+    {
+      "msgid": "INSTRUCTION-DEMO-1001",
+      "requiredRole": "DEBTOR",
+      "data": "Synthetic supplier settlement instruction"
+    },
+    {
+      "msgid": "INSTRUCTION-DEMO-1002",
+      "requiredRole": "DEBTOR",
+      "data": "Synthetic treasury transfer instruction"
+    },
+    {
+      "msgid": "INSTRUCTION-DEMO-1003",
+      "requiredRole": "DEBTOR",
+      "data": "Synthetic liquidity rebalance instruction"
+    }
+  ]
+}

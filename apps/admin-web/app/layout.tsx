@@ -7,7 +7,8 @@ import './globals.css';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Tegaris | Application Privacy',
+  title: 'Tegaris | Application Layer Privacy',
+  icons: { icon: '/brand/tegaris-favicon.svg' },
   description:
     'Manage application privacy, access policies and governed contract operations with Tegaris.',
 };

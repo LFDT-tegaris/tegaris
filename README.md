@@ -1,5 +1,10 @@
 # Tegaris Application Layer Privacy
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/brand/tegaris-logo-light.svg">
+  <img src="docs/assets/brand/tegaris-logo-primary.svg" width="256" height="56" alt="Tegaris">
+</picture>
+
 Tegaris applies access and disclosure policies to applications on shared EVM networks. It connects participant identity, contract permissions, policy review and runtime enforcement in one administration console.
 
 Tegaris is an [LF Decentralized Trust Lab](https://lf-decentralized-trust-labs.github.io/labs/approved/tegaris.html), initially contributed by Zeeve.
@@ -19,6 +24,8 @@ The first public source release is being prepared as **v0.9.0**. Start with the 
 **Getting started?** Start with [ONBOARDING.md](ONBOARDING.md) for the first workspace, expected results and the boundary between initial checks and application testing.
 
 **Building an integration?** Use the [integration guide](docs/development/integration.md) and [interface reference](docs/reference/interfaces.md), including the published schemas and their coverage limits.
+
+**Exploring the demo?** The [demo guide](docs/demo.md) covers the fictional institutions, sample payment records, access arrangements and walkthroughs.
 
 Follow the [local setup guide](docs/getting-started.md) on a dedicated Linux machine with systemd and a local Docker Engine. Start by checking prerequisites:
 

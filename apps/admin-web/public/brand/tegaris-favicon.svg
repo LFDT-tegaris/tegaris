@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 112 112" role="img" aria-label="Tegaris"><title>Tegaris</title><rect width="112" height="112" rx="22" fill="#F6F5F1"/><g transform="translate(2 4) scale(.4375)">
+    <path fill="#202321" d="M93 5H193V31C193 64 175 80 139 80H117C91 80 72 94 72 119V154C72 173 39 186 7 199V93C7 42 43 5 93 5Z"/>
+    <path fill="#E8492D" d="M193 59C226 77 241 95 241 130V152C241 191 211 219 170 219H49C49 184 75 160 111 160H140C172 160 193 143 193 115Z"/>
+    <path fill="#E8492D" d="M166 89C178 95 185 105 185 116C185 129 178 137 166 144Z"/>
+  </g></svg>

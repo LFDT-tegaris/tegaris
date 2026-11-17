@@ -1,5 +1,10 @@
 # Tegaris documentation
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/brand/tegaris-logo-light.svg">
+  <img src="assets/brand/tegaris-logo-primary.svg" width="256" height="56" alt="Tegaris">
+</picture>
+
 Tegaris Application Layer Privacy governs application access to shared EVM networks. These guides are written for application developers, platform engineers, security architects and reviewers evaluating the project, including teams working in financial institutions.
 
 The source is a development baseline. A documented interface or available component is not a claim that a deployment has passed production qualification. Read the [release scope](releases/README.md) before selecting a version or planning an integration.
@@ -10,6 +15,7 @@ For the first release, start with [onboarding](../ONBOARDING.md) and the [v0.9.0
 
 | Your responsibility                      | Start with                                 | Then read                                                                                       |
 | ---------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| Explore the demonstration                | [Demo guide](demo.md)                      | [Sample data](examples/demo-data.json), [console guide](user-guide/README.md)                   |
 | Evaluate the architecture                | [Architecture](architecture.md)            | [Privacy model](security/privacy-model.md), [validation plan](evaluation/README.md)             |
 | Build an application integration         | [Local setup](getting-started.md)          | [Integration guide](development/integration.md), [interface reference](reference/interfaces.md) |
 | Administer a development workspace       | [Console guide](user-guide/README.md)      | [Troubleshooting](user-guide/troubleshooting.md)                                                |

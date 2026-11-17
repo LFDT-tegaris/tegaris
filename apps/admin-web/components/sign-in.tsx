@@ -6,6 +6,7 @@ import { localSessionStatusSchema } from '../lib/local-session-status';
 import { workspaceReturnPath } from '../lib/workspace-navigation';
 import { clearTransactionWorkflowStorage } from './policy-workflow-storage';
 import { isSessionTransitionPending, observeSessionTransitions } from './session-transition';
+import { BrandLogo } from './brand-logo';
 
 export function SignIn({
   returnPath,
@@ -140,8 +141,7 @@ export function SignIn({
   return (
     <main className="tegaris-signin">
       <div className="signin-brand">
-        <ShieldCheck aria-hidden size={32} />
-        <span>Tegaris</span>
+        <BrandLogo />
       </div>
       <section className="signin-card" aria-labelledby="signin-title">
         <div className="signin-emblem">

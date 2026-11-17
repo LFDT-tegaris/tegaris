@@ -19,6 +19,7 @@ import {
   UserRound,
 } from 'lucide-react';
 import Link from 'next/link';
+import { BrandLogo } from './brand-logo';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useContext, useEffect, useId, useRef, useState } from 'react';
 import { CentralSessionContext } from './central-session-context';
@@ -360,10 +361,8 @@ export function Workbench({
           }}
         >
           <Link className="evaluation-brand" href="/home/session">
-            <ShieldCheck aria-hidden size={28} />
-            <span>
-              Tegaris<small>Application Privacy</small>
-            </span>
+            <BrandLogo light />
+            <small>Application Layer Privacy</small>
           </Link>
           <button
             ref={navigationToggle}
@@ -475,7 +474,7 @@ export function Workbench({
         )}
         <header className="console-page-header">
           <p className="evaluation-eyebrow text-sm text-[color:var(--muted)]">
-            {evaluationUi ? 'Tegaris / Application privacy' : route.destination}
+            {evaluationUi ? 'Tegaris / Application Layer Privacy' : route.destination}
           </p>
           <h1 className="mt-1 text-3xl font-semibold" ref={headingRef} tabIndex={-1}>
             {currentEvaluation?.label ?? route.title}

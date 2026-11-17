@@ -8,6 +8,10 @@ The CC-BY-4.0 text comes from [Creative Commons](https://creativecommons.org/lic
 
 Third-party software and copied material retain their own copyright, license and notice requirements. A project's license declaration does not change the terms of its dependencies. Each release must include the notices required by the components it actually distributes; see the [release process](../RELEASE.md).
 
+## Bundled font
+
+The console includes the unmodified Manrope variable font used on [tegaris.io](https://tegaris.io). It is distributed under the SIL Open Font License 1.1; its [copyright and license notice](../apps/admin-web/public/brand/Manrope-LICENSE.txt) accompanies the font. These font terms apply separately from the code and documentation licenses.
+
 ## Collect dependency information
 
 Use the pinned toolchain and install dependencies from the lockfile as described in

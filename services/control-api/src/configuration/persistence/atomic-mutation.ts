@@ -474,7 +474,9 @@ async function verifyAuthorization(
         join control.authority_envelope ce on ce.participant_id=ad.participant_id
          and ce.authority_envelope_id=ad.approver_authority_envelope_id
          and ce.authority_envelope_id=ca.authority_envelope_id
-         and ce.principal_id=checker.principal_id and ce.state='ACTIVE'
+         and (ce.principal_id=checker.principal_id
+           or (ce.representation='TYPED_V1' and ce.principal_id is null))
+         and ce.state='ACTIVE'
          and ce.authority_epoch=ad.approver_envelope_epoch
          and ce.delegation_epoch=ad.approver_delegation_epoch
          and ce.valid_from<=clock_timestamp() and (ce.valid_until is null or ce.valid_until>clock_timestamp())

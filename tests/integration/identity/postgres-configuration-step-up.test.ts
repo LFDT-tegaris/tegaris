@@ -13,6 +13,154 @@ const adminUrl = process.env.OPENPC_I02_ADMIN_DATABASE_URL;
 const runtimeUrl = process.env.OPENPC_I02_RUNTIME_DATABASE_URL;
 const integration = adminUrl && runtimeUrl ? it : it.skip;
 
+integration('binds typed checker envelopes through the exact checker assignment', async () => {
+  const source = await readFile(
+    new URL(
+      '../../../services/control-api/src/configuration/persistence/atomic-mutation.ts',
+      import.meta.url,
+    ),
+    'utf8',
+  );
+  const productionJoins = source.match(
+    /join control\.assignment ca on ([\s\S]*?)join control\.credential decision_credential/u,
+  )?.[0];
+  expect(productionJoins).toBeDefined();
+  const joins = productionJoins!
+    .replace('join control.credential decision_credential', '')
+    .replace('control.assignment', 'assignment_fixture')
+    .replace('control.authority_envelope', 'envelope_fixture')
+    .replace(
+      /\$(2|4|5)\b/gu,
+      (_, parameter: string) => ({ '2': '$6', '4': '$5', '5': '$7' })[parameter]!,
+    );
+  const pool = new Pool({ connectionString: runtimeUrl, max: 1 });
+  const participant = id(),
+    checker = id(),
+    foreign = id(),
+    assignmentId = id(),
+    envelopeId = id();
+  const action = 'ACT-PROVIDER_PROFILES_UPDATE_RESOURCE-V1',
+    privacy = id(),
+    resource = id();
+  const assignment = {
+    participant_id: participant,
+    assignment_id: assignmentId,
+    principal_id: checker,
+    authority_envelope_id: envelopeId,
+    state: 'ACTIVE',
+    valid_during: '[2020-01-01T00:00:00Z,2100-01-01T00:00:00Z)',
+    maker_checker_required: true,
+    row_version: '7',
+    delegation_epoch: '2',
+    action_intent_ids: [action],
+    privacy_domain_ids: [privacy],
+    resource_ids: [resource],
+  };
+  const envelope = {
+    participant_id: participant,
+    authority_envelope_id: envelopeId,
+    principal_id: null as string | null,
+    representation: 'TYPED_V1',
+    state: 'ACTIVE',
+    authority_epoch: '3',
+    delegation_epoch: '2',
+    valid_from: '2020-01-01T00:00:00Z',
+    valid_until: '2100-01-01T00:00:00Z',
+    maker_checker_required: true,
+    action_intent_ids: [action],
+    privacy_domain_ids: [privacy],
+    resource_ids: [resource],
+  };
+  const decision = {
+    participant_id: participant,
+    approver_assignment_id: assignmentId,
+    approver_assignment_row_version: '7',
+    approver_delegation_epoch: '2',
+    approver_authority_envelope_id: envelopeId,
+    approver_envelope_epoch: '3',
+  };
+  const cases = [
+    { label: 'typed assigned', admitted: true },
+    { label: 'foreign assignment', assignment: { principal_id: foreign }, admitted: false },
+    { label: 'foreign typed principal', envelope: { principal_id: foreign }, admitted: false },
+    {
+      label: 'different assignment envelope',
+      assignment: { authority_envelope_id: foreign },
+      admitted: false,
+    },
+    {
+      label: 'different decision envelope',
+      decision: { approver_authority_envelope_id: foreign },
+      admitted: false,
+    },
+    { label: 'changed assignment version', assignment: { row_version: '8' }, admitted: false },
+    { label: 'changed envelope epoch', envelope: { authority_epoch: '4' }, admitted: false },
+    {
+      label: 'expired assignment',
+      assignment: { valid_during: '[2020-01-01T00:00:00Z,2021-01-01T00:00:00Z)' },
+      admitted: false,
+    },
+    {
+      label: 'expired envelope',
+      envelope: { valid_until: '2021-01-01T00:00:00Z' },
+      admitted: false,
+    },
+    { label: 'foreign resource', envelope: { resource_ids: [foreign] }, admitted: false },
+    {
+      label: 'foreign privacy domain',
+      assignment: { privacy_domain_ids: [foreign] },
+      admitted: false,
+    },
+    { label: 'missing action', envelope: { action_intent_ids: [] }, admitted: false },
+    {
+      label: 'missing checker requirement',
+      assignment: { maker_checker_required: false },
+      admitted: false,
+    },
+    {
+      label: 'legacy assigned',
+      envelope: { representation: 'LEGACY_V1', principal_id: checker },
+      admitted: true,
+    },
+    { label: 'legacy unbound', envelope: { representation: 'LEGACY_V1' }, admitted: false },
+    { label: 'recovery unbound', envelope: { representation: 'RECOVERY_V1' }, admitted: false },
+  ];
+  try {
+    for (const scenario of cases) {
+      const result = await pool.query(
+        `with assignment_fixture as (
+          select * from jsonb_to_record($1::jsonb) as a(
+            participant_id uuid,assignment_id uuid,principal_id uuid,authority_envelope_id uuid,
+            state text,valid_during tstzrange,maker_checker_required boolean,row_version bigint,
+            delegation_epoch bigint,action_intent_ids text[],privacy_domain_ids text[],resource_ids text[])
+        ), envelope_fixture as (
+          select * from jsonb_to_record($2::jsonb) as e(
+            participant_id uuid,authority_envelope_id uuid,principal_id uuid,representation text,
+            state text,authority_epoch bigint,delegation_epoch bigint,valid_from timestamptz,
+            valid_until timestamptz,maker_checker_required boolean,action_intent_ids text[],
+            privacy_domain_ids text[],resource_ids text[])
+        ), ad as (
+          select * from jsonb_to_record($3::jsonb) as d(
+            participant_id uuid,approver_assignment_id uuid,approver_assignment_row_version bigint,
+            approver_delegation_epoch bigint,approver_authority_envelope_id uuid,approver_envelope_epoch bigint)
+        ) select count(*)::int n from ad cross join (select $4::uuid principal_id) checker ${joins}`,
+        [
+          JSON.stringify({ ...assignment, ...scenario.assignment }),
+          JSON.stringify({ ...envelope, ...scenario.envelope }),
+          JSON.stringify({ ...decision, ...scenario.decision }),
+          checker,
+          action,
+          privacy,
+          resource,
+        ],
+      );
+      expect(result.rows[0].n, scenario.label).toBe(scenario.admitted ? 1 : 0);
+    }
+  } finally {
+    await pool.end();
+  }
+});
+
 integration(
   'retries module-reference contention before any mutation reservation under the real runtime role',
   async () => {

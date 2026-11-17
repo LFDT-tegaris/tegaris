@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0",
-  "sourceProfile": "TEGARIS_PUBLIC_MODULE_SOURCE_V1",
-  "sourcePackageId": "tegaris-module-contracts-v1",
-  "baselineSha256": "f32398631cac109afe00083a5e0beaf9738f3a3b4b97db4143df1d59dc58e915",
+  "sourceProfile": "TEGARIS_PUBLIC_MODULE_SOURCE_V2",
+  "sourcePackageId": "tegaris-module-contracts-v2",
+  "baselineSha256": "84e615abec9dd14a45b4048b9f6a9aa383f63c70fa93ef01130c7b71c1f9522f",
   "historicalSourceVerification": "NOT_PERFORMED",
   "runtimeAuthorityGranted": false,
   "outputs": [
@@ -28,8 +28,8 @@
     },
     {
       "path": "policies/modules/generated/generated-source-index.json",
-      "bytes": 10548,
-      "sha256": "cb0b4cbbfcad7ab2fa8dd09fdc3b2bee162a64ec26af1281827a044e2ee547a7"
+      "bytes": 10517,
+      "sha256": "75a2ad7c55d1eb8c3c1b9bce6a999344a30dc7731718bccb5fc26deba40f6c9a"
     },
     {
       "path": "policies/modules/generated/machine-validation-report.json",
@@ -233,23 +233,23 @@
     },
     {
       "path": "policies/modules/generated/module-trace-authority-catalog.json",
-      "bytes": 19451117,
-      "sha256": "474a3c7aee75f0cfe7cc064a414ccce4198bc84f3ba919744c933f1ff975a0ce"
+      "bytes": 19449623,
+      "sha256": "325125cb2c77fdb75fd0d06b90584f2b0e02fb6a2ec06187d2d1e6ad0ee031ac"
     },
     {
       "path": "policies/modules/generated/module-trace-behavior-oracles.jsonl",
       "bytes": 8105778,
-      "sha256": "734cea6be0efaafb5611e541fd2135b030f62a12c197991a27fd418b72688223"
+      "sha256": "da79b16b7b98da56c2516c036e9010adf2cb6d1d1951369e0e558bb19a46b057"
     },
     {
       "path": "policies/modules/generated/module-trace-corpus-manifest.json",
       "bytes": 3464644,
-      "sha256": "451f550fd3c6e2f15b4f41baf15722245df2b768ec57ed1424971741a3029772"
+      "sha256": "491a9227a194170317c366e99dda34cb018e5514745a531e945ec33bc2ae6656"
     },
     {
       "path": "policies/modules/generated/module-trace-semantic-corpus.jsonl",
-      "bytes": 32757747,
-      "sha256": "4da7b2f0a1503550e2bd51e5c6eeecf8e937afceb6e42247bc42eb48361ddaa9"
+      "bytes": 32756255,
+      "sha256": "f598d199b9f225cafd3a70bbb33138b416985caf83d4dfd7f4f2478f192f828b"
     },
     {
       "path": "policies/modules/generated/module-trace-sets.json",
@@ -278,8 +278,8 @@
     },
     {
       "path": "tests/conformance/modules/generated-source-index.json",
-      "bytes": 10548,
-      "sha256": "cb0b4cbbfcad7ab2fa8dd09fdc3b2bee162a64ec26af1281827a044e2ee547a7"
+      "bytes": 10517,
+      "sha256": "75a2ad7c55d1eb8c3c1b9bce6a999344a30dc7731718bccb5fc26deba40f6c9a"
     }
   ]
 }

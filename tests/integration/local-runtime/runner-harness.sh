@@ -898,13 +898,13 @@ cleanup() {
     fi
     if "${compose[@]}" --profile astra05 stop >/dev/null 2>&1 && openpc_stop_owned_builder; then
       printf 'OPENPC_RETAINED_ENVIRONMENT|project=%s|state=stopped|owner=%s|root=%s\n' \
-        "$project" "${CODEX_THREAD_ID:-current-writer}" "$run_root" >&2
+        "$project" "$project" "$run_root" >&2
       [[ $cleanup_status == 0 ]] || exit "$cleanup_status"
       exit "$status"
     fi
     # A cleanup failure must not erase an explicitly retained diagnostic store.
     printf 'OPENPC_RETAINED_ENVIRONMENT|project=%s|state=cleanup_failed|owner=%s|root=%s\n' \
-      "$project" "${CODEX_THREAD_ID:-current-writer}" "$run_root" >&2
+      "$project" "$project" "$run_root" >&2
     exit 99
   fi
   # Container teardown remains Compose-owned. Network removal is separate so

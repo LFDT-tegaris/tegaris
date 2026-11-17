@@ -15,8 +15,8 @@
     "generate:check": "node scripts/generate-module-contracts.mjs --check",
     "db:generate": "drizzle-kit generate --config drizzle.config.ts && node src/db/generate-policy-security-tail.mjs && node src/db/verify-policy-security.mjs",
     "test:unit": "cargo build --jobs 2 -p openpc-policy-compiler --bin openpc-policy-evaluator --locked --offline && vitest run --config vitest.unit.config.ts",
-    "generate:public": "node scripts/generate-module-contracts.mjs --source-profile public-v1",
-    "generate:public:check": "node scripts/generate-module-contracts.mjs --source-profile public-v1 --check"
+    "generate:public": "node scripts/generate-module-contracts.mjs --source-profile public-v2",
+    "generate:public:check": "node scripts/generate-module-contracts.mjs --source-profile public-v2 --check"
   },
   "dependencies": {
     "@openpc/participant-service": "workspace:*",

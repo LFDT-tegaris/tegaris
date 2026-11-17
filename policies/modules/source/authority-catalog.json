@@ -120052,7 +120052,7 @@
     },
     {
       "requirementId": "REQ-SR01-S04-000019",
-      "normativeStatement": "**HISTORICAL / RECONCILE** — status, blocker, release, priority, or open-gate wording that was true at an older verified baseline; preserve the evidence but confirm present state from the latest Codex authority.",
+      "normativeStatement": "Historical status and release claims require verification against the current project specification; retain the evidence supporting earlier claims.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "specificationState": "NON_R1_EMPIRICAL_OR_FUTURE_EVIDENCE_GATE",
       "scopeDisposition": "Open",
@@ -120206,7 +120206,7 @@
     },
     {
       "requirementId": "REQ-SR01-S04-000045",
-      "normativeStatement": "**No inference rule:** absence from this recap never cancels a current Codex decision; inclusion here never overrides a newer Codex decision.",
+      "normativeStatement": "An earlier summary neither cancels an existing project decision nor overrides a newer one.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "specificationState": "NON_R1_EMPIRICAL_OR_FUTURE_EVIDENCE_GATE",
       "scopeDisposition": "Open",
@@ -124646,7 +124646,7 @@
     },
     {
       "requirementId": "REQ-SR01-S04-000409",
-      "normativeStatement": "**THREAD-ACCEPTED / RECONCILE:** Preserve the manifest-first module family `pc.policy.external-decision-facts` (name may be superseded by Codex) for policies that depend on governed external facts.",
+      "normativeStatement": "Preserve the manifest-defined module family `pc.policy.external-decision-facts` for policies that depend on governed external facts. Any rename requires an explicit module-definition revision.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "specificationState": "NON_R1_EMPIRICAL_OR_FUTURE_EVIDENCE_GATE",
       "scopeDisposition": "Open",
@@ -130510,7 +130510,7 @@
     },
     {
       "requirementId": "REQ-SR01-S04-001352",
-      "normativeStatement": "**THREAD-ACCEPTED / RECONCILE:** Post-v3.24 programme inputs requiring explicit Codex comparison are IA-B/no-scope-narrowing certification waves, I00-before-I01 independent authority, and EDFS release/packaging/qualification with named-provider claims closed; see §§1, 17.14, 22, 23, 27 and 30.",
+      "normativeStatement": "Qualification must cover the complete declared scope, independent authority verification before implementation, and release packaging with evidence for each named provider.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "specificationState": "NON_R1_EMPIRICAL_OR_FUTURE_EVIDENCE_GATE",
       "scopeDisposition": "Open",
@@ -131175,7 +131175,7 @@
     },
     {
       "requirementId": "REQ-SR01-S04-001472",
-      "normativeStatement": "First verify and adopt the latest Codex complete source, ledger, architecture, contracts, current state, actions and claim register.",
+      "normativeStatement": "Verify the current source, architecture, contracts, implementation state and claim register before using them as a baseline.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "specificationState": "NON_R1_EMPIRICAL_OR_FUTURE_EVIDENCE_GATE",
       "scopeDisposition": "Open",
@@ -131219,7 +131219,7 @@
     },
     {
       "requirementId": "REQ-SR01-S04-001474",
-      "normativeStatement": "Produce a reconciliation matrix for this inventory; each material item must be accepted, modified, superseded, deferred, rejected or identified as missing with an exact Codex authority reference.",
+      "normativeStatement": "Reconcile each material requirement as accepted, modified, superseded, deferred, rejected or missing, with a reference to the supporting project decision.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "specificationState": "NON_R1_EMPIRICAL_OR_FUTURE_EVIDENCE_GATE",
       "scopeDisposition": "Open",
@@ -131667,7 +131667,7 @@
     },
     {
       "requirementId": "REQ-SR01-S04-001494",
-      "normativeStatement": "Rebuild client-facing architecture diagrams and performance statements from the latest accepted Codex architecture.",
+      "normativeStatement": "Base published architecture diagrams and performance statements on the current verified architecture and supporting measurements.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "specificationState": "NON_R1_EMPIRICAL_OR_FUTURE_EVIDENCE_GATE",
       "scopeDisposition": "Open",
@@ -131780,7 +131780,7 @@
     },
     {
       "requirementId": "REQ-SR01-S04-001504",
-      "normativeStatement": "Respect the repository-entry authority and action gates stated in §§5 and 25; Codex may not infer implementation permission from generated scaffolds or partial closure evidence.",
+      "normativeStatement": "Generated scaffolding and partial validation evidence do not authorize implementation or establish acceptance; follow the project contribution and review process.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "specificationState": "NON_R1_EMPIRICAL_OR_FUTURE_EVIDENCE_GATE",
       "scopeDisposition": "Open",
@@ -132038,7 +132038,7 @@
     },
     {
       "requirementId": "REQ-SR01-S04-001516",
-      "normativeStatement": "Chat/Work/Codex model or reasoning effort is an execution aid only.",
+      "normativeStatement": "Development tools do not establish specification authority or prove implementation correctness.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "specificationState": "NON_R1_EMPIRICAL_OR_FUTURE_EVIDENCE_GATE",
       "scopeDisposition": "Open",
@@ -132251,7 +132251,7 @@
     },
     {
       "requirementId": "REQ-SR01-S04-001527",
-      "normativeStatement": "The latest Codex programme state/action queue supersedes the historical v3.24 roadmap in §25 after exact verification; unresolved thread additions are captured in §27 for explicit reconciliation.",
+      "normativeStatement": "Verified current project decisions take precedence over historical plans; reconcile unresolved requirements explicitly.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "specificationState": "NON_R1_EMPIRICAL_OR_FUTURE_EVIDENCE_GATE",
       "scopeDisposition": "Open",
@@ -132274,7 +132274,7 @@
     },
     {
       "requirementId": "REQ-SR01-S04-001528",
-      "normativeStatement": "A Codex reconciliation pass must preserve a delta record for every material item added by the v7/v8 passes, especially IA-B/I00, cloud neutrality, EDFS, XDR-B/XDPKG-B, provider qualification/claim closure and continuity/Reaudit governance.",
+      "normativeStatement": "Retain a change record for material scope revisions, including independent qualification, cloud neutrality, external-fact services, provider claims and continuity controls.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "specificationState": "NON_R1_EMPIRICAL_OR_FUTURE_EVIDENCE_GATE",
       "scopeDisposition": "Open",
@@ -132349,7 +132349,7 @@
     },
     {
       "requirementId": "REQ-SR01-S04-001531",
-      "normativeStatement": "It did not receive or inspect the latest Codex source, so it intentionally does not publish current ledger counts, current implementation status or current architecture claims.",
+      "normativeStatement": "Without inspecting the current source and evidence, make no current implementation, coverage or architecture claim.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "specificationState": "NON_R1_EMPIRICAL_OR_FUTURE_EVIDENCE_GATE",
       "scopeDisposition": "Open",
@@ -132372,7 +132372,7 @@
     },
     {
       "requirementId": "REQ-SR01-S04-001532",
-      "normativeStatement": "Final Codex handover rule: use this file as a loss-prevention checklist, compare it against the latest verified Codex authority, record every delta, and update the canonical ledger/registers there.",
+      "normativeStatement": "Reconcile transferred requirements against the verified project specification, record material differences and update the authoritative requirement register.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "specificationState": "NON_R1_EMPIRICAL_OR_FUTURE_EVIDENCE_GATE",
       "scopeDisposition": "Open",
@@ -132395,7 +132395,7 @@
     },
     {
       "requirementId": "REQ-SR01-S04-001533",
-      "normativeStatement": "The latest accepted Codex ledger and contracts remain exhaustive authority.",
+      "normativeStatement": "The accepted project requirement register and contracts define the complete applicable scope.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "specificationState": "NON_R1_EMPIRICAL_OR_FUTURE_EVIDENCE_GATE",
       "scopeDisposition": "Open",
@@ -146521,7 +146521,7 @@
     },
     {
       "sourceUnitId": "SU-REQ-1da6802ddc5e169971a7ace0",
-      "statement": "Respect the repository-entry authority and action gates stated in §§5 and 25; Codex may not infer implementation permission from generated scaffolds or partial closure evidence.",
+      "statement": "Generated scaffolding and partial validation evidence do not authorize implementation or establish acceptance; follow the project contribution and review process.",
       "normativity": "OPEN_EVIDENCE_GATE_NOT_READY_FOR_IMPLEMENTATION",
       "authorityClass": "HISTORICAL_CHECKLIST_NO_AUTOMATIC_CURRENT_AUTHORITY",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
@@ -151230,7 +151230,7 @@
     },
     {
       "sourceUnitId": "SU-REQ-272e88adbb6f7cad0b7621a3",
-      "statement": "**HISTORICAL / RECONCILE** — status, blocker, release, priority, or open-gate wording that was true at an older verified baseline; preserve the evidence but confirm present state from the latest Codex authority.",
+      "statement": "Historical status and release claims require verification against the current project specification; retain the evidence supporting earlier claims.",
       "normativity": "OPEN_EVIDENCE_GATE_NOT_READY_FOR_IMPLEMENTATION",
       "authorityClass": "HISTORICAL_CHECKLIST_NO_AUTOMATIC_CURRENT_AUTHORITY",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
@@ -154437,7 +154437,7 @@
     },
     {
       "sourceUnitId": "SU-REQ-2ec35c28c42dcc57e4b8ab09",
-      "statement": "It did not receive or inspect the latest Codex source, so it intentionally does not publish current ledger counts, current implementation status or current architecture claims.",
+      "statement": "Without inspecting the current source and evidence, make no current implementation, coverage or architecture claim.",
       "normativity": "OPEN_EVIDENCE_GATE_NOT_READY_FOR_IMPLEMENTATION",
       "authorityClass": "HISTORICAL_CHECKLIST_NO_AUTOMATIC_CURRENT_AUTHORITY",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
@@ -157266,7 +157266,7 @@
     },
     {
       "sourceUnitId": "SU-REQ-338cd3baea512da2cace37ee",
-      "statement": "**No inference rule:** absence from this recap never cancels a current Codex decision; inclusion here never overrides a newer Codex decision.",
+      "statement": "An earlier summary neither cancels an existing project decision nor overrides a newer one.",
       "normativity": "OPEN_EVIDENCE_GATE_NOT_READY_FOR_IMPLEMENTATION",
       "authorityClass": "HISTORICAL_CHECKLIST_NO_AUTOMATIC_CURRENT_AUTHORITY",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
@@ -172433,7 +172433,7 @@
     },
     {
       "sourceUnitId": "SU-REQ-568815fb7286720fb9e188c8",
-      "statement": "The latest accepted Codex ledger and contracts remain exhaustive authority.",
+      "statement": "The accepted project requirement register and contracts define the complete applicable scope.",
       "normativity": "OPEN_EVIDENCE_GATE_NOT_READY_FOR_IMPLEMENTATION",
       "authorityClass": "HISTORICAL_CHECKLIST_NO_AUTOMATIC_CURRENT_AUTHORITY",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
@@ -179105,7 +179105,7 @@
     },
     {
       "sourceUnitId": "SU-REQ-661a1eb81ed156c3c2148363",
-      "statement": "**THREAD-ACCEPTED / RECONCILE:** Post-v3.24 programme inputs requiring explicit Codex comparison are IA-B/no-scope-narrowing certification waves, I00-before-I01 independent authority, and EDFS release/packaging/qualification with named-provider claims closed; see §§1, 17.14, 22, 23, 27 and 30.",
+      "statement": "Qualification must cover the complete declared scope, independent authority verification before implementation, and release packaging with evidence for each named provider.",
       "normativity": "OPEN_EVIDENCE_GATE_NOT_READY_FOR_IMPLEMENTATION",
       "authorityClass": "HISTORICAL_CHECKLIST_NO_AUTOMATIC_CURRENT_AUTHORITY",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
@@ -179999,7 +179999,7 @@
     },
     {
       "sourceUnitId": "SU-REQ-681e3fb0b467b869849d41ba",
-      "statement": "A Codex reconciliation pass must preserve a delta record for every material item added by the v7/v8 passes, especially IA-B/I00, cloud neutrality, EDFS, XDR-B/XDPKG-B, provider qualification/claim closure and continuity/Reaudit governance.",
+      "statement": "Retain a change record for material scope revisions, including independent qualification, cloud neutrality, external-fact services, provider claims and continuity controls.",
       "normativity": "OPEN_EVIDENCE_GATE_NOT_READY_FOR_IMPLEMENTATION",
       "authorityClass": "HISTORICAL_CHECKLIST_NO_AUTOMATIC_CURRENT_AUTHORITY",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
@@ -189501,7 +189501,7 @@
     },
     {
       "sourceUnitId": "SU-REQ-7dda74617cb640c55b504317",
-      "statement": "**THREAD-ACCEPTED / RECONCILE:** Preserve the manifest-first module family `pc.policy.external-decision-facts` (name may be superseded by Codex) for policies that depend on governed external facts.",
+      "statement": "Preserve the manifest-defined module family `pc.policy.external-decision-facts` for policies that depend on governed external facts. Any rename requires an explicit module-definition revision.",
       "normativity": "OPEN_EVIDENCE_GATE_NOT_READY_FOR_IMPLEMENTATION",
       "authorityClass": "HISTORICAL_CHECKLIST_NO_AUTOMATIC_CURRENT_AUTHORITY",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
@@ -194162,7 +194162,7 @@
     },
     {
       "sourceUnitId": "SU-REQ-88026eb91159b3c95e7c82e0",
-      "statement": "The latest Codex programme state/action queue supersedes the historical v3.24 roadmap in §25 after exact verification; unresolved thread additions are captured in §27 for explicit reconciliation.",
+      "statement": "Verified current project decisions take precedence over historical plans; reconcile unresolved requirements explicitly.",
       "normativity": "OPEN_EVIDENCE_GATE_NOT_READY_FOR_IMPLEMENTATION",
       "authorityClass": "HISTORICAL_CHECKLIST_NO_AUTOMATIC_CURRENT_AUTHORITY",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
@@ -196936,7 +196936,7 @@
     },
     {
       "sourceUnitId": "SU-REQ-8e80ce6dd20f1cb39bc506c6",
-      "statement": "Produce a reconciliation matrix for this inventory; each material item must be accepted, modified, superseded, deferred, rejected or identified as missing with an exact Codex authority reference.",
+      "statement": "Reconcile each material requirement as accepted, modified, superseded, deferred, rejected or missing, with a reference to the supporting project decision.",
       "normativity": "OPEN_EVIDENCE_GATE_NOT_READY_FOR_IMPLEMENTATION",
       "authorityClass": "HISTORICAL_CHECKLIST_NO_AUTOMATIC_CURRENT_AUTHORITY",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
@@ -215568,7 +215568,7 @@
     },
     {
       "sourceUnitId": "SU-REQ-b6509b4abb48db7490643cda",
-      "statement": "Final Codex handover rule: use this file as a loss-prevention checklist, compare it against the latest verified Codex authority, record every delta, and update the canonical ledger/registers there.",
+      "statement": "Reconcile transferred requirements against the verified project specification, record material differences and update the authoritative requirement register.",
       "normativity": "OPEN_EVIDENCE_GATE_NOT_READY_FOR_IMPLEMENTATION",
       "authorityClass": "HISTORICAL_CHECKLIST_NO_AUTOMATIC_CURRENT_AUTHORITY",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
@@ -216164,7 +216164,7 @@
     },
     {
       "sourceUnitId": "SU-REQ-b79e7dd0d4a72408dbdb4592",
-      "statement": "Chat/Work/Codex model or reasoning effort is an execution aid only.",
+      "statement": "Development tools do not establish specification authority or prove implementation correctness.",
       "normativity": "OPEN_EVIDENCE_GATE_NOT_READY_FOR_IMPLEMENTATION",
       "authorityClass": "HISTORICAL_CHECKLIST_NO_AUTOMATIC_CURRENT_AUTHORITY",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
@@ -224314,7 +224314,7 @@
     },
     {
       "sourceUnitId": "SU-REQ-cabb09ac29c9bce33adc52b9",
-      "statement": "First verify and adopt the latest Codex complete source, ledger, architecture, contracts, current state, actions and claim register.",
+      "statement": "Verify the current source, architecture, contracts, implementation state and claim register before using them as a baseline.",
       "normativity": "OPEN_EVIDENCE_GATE_NOT_READY_FOR_IMPLEMENTATION",
       "authorityClass": "HISTORICAL_CHECKLIST_NO_AUTOMATIC_CURRENT_AUTHORITY",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
@@ -242961,7 +242961,7 @@
     },
     {
       "sourceUnitId": "SU-REQ-f2479c122870efa2dfbad47c",
-      "statement": "Rebuild client-facing architecture diagrams and performance statements from the latest accepted Codex architecture.",
+      "statement": "Base published architecture diagrams and performance statements on the current verified architecture and supporting measurements.",
       "normativity": "OPEN_EVIDENCE_GATE_NOT_READY_FOR_IMPLEMENTATION",
       "authorityClass": "HISTORICAL_CHECKLIST_NO_AUTOMATIC_CURRENT_AUTHORITY",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
@@ -369381,7 +369381,7 @@
       "requirementClosureId": "AF31-RC-20173090099D79DB7D952B06",
       "closureId": "CLOSE-REQ-20173090099d79db7d952b06",
       "finalState": "INTENTIONALLY_INAPPLICABLE",
-      "finalNormativeStatement": "**HISTORICAL / RECONCILE** — status, blocker, release, priority, or open-gate wording that was true at an older verified baseline; preserve the evidence but confirm present state from the latest Codex authority.",
+      "finalNormativeStatement": "Historical status and release claims require verification against the current project specification; retain the evidence supporting earlier claims.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "terminalRationale": "The source row is accepted conditional, Future, historical or empirical evidence outside R1; no implementation promotion is authorized.",
       "decisionIds": [
@@ -369535,7 +369535,7 @@
       "requirementClosureId": "AF31-RC-2B7B1871DA17E249A3B52CAF",
       "closureId": "CLOSE-REQ-2b7b1871da17e249a3b52caf",
       "finalState": "INTENTIONALLY_INAPPLICABLE",
-      "finalNormativeStatement": "**No inference rule:** absence from this recap never cancels a current Codex decision; inclusion here never overrides a newer Codex decision.",
+      "finalNormativeStatement": "An earlier summary neither cancels an existing project decision nor overrides a newer one.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "terminalRationale": "The source row is accepted conditional, Future, historical or empirical evidence outside R1; no implementation promotion is authorized.",
       "decisionIds": [
@@ -373975,7 +373975,7 @@
       "requirementClosureId": "AF31-RC-4B9C17D4DB22A10005D71A3A",
       "closureId": "CLOSE-REQ-4b9c17d4db22a10005d71a3a",
       "finalState": "INTENTIONALLY_INAPPLICABLE",
-      "finalNormativeStatement": "**THREAD-ACCEPTED / RECONCILE:** Preserve the manifest-first module family `pc.policy.external-decision-facts` (name may be superseded by Codex) for policies that depend on governed external facts.",
+      "finalNormativeStatement": "Preserve the manifest-defined module family `pc.policy.external-decision-facts` for policies that depend on governed external facts. Any rename requires an explicit module-definition revision.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "terminalRationale": "The source row is accepted conditional, Future, historical or empirical evidence outside R1; no implementation promotion is authorized.",
       "decisionIds": [
@@ -379839,7 +379839,7 @@
       "requirementClosureId": "AF31-RC-99A46A5164E780A3F74F94EA",
       "closureId": "CLOSE-REQ-99a46a5164e780a3f74f94ea",
       "finalState": "INTENTIONALLY_INAPPLICABLE",
-      "finalNormativeStatement": "**THREAD-ACCEPTED / RECONCILE:** Post-v3.24 programme inputs requiring explicit Codex comparison are IA-B/no-scope-narrowing certification waves, I00-before-I01 independent authority, and EDFS release/packaging/qualification with named-provider claims closed; see §§1, 17.14, 22, 23, 27 and 30.",
+      "finalNormativeStatement": "Qualification must cover the complete declared scope, independent authority verification before implementation, and release packaging with evidence for each named provider.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "terminalRationale": "The source row is accepted conditional, Future, historical or empirical evidence outside R1; no implementation promotion is authorized.",
       "decisionIds": [
@@ -380504,7 +380504,7 @@
       "requirementClosureId": "AF31-RC-F165C5B05703D6519CA50952",
       "closureId": "CLOSE-REQ-f165c5b05703d6519ca50952",
       "finalState": "INTENTIONALLY_INAPPLICABLE",
-      "finalNormativeStatement": "First verify and adopt the latest Codex complete source, ledger, architecture, contracts, current state, actions and claim register.",
+      "finalNormativeStatement": "Verify the current source, architecture, contracts, implementation state and claim register before using them as a baseline.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "terminalRationale": "The source row is accepted conditional, Future, historical or empirical evidence outside R1; no implementation promotion is authorized.",
       "decisionIds": [
@@ -380548,7 +380548,7 @@
       "requirementClosureId": "AF31-RC-1A57AA4F0C264075B5D6D46E",
       "closureId": "CLOSE-REQ-1a57aa4f0c264075b5d6d46e",
       "finalState": "INTENTIONALLY_INAPPLICABLE",
-      "finalNormativeStatement": "Produce a reconciliation matrix for this inventory; each material item must be accepted, modified, superseded, deferred, rejected or identified as missing with an exact Codex authority reference.",
+      "finalNormativeStatement": "Reconcile each material requirement as accepted, modified, superseded, deferred, rejected or missing, with a reference to the supporting project decision.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "terminalRationale": "The source row is accepted conditional, Future, historical or empirical evidence outside R1; no implementation promotion is authorized.",
       "decisionIds": [
@@ -380996,7 +380996,7 @@
       "requirementClosureId": "AF31-RC-E115155CB123A0E3CD946DCF",
       "closureId": "CLOSE-REQ-e115155cb123a0e3cd946dcf",
       "finalState": "INTENTIONALLY_INAPPLICABLE",
-      "finalNormativeStatement": "Rebuild client-facing architecture diagrams and performance statements from the latest accepted Codex architecture.",
+      "finalNormativeStatement": "Base published architecture diagrams and performance statements on the current verified architecture and supporting measurements.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "terminalRationale": "The source row is accepted conditional, Future, historical or empirical evidence outside R1; no implementation promotion is authorized.",
       "decisionIds": [
@@ -381109,7 +381109,7 @@
       "requirementClosureId": "AF31-RC-53B5CE1ABD3A891E7F2415F3",
       "closureId": "CLOSE-REQ-53b5ce1abd3a891e7f2415f3",
       "finalState": "INTENTIONALLY_INAPPLICABLE",
-      "finalNormativeStatement": "Respect the repository-entry authority and action gates stated in §§5 and 25; Codex may not infer implementation permission from generated scaffolds or partial closure evidence.",
+      "finalNormativeStatement": "Generated scaffolding and partial validation evidence do not authorize implementation or establish acceptance; follow the project contribution and review process.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "terminalRationale": "The source row is accepted conditional, Future, historical or empirical evidence outside R1; no implementation promotion is authorized.",
       "decisionIds": [
@@ -381367,7 +381367,7 @@
       "requirementClosureId": "AF31-RC-C8DF9E3CD48EDC1434704D2E",
       "closureId": "CLOSE-REQ-c8df9e3cd48edc1434704d2e",
       "finalState": "INTENTIONALLY_INAPPLICABLE",
-      "finalNormativeStatement": "Chat/Work/Codex model or reasoning effort is an execution aid only.",
+      "finalNormativeStatement": "Development tools do not establish specification authority or prove implementation correctness.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "terminalRationale": "The source row is accepted conditional, Future, historical or empirical evidence outside R1; no implementation promotion is authorized.",
       "decisionIds": [
@@ -381580,7 +381580,7 @@
       "requirementClosureId": "AF31-RC-ED22FA4146A92BA8E4982ADE",
       "closureId": "CLOSE-REQ-ed22fa4146a92ba8e4982ade",
       "finalState": "INTENTIONALLY_INAPPLICABLE",
-      "finalNormativeStatement": "The latest Codex programme state/action queue supersedes the historical v3.24 roadmap in §25 after exact verification; unresolved thread additions are captured in §27 for explicit reconciliation.",
+      "finalNormativeStatement": "Verified current project decisions take precedence over historical plans; reconcile unresolved requirements explicitly.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "terminalRationale": "The source row is accepted conditional, Future, historical or empirical evidence outside R1; no implementation promotion is authorized.",
       "decisionIds": [
@@ -381603,7 +381603,7 @@
       "requirementClosureId": "AF31-RC-1369D146D1BED74CB653C972",
       "closureId": "CLOSE-REQ-1369d146d1bed74cb653c972",
       "finalState": "INTENTIONALLY_INAPPLICABLE",
-      "finalNormativeStatement": "A Codex reconciliation pass must preserve a delta record for every material item added by the v7/v8 passes, especially IA-B/I00, cloud neutrality, EDFS, XDR-B/XDPKG-B, provider qualification/claim closure and continuity/Reaudit governance.",
+      "finalNormativeStatement": "Retain a change record for material scope revisions, including independent qualification, cloud neutrality, external-fact services, provider claims and continuity controls.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "terminalRationale": "The source row is accepted conditional, Future, historical or empirical evidence outside R1; no implementation promotion is authorized.",
       "decisionIds": [
@@ -381678,7 +381678,7 @@
       "requirementClosureId": "AF31-RC-3D238C809574EAFC2E279DE7",
       "closureId": "CLOSE-REQ-3d238c809574eafc2e279de7",
       "finalState": "INTENTIONALLY_INAPPLICABLE",
-      "finalNormativeStatement": "It did not receive or inspect the latest Codex source, so it intentionally does not publish current ledger counts, current implementation status or current architecture claims.",
+      "finalNormativeStatement": "Without inspecting the current source and evidence, make no current implementation, coverage or architecture claim.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "terminalRationale": "The source row is accepted conditional, Future, historical or empirical evidence outside R1; no implementation promotion is authorized.",
       "decisionIds": [
@@ -381701,7 +381701,7 @@
       "requirementClosureId": "AF31-RC-67CE83B52D500DF7912FC96C",
       "closureId": "CLOSE-REQ-67ce83b52d500df7912fc96c",
       "finalState": "INTENTIONALLY_INAPPLICABLE",
-      "finalNormativeStatement": "Final Codex handover rule: use this file as a loss-prevention checklist, compare it against the latest verified Codex authority, record every delta, and update the canonical ledger/registers there.",
+      "finalNormativeStatement": "Reconcile transferred requirements against the verified project specification, record material differences and update the authoritative requirement register.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "terminalRationale": "The source row is accepted conditional, Future, historical or empirical evidence outside R1; no implementation promotion is authorized.",
       "decisionIds": [
@@ -381724,7 +381724,7 @@
       "requirementClosureId": "AF31-RC-9B428B24C4916A46F0FCF554",
       "closureId": "CLOSE-REQ-9b428b24c4916a46f0fcf554",
       "finalState": "INTENTIONALLY_INAPPLICABLE",
-      "finalNormativeStatement": "The latest accepted Codex ledger and contracts remain exhaustive authority.",
+      "finalNormativeStatement": "The accepted project requirement register and contracts define the complete applicable scope.",
       "negativeBehavior": "Do not assume an answer or implement behavior dependent on one until the evidence gate closes.",
       "terminalRationale": "The source row is accepted conditional, Future, historical or empirical evidence outside R1; no implementation promotion is authorized.",
       "decisionIds": [

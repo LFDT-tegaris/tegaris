@@ -17,7 +17,7 @@ Tegaris is an [LF Decentralized Trust Lab](https://lf-decentralized-trust-labs.g
 - Governed RPC requests and participant-scoped data disclosure.
 - Runtime status, decision history and operational evidence.
 
-The first public source release is being prepared as **v0.9.0**. Start with the [v0.9.0 release notes and getting-started checks](docs/releases/v0.9.0.md), including its known limitations and validation status.
+The source and documentation are available in this repository. The first versioned release, **v0.9.0**, has not yet been tagged. Start with the [v0.9.0 release notes and getting-started checks](docs/releases/v0.9.0.md), including its known limitations and validation status.
 
 ## Get started
 

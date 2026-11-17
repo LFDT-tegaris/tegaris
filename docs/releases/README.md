@@ -1,6 +1,6 @@
 # Release scope
 
-The first public source release is planned as **v0.9.0**. Its [release notes](v0.9.0.md) define the release scope, known issues and remaining publication checks. It has not yet been tagged or published.
+The source and documentation are published in this repository. The first versioned source release is planned as **v0.9.0** and has not yet been tagged. Its [release notes](v0.9.0.md) define the release scope, known issues and validation status.
 
 The initial source contribution is a development baseline for application-layer privacy and policy administration.
 

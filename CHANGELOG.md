@@ -2,7 +2,7 @@
 
 ## v0.9.0 (in preparation)
 
-First public source release. The tag and public source import are not yet published. See the [release notes](docs/releases/v0.9.0.md) for the getting-started checks, validation limits and known issues.
+The source and documentation are published in this repository; the v0.9.0 tag has not yet been published. See the [release notes](docs/releases/v0.9.0.md) for the getting-started checks, validation limits and known issues.
 
 ### Included source
 
@@ -31,4 +31,4 @@ First public source release. The tag and public source import are not yet publis
 - Persistent hosted operation, credential continuity, performance and production deployment require further validation.
 - No supported upgrade path from unpublished development builds is provided.
 
-These entries describe the release candidate. Included source and passing component tests do not establish that every documented workflow is qualified.
+These entries describe the source available for v0.9.0. Included source and passing component tests do not establish that every documented workflow is qualified.

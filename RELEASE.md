@@ -2,7 +2,7 @@
 
 This guide covers source releases and official binaries or container images. Release maintainers are responsible for selecting the candidate, recording its validation, obtaining independent review and verifying the published result.
 
-The first public source import and artifact publishing workflow are still awaiting verification. Until those steps are complete, use the documented source setup; official binary and container download instructions will be added when available.
+The source and documentation are published in this repository. The v0.9.0 tag has not yet been published, and no official binaries or container images are available. Use the documented source setup and record the exact revision used.
 
 ## Prepare the source
 
@@ -40,7 +40,7 @@ Review identity and participant isolation, operation and disclosure permissions,
 
 ## Publish a source release
 
-The first public source release is **v0.9.0**, published with GitHub's prerelease flag. Its supported scope and known issues are defined in the [v0.9.0 notes](docs/releases/v0.9.0.md). An authorized maintainer creates the tag only after the source, contribution and review checks above are complete, then publishes the corresponding source archive and release notes. Keep the preparation status in the documentation until that publication is verified.
+The first versioned source release will be **v0.9.0**, published with GitHub's prerelease flag. Its supported scope and known issues are defined in the [v0.9.0 notes](docs/releases/v0.9.0.md). An authorized maintainer creates the tag only after the source, contribution and review checks above are complete, then publishes the corresponding source archive and release notes. Keep the preparation status in the documentation until the tag and release are verified.
 
 The repository release tag identifies the complete source snapshot. Component package versions, API versions and database revisions retain their own compatibility identities. Do not rewrite dependency locks or applied migrations merely to align their numbers with the repository tag.
 

@@ -1,0 +1,48 @@
+// C04 normative wire projection. Signed semantics are PC-CBOR-1 only.
+// JSON projections MUST validate the frozen AF-08 schemas; protobuf bytes are never an alternate signature preimage.
+// Every caller supplies grpc-timeout. The server applies min(caller deadline, signed service-profile maximum).
+// Missing/expired authority metadata fails before method execution. Unknown enum values never relax denial.
+syntax = "proto3";
+package openpc.evidence.v1;
+
+import "openpc/common/v1/common.proto";
+
+option java_multiple_files = true;
+option java_package = "io.openpc.evidence.v1";
+
+message EvidenceExportRequestV1 {
+  openpc.common.v1.RequestMetaV1 meta = 1;
+  openpc.common.v1.Af08OpenPcUrn export_id = 2;
+  openpc.common.v1.Af08OpenPcUrn participant_id = 3;
+  openpc.common.v1.Af08Sha256Digest query_digest = 4;
+  openpc.common.v1.Af08UInt64String from_sequence = 5;
+  openpc.common.v1.Af08UInt64String through_sequence = 6;
+  string redaction_profile_id = 7;
+  reserved 100 to 199;
+}
+
+message EvidenceExportReceiptV1 {
+  openpc.common.v1.Af08OpenPcUrn export_id = 1;
+  string state = 2;
+  openpc.common.v1.Af08UInt64String checkpoint = 3;
+  optional openpc.common.v1.Af08Sha256Digest output_digest = 4;
+  optional openpc.common.v1.SafeProblemV1 problem = 5;
+  reserved 100 to 199;
+}
+
+message EvidenceRecordV1 {
+  openpc.common.v1.Af08OpenPcUrn evidence_id = 1;
+  openpc.common.v1.Af08OpenPcUrn participant_id = 2;
+  string evidence_class = 3;
+  openpc.common.v1.Af08Sha256Digest record_digest = 4;
+  openpc.common.v1.Af08UInt64String sequence = 5;
+  openpc.common.v1.Af08Rfc3339MicrosUtc occurred_at = 6;
+  bytes cose_sign1_pc_cbor_1 = 7;
+  reserved 100 to 199;
+}
+
+service EvidenceExportService {
+  rpc StartExport(EvidenceExportRequestV1) returns (openpc.common.v1.OperationViewV1);
+  rpc GetExport(EvidenceExportRequestV1) returns (EvidenceExportReceiptV1);
+  rpc StreamExportReceipts(openpc.common.v1.RequestMetaV1) returns (stream EvidenceExportReceiptV1);
+}

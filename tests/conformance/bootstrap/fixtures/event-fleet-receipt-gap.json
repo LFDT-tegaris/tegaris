@@ -1,0 +1,25 @@
+{
+  "authoritygeneration": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "causationid": "018f1e44-7b2c-7abd-8def-0123456789ac",
+  "correlationid": "018f1e44-7b2c-7abe-8def-0123456789ad",
+  "data": {
+    "activeGenerationDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "desiredGenerationDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "receiptId": "018f1e44-7b2c-7abe-8def-0123456789ad",
+    "state": "ACTIVE_MATCHED",
+    "targetId": "urn:openpc:runtime-target:018f1e44-7b2c-7abd-8def-0123456789ac",
+    "xdsVersionDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "datacontenttype": "application/json",
+  "datadigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "dataschema": "https://schemas.openpc.local/event-payloads.schema.json#/$defs/TargetReceiptRecorded",
+  "id": "018f1e44-7b2c-7abc-8def-0123456789ab",
+  "participantid": "urn:openpc:participant:018f1e44-7b2c-7abc-8def-0123456789ab",
+  "privacydomainid": "urn:openpc:privacy-domain:018f1e44-7b2c-7abd-8def-0123456789ac",
+  "sequence": "10",
+  "source": "urn:openpc:service:018f1e44-7b2c-7abc-8def-0123456789ab",
+  "specversion": "1.0",
+  "subject": "urn:openpc:runtime-target:018f1e44-7b2c-7abd-8def-0123456789ac",
+  "time": "2026-08-24T00:00:00.000000Z",
+  "type": "io.openpc.fleet.target.receipt.recorded.v1"
+}

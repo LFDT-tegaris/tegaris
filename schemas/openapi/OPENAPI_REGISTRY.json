@@ -1,0 +1,27 @@
+{
+  "authority": "C17_I07_GATE2_RECEIVING_IMPLEMENTATION_AUTHORITY",
+  "documents": [
+    {
+      "operations": 1,
+      "path": "schemas/openapi/openpc-privacy-explorer.openapi.yaml",
+      "role": "PRIVACY_EXPLORER_GATE2_OFF_PATH_READ"
+    },
+    {
+      "operations": 444,
+      "path": "pkg://interfaces/openapi/openpc-control-api.openapi.yaml",
+      "role": "CURRENT_API"
+    },
+    {
+      "operations": 64,
+      "path": "pkg://compatibility/openapi/openpc-legacy-compatibility-v1.openapi.json",
+      "role": "EXACT_PRIOR_REST_COMPATIBILITY_WRAPPER",
+      "sourceDocuments": 6
+    },
+    {
+      "operations": 8,
+      "path": "pkg://compatibility/proto/legacy-compatibility-v1.proto",
+      "role": "EXACT_PRIOR_GRPC_COMPATIBILITY"
+    }
+  ],
+  "schemaVersion": "1.1"
+}

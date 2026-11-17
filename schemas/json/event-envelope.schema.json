@@ -1,0 +1,75 @@
+{
+  "$id": "https://schemas.openpc.local/event-envelope.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authoritygeneration": {
+      "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+    },
+    "causationid": {
+      "$ref": "shared-primitives.schema.json#/$defs/UuidV7"
+    },
+    "correlationid": {
+      "$ref": "shared-primitives.schema.json#/$defs/UuidV7"
+    },
+    "data": {
+      "type": "object"
+    },
+    "datacontenttype": {
+      "const": "application/json"
+    },
+    "datadigest": {
+      "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+    },
+    "dataschema": {
+      "format": "uri",
+      "type": "string"
+    },
+    "id": {
+      "$ref": "shared-primitives.schema.json#/$defs/UuidV7"
+    },
+    "participantid": {
+      "$ref": "shared-primitives.schema.json#/$defs/ParticipantId"
+    },
+    "privacydomainid": {
+      "$ref": "shared-primitives.schema.json#/$defs/PrivacyDomainId"
+    },
+    "sequence": {
+      "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+    },
+    "source": {
+      "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+    },
+    "specversion": {
+      "const": "1.0"
+    },
+    "subject": {
+      "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+    },
+    "time": {
+      "$ref": "shared-primitives.schema.json#/$defs/Rfc3339MicrosUtc"
+    },
+    "type": {
+      "pattern": "^io\\.openpc\\.[a-z0-9.]+\\.v[1-9][0-9]*$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "specversion",
+    "id",
+    "source",
+    "type",
+    "subject",
+    "time",
+    "datacontenttype",
+    "dataschema",
+    "participantid",
+    "correlationid",
+    "sequence",
+    "datadigest",
+    "data"
+  ],
+  "title": "OpenPcEventEnvelopeV1",
+  "type": "object",
+  "x-openpc-delivery": "transactional outbox, at-least-once, idempotent inbox/effect, per-aggregate ordering only"
+}

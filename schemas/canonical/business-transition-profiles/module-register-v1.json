@@ -1,0 +1,134 @@
+{
+  "profileId": "pc.control.module.register",
+  "profileVersion": 1,
+  "schemaDefinitionDigest": "sha256:41a877ca7e00e74f32c8becf8daee38f26c12ab9d9dcf6ff80ed8e75608b3c1f",
+  "actionIntentId": "ACT-MODULES_CREATE_RESOURCE-V1",
+  "catalogOperationId": "MOD-OP-REGISTER",
+  "resourceType": "modules",
+  "aggregateType": "module-registration",
+  "sequenceNamespace": "CONTROL_BUSINESS_TRANSITION_V1",
+  "transitionKind": 1,
+  "state": {
+    "owner": "control.module_installation + immutable control.module_version + control.module_configuration_generation",
+    "identity": [
+      "participant_id",
+      "privacy_domain_id",
+      "module_installation_id"
+    ],
+    "revision": "aggregate_version:u64",
+    "absence": {
+      "existence": 0,
+      "revision": 0,
+      "projection": {}
+    },
+    "projection": {
+      "0": {
+        "column": "module_id",
+        "type": "TEXT"
+      },
+      "1": {
+        "column": "semantic_version",
+        "type": "TEXT"
+      },
+      "2": {
+        "column": "manifest_digest",
+        "type": "H32"
+      },
+      "3": {
+        "column": "admission_dependency_digest",
+        "type": "H32"
+      },
+      "4": {
+        "column": "configuration_digest",
+        "type": "H32"
+      },
+      "5": {
+        "column": "state",
+        "type": "TEXT",
+        "enum": [
+          "ADMITTED"
+        ]
+      },
+      "6": {
+        "column": "active_manifest_digest",
+        "type": "U64",
+        "encoding": "0 means absent; admission requires NULL in the durable column"
+      },
+      "7": {
+        "column": "configuration.generation",
+        "type": "U64"
+      },
+      "8": {
+        "column": "configuration.active",
+        "type": "U64",
+        "encoding": "0 means inactive; admission requires false in the durable column"
+      }
+    },
+    "digest": "pc.control.transition-state.v1; SHA-256 over canonical typed CBOR; every map field required"
+  },
+  "transition": {
+    "command": "CREATE",
+    "before": "ABSENT",
+    "after": "PRESENT_ADMITTED_REVISION_1",
+    "change": "verified retained signed release, exact scoped dependency closure, inactive configuration generation 1; no active manifest or runtime authority",
+    "noOp": "REJECT_WITHOUT_EFFECTS"
+  },
+  "authority": {
+    "actor": "authenticated participant user session",
+    "action": "exact action registry, live scoped authority fence",
+    "evidence": [
+      {
+        "kind": 3,
+        "owner": "control.approval_decision_record",
+        "format": "identity credential signed by the authorized checker",
+        "binding": "exact immutable candidate, action, scope, expected revision and distinct checker; consumed by this operation"
+      },
+      {
+        "kind": 4,
+        "owner": "control.mutation_evidence for ID-OP-WEBAUTHN-VERIFY",
+        "format": "identity owner verified WebAuthn step-up",
+        "binding": "actual operator, session, action, candidate digest and one-time challenge consumed by this operation"
+      }
+    ],
+    "snapshot": "retained exact precommit authority path and live epochs/validity; no session or credential secrets",
+    "approval": "distinct authorized checker approves the exact candidate; live decision and authority fenced and consumed in the commit",
+    "stepUp": "fresh actor WebAuthn step-up bound to the exact action and candidate; consumed once in the commit"
+  },
+  "events": [
+    {
+      "eventType": "io.openpc.control.command.committed.v1",
+      "dataSchemaUri": "https://schemas.openpc.local/event-payloads.schema.json#/$defs/CommandCommitted",
+      "payload": "canonical four-key CommandCommitted CBOR; commandId=operationId, aggregateRef=canonical aggregate URN, actionIntentId, intentDigest=actionIntentDigest",
+      "cardinality": 1,
+      "effect": "local durable control-state transition only"
+    }
+  ],
+  "privacy": {
+    "placement": "same participant and privacy domain as authoritative aggregate",
+    "read": "current read authorization required; receipt is never authorization",
+    "retention": "retain receipt, typed state/authority inputs, authorization evidence, public trust and operation links under control audit retention; no automatic deletion"
+  },
+  "lifecycle": {
+    "idempotency": "exact replay returns original operation, receipt, evidence and event IDs/bytes/sequences",
+    "rollback": "no domain, evidence, head, event or result effects",
+    "restart": "scoped primary operation reconciliation; preserve UNKNOWN for unresolved COMMIT",
+    "delivery": "qualified namespace and profile required; no legacy cursor merge"
+  },
+  "definitionDigest": "sha256:66b61e0cf06a4c986d6d7935122840e6ae1daea4d6ad0ef228d497a18011b720",
+  "requestBinding": {
+    "domain": "pc.control.configuration-request.v1",
+    "encoding": "UTF-8 domain plus NUL; each field prefixed by uint32 big-endian UTF-8 byte length; SHA-256",
+    "fields": [
+      "participantId",
+      "privacyDomainId",
+      "principalId",
+      "actionIntentId",
+      "catalogOperationId",
+      "aggregateType",
+      "aggregateId",
+      "expectedRevision (canonical u64 decimal)",
+      "candidateDigest (sha256: lowercase hex)",
+      "idempotencyKey"
+    ]
+  }
+}

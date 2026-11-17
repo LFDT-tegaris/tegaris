@@ -1,0 +1,111 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1787943697740,
+      "tag": "0000_yummy_plazm",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1787944233274,
+      "tag": "0001_vengeful_human_torch",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1787950630500,
+      "tag": "0002_clumsy_lady_mastermind",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1788976442039,
+      "tag": "0003_motionless_lilandra",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1789070756824,
+      "tag": "0004_empty_tempest",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1789073601304,
+      "tag": "0005_third_albert_cleary",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1789208328656,
+      "tag": "0006_pale_shape",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1789209559735,
+      "tag": "0007_fancy_skreet",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1789658922403,
+      "tag": "0008_black_madelyne_pryor",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1789836404959,
+      "tag": "0009_parched_nekra",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1789939216566,
+      "tag": "0010_policy_generation_fence",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1790029930156,
+      "tag": "0011_chubby_talkback",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1790042023031,
+      "tag": "0012_policy_set_generation_revision",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1790282843968,
+      "tag": "0013_module_disable_reference_fences",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1790732902742,
+      "tag": "0014_module_installation_direct_assignment_epoch",
+      "breakpoints": true
+    }
+  ]
+}

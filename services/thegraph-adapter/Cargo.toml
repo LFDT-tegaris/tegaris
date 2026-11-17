@@ -1,0 +1,17 @@
+[package]
+name = "openpc-thegraph-adapter"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+pc-provider-api = { path = "../../crates/pc-provider-api" }
+pc-facts-core = { path = "../../crates/pc-facts-core" }
+openpc-multi-rpc = { path = "../multi-rpc" }
+serde_yaml_ng = "=0.10.0"
+
+[dev-dependencies]
+secrecy.workspace = true
+tokio = { workspace = true, features = ["io-util", "macros", "net", "rt-multi-thread"] }

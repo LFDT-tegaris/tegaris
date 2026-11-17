@@ -1,0 +1,92 @@
+{
+  "bindings": {
+    "assertion": {
+      "path": "config/qualification/i04-local/local-assertion.json",
+      "sha256": "31d6b8862e2def99dc85e4b13bdcec7d67219f0145eb2d650ab56bf22f19fa2a"
+    },
+    "cluster": {
+      "context": "in-cluster:minikube",
+      "kubeSystemNamespaceUid": "5ad64f54-b82c-4afa-98c2-fcdc50db239b",
+      "kubernetesClientVersion": "1.36.2",
+      "kubernetesServerVersion": "1.36.2",
+      "minikubeProfile": "minikube",
+      "minikubeVersion": "1.38.1",
+      "nodeName": "minikube",
+      "nodeUid": "564c5e5f-c65f-409c-8654-5cccf2adf93c"
+    },
+    "principals": {
+      "harness": "system:serviceaccount:openpc-i04-local-qualification:openpc-i04-harness-executor",
+      "harnessJwtSha256": "fd510f9990c243781a19745e5f25e71b5a6d68128117a3c2d4fee09cbcfba48a",
+      "harnessJwtByteLength": 1240,
+      "requester": "system:serviceaccount:openpc-i04-local-qualification:openpc-i04-requester",
+      "signer": "system:serviceaccount:openpc-i04-local-qualification:openpc-i04-qualification-signer",
+      "trustRegistryAuthority": "system:serviceaccount:openpc-i04-local-qualification:openpc-i04-trust-registry-authority"
+    },
+    "reviewer": {
+      "roleBinding": "openpc-i04-independent-reviewer",
+      "roleBindingProjection": {
+        "metadata": {
+          "name": "openpc-i04-independent-reviewer",
+          "namespace": "openpc-i04-local-qualification"
+        },
+        "roleRef": {
+          "apiGroup": "rbac.authorization.k8s.io",
+          "kind": "Role",
+          "name": "openpc-i04-evidence-reader"
+        },
+        "subjects": [
+          {
+            "apiGroup": "",
+            "kind": "ServiceAccount",
+            "name": "openpc-i04-independent-reviewer",
+            "namespace": "openpc-i04-local-qualification"
+          }
+        ]
+      },
+      "roleBindingSha256": "b60b6bda28fb6e4f4d6f74221bb5c0938e79be08e4a3ee315815b05e02bb7853",
+      "subject": "system:serviceaccount:openpc-i04-local-qualification:openpc-i04-independent-reviewer"
+    },
+    "signingKey": {
+      "algorithm": "ECDSA_P256_SHA256",
+      "backend": "SOFTHSM2_2_6_1_PKCS11_SOFTWARE_EMULATION",
+      "keyId": "0402",
+      "keyLabel": "OPENPC-I04-ASSERTION-SIGNER",
+      "mechanism": "CKM_ECDSA_SHA256_LENGTH_DELIMITED_CANONICAL_PURPOSE_AUTHORITY",
+      "neverExtractable": true,
+      "publicKeySha256": "da0e2acd70da037c8aa42a0c54b428783d1fcde157ebd4c3f1ca8a8b2e30d4f9",
+      "sensitive": true,
+      "tokenLabel": "OPENPC-I04-LOCAL-SIGNER"
+    },
+    "tokenRequest": {
+      "algorithm": "RS256",
+      "audience": ["openpc.i04.local.runtime-qualification"],
+      "expiresAt": 1788045671,
+      "issuedAt": 1788045071,
+      "issuer": "https://kubernetes.default.svc.cluster.local",
+      "jwtSha256": "ab544a01a73ea448c3df0516bee76d0c0d13ed0deb303a86077a1d5c757b95bc",
+      "jwtByteLength": 1048,
+      "keyId": "C9aS-kawmNZx6aSBMyn_pqQ0tuOSkUqEJEb6Z6iqb2Y",
+      "lifetimeSeconds": 600,
+      "notBefore": 1788045071,
+      "subject": "system:serviceaccount:openpc-i04-local-qualification:openpc-i04-qualification-signer",
+      "trustedJwkSha256": "5ec2f0041a60331f29f3f25b4b0857dee7c19d885130c7e1a48f07129ad35233"
+    },
+    "trustRegistry": {
+      "configMapName": "openpc-i04-public-trust-registry",
+      "dataSha256": "e7e0b698394d4e8f5a966709835bd861bd63697f2bf8b27c819bfa539de5f5fe",
+      "namespace": "openpc-i04-local-qualification",
+      "rootCertificateSha256": "c06da60a2a6e7f42a3d9b163042ec9e87cf3ca903a2bc59949e74056cde7fc3a",
+      "signerCertificateSha256": "d67a89d3c73b35700f09ce61d563c52a8cd5e3a27e9e550eb9cb36aaa80d5414"
+    }
+  },
+  "envelopeId": "OPENPC-I04-LOCAL-PKCS11-ASSERTION-ENVELOPE-20260830-R8-01",
+  "limitations": [
+    "SOFTHSM_IS_SOFTWARE_EMULATION_NOT_CERTIFIED_HARDWARE",
+    "NOT_PROVIDER_OR_PLATFORM_SIGNED",
+    "NOT_A_C17_QUALIFICATION_RECEIPT",
+    "NOT_PRODUCTION_OR_BUSINESS_QUALIFICATION"
+  ],
+  "purpose": "openpc:i04:local-runtime-qualification-evidence:v1",
+  "schemaVersion": "1.0",
+  "scope": "LOCAL_DEVELOPMENT_TECHNICAL_TEST_ONLY"
+}

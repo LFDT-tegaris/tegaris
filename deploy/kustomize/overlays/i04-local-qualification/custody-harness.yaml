@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: openpc-i04-harness-executor
+  labels:
+    app.kubernetes.io/name: openpc-i04-harness-executor
+spec:
+  automountServiceAccountToken: false
+  enableServiceLinks: false
+  hostIPC: false
+  hostNetwork: false
+  hostPID: false
+  restartPolicy: Never
+  serviceAccountName: openpc-i04-harness-executor
+  securityContext:
+    fsGroup: 20001
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: harness
+      image: openpc/i04-custody-harness:r8-length-delimited
+      imagePullPolicy: Never
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          cpu: 250m
+          memory: 128Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsGroup: 20001
+        runAsNonRoot: true
+        runAsUser: 20001
+      volumeMounts:
+        - name: harness-kubernetes-api
+          mountPath: /var/run/openpc/k8s-api
+          readOnly: true
+        - name: harness-custody-api
+          mountPath: /var/run/openpc/custody-api
+          readOnly: true
+        - name: signer-api-ca
+          mountPath: /var/run/openpc/signer-api-ca
+          readOnly: true
+        - name: scratch
+          mountPath: /tmp
+  volumes:
+    - name: harness-kubernetes-api
+      projected:
+        defaultMode: 0400
+        sources:
+          - serviceAccountToken:
+              path: token
+              audience: https://kubernetes.default.svc.cluster.local
+              expirationSeconds: 600
+          - configMap:
+              name: kube-root-ca.crt
+              items:
+                - key: ca.crt
+                  path: ca.crt
+    - name: harness-custody-api
+      projected:
+        defaultMode: 0400
+        sources:
+          - serviceAccountToken:
+              path: token
+              audience: openpc.i04.local.custody-api
+              expirationSeconds: 600
+    - name: signer-api-ca
+      configMap:
+        name: openpc-i04-signer-api-ca
+        defaultMode: 0444
+    - name: scratch
+      emptyDir:
+        medium: Memory
+        sizeLimit: 16Mi

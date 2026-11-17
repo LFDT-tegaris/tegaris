@@ -1,0 +1,163 @@
+# Conventional self-managed-store templates. A signed deployment profile may
+# instead bind exact managed-service endpoints. It must never render both
+# writer modes for the same STORE-* scope. Valkey items are omitted unless
+# optionalValkeyCache=true and its exact qualification passes.
+apiVersion: v1
+kind: List
+metadata: {name: openpc-self-managed-stores}
+items:
+  - apiVersion: v1
+    kind: Service
+    metadata: {name: openpc-control-pg, namespace: "OPENPC_INPUT_NAMESPACE", labels: {openpc.io/store: STORE-CONTROL-PG}}
+    spec: {clusterIP: None, selector: {app.kubernetes.io/name: openpc-control-pg}, ports: [{name: postgres, port: 5432, targetPort: postgres}]}
+  - apiVersion: apps/v1
+    kind: StatefulSet
+    metadata: {name: openpc-control-pg, namespace: "OPENPC_INPUT_NAMESPACE", labels: {openpc.io/store: STORE-CONTROL-PG}}
+    spec:
+      serviceName: openpc-control-pg
+      replicas: OPENPC_INPUT_POSTGRES_CONTROL_REPLICAS
+      podManagementPolicy: OrderedReady
+      updateStrategy: {type: RollingUpdate}
+      selector: {matchLabels: {app.kubernetes.io/name: openpc-control-pg}}
+      template:
+        metadata: {labels: {app.kubernetes.io/name: openpc-control-pg, openpc.io/store: STORE-CONTROL-PG}}
+        spec:
+          automountServiceAccountToken: false
+          topologySpreadConstraints:
+            - {maxSkew: 1, topologyKey: "OPENPC_INPUT_TOPOLOGY_KEY", whenUnsatisfiable: DoNotSchedule, labelSelector: {matchLabels: {app.kubernetes.io/name: openpc-control-pg}}}
+          terminationGracePeriodSeconds: OPENPC_INPUT_TOPOLOGY_TERMINATION_GRACE_SECONDS
+          securityContext: {runAsNonRoot: true, runAsUser: 65532, runAsGroup: 65532, fsGroup: 65532, seccompProfile: {type: RuntimeDefault}}
+          containers:
+            - name: postgresql
+              image: "OPENPC_INPUT_IMAGES_POSTGRESQL"
+              imagePullPolicy: IfNotPresent
+              ports: [{name: postgres, containerPort: 5432}]
+              env: [{name: OPENPC_DATABASE_SECRET_REF, value: "OPENPC_INPUT_SECRETREFS_CONTROL_POSTGRES"}, {name: OPENPC_STORE_ID, value: STORE-CONTROL-PG}]
+              securityContext: {allowPrivilegeEscalation: false, privileged: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+              resources:
+                requests: {cpu: "OPENPC_INPUT_RESOURCES_POSTGRESQL_CPU_REQUEST", memory: "OPENPC_INPUT_RESOURCES_POSTGRESQL_MEMORY_REQUEST", ephemeral-storage: "OPENPC_INPUT_RESOURCES_POSTGRESQL_EPHEMERAL_STORAGE_REQUEST"}
+                limits: {cpu: "OPENPC_INPUT_RESOURCES_POSTGRESQL_CPU_LIMIT", memory: "OPENPC_INPUT_RESOURCES_POSTGRESQL_MEMORY_LIMIT", ephemeral-storage: "OPENPC_INPUT_RESOURCES_POSTGRESQL_EPHEMERAL_STORAGE_LIMIT"}
+              startupProbe: {exec: {command: [/openpc/postgres-health, startup, STORE-CONTROL-PG]}, periodSeconds: 2, failureThreshold: 300, timeoutSeconds: 2}
+              readinessProbe: {exec: {command: [/openpc/postgres-health, readiness, STORE-CONTROL-PG]}, periodSeconds: 5, failureThreshold: 2, timeoutSeconds: 2}
+              livenessProbe: {exec: {command: [/openpc/postgres-health, liveness, STORE-CONTROL-PG]}, periodSeconds: 10, failureThreshold: 3, timeoutSeconds: 2}
+              lifecycle: {preStop: {exec: {command: [/openpc/postgres-health, drain, STORE-CONTROL-PG]}}}
+              volumeMounts: [{name: data, mountPath: /var/lib/postgresql/data}, {name: tmp, mountPath: /tmp}, {name: run, mountPath: /run/postgresql}, {name: secret-provider, mountPath: /run/openpc/secrets, readOnly: true}]
+          volumes: [{name: tmp, emptyDir: {medium: Memory, sizeLimit: "OPENPC_INPUT_RESOURCES_POSTGRESQL_EPHEMERAL_STORAGE_LIMIT"}}, {name: run, emptyDir: {medium: Memory, sizeLimit: "OPENPC_INPUT_POSTGRES_RUN_VOLUME_LIMIT"}}, {name: secret-provider, csi: {driver: "OPENPC_INPUT_SECRET_CSI_DRIVER", readOnly: true, volumeAttributes: {secretProviderClass: openpc-control-pg}}}]
+      volumeClaimTemplates:
+        - metadata: {name: data}
+          spec: {accessModes: [ReadWriteOnce], storageClassName: "OPENPC_INPUT_STORAGE_CLASS_NAME", resources: {requests: {storage: "OPENPC_INPUT_STORAGE_CONTROL_PG"}}}
+  - apiVersion: v1
+    kind: Service
+    metadata: {name: openpc-fact-pg, namespace: "OPENPC_INPUT_NAMESPACE", labels: {openpc.io/store: STORE-FACT-PG}}
+    spec: {clusterIP: None, selector: {app.kubernetes.io/name: openpc-fact-pg}, ports: [{name: postgres, port: 5432, targetPort: postgres}]}
+  - apiVersion: apps/v1
+    kind: StatefulSet
+    metadata: {name: openpc-fact-pg, namespace: "OPENPC_INPUT_NAMESPACE", labels: {openpc.io/store: STORE-FACT-PG}}
+    spec:
+      serviceName: openpc-fact-pg
+      replicas: OPENPC_INPUT_POSTGRES_FACT_REPLICAS
+      podManagementPolicy: OrderedReady
+      updateStrategy: {type: RollingUpdate}
+      selector: {matchLabels: {app.kubernetes.io/name: openpc-fact-pg}}
+      template:
+        metadata: {labels: {app.kubernetes.io/name: openpc-fact-pg, openpc.io/store: STORE-FACT-PG}}
+        spec:
+          automountServiceAccountToken: false
+          topologySpreadConstraints:
+            - {maxSkew: 1, topologyKey: "OPENPC_INPUT_TOPOLOGY_KEY", whenUnsatisfiable: DoNotSchedule, labelSelector: {matchLabels: {app.kubernetes.io/name: openpc-fact-pg}}}
+          terminationGracePeriodSeconds: OPENPC_INPUT_TOPOLOGY_TERMINATION_GRACE_SECONDS
+          securityContext: {runAsNonRoot: true, runAsUser: 65532, runAsGroup: 65532, fsGroup: 65532, seccompProfile: {type: RuntimeDefault}}
+          containers:
+            - name: postgresql
+              image: "OPENPC_INPUT_IMAGES_POSTGRESQL"
+              imagePullPolicy: IfNotPresent
+              ports: [{name: postgres, containerPort: 5432}]
+              env: [{name: OPENPC_DATABASE_SECRET_REF, value: "OPENPC_INPUT_SECRETREFS_FACT_POSTGRES"}, {name: OPENPC_STORE_ID, value: STORE-FACT-PG}]
+              securityContext: {allowPrivilegeEscalation: false, privileged: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+              resources:
+                requests: {cpu: "OPENPC_INPUT_RESOURCES_POSTGRESQL_CPU_REQUEST", memory: "OPENPC_INPUT_RESOURCES_POSTGRESQL_MEMORY_REQUEST", ephemeral-storage: "OPENPC_INPUT_RESOURCES_POSTGRESQL_EPHEMERAL_STORAGE_REQUEST"}
+                limits: {cpu: "OPENPC_INPUT_RESOURCES_POSTGRESQL_CPU_LIMIT", memory: "OPENPC_INPUT_RESOURCES_POSTGRESQL_MEMORY_LIMIT", ephemeral-storage: "OPENPC_INPUT_RESOURCES_POSTGRESQL_EPHEMERAL_STORAGE_LIMIT"}
+              startupProbe: {exec: {command: [/openpc/postgres-health, startup, STORE-FACT-PG]}, periodSeconds: 2, failureThreshold: 300, timeoutSeconds: 2}
+              readinessProbe: {exec: {command: [/openpc/postgres-health, readiness, STORE-FACT-PG]}, periodSeconds: 5, failureThreshold: 2, timeoutSeconds: 2}
+              livenessProbe: {exec: {command: [/openpc/postgres-health, liveness, STORE-FACT-PG]}, periodSeconds: 10, failureThreshold: 3, timeoutSeconds: 2}
+              lifecycle: {preStop: {exec: {command: [/openpc/postgres-health, drain, STORE-FACT-PG]}}}
+              volumeMounts: [{name: data, mountPath: /var/lib/postgresql/data}, {name: tmp, mountPath: /tmp}, {name: run, mountPath: /run/postgresql}, {name: secret-provider, mountPath: /run/openpc/secrets, readOnly: true}]
+          volumes: [{name: tmp, emptyDir: {medium: Memory, sizeLimit: "OPENPC_INPUT_RESOURCES_POSTGRESQL_EPHEMERAL_STORAGE_LIMIT"}}, {name: run, emptyDir: {medium: Memory, sizeLimit: "OPENPC_INPUT_POSTGRES_RUN_VOLUME_LIMIT"}}, {name: secret-provider, csi: {driver: "OPENPC_INPUT_SECRET_CSI_DRIVER", readOnly: true, volumeAttributes: {secretProviderClass: openpc-fact-pg}}}]
+      volumeClaimTemplates:
+        - metadata: {name: data}
+          spec: {accessModes: [ReadWriteOnce], storageClassName: "OPENPC_INPUT_STORAGE_CLASS_NAME", resources: {requests: {storage: "OPENPC_INPUT_STORAGE_FACT_PG"}}}
+  - apiVersion: v1
+    kind: Service
+    metadata: {name: openpc-candidate-index-pg, namespace: "OPENPC_INPUT_NAMESPACE", labels: {openpc.io/store: STORE-CANDIDATE-INDEX-PG}}
+    spec: {clusterIP: None, selector: {app.kubernetes.io/name: openpc-candidate-index-pg}, ports: [{name: postgres, port: 5432, targetPort: postgres}]}
+  - apiVersion: apps/v1
+    kind: StatefulSet
+    metadata: {name: openpc-candidate-index-pg, namespace: "OPENPC_INPUT_NAMESPACE", labels: {openpc.io/store: STORE-CANDIDATE-INDEX-PG}}
+    spec:
+      serviceName: openpc-candidate-index-pg
+      replicas: OPENPC_INPUT_POSTGRES_CANDIDATE_INDEX_REPLICAS
+      podManagementPolicy: OrderedReady
+      updateStrategy: {type: RollingUpdate}
+      selector: {matchLabels: {app.kubernetes.io/name: openpc-candidate-index-pg}}
+      template:
+        metadata: {labels: {app.kubernetes.io/name: openpc-candidate-index-pg, openpc.io/store: STORE-CANDIDATE-INDEX-PG}}
+        spec:
+          automountServiceAccountToken: false
+          topologySpreadConstraints:
+            - {maxSkew: 1, topologyKey: "OPENPC_INPUT_TOPOLOGY_KEY", whenUnsatisfiable: DoNotSchedule, labelSelector: {matchLabels: {app.kubernetes.io/name: openpc-candidate-index-pg}}}
+          terminationGracePeriodSeconds: OPENPC_INPUT_TOPOLOGY_TERMINATION_GRACE_SECONDS
+          securityContext: {runAsNonRoot: true, runAsUser: 65532, runAsGroup: 65532, fsGroup: 65532, seccompProfile: {type: RuntimeDefault}}
+          containers:
+            - name: postgresql
+              image: "OPENPC_INPUT_IMAGES_POSTGRESQL"
+              imagePullPolicy: IfNotPresent
+              ports: [{name: postgres, containerPort: 5432}]
+              env: [{name: OPENPC_DATABASE_SECRET_REF, value: "OPENPC_INPUT_SECRETREFS_CANDIDATE_INDEX_POSTGRES"}, {name: OPENPC_STORE_ID, value: STORE-CANDIDATE-INDEX-PG}]
+              securityContext: {allowPrivilegeEscalation: false, privileged: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+              resources:
+                requests: {cpu: "OPENPC_INPUT_RESOURCES_POSTGRESQL_CPU_REQUEST", memory: "OPENPC_INPUT_RESOURCES_POSTGRESQL_MEMORY_REQUEST", ephemeral-storage: "OPENPC_INPUT_RESOURCES_POSTGRESQL_EPHEMERAL_STORAGE_REQUEST"}
+                limits: {cpu: "OPENPC_INPUT_RESOURCES_POSTGRESQL_CPU_LIMIT", memory: "OPENPC_INPUT_RESOURCES_POSTGRESQL_MEMORY_LIMIT", ephemeral-storage: "OPENPC_INPUT_RESOURCES_POSTGRESQL_EPHEMERAL_STORAGE_LIMIT"}
+              startupProbe: {exec: {command: [/openpc/postgres-health, startup, STORE-CANDIDATE-INDEX-PG]}, periodSeconds: 2, failureThreshold: 300, timeoutSeconds: 2}
+              readinessProbe: {exec: {command: [/openpc/postgres-health, readiness, STORE-CANDIDATE-INDEX-PG]}, periodSeconds: 5, failureThreshold: 2, timeoutSeconds: 2}
+              livenessProbe: {exec: {command: [/openpc/postgres-health, liveness, STORE-CANDIDATE-INDEX-PG]}, periodSeconds: 10, failureThreshold: 3, timeoutSeconds: 2}
+              lifecycle: {preStop: {exec: {command: [/openpc/postgres-health, drain, STORE-CANDIDATE-INDEX-PG]}}}
+              volumeMounts: [{name: data, mountPath: /var/lib/postgresql/data}, {name: tmp, mountPath: /tmp}, {name: run, mountPath: /run/postgresql}, {name: secret-provider, mountPath: /run/openpc/secrets, readOnly: true}]
+          volumes: [{name: tmp, emptyDir: {medium: Memory, sizeLimit: "OPENPC_INPUT_RESOURCES_POSTGRESQL_EPHEMERAL_STORAGE_LIMIT"}}, {name: run, emptyDir: {medium: Memory, sizeLimit: "OPENPC_INPUT_POSTGRES_RUN_VOLUME_LIMIT"}}, {name: secret-provider, csi: {driver: "OPENPC_INPUT_SECRET_CSI_DRIVER", readOnly: true, volumeAttributes: {secretProviderClass: openpc-candidate-index-pg}}}]
+      volumeClaimTemplates:
+        - metadata: {name: data}
+          spec: {accessModes: [ReadWriteOnce], storageClassName: "OPENPC_INPUT_STORAGE_CLASS_NAME", resources: {requests: {storage: "OPENPC_INPUT_STORAGE_CANDIDATE_INDEX_PG"}}}
+  - apiVersion: v1
+    kind: Service
+    metadata: {name: openpc-valkey, namespace: "OPENPC_INPUT_NAMESPACE", labels: {openpc.io/store: STORE-VALKEY-OPTIONAL, openpc.io/render-when: optionalValkeyCache}}
+    spec: {clusterIP: None, selector: {app.kubernetes.io/name: openpc-valkey}, ports: [{name: valkey-tls, port: 6379, targetPort: valkey-tls}]}
+  - apiVersion: apps/v1
+    kind: StatefulSet
+    metadata: {name: openpc-valkey, namespace: "OPENPC_INPUT_NAMESPACE", labels: {openpc.io/store: STORE-VALKEY-OPTIONAL, openpc.io/render-when: optionalValkeyCache}}
+    spec:
+      serviceName: openpc-valkey
+      replicas: OPENPC_INPUT_VALKEY_REPLICAS
+      selector: {matchLabels: {app.kubernetes.io/name: openpc-valkey}}
+      template:
+        metadata: {labels: {app.kubernetes.io/name: openpc-valkey, openpc.io/store: STORE-VALKEY-OPTIONAL}}
+        spec:
+          automountServiceAccountToken: false
+          topologySpreadConstraints:
+            - {maxSkew: 1, topologyKey: "OPENPC_INPUT_TOPOLOGY_KEY", whenUnsatisfiable: DoNotSchedule, labelSelector: {matchLabels: {app.kubernetes.io/name: openpc-valkey}}}
+          terminationGracePeriodSeconds: OPENPC_INPUT_TOPOLOGY_TERMINATION_GRACE_SECONDS
+          securityContext: {runAsNonRoot: true, runAsUser: 65532, runAsGroup: 65532, fsGroup: 65532, seccompProfile: {type: RuntimeDefault}}
+          containers:
+            - name: valkey
+              image: "OPENPC_INPUT_IMAGES_VALKEY"
+              imagePullPolicy: IfNotPresent
+              args: ["/openpc/valkey-start", "--tls-only", "--appendonly", "no", "--save", "", "--maxmemory", "OPENPC_INPUT_VALKEY_MAXMEMORY", "--maxmemory-policy", "allkeys-lfu"]
+              ports: [{name: valkey-tls, containerPort: 6379}]
+              env: [{name: OPENPC_VALKEY_SECRET_REF, value: "OPENPC_INPUT_VALKEY_SECRET_REF"}]
+              securityContext: {allowPrivilegeEscalation: false, privileged: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+              resources:
+                requests: {cpu: "OPENPC_INPUT_RESOURCES_VALKEY_CPU_REQUEST", memory: "OPENPC_INPUT_RESOURCES_VALKEY_MEMORY_REQUEST", ephemeral-storage: "OPENPC_INPUT_RESOURCES_VALKEY_EPHEMERAL_STORAGE_REQUEST"}
+                limits: {cpu: "OPENPC_INPUT_RESOURCES_VALKEY_CPU_LIMIT", memory: "OPENPC_INPUT_RESOURCES_VALKEY_MEMORY_LIMIT", ephemeral-storage: "OPENPC_INPUT_RESOURCES_VALKEY_EPHEMERAL_STORAGE_LIMIT"}
+              startupProbe: {exec: {command: [/openpc/valkey-health, startup]}, periodSeconds: 2, failureThreshold: 150, timeoutSeconds: 1}
+              readinessProbe: {exec: {command: [/openpc/valkey-health, readiness]}, periodSeconds: 5, failureThreshold: 2, timeoutSeconds: 2}
+              livenessProbe: {exec: {command: [/openpc/valkey-health, liveness]}, periodSeconds: 10, failureThreshold: 3, timeoutSeconds: 2}
+              volumeMounts: [{name: tmp, mountPath: /tmp}, {name: run, mountPath: /run/valkey}, {name: secret-provider, mountPath: /run/openpc/secrets, readOnly: true}]
+          volumes: [{name: tmp, emptyDir: {medium: Memory, sizeLimit: "OPENPC_INPUT_RESOURCES_VALKEY_EPHEMERAL_STORAGE_LIMIT"}}, {name: run, emptyDir: {medium: Memory, sizeLimit: "OPENPC_INPUT_VALKEY_RUN_VOLUME_LIMIT"}}, {name: secret-provider, csi: {driver: "OPENPC_INPUT_SECRET_CSI_DRIVER", readOnly: true, volumeAttributes: {secretProviderClass: openpc-valkey}}}]

@@ -1,0 +1,58 @@
+/** Public notification action bindings. These describe authority requirements; they do
+ * not grant a human session, a worker identity, signing capability or delivery. */
+export const notificationMutationOperations = [
+  {
+    catalogOperationId: 'CFG-OP-CREATE-NOTIFICATION',
+    actionIntentId: 'ACT-NOTIFICATIONS_CREATE_RESOURCE-V1',
+    resourceType: 'notifications',
+    operationClass: 'CREATE',
+    makerCheckerRequired: false,
+    stepUpRequired: false,
+    aggregateType: 'notification',
+  },
+  {
+    catalogOperationId: 'CFG-OP-UPDATE-NOTIFICATION',
+    actionIntentId: 'ACT-NOTIFICATIONS_UPDATE_RESOURCE-V1',
+    resourceType: 'notifications',
+    operationClass: 'UPDATE',
+    makerCheckerRequired: false,
+    stepUpRequired: false,
+    aggregateType: 'notification',
+  },
+  {
+    catalogOperationId: 'CFG-OP-ACKNOWLEDGE-NOTIFICATION',
+    actionIntentId: 'ACT-NOTIFICATION_UPDATE_ACKNOWLEDGE-V1',
+    resourceType: 'notification',
+    operationClass: 'UPDATE',
+    makerCheckerRequired: false,
+    stepUpRequired: false,
+    aggregateType: 'notification',
+  },
+  {
+    catalogOperationId: 'CFG-OP-CREATE-NOTIFICATION-ENDPOINT',
+    actionIntentId: 'ACT-NOTIFICATION_ENDPOINTS_CREATE_RESOURCE-V1',
+    resourceType: 'notification-endpoints',
+    operationClass: 'CREATE',
+    makerCheckerRequired: false,
+    stepUpRequired: true,
+    aggregateType: 'notification-endpoint',
+  },
+  {
+    catalogOperationId: 'CFG-OP-UPDATE-NOTIFICATION-ENDPOINT',
+    actionIntentId: 'ACT-NOTIFICATION_ENDPOINTS_UPDATE_RESOURCE-V1',
+    resourceType: 'notification-endpoints',
+    operationClass: 'UPDATE',
+    makerCheckerRequired: false,
+    stepUpRequired: true,
+    aggregateType: 'notification-endpoint',
+  },
+  {
+    catalogOperationId: 'CFG-OP-VERIFY-NOTIFICATION-ENDPOINT',
+    actionIntentId: 'ACT-NOTIFICATION_UPDATE_VERIFY-V1',
+    resourceType: 'notification-endpoint',
+    operationClass: 'UPDATE',
+    makerCheckerRequired: false,
+    stepUpRequired: false,
+    aggregateType: 'notification-endpoint',
+  },
+] as const;

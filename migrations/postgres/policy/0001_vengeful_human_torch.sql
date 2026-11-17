@@ -1,0 +1,7 @@
+ALTER TABLE "control"."policy_activation" DROP CONSTRAINT "policy_activation_digests_ck";--> statement-breakpoint
+ALTER TABLE "control"."policy_activation" ADD COLUMN "approval_request_id" uuid NOT NULL;--> statement-breakpoint
+ALTER TABLE "control"."policy_activation" ADD COLUMN "mfa_challenge_id" uuid NOT NULL;--> statement-breakpoint
+ALTER TABLE "control"."policy_activation" ADD COLUMN "webauthn_assertion_binding_digest" "bytea" NOT NULL;--> statement-breakpoint
+ALTER TABLE "control"."policy_activation" ADD CONSTRAINT "policy_activation_approval_fk" FOREIGN KEY ("participant_id","approval_request_id") REFERENCES "control"."approval_request"("participant_id","approval_request_id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "control"."policy_activation" ADD CONSTRAINT "policy_activation_mfa_fk" FOREIGN KEY ("mfa_challenge_id") REFERENCES "control"."mfa_challenge"("mfa_challenge_id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "control"."policy_activation" ADD CONSTRAINT "policy_activation_digests_ck" CHECK (octet_length("control"."policy_activation"."exact_cohort_digest")=32 and octet_length("control"."policy_activation"."webauthn_assertion_binding_digest")=32 and ("control"."policy_activation"."prior_generation_digest" is null or octet_length("control"."policy_activation"."prior_generation_digest")=32) and ("control"."policy_activation"."receipt_digest" is null or octet_length("control"."policy_activation"."receipt_digest")=32));

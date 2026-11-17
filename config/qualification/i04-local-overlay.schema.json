@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openpc:i04:local-qualification-overlay:1.0",
+  "title": "OpenPC I04 local-development qualification overlay",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "overlayId",
+    "scope",
+    "baseline",
+    "substrate",
+    "principals",
+    "signingBoundary",
+    "trustBoundary",
+    "tokenBinding",
+    "networkPolicy",
+    "claimBoundary"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "overlayId": {
+      "const": "OPENPC-I04-LOCAL-QUALIFICATION-OVERLAY-R8-LENGTH-DELIMITED-BOUNDARY-20260830-01"
+    },
+    "scope": { "const": "LOCAL_DEVELOPMENT_TECHNICAL_TEST_ONLY" },
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["c17ArchiveSha256", "i03RootCommitmentSha256"],
+      "properties": {
+        "c17ArchiveSha256": { "$ref": "#/$defs/sha256" },
+        "i03RootCommitmentSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "substrate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kubernetesVersion", "minikubeVersion", "envoyVersion", "envoyImage"],
+      "properties": {
+        "kubernetesVersion": { "const": "1.36.2" },
+        "minikubeVersion": { "const": "1.38.1" },
+        "envoyVersion": { "const": "1.39.0" },
+        "envoyImage": {
+          "const": "docker.io/envoyproxy/envoy:v1.39.0@sha256:f6e2f57b1bef8235083a2553b523508cf97d8991c893fd2aae3a94a6b21096a2"
+        }
+      }
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^openpc-i04-[a-z0-9-]+$" }
+    },
+    "signingBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "backend",
+        "algorithm",
+        "curve",
+        "mechanism",
+        "audience",
+        "privateKeyExportApi",
+        "workloadPrivateKeyAccess",
+        "custodyInterface",
+        "callerAuthentication",
+        "signerRuntimeUid",
+        "harnessRuntimeUid",
+        "pinInProcessMetadata",
+        "harnessCredentialAccess",
+        "generalSigningInterface",
+        "signerSideValidationBeforeUnlock",
+        "callerValidityOrDigestGrantInput",
+        "callerEnvelopeInput",
+        "purposeAuthorityOwnsClock",
+        "expiryIndexedReplayFailClosed",
+        "replayCapacity",
+        "rootCustodyProvisioningOnly",
+        "softwareEnforcedNonExtractability",
+        "hardwareNonExtractability",
+        "c17QualificationProfileCompatible",
+        "localAdminOverrideResistance"
+      ],
+      "properties": {
+        "backend": { "const": "SOFTHSM2_PKCS11_LOCAL_EMULATION" },
+        "algorithm": { "const": "ECDSA_P256_SHA256" },
+        "curve": { "const": "P-256" },
+        "mechanism": {
+          "const": "CKM_ECDSA_SHA256_LENGTH_DELIMITED_CANONICAL_PURPOSE_AUTHORITY"
+        },
+        "audience": { "const": "openpc.i04.local.runtime-qualification" },
+        "privateKeyExportApi": { "const": false },
+        "workloadPrivateKeyAccess": { "const": false },
+        "custodyInterface": {
+          "const": "DISTINCT_KUBERNETES_PODS_TLS_LENGTH_DELIMITED_RAW_BYTE_PURPOSE_API"
+        },
+        "callerAuthentication": {
+          "const": "PURPOSE_AUTHORITY_CRYPTOGRAPHICALLY_VERIFIES_PROJECTED_KUBERNETES_TOKEN"
+        },
+        "signerRuntimeUid": { "const": 10001 },
+        "harnessRuntimeUid": { "const": 20001 },
+        "pinInProcessMetadata": { "const": false },
+        "harnessCredentialAccess": { "const": false },
+        "generalSigningInterface": { "const": false },
+        "signerSideValidationBeforeUnlock": { "const": true },
+        "callerValidityOrDigestGrantInput": { "const": false },
+        "callerEnvelopeInput": { "const": false },
+        "purposeAuthorityOwnsClock": { "const": true },
+        "expiryIndexedReplayFailClosed": { "const": true },
+        "replayCapacity": { "const": 64 },
+        "rootCustodyProvisioningOnly": { "const": true },
+        "softwareEnforcedNonExtractability": { "const": true },
+        "hardwareNonExtractability": { "const": "NOT_PROVEN_OPEN" },
+        "c17QualificationProfileCompatible": { "const": false },
+        "localAdminOverrideResistance": { "const": "NOT_PROVEN_OPEN" }
+      }
+    },
+    "trustBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "backend",
+        "privateMaterialLocation",
+        "softwareEnforcedPrivateKeyNonExportable",
+        "organizationalIndependence",
+        "publicPaths"
+      ],
+      "properties": {
+        "algorithm": { "const": "P-256" },
+        "backend": { "const": "SEPARATE_SOFTHSM2_PKCS11_ROOT_TOKEN" },
+        "privateMaterialLocation": { "const": "AGENTS_TMP_ONLY" },
+        "softwareEnforcedPrivateKeyNonExportable": { "const": true },
+        "organizationalIndependence": { "const": "NOT_PROVEN_OPEN" },
+        "publicPaths": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "tokenBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "exactSingletonAudience",
+        "maximumTtlSeconds",
+        "maximumIssuedAgeSeconds",
+        "signedEnvelopeBindsJwtSha256",
+        "trustedJwksPinnedByProvisioner",
+        "callerAndTokenJwtVerifiedInsidePurposeAuthority",
+        "canonicalRequestByteEqualityRequired",
+        "callerTokenInsideCanonicalRequest",
+        "lengthDelimitedCredentialSpans",
+        "embeddedNulRejectedBeforeJsonOrJwtConversion",
+        "malformedUtf8AndControlsRejectedBeforeJsonOrJwtConversion",
+        "implicitLengthCredentialRoutinesForbidden"
+      ],
+      "properties": {
+        "algorithm": { "const": "RS256" },
+        "exactSingletonAudience": { "const": true },
+        "maximumTtlSeconds": { "const": 600 },
+        "maximumIssuedAgeSeconds": { "const": 120 },
+        "signedEnvelopeBindsJwtSha256": { "const": true },
+        "trustedJwksPinnedByProvisioner": { "const": true },
+        "callerAndTokenJwtVerifiedInsidePurposeAuthority": { "const": true },
+        "canonicalRequestByteEqualityRequired": { "const": true },
+        "callerTokenInsideCanonicalRequest": { "const": true },
+        "lengthDelimitedCredentialSpans": { "const": true },
+        "embeddedNulRejectedBeforeJsonOrJwtConversion": { "const": true },
+        "malformedUtf8AndControlsRejectedBeforeJsonOrJwtConversion": { "const": true },
+        "implicitLengthCredentialRoutinesForbidden": { "const": true }
+      }
+    },
+    "networkPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manifestIntent", "enforcement", "passClaimPermitted"],
+      "properties": {
+        "manifestIntent": { "const": "PRESENT" },
+        "enforcement": { "const": "NOT_PROVEN_OPEN" },
+        "passClaimPermitted": { "const": false }
+      }
+    },
+    "claimBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "localTechnicalGate2",
+        "providerQualification",
+        "productionBusinessQualification",
+        "externalAcceptance"
+      ],
+      "properties": {
+        "localTechnicalGate2": { "const": "ELIGIBLE_AFTER_VALIDATION_AND_REVIEW" },
+        "providerQualification": { "const": "NOT_PROVEN_OPEN" },
+        "productionBusinessQualification": { "const": "NOT_PROVEN_OPEN" },
+        "externalAcceptance": { "const": "NOT_AUTHORIZED_NOT_PERFORMED" }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

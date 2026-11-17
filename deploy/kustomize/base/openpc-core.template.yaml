@@ -1,0 +1,279 @@
+# Exact Kubernetes 1.36.2 template. Every OPENPC_INPUT_* token is a required,
+# typed binding from materialization-inputs.schema.json. A rendered manifest
+# containing any token is invalid and must not be applied or claimed deployed.
+apiVersion: v1
+kind: List
+metadata:
+  name: openpc-core
+  annotations:
+    openpc.io/freeze-id: C03-ARCHITECTURE-SHARED-PRIMITIVES-FREEZE-20260824-01
+    openpc.io/qualification-receipt-digest: "OPENPC_INPUT_QUALIFICATION_RECEIPT_DIGEST"
+items:
+  - apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: "OPENPC_INPUT_NAMESPACE"
+      labels:
+        pod-security.kubernetes.io/enforce: restricted
+        pod-security.kubernetes.io/enforce-version: v1.36
+        openpc.io/profile: "OPENPC_INPUT_PROFILE"
+  - apiVersion: v1
+    kind: ServiceAccount
+    metadata: {name: openpc-workbench, namespace: "OPENPC_INPUT_NAMESPACE"}
+    automountServiceAccountToken: false
+  - apiVersion: v1
+    kind: ServiceAccount
+    metadata: {name: openpc-control, namespace: "OPENPC_INPUT_NAMESPACE"}
+    automountServiceAccountToken: false
+  - apiVersion: v1
+    kind: ServiceAccount
+    metadata: {name: openpc-compiler, namespace: "OPENPC_INPUT_NAMESPACE"}
+    automountServiceAccountToken: false
+  - apiVersion: v1
+    kind: ServiceAccount
+    metadata: {name: openpc-fleet-control, namespace: "OPENPC_INPUT_NAMESPACE"}
+    automountServiceAccountToken: false
+  - apiVersion: v1
+    kind: ServiceAccount
+    metadata: {name: openpc-fact-bridge, namespace: "OPENPC_INPUT_NAMESPACE"}
+    automountServiceAccountToken: false
+  - apiVersion: v1
+    kind: ServiceAccount
+    metadata: {name: openpc-otel-collector, namespace: "OPENPC_INPUT_NAMESPACE"}
+    automountServiceAccountToken: false
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata: {name: openpc-workbench, namespace: "OPENPC_INPUT_NAMESPACE", labels: {openpc.io/du: DU-PC-WORKBENCH}}
+    spec:
+      replicas: OPENPC_INPUT_TOPOLOGY_WORKBENCH_REPLICAS
+      minReadySeconds: OPENPC_INPUT_TOPOLOGY_MIN_READY_SECONDS
+      strategy: {type: RollingUpdate, rollingUpdate: {maxUnavailable: 0, maxSurge: 1}}
+      selector: {matchLabels: {app.kubernetes.io/name: openpc-workbench}}
+      template:
+        metadata: {labels: {app.kubernetes.io/name: openpc-workbench, openpc.io/du: DU-PC-WORKBENCH}}
+        spec:
+          serviceAccountName: openpc-workbench
+          automountServiceAccountToken: false
+          topologySpreadConstraints:
+            - {maxSkew: 1, topologyKey: "OPENPC_INPUT_TOPOLOGY_KEY", whenUnsatisfiable: DoNotSchedule, labelSelector: {matchLabels: {app.kubernetes.io/name: openpc-workbench}}}
+          terminationGracePeriodSeconds: OPENPC_INPUT_TOPOLOGY_TERMINATION_GRACE_SECONDS
+          securityContext: {runAsNonRoot: true, runAsUser: 65532, runAsGroup: 65532, fsGroup: 65532, seccompProfile: {type: RuntimeDefault}}
+          containers:
+            - name: workbench
+              image: "OPENPC_INPUT_IMAGES_WORKBENCH"
+              imagePullPolicy: IfNotPresent
+              ports: [{name: https, containerPort: 8443, protocol: TCP}]
+              env: [{name: OPENPC_PROFILE, value: "OPENPC_INPUT_PROFILE"}]
+              securityContext: {allowPrivilegeEscalation: false, privileged: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+              resources:
+                requests: {cpu: "OPENPC_INPUT_RESOURCES_WORKBENCH_CPU_REQUEST", memory: "OPENPC_INPUT_RESOURCES_WORKBENCH_MEMORY_REQUEST", ephemeral-storage: "OPENPC_INPUT_RESOURCES_WORKBENCH_EPHEMERAL_STORAGE_REQUEST"}
+                limits: {cpu: "OPENPC_INPUT_RESOURCES_WORKBENCH_CPU_LIMIT", memory: "OPENPC_INPUT_RESOURCES_WORKBENCH_MEMORY_LIMIT", ephemeral-storage: "OPENPC_INPUT_RESOURCES_WORKBENCH_EPHEMERAL_STORAGE_LIMIT"}
+              startupProbe: {httpGet: {path: /health/startup, port: https, scheme: HTTPS}, periodSeconds: 2, failureThreshold: 150, timeoutSeconds: 1}
+              readinessProbe: {httpGet: {path: /health/readiness, port: https, scheme: HTTPS}, periodSeconds: 5, failureThreshold: 2, timeoutSeconds: 2}
+              livenessProbe: {httpGet: {path: /health/liveness, port: https, scheme: HTTPS}, periodSeconds: 10, failureThreshold: 3, timeoutSeconds: 2}
+              lifecycle: {preStop: {httpGet: {path: /lifecycle/drain, port: https, scheme: HTTPS}}}
+              volumeMounts: [{name: tmp, mountPath: /tmp}]
+          volumes: [{name: tmp, emptyDir: {medium: Memory, sizeLimit: "OPENPC_INPUT_RESOURCES_WORKBENCH_EPHEMERAL_STORAGE_LIMIT"}}]
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata: {name: openpc-control, namespace: "OPENPC_INPUT_NAMESPACE", labels: {openpc.io/du: DU-PC-CONTROL}}
+    spec:
+      replicas: OPENPC_INPUT_TOPOLOGY_CONTROL_REPLICAS
+      minReadySeconds: OPENPC_INPUT_TOPOLOGY_MIN_READY_SECONDS
+      strategy: {type: RollingUpdate, rollingUpdate: {maxUnavailable: 0, maxSurge: 1}}
+      selector: {matchLabels: {app.kubernetes.io/name: openpc-control}}
+      template:
+        metadata: {labels: {app.kubernetes.io/name: openpc-control, openpc.io/du: DU-PC-CONTROL}}
+        spec:
+          serviceAccountName: openpc-control
+          automountServiceAccountToken: false
+          topologySpreadConstraints:
+            - {maxSkew: 1, topologyKey: "OPENPC_INPUT_TOPOLOGY_KEY", whenUnsatisfiable: DoNotSchedule, labelSelector: {matchLabels: {app.kubernetes.io/name: openpc-control}}}
+          terminationGracePeriodSeconds: OPENPC_INPUT_TOPOLOGY_TERMINATION_GRACE_SECONDS
+          securityContext: {runAsNonRoot: true, runAsUser: 65532, runAsGroup: 65532, fsGroup: 65532, seccompProfile: {type: RuntimeDefault}}
+          containers:
+            - name: control
+              image: "OPENPC_INPUT_IMAGES_CONTROL"
+              imagePullPolicy: IfNotPresent
+              ports: [{name: https, containerPort: 8443, protocol: TCP}]
+              env:
+                - {name: OPENPC_PROFILE, value: "OPENPC_INPUT_PROFILE"}
+                - {name: OPENPC_CONTROL_DSN_REF, value: "OPENPC_INPUT_SECRETREFS_CONTROL_POSTGRES"}
+                - {name: OPENPC_OIDC_CLIENT_SECRET_REF, value: "OPENPC_INPUT_SECRETREFS_OIDC_CLIENT"}
+              securityContext: {allowPrivilegeEscalation: false, privileged: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+              resources:
+                requests: {cpu: "OPENPC_INPUT_RESOURCES_CONTROL_CPU_REQUEST", memory: "OPENPC_INPUT_RESOURCES_CONTROL_MEMORY_REQUEST", ephemeral-storage: "OPENPC_INPUT_RESOURCES_CONTROL_EPHEMERAL_STORAGE_REQUEST"}
+                limits: {cpu: "OPENPC_INPUT_RESOURCES_CONTROL_CPU_LIMIT", memory: "OPENPC_INPUT_RESOURCES_CONTROL_MEMORY_LIMIT", ephemeral-storage: "OPENPC_INPUT_RESOURCES_CONTROL_EPHEMERAL_STORAGE_LIMIT"}
+              startupProbe: {httpGet: {path: /health/startup, port: https, scheme: HTTPS}, periodSeconds: 2, failureThreshold: 150, timeoutSeconds: 1}
+              readinessProbe: {httpGet: {path: /health/readiness, port: https, scheme: HTTPS}, periodSeconds: 5, failureThreshold: 2, timeoutSeconds: 2}
+              livenessProbe: {httpGet: {path: /health/liveness, port: https, scheme: HTTPS}, periodSeconds: 10, failureThreshold: 3, timeoutSeconds: 2}
+              lifecycle: {preStop: {httpGet: {path: /lifecycle/drain, port: https, scheme: HTTPS}}}
+              volumeMounts: [{name: tmp, mountPath: /tmp}, {name: secret-provider, mountPath: /run/openpc/secrets, readOnly: true}]
+          volumes:
+            - {name: tmp, emptyDir: {medium: Memory, sizeLimit: "OPENPC_INPUT_RESOURCES_CONTROL_EPHEMERAL_STORAGE_LIMIT"}}
+            - {name: secret-provider, csi: {driver: "OPENPC_INPUT_SECRET_CSI_DRIVER", readOnly: true, volumeAttributes: {secretProviderClass: openpc-control}}}
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata: {name: openpc-compiler, namespace: "OPENPC_INPUT_NAMESPACE", labels: {openpc.io/du: DU-PC-COMPILER}}
+    spec:
+      replicas: OPENPC_INPUT_TOPOLOGY_COMPILER_REPLICAS
+      minReadySeconds: OPENPC_INPUT_TOPOLOGY_MIN_READY_SECONDS
+      strategy: {type: RollingUpdate, rollingUpdate: {maxUnavailable: 0, maxSurge: 1}}
+      selector: {matchLabels: {app.kubernetes.io/name: openpc-compiler}}
+      template:
+        metadata: {labels: {app.kubernetes.io/name: openpc-compiler, openpc.io/du: DU-PC-COMPILER}}
+        spec:
+          serviceAccountName: openpc-compiler
+          automountServiceAccountToken: false
+          topologySpreadConstraints:
+            - {maxSkew: 1, topologyKey: "OPENPC_INPUT_TOPOLOGY_KEY", whenUnsatisfiable: DoNotSchedule, labelSelector: {matchLabels: {app.kubernetes.io/name: openpc-compiler}}}
+          terminationGracePeriodSeconds: OPENPC_INPUT_TOPOLOGY_TERMINATION_GRACE_SECONDS
+          securityContext: {runAsNonRoot: true, runAsUser: 65532, runAsGroup: 65532, fsGroup: 65532, seccompProfile: {type: RuntimeDefault}}
+          containers:
+            - name: compiler
+              image: "OPENPC_INPUT_IMAGES_COMPILER"
+              imagePullPolicy: IfNotPresent
+              ports: [{name: https, containerPort: 8443, protocol: TCP}]
+              env: [{name: OPENPC_PROFILE, value: "OPENPC_INPUT_PROFILE"}, {name: OPENPC_SIGNING_KEY_REF, value: "OPENPC_INPUT_SECRETREFS_SIGNING_KEY"}]
+              securityContext: {allowPrivilegeEscalation: false, privileged: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+              resources:
+                requests: {cpu: "OPENPC_INPUT_RESOURCES_COMPILER_CPU_REQUEST", memory: "OPENPC_INPUT_RESOURCES_COMPILER_MEMORY_REQUEST", ephemeral-storage: "OPENPC_INPUT_RESOURCES_COMPILER_EPHEMERAL_STORAGE_REQUEST"}
+                limits: {cpu: "OPENPC_INPUT_RESOURCES_COMPILER_CPU_LIMIT", memory: "OPENPC_INPUT_RESOURCES_COMPILER_MEMORY_LIMIT", ephemeral-storage: "OPENPC_INPUT_RESOURCES_COMPILER_EPHEMERAL_STORAGE_LIMIT"}
+              startupProbe: {httpGet: {path: /health/startup, port: https, scheme: HTTPS}, periodSeconds: 2, failureThreshold: 150, timeoutSeconds: 1}
+              readinessProbe: {httpGet: {path: /health/readiness, port: https, scheme: HTTPS}, periodSeconds: 5, failureThreshold: 2, timeoutSeconds: 2}
+              livenessProbe: {httpGet: {path: /health/liveness, port: https, scheme: HTTPS}, periodSeconds: 10, failureThreshold: 3, timeoutSeconds: 2}
+              lifecycle: {preStop: {httpGet: {path: /lifecycle/drain, port: https, scheme: HTTPS}}}
+              volumeMounts: [{name: tmp, mountPath: /tmp}, {name: secret-provider, mountPath: /run/openpc/secrets, readOnly: true}]
+          volumes: [{name: tmp, emptyDir: {sizeLimit: "OPENPC_INPUT_RESOURCES_COMPILER_EPHEMERAL_STORAGE_LIMIT"}}, {name: secret-provider, csi: {driver: "OPENPC_INPUT_SECRET_CSI_DRIVER", readOnly: true, volumeAttributes: {secretProviderClass: openpc-compiler}}}]
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata: {name: openpc-fleet-control, namespace: "OPENPC_INPUT_NAMESPACE", labels: {openpc.io/du: DU-PC-FLEET-CONTROL}}
+    spec:
+      replicas: OPENPC_INPUT_TOPOLOGY_FLEET_CONTROL_REPLICAS
+      minReadySeconds: OPENPC_INPUT_TOPOLOGY_MIN_READY_SECONDS
+      strategy: {type: RollingUpdate, rollingUpdate: {maxUnavailable: 0, maxSurge: 1}}
+      selector: {matchLabels: {app.kubernetes.io/name: openpc-fleet-control}}
+      template:
+        metadata: {labels: {app.kubernetes.io/name: openpc-fleet-control, openpc.io/du: DU-PC-FLEET-CONTROL}}
+        spec:
+          serviceAccountName: openpc-fleet-control
+          automountServiceAccountToken: false
+          topologySpreadConstraints:
+            - {maxSkew: 1, topologyKey: "OPENPC_INPUT_TOPOLOGY_KEY", whenUnsatisfiable: DoNotSchedule, labelSelector: {matchLabels: {app.kubernetes.io/name: openpc-fleet-control}}}
+          terminationGracePeriodSeconds: OPENPC_INPUT_TOPOLOGY_TERMINATION_GRACE_SECONDS
+          securityContext: {runAsNonRoot: true, runAsUser: 65532, runAsGroup: 65532, fsGroup: 65532, seccompProfile: {type: RuntimeDefault}}
+          containers:
+            - name: fleet-control
+              image: "OPENPC_INPUT_IMAGES_FLEET_CONTROL"
+              imagePullPolicy: IfNotPresent
+              ports: [{name: https, containerPort: 8443, protocol: TCP}]
+              env: [{name: OPENPC_PROFILE, value: "OPENPC_INPUT_PROFILE"}, {name: OPENPC_CONTROL_DSN_REF, value: "OPENPC_INPUT_SECRETREFS_CONTROL_POSTGRES"}, {name: OPENPC_OCI_CREDENTIAL_REF, value: "OPENPC_INPUT_SECRETREFS_OCI"}]
+              securityContext: {allowPrivilegeEscalation: false, privileged: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+              resources:
+                requests: {cpu: "OPENPC_INPUT_RESOURCES_FLEET_CONTROL_CPU_REQUEST", memory: "OPENPC_INPUT_RESOURCES_FLEET_CONTROL_MEMORY_REQUEST", ephemeral-storage: "OPENPC_INPUT_RESOURCES_FLEET_CONTROL_EPHEMERAL_STORAGE_REQUEST"}
+                limits: {cpu: "OPENPC_INPUT_RESOURCES_FLEET_CONTROL_CPU_LIMIT", memory: "OPENPC_INPUT_RESOURCES_FLEET_CONTROL_MEMORY_LIMIT", ephemeral-storage: "OPENPC_INPUT_RESOURCES_FLEET_CONTROL_EPHEMERAL_STORAGE_LIMIT"}
+              startupProbe: {httpGet: {path: /health/startup, port: https, scheme: HTTPS}, periodSeconds: 2, failureThreshold: 150, timeoutSeconds: 1}
+              readinessProbe: {httpGet: {path: /health/readiness, port: https, scheme: HTTPS}, periodSeconds: 5, failureThreshold: 2, timeoutSeconds: 2}
+              livenessProbe: {httpGet: {path: /health/liveness, port: https, scheme: HTTPS}, periodSeconds: 10, failureThreshold: 3, timeoutSeconds: 2}
+              lifecycle: {preStop: {httpGet: {path: /lifecycle/drain, port: https, scheme: HTTPS}}}
+              volumeMounts: [{name: tmp, mountPath: /tmp}, {name: secret-provider, mountPath: /run/openpc/secrets, readOnly: true}]
+          volumes: [{name: tmp, emptyDir: {medium: Memory, sizeLimit: "OPENPC_INPUT_RESOURCES_FLEET_CONTROL_EPHEMERAL_STORAGE_LIMIT"}}, {name: secret-provider, csi: {driver: "OPENPC_INPUT_SECRET_CSI_DRIVER", readOnly: true, volumeAttributes: {secretProviderClass: openpc-fleet-control}}}]
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata: {name: openpc-fact-bridge, namespace: "OPENPC_INPUT_NAMESPACE", labels: {openpc.io/du: DU-PC-FACT-BRIDGE}}
+    spec:
+      replicas: OPENPC_INPUT_TOPOLOGY_FACT_BRIDGE_REPLICAS
+      minReadySeconds: OPENPC_INPUT_TOPOLOGY_MIN_READY_SECONDS
+      strategy: {type: RollingUpdate, rollingUpdate: {maxUnavailable: 0, maxSurge: 1}}
+      selector: {matchLabels: {app.kubernetes.io/name: openpc-fact-bridge}}
+      template:
+        metadata: {labels: {app.kubernetes.io/name: openpc-fact-bridge, openpc.io/du: DU-PC-FACT-BRIDGE}}
+        spec:
+          serviceAccountName: openpc-fact-bridge
+          automountServiceAccountToken: false
+          topologySpreadConstraints:
+            - {maxSkew: 1, topologyKey: "OPENPC_INPUT_TOPOLOGY_KEY", whenUnsatisfiable: DoNotSchedule, labelSelector: {matchLabels: {app.kubernetes.io/name: openpc-fact-bridge}}}
+          terminationGracePeriodSeconds: OPENPC_INPUT_TOPOLOGY_TERMINATION_GRACE_SECONDS
+          securityContext: {runAsNonRoot: true, runAsUser: 65532, runAsGroup: 65532, fsGroup: 65532, seccompProfile: {type: RuntimeDefault}}
+          containers:
+            - name: fact-bridge
+              image: "OPENPC_INPUT_IMAGES_FACT_BRIDGE"
+              imagePullPolicy: IfNotPresent
+              ports: [{name: https, containerPort: 8443, protocol: TCP}]
+              env: [{name: OPENPC_PROFILE, value: "OPENPC_INPUT_PROFILE"}, {name: OPENPC_FACTS_DSN_REF, value: "OPENPC_INPUT_SECRETREFS_FACT_POSTGRES"}, {name: OPENPC_CANDIDATE_INDEX_DSN_REF, value: "OPENPC_INPUT_SECRETREFS_CANDIDATE_INDEX_POSTGRES"}]
+              securityContext: {allowPrivilegeEscalation: false, privileged: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+              resources:
+                requests: {cpu: "OPENPC_INPUT_RESOURCES_FACT_BRIDGE_CPU_REQUEST", memory: "OPENPC_INPUT_RESOURCES_FACT_BRIDGE_MEMORY_REQUEST", ephemeral-storage: "OPENPC_INPUT_RESOURCES_FACT_BRIDGE_EPHEMERAL_STORAGE_REQUEST"}
+                limits: {cpu: "OPENPC_INPUT_RESOURCES_FACT_BRIDGE_CPU_LIMIT", memory: "OPENPC_INPUT_RESOURCES_FACT_BRIDGE_MEMORY_LIMIT", ephemeral-storage: "OPENPC_INPUT_RESOURCES_FACT_BRIDGE_EPHEMERAL_STORAGE_LIMIT"}
+              startupProbe: {httpGet: {path: /health/startup, port: https, scheme: HTTPS}, periodSeconds: 2, failureThreshold: 150, timeoutSeconds: 1}
+              readinessProbe: {httpGet: {path: /health/readiness, port: https, scheme: HTTPS}, periodSeconds: 5, failureThreshold: 2, timeoutSeconds: 2}
+              livenessProbe: {httpGet: {path: /health/liveness, port: https, scheme: HTTPS}, periodSeconds: 10, failureThreshold: 3, timeoutSeconds: 2}
+              lifecycle: {preStop: {httpGet: {path: /lifecycle/drain, port: https, scheme: HTTPS}}}
+              volumeMounts: [{name: tmp, mountPath: /tmp}, {name: secret-provider, mountPath: /run/openpc/secrets, readOnly: true}]
+          volumes: [{name: tmp, emptyDir: {medium: Memory, sizeLimit: "OPENPC_INPUT_RESOURCES_FACT_BRIDGE_EPHEMERAL_STORAGE_LIMIT"}}, {name: secret-provider, csi: {driver: "OPENPC_INPUT_SECRET_CSI_DRIVER", readOnly: true, volumeAttributes: {secretProviderClass: openpc-fact-bridge}}}]
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata: {name: openpc-otel-collector, namespace: "OPENPC_INPUT_NAMESPACE", labels: {openpc.io/du: DU-OTEL-COLLECTOR}}
+    spec:
+      replicas: OPENPC_INPUT_TOPOLOGY_OTEL_COLLECTOR_REPLICAS
+      minReadySeconds: OPENPC_INPUT_TOPOLOGY_MIN_READY_SECONDS
+      strategy: {type: RollingUpdate, rollingUpdate: {maxUnavailable: 0, maxSurge: 1}}
+      selector: {matchLabels: {app.kubernetes.io/name: openpc-otel-collector}}
+      template:
+        metadata:
+          labels: {app.kubernetes.io/name: openpc-otel-collector, openpc.io/du: DU-OTEL-COLLECTOR}
+          annotations: {openpc.io/otel-config-digest: "OPENPC_INPUT_OTEL_CONFIG_DIGEST"}
+        spec:
+          serviceAccountName: openpc-otel-collector
+          automountServiceAccountToken: false
+          topologySpreadConstraints:
+            - {maxSkew: 1, topologyKey: "OPENPC_INPUT_TOPOLOGY_KEY", whenUnsatisfiable: DoNotSchedule, labelSelector: {matchLabels: {app.kubernetes.io/name: openpc-otel-collector}}}
+          terminationGracePeriodSeconds: OPENPC_INPUT_TOPOLOGY_TERMINATION_GRACE_SECONDS
+          securityContext: {runAsNonRoot: true, runAsUser: 65532, runAsGroup: 65532, fsGroup: 65532, seccompProfile: {type: RuntimeDefault}}
+          containers:
+            - name: otel-collector
+              image: "OPENPC_INPUT_IMAGES_OTEL_COLLECTOR"
+              imagePullPolicy: IfNotPresent
+              args: ["--config=/etc/openpc/observability.yaml"]
+              ports: [{name: otlp-grpc, containerPort: 4317}, {name: otlp-http, containerPort: 4318}, {name: metrics, containerPort: 8889}]
+              securityContext: {allowPrivilegeEscalation: false, privileged: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+              resources:
+                requests: {cpu: "OPENPC_INPUT_RESOURCES_OTEL_COLLECTOR_CPU_REQUEST", memory: "OPENPC_INPUT_RESOURCES_OTEL_COLLECTOR_MEMORY_REQUEST", ephemeral-storage: "OPENPC_INPUT_RESOURCES_OTEL_COLLECTOR_EPHEMERAL_STORAGE_REQUEST"}
+                limits: {cpu: "OPENPC_INPUT_RESOURCES_OTEL_COLLECTOR_CPU_LIMIT", memory: "OPENPC_INPUT_RESOURCES_OTEL_COLLECTOR_MEMORY_LIMIT", ephemeral-storage: "OPENPC_INPUT_RESOURCES_OTEL_COLLECTOR_EPHEMERAL_STORAGE_LIMIT"}
+              startupProbe: {httpGet: {path: /, port: 13133}, periodSeconds: 2, failureThreshold: 150, timeoutSeconds: 1}
+              readinessProbe: {httpGet: {path: /, port: 13133}, periodSeconds: 5, failureThreshold: 2, timeoutSeconds: 2}
+              livenessProbe: {httpGet: {path: /, port: 13133}, periodSeconds: 10, failureThreshold: 3, timeoutSeconds: 2}
+              volumeMounts: [{name: tmp, mountPath: /tmp}, {name: config, mountPath: /etc/openpc, readOnly: true}, {name: secret-provider, mountPath: /run/openpc/secrets, readOnly: true}]
+          volumes: [{name: tmp, emptyDir: {medium: Memory, sizeLimit: "OPENPC_INPUT_RESOURCES_OTEL_COLLECTOR_EPHEMERAL_STORAGE_LIMIT"}}, {name: config, configMap: {name: "OPENPC_INPUT_OTEL_CONFIGMAP_NAME"}}, {name: secret-provider, csi: {driver: "OPENPC_INPUT_SECRET_CSI_DRIVER", readOnly: true, volumeAttributes: {secretProviderClass: openpc-otel-collector}}}]
+  - apiVersion: v1
+    kind: Service
+    metadata: {name: openpc-workbench, namespace: "OPENPC_INPUT_NAMESPACE"}
+    spec: {selector: {app.kubernetes.io/name: openpc-workbench}, ports: [{name: https, port: 8443, targetPort: https}], type: ClusterIP}
+  - apiVersion: v1
+    kind: Service
+    metadata: {name: openpc-control, namespace: "OPENPC_INPUT_NAMESPACE"}
+    spec: {selector: {app.kubernetes.io/name: openpc-control}, ports: [{name: https, port: 8443, targetPort: https}], type: ClusterIP}
+  - apiVersion: v1
+    kind: Service
+    metadata: {name: openpc-compiler, namespace: "OPENPC_INPUT_NAMESPACE"}
+    spec: {selector: {app.kubernetes.io/name: openpc-compiler}, ports: [{name: https, port: 8443, targetPort: https}], type: ClusterIP}
+  - apiVersion: v1
+    kind: Service
+    metadata: {name: openpc-fleet-control, namespace: "OPENPC_INPUT_NAMESPACE"}
+    spec: {selector: {app.kubernetes.io/name: openpc-fleet-control}, ports: [{name: https, port: 8443, targetPort: https}], type: ClusterIP}
+  - apiVersion: v1
+    kind: Service
+    metadata: {name: openpc-fact-bridge, namespace: "OPENPC_INPUT_NAMESPACE"}
+    spec: {selector: {app.kubernetes.io/name: openpc-fact-bridge}, ports: [{name: https, port: 8443, targetPort: https}], type: ClusterIP}
+  - apiVersion: v1
+    kind: Service
+    metadata: {name: openpc-otel-collector, namespace: "OPENPC_INPUT_NAMESPACE"}
+    spec: {selector: {app.kubernetes.io/name: openpc-otel-collector}, ports: [{name: otlp-grpc, port: 4317}, {name: otlp-http, port: 4318}, {name: metrics, port: 8889}], type: ClusterIP}
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata: {name: default-deny-all, namespace: "OPENPC_INPUT_NAMESPACE"}
+    spec: {podSelector: {}, policyTypes: [Ingress, Egress]}
+  - apiVersion: policy/v1
+    kind: PodDisruptionBudget
+    metadata: {name: openpc-control, namespace: "OPENPC_INPUT_NAMESPACE"}
+    spec: {maxUnavailable: 0, selector: {matchLabels: {app.kubernetes.io/name: openpc-control}}}

@@ -1,0 +1,138 @@
+{
+  "af30": {
+    "legacyGenericCollapseRows": 0,
+    "maximumProfilesPerRow": 9,
+    "minimumProfilesPerRow": 7,
+    "profileUtilization": {
+      "AP-AUTHORITY-NONWIDENING": 2810,
+      "AP-EVIDENCE-RECEIPT": 2810,
+      "AP-GLOBAL-INVARIANTS": 2810,
+      "AP-IDEMPOTENCY-RECOVERY": 1047,
+      "AP-PRIVACY-NONEXISTENCE": 2810,
+      "AP-STATE-TRANSITION": 2810,
+      "AP-SUCCESS-CONTRACT": 2810,
+      "AP-TAMPER-STALE-DEGRADED": 1555,
+      "AP-TYPED-ERROR": 2810
+    },
+    "r1RowsResolved": 2810,
+    "resolvedDescriptorSha256": "dbe6a048feee4eac817b6a2bea0ccb021b930de54fa75730caabc853f24a226a",
+    "rowProfileResolutionSha256": "e61370395698e1d0bd10c1e8af16885be05c8cf2ea9fb122afd0e86a748398cd",
+    "rowsResolved": 2810,
+    "sourceRows": 22131,
+    "surfaces": 29,
+    "unusedProfiles": [
+      "AP-ACCESSIBILITY",
+      "AP-NO-STATE-TRANSITION",
+      "AP-PRESENTATION-PROJECTION",
+      "AP-SERVER-REAUTHORIZATION"
+    ]
+  },
+  "combinedProfileUtilization": {
+    "AP-ACCESSIBILITY": 6240,
+    "AP-AUTHORITY-NONWIDENING": 9050,
+    "AP-EVIDENCE-RECEIPT": 9050,
+    "AP-GLOBAL-INVARIANTS": 9050,
+    "AP-IDEMPOTENCY-RECOVERY": 5415,
+    "AP-NO-STATE-TRANSITION": 1872,
+    "AP-PRESENTATION-PROJECTION": 6240,
+    "AP-PRIVACY-NONEXISTENCE": 9050,
+    "AP-SERVER-REAUTHORIZATION": 6240,
+    "AP-STATE-TRANSITION": 7178,
+    "AP-SUCCESS-CONTRACT": 9050,
+    "AP-TAMPER-STALE-DEGRADED": 3427,
+    "AP-TYPED-ERROR": 4682
+  },
+  "descriptorFieldClosure": [
+    "assertionProfileId",
+    "rowAnchor",
+    "sourceAnchors",
+    "positiveFixtureIds",
+    "negativeFixtureIds",
+    "assertionIds",
+    "expected",
+    "stageConsumers",
+    "globalInvariantRefs"
+  ],
+  "globalInvariantIsSoleOracle": false,
+  "i06AssertionConsumerRequirementIds": [
+    "REQ-SR01-B0-LEDGER-RTP-183",
+    "REQ-SR01-B0-LEDGER-SCP-007",
+    "REQ-SR01-B0-LEDGER-SEM-007",
+    "REQ-SR01-B0-LEDGER-UC-017",
+    "REQ-SR01-B0-LEDGER-UC-070",
+    "REQ-SR01-B0-REQ-MOD-PC_MULTI_RPC-01",
+    "REQ-SR01-B0-REQ-MOD-PC_MULTI_RPC-02",
+    "REQ-SR01-B0-REQ-MOD-PC_MULTI_RPC-03",
+    "REQ-SR01-B0-REQ-REL-004",
+    "REQ-SR01-B0-REQ-SCRREQ-INDEXERPROFILE-DETAIL",
+    "REQ-SR01-B0-REQ-SETREQ-PROVIDER_HEALTH_OBSERVATION_WINDOW",
+    "REQ-SR01-B0-REQ-SETREQ-PROVIDER_QUARANTINE_ON_FINGERPRINT_DRIFT",
+    "REQ-SR01-B0-REQ-SETREQ-PROVIDER_READ_RETRY_LIMIT",
+    "REQ-SR01-B0-REQ-SETREQ-PROVIDER_WRITE_RETRY_AFTER_ATTEMPT_START",
+    "REQ-SR01-B0-REQ-TARCH-015",
+    "REQ-SR01-B0-REQ-TARCH-FAIL-024",
+    "REQ-SR01-PROVENANCE-SR01-PQ-000015",
+    "REQ-SR01-PROVENANCE-SR01-PQ-000231",
+    "REQ-SR01-PROVENANCE-SR01-PQ-000237",
+    "REQ-SR01-PROVENANCE-SR01-PQ-000258",
+    "REQ-SR01-PROVENANCE-SR01-PQ-000491",
+    "REQ-SR01-S03-011161",
+    "REQ-SR01-U00-UD-009"
+  ],
+  "idempotency": "SAME_PACKAGED_CATALOG_AND_SOURCE_ROW_BYTES_PRODUCE_IDENTICAL_PROFILE_AND_DESCRIPTOR_DIGESTS",
+  "normativeResolver": {
+    "catalogPath": "CONFORMANCE/AF30/assertion-profiles.jsonl",
+    "referenceImplementationAuthority": "NON_AUTHORITATIVE_EXTERNAL_VALIDATION_AID_ONLY",
+    "schemaPath": "CONFORMANCE/AF30/assertion-profile.schema.json",
+    "semantics": "SELECT_ALL_MATCHING_PROFILES_CONJUNCTIVELY_AND_PROJECT_EXACT_SOURCE_FIELDS"
+  },
+  "profileCatalog": {
+    "profiles": 13,
+    "schemaSha256": "31c0ff80ddbc2c1c9996727324be092fa4b8c0f661d96622b5d4a7ff303ad804",
+    "sha256": "4ddda561f53cd3b407349fe838b11145fafbdbe2de51270518e0b50aef2784bb"
+  },
+  "resolverId": "OPENPC-C12-AF30-UI-ASSERTION-RESOLVER-1.1",
+  "rowSpecificSemanticsRemainAuthoritative": true,
+  "schemaVersion": "1.1",
+  "sourceInventories": [
+    {
+      "bytes": 30991357,
+      "path": "CONFORMANCE/AF30/requirement-conformance-cases.jsonl",
+      "sha256": "4236545214c853716f7de2166c462534c4cb4f0789a3062fb7450816b5a5e871"
+    },
+    {
+      "bytes": 38575023,
+      "path": "SPECIFICATIONS/UI/process-acceptance.jsonl",
+      "sha256": "0f37931bf06878a093d8a30cb1187af6b08f51bd642a4864f8559a530f7dff8b"
+    }
+  ],
+  "sourceRowsChanged": 0,
+  "status": "PASS_CORRECTION01",
+  "ui": {
+    "dimensions": 13,
+    "domains": 24,
+    "legacyGenericCollapseRows": 0,
+    "maximumProfilesPerRow": 12,
+    "minimumProfilesPerRow": 9,
+    "profileUtilization": {
+      "AP-ACCESSIBILITY": 6240,
+      "AP-AUTHORITY-NONWIDENING": 6240,
+      "AP-EVIDENCE-RECEIPT": 6240,
+      "AP-GLOBAL-INVARIANTS": 6240,
+      "AP-IDEMPOTENCY-RECOVERY": 4368,
+      "AP-NO-STATE-TRANSITION": 1872,
+      "AP-PRESENTATION-PROJECTION": 6240,
+      "AP-PRIVACY-NONEXISTENCE": 6240,
+      "AP-SERVER-REAUTHORIZATION": 6240,
+      "AP-STATE-TRANSITION": 4368,
+      "AP-SUCCESS-CONTRACT": 6240,
+      "AP-TAMPER-STALE-DEGRADED": 1872,
+      "AP-TYPED-ERROR": 1872
+    },
+    "resolvedDescriptorSha256": "ad1597f133f53b0f0a4321a70f1de1f70fe0c97b50605e73b942b1d52694af75",
+    "rowProfileResolutionSha256": "088dd574aaf4c44edb80a36a44f5b0d882fa2b5ec6b1680f687b32d9142730f8",
+    "rowsResolved": 6240,
+    "unusedProfiles": []
+  },
+  "unusedApplicableProfiles": []
+}

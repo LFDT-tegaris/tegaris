@@ -1,0 +1,22 @@
+[package]
+name = "openpc-broker"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+openpc-multi-rpc = { path = "../multi-rpc" }
+uuid = { workspace = true, features = ["v7"] }
+time = { workspace = true, features = ["formatting"] }
+tokio = { workspace = true, features = ["time"] }
+pc-runtime-types = { path = "../../crates/pc-runtime-types" }
+pc-policy-core = { path = "../../crates/pc-policy-core" }
+serde = { workspace = true, features = ["derive"] }
+
+[dev-dependencies]
+k256 = { workspace = true, features = ["ecdsa"] }
+sha3.workspace = true
+openpc-pds = { path = "../pds" }
+tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }

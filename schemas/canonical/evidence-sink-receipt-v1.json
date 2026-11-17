@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "extensionAuthority": "POST_C17_ASTRA_11_REMOTE_CUSTODY",
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [
+      1,
+      2,
+      3,
+      4,
+      100,
+      101,
+      102,
+      103
+    ],
+    "criticalFields": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "name": "pc.evidence-sink-receipt.v1",
+  "schemaId": 24003,
+  "typeName": "EvidenceSinkReceiptV1",
+  "purpose": {
+    "name": "pc.cose.evidence-sink-receipt.v1",
+    "code": 340
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "environmentId",
+      "type": "text160"
+    },
+    {
+      "key": 2,
+      "name": "participantId",
+      "type": "uuid"
+    },
+    {
+      "key": 3,
+      "name": "privacyDomainId",
+      "type": "uuid"
+    },
+    {
+      "key": 4,
+      "name": "receiptId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 5,
+      "name": "intentId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 6,
+      "name": "attemptId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 7,
+      "name": "signedProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 8,
+      "name": "observationDigest",
+      "type": "H32"
+    },
+    {
+      "key": 9,
+      "name": "attemptBindingDigest",
+      "type": "H32"
+    },
+    {
+      "key": 10,
+      "name": "objectDigest",
+      "type": "H32"
+    },
+    {
+      "key": 11,
+      "name": "locatorDigest",
+      "type": "H32"
+    },
+    {
+      "key": 12,
+      "name": "protectionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 13,
+      "name": "protectionRevision",
+      "type": "u64p"
+    },
+    {
+      "key": 14,
+      "name": "retentionUntilMicros",
+      "type": "u64p"
+    },
+    {
+      "key": 15,
+      "name": "recordedAtMicros",
+      "type": "u64p"
+    },
+    {
+      "key": 16,
+      "name": "previousReceiptDigest",
+      "type": "empty bytes or H32"
+    },
+    {
+      "key": 17,
+      "name": "action",
+      "type": "enum PUT=1 PROTECTION=2"
+    },
+    {
+      "key": 18,
+      "name": "signerKeyId",
+      "type": "H32"
+    },
+    {
+      "key": 19,
+      "name": "streamId",
+      "type": "text160"
+    },
+    {
+      "key": 20,
+      "name": "segmentId",
+      "type": "uuid"
+    },
+    {
+      "key": 21,
+      "name": "throughSequence",
+      "type": "u64p"
+    },
+    {
+      "key": 22,
+      "name": "assurance",
+      "type": "enum REMOTE_INTERFACE_VERIFIED=1"
+    },
+    {
+      "key": 23,
+      "name": "providerQualification",
+      "type": "enum NOT_ESTABLISHED=0"
+    }
+  ],
+  "authorityRules": [
+    "A signed statement by the admitted custody worker about exact remote-interface observations; not a signature by the storage provider or WORM certification.",
+    "The original persisted OBSERVED attempt, complete authoritative hold snapshot and original exact version readback are mandatory inputs.",
+    "Receipt, hold acknowledgements and its outbox record commit atomically; checkpoints require contiguous original segments and complete current hold coverage.",
+    "Historical receipt validity is separate from current profile authority, current holds, object existence and deletion eligibility.",
+    "Ordinary segment and protected-proof owners have separate admission and retention predicates; this profile initially admits only SEGMENT."
+  ]
+}

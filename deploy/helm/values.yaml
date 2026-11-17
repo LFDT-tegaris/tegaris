@@ -1,0 +1,5 @@
+foundation:
+  notDeployable: true
+  qualificationReceiptRef: ""
+  imageDigest: ""
+  secretReferences: []

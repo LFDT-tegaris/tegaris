@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [
+      1,
+      2,
+      3,
+      4,
+      100,
+      101,
+      102,
+      103
+    ],
+    "criticalFields": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "extensionAuthority": "POST_C17_ASTRA_12_WORKLOAD_NOTIFICATION_ADMISSION",
+  "name": "pc.notification-completion-disposition-receipt.v1",
+  "typeName": "NotificationCompletionDispositionReceiptV1",
+  "purpose": {
+    "name": "pc.cose.notification-completion-disposition-receipt.v1",
+    "code": 368
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "environmentId",
+      "type": "text160"
+    },
+    {
+      "key": 2,
+      "name": "participantId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 3,
+      "name": "privacyDomainId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 4,
+      "name": "receiptId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 5,
+      "name": "operationId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 6,
+      "name": "sourceEventId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 7,
+      "name": "sourceEnvelopeDigest",
+      "type": "H32"
+    },
+    {
+      "key": 8,
+      "name": "sourceDataDigest",
+      "type": "H32"
+    },
+    {
+      "key": 9,
+      "name": "sourcePartitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 10,
+      "name": "producerTrustDigest",
+      "type": "H32"
+    },
+    {
+      "key": 11,
+      "name": "sourceReceiptDigest",
+      "type": "H32"
+    },
+    {
+      "key": 12,
+      "name": "initialWorkerInstallationDigest",
+      "type": "H32"
+    },
+    {
+      "key": 13,
+      "name": "initialWorkerProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 14,
+      "name": "workerInstallationDigest",
+      "type": "H32"
+    },
+    {
+      "key": 15,
+      "name": "workerProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 16,
+      "name": "authoritySnapshotDigest",
+      "type": "H32"
+    },
+    {
+      "key": 17,
+      "name": "attemptChainDigest",
+      "type": "H32"
+    },
+    {
+      "key": 18,
+      "name": "attemptCount",
+      "type": "safe_uint"
+    },
+    {
+      "key": 19,
+      "name": "attemptLimit",
+      "type": "safe_uint"
+    },
+    {
+      "key": 20,
+      "name": "initialAttemptLimit",
+      "type": "safe_uint"
+    },
+    {
+      "key": 21,
+      "name": "initialBackoffMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 22,
+      "name": "maximumBackoffMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 23,
+      "name": "signerInstallationDigest",
+      "type": "H32"
+    },
+    {
+      "key": 24,
+      "name": "disposition",
+      "type": "enum ADMITTED=1 QUARANTINED=2"
+    },
+    {
+      "key": 25,
+      "name": "safeProblem",
+      "type": "enum NONE=0 PC-OPS-9001=1"
+    },
+    {
+      "key": 26,
+      "name": "workItemKind",
+      "type": "enum NONE=0 DELIVERY_FAILURE=1 REMEDIATION=2"
+    },
+    {
+      "key": 27,
+      "name": "workItemId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 28,
+      "name": "beforeStateDigest",
+      "type": "H32"
+    },
+    {
+      "key": 29,
+      "name": "afterStateDigest",
+      "type": "H32"
+    },
+    {
+      "key": 30,
+      "name": "cursorMode",
+      "type": "enum ADVANCE=1 HOLD=2"
+    },
+    {
+      "key": 31,
+      "name": "recordedAtMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 32,
+      "name": "signerKeyId",
+      "type": "H32"
+    }
+  ],
+  "requirements": [
+    "AF-27 ASYNC-NOTIFICATION; exact consumer LS-CONTROL-WORK/ROLE-CONTROL-WORKER and SUB-NOTIFICATIONDELIVERYCOMPLETED-CONTROL_WORK-V1. Numeric schema and purpose allocations belong to canonical registration; no inferred allocation is authority.",
+    "Authenticate and select the retained original completion outbox under its real scoped producer owner before semantic verification. Bind exact envelope, data, partition and native producer receipt digests. An unauthenticated or foreign event cannot create an attempt, disposition or WorkItem. Semantic poison may be retained only after original producer provenance is authenticated.",
+    "Commit each exclusive attempt and the first installed signed worker profile before processing or external I/O. First attempt counts. Initial signed maximumAttempts, initialBackoffMs and maximumBackoffMs are immutable. A current replacement can tighten the effective attemptLimit but cannot reset attempts, replenish the budget or change the original backoff. attemptChainDigest binds the entire ordered immutable attempt chain including first admission, lease/release, outcomes and retry deadlines. Limits are 1..1000, initialBackoffMs 1..maximumBackoffMs, maximumBackoffMs<=3600000.",
+    "Backpressure releases capacity without ACK or cursor advancement. Unknown claim COMMIT reads the original attempt; it never processes with uncommitted or caller-fabricated authority. Unknown signing performs original provider lookup only, including ABSENT and reordered responses; never automatically resign or change request/operation identity.",
+    "ADMITTED requires independently verified original producer native outcome, exact original completion event and existing producer DELIVERY_FAILURE WorkItem for FAILED. DELIVERED has workItemKind NONE with workItemId=receiptId as a non-reference sentinel. ADMITTED has safeProblem NONE and cursorMode ADVANCE. Existing producer failure work is neither recreated nor assigned/reopened/completed by this consumer.",
+    "QUARANTINED requires real exhausted durable attempts (attemptCount>=attemptLimit and attemptCount<=initialAttemptLimit), no active processing lease, fixed safeProblem PC-OPS-9001, cursorMode HOLD and workItemKind REMEDIATION. workItemId=receiptId identifies one distinct source-owned remediation WorkItem with only minimized original event reference and fixed safe text. Exhaustion alone is not WorkItem authority; the current purpose-specific effect admission remains mandatory.",
+    "Use a distinct installed completion-disposition signer purpose, current real TLS/Identity completion worker and same SQL client. Neither historical signatures, a caller descriptor, the delivery signer, Fact signer nor human business grants authorize this effect. Bind separate issuer, workload, receipt and provider TLS keys, exact versioned signing-key reference and current installed signer lifetime.",
+    "Before and after state digests bind the full original selected source, attempt journal, disposition and optional WorkItem/inbox/cursor links. Commit disposition, native signed evidence, terminal inbox and optional remediation atomically under canonical deferred completeness proof. Advance the normal cursor only for ADMITTED; quarantine never silently skips a gap.",
+    "Restart and lost COMMIT/ACK retain original payload, COSE, request, attempt and operation identities. Current legitimate successors reconcile originals without reviving withdrawn/expired worker or signer authority. Historical readback checks original provenance and signed bytes separately from current effect admission."
+  ],
+  "schemaId": 24031
+}

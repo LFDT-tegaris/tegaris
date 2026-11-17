@@ -1,0 +1,1487 @@
+asyncapi: 3.0.0
+info:
+  title: OpenPC logical event contracts
+  version: 1.0.0
+  description: Logical PostgreSQL transactional-outbox channels, CloudEvents 1.0.2 structured envelopes, fleet receipt streams,
+    and same-origin SSE projection. No external message broker is an R1 correctness authority.
+defaultContentType: application/cloudevents+json
+servers:
+  controlOutbox:
+    host: control-postgresql
+    protocol: postgresql-outbox
+    protocolVersion: '1.0'
+    description: Logical transactional outbox; transport optimization cannot replace the database commit boundary.
+  fleetStream:
+    host: pc-fleet-control
+    protocol: grpc
+    protocolVersion: proto3
+    description: mTLS bidirectional desired-generation/receipt stream.
+  sameOriginSse:
+    host: same-origin
+    pathname: /api/v1/events
+    protocol: https
+    protocolVersion: SSE
+    description: Authorized snapshot-plus-events UI projection.
+channels:
+  controlWork:
+    address: openpc.control.work.v1
+    messages:
+      CommandCommitted:
+        $ref: '#/components/messages/CommandCommitted'
+      SecretRevoked:
+        $ref: '#/components/messages/SecretRevoked'
+      SecretRotated:
+        $ref: '#/components/messages/SecretRotated'
+    x-openpc-ordering-key: participantId+aggregateRef
+    x-openpc-delivery: AT_LEAST_ONCE_TRANSACTIONAL_OUTBOX_AND_IDEMPOTENT_INBOX
+    x-openpc-deduplication: event id; same id+same datadigest is no-op; same id+different datadigest is tamper/conflict and
+      quarantines the stream scope
+    x-openpc-sequence: Monotonic per ordering key; a gap blocks completeness and starts replay or reconciliation before subsequent
+      effects
+    x-openpc-replay: Resume from durable per-consumer cursor; each effect is reauthorized against current authority and event-bound
+      generation
+    x-openpc-backpressure: Stop lease/ack advancement before capacity exhaustion; retain source truth; surface work item;
+      never drop or convert to success/empty
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-COM-003
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-004-AUTHORITY-INTERSECTION
+      - AD-SR04-014-SECURITY-OPERATIONS
+      - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+      componentIds:
+      - LS-CONTROL-API
+      - LS-CONTROL-WORK
+      sourceUnitIds:
+      - SU-REQ-62eca98a0a9e10ea90981863
+  compilerRequests:
+    address: openpc.compiler.requests.v1
+    messages:
+      CompilationRequested:
+        $ref: '#/components/messages/CompilationRequested'
+    x-openpc-ordering-key: releaseBundleId
+    x-openpc-delivery: AT_LEAST_ONCE_TRANSACTIONAL_OUTBOX_AND_IDEMPOTENT_INBOX
+    x-openpc-deduplication: event id; same id+same datadigest is no-op; same id+different datadigest is tamper/conflict and
+      quarantines the stream scope
+    x-openpc-sequence: Monotonic per ordering key; a gap blocks completeness and starts replay or reconciliation before subsequent
+      effects
+    x-openpc-replay: Resume from durable per-consumer cursor; each effect is reauthorized against current authority and event-bound
+      generation
+    x-openpc-backpressure: Stop lease/ack advancement before capacity exhaustion; retain source truth; surface work item;
+      never drop or convert to success/empty
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-COM-004
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-004-AUTHORITY-INTERSECTION
+      - AD-SR04-006-INVOCATION-CAPABILITY
+      - AD-SR04-007-EXECUTION-EVIDENCE
+      - AD-SR04-009-DYNAMIC-EVENT
+      - AD-SR04-014-SECURITY-OPERATIONS
+      - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+      componentIds:
+      - LS-COMPILER
+      - LS-CONTROL-WORK
+      sourceUnitIds:
+      - SU-REQ-714ef70243624c78fb73c335
+  compilerResults:
+    address: openpc.compiler.results.v1
+    messages:
+      CompilationCompleted:
+        $ref: '#/components/messages/CompilationCompleted'
+    x-openpc-ordering-key: releaseBundleId
+    x-openpc-delivery: AT_LEAST_ONCE_TRANSACTIONAL_OUTBOX_AND_IDEMPOTENT_INBOX
+    x-openpc-deduplication: event id; same id+same datadigest is no-op; same id+different datadigest is tamper/conflict and
+      quarantines the stream scope
+    x-openpc-sequence: Monotonic per ordering key; a gap blocks completeness and starts replay or reconciliation before subsequent
+      effects
+    x-openpc-replay: Resume from durable per-consumer cursor; each effect is reauthorized against current authority and event-bound
+      generation
+    x-openpc-backpressure: Stop lease/ack advancement before capacity exhaustion; retain source truth; surface work item;
+      never drop or convert to success/empty
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-COM-004
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-004-AUTHORITY-INTERSECTION
+      - AD-SR04-006-INVOCATION-CAPABILITY
+      - AD-SR04-007-EXECUTION-EVIDENCE
+      - AD-SR04-009-DYNAMIC-EVENT
+      - AD-SR04-014-SECURITY-OPERATIONS
+      - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+      componentIds:
+      - LS-COMPILER
+      - LS-CONTROL-WORK
+      sourceUnitIds:
+      - SU-REQ-714ef70243624c78fb73c335
+  fleetDesired:
+    address: openpc.fleet.desired.v1
+    messages:
+      DesiredGenerationChanged:
+        $ref: '#/components/messages/DesiredGenerationChanged'
+    x-openpc-ordering-key: targetId
+    x-openpc-delivery: AT_LEAST_ONCE_TRANSACTIONAL_OUTBOX_AND_IDEMPOTENT_INBOX
+    x-openpc-deduplication: event id; same id+same datadigest is no-op; same id+different datadigest is tamper/conflict and
+      quarantines the stream scope
+    x-openpc-sequence: Monotonic per ordering key; a gap blocks completeness and starts replay or reconciliation before subsequent
+      effects
+    x-openpc-replay: Resume from durable per-consumer cursor; each effect is reauthorized against current authority and event-bound
+      generation
+    x-openpc-backpressure: Stop lease/ack advancement before capacity exhaustion; retain source truth; surface work item;
+      never drop or convert to success/empty
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-COM-006
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-004-AUTHORITY-INTERSECTION
+      - AD-SR04-005-POLICY-LIFECYCLE
+      - AD-SR04-006-INVOCATION-CAPABILITY
+      - AD-SR04-007-EXECUTION-EVIDENCE
+      - AD-SR04-009-DYNAMIC-EVENT
+      - AD-SR04-014-SECURITY-OPERATIONS
+      - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+      componentIds:
+      - LS-FLEET-CONTROL
+      - LS-RUNTIME-AGENT
+      sourceUnitIds:
+      - SU-REQ-5cfae5333123b471a2d8fe17
+  fleetReceipts:
+    address: openpc.fleet.receipts.v1
+    messages:
+      TargetReceiptRecorded:
+        $ref: '#/components/messages/TargetReceiptRecorded'
+    x-openpc-ordering-key: targetId
+    x-openpc-delivery: AT_LEAST_ONCE_TRANSACTIONAL_OUTBOX_AND_IDEMPOTENT_INBOX
+    x-openpc-deduplication: event id; same id+same datadigest is no-op; same id+different datadigest is tamper/conflict and
+      quarantines the stream scope
+    x-openpc-sequence: Monotonic per ordering key; a gap blocks completeness and starts replay or reconciliation before subsequent
+      effects
+    x-openpc-replay: Resume from durable per-consumer cursor; each effect is reauthorized against current authority and event-bound
+      generation
+    x-openpc-backpressure: Stop lease/ack advancement before capacity exhaustion; retain source truth; surface work item;
+      never drop or convert to success/empty
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-COM-008
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-004-AUTHORITY-INTERSECTION
+      - AD-SR04-006-INVOCATION-CAPABILITY
+      - AD-SR04-007-EXECUTION-EVIDENCE
+      - AD-SR04-009-DYNAMIC-EVENT
+      - AD-SR04-014-SECURITY-OPERATIONS
+      - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+      componentIds:
+      - LS-FLEET-CONTROL
+      - LS-RUNTIME-AGENT
+      sourceUnitIds:
+      - SU-REQ-99535639d7cefc9993d108a2
+  runtimeGeneration:
+    address: openpc.runtime.generation.v1
+    messages:
+      RuntimeGenerationActivated:
+        $ref: '#/components/messages/RuntimeGenerationActivated'
+      RuntimeGenerationActivationFailed:
+        $ref: '#/components/messages/RuntimeGenerationActivationFailed'
+    x-openpc-ordering-key: targetId
+    x-openpc-delivery: AT_LEAST_ONCE_TRANSACTIONAL_OUTBOX_AND_IDEMPOTENT_INBOX
+    x-openpc-deduplication: event id; same id+same datadigest is no-op; same id+different datadigest is tamper/conflict and
+      quarantines the stream scope
+    x-openpc-sequence: Monotonic per ordering key; a gap blocks completeness and starts replay or reconciliation before subsequent
+      effects
+    x-openpc-replay: Resume from durable per-consumer cursor; each effect is reauthorized against current authority and event-bound
+      generation
+    x-openpc-backpressure: Stop lease/ack advancement before capacity exhaustion; retain source truth; surface work item;
+      never drop or convert to success/empty
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-LEDGER-RTP-238
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-014-SECURITY-OPERATIONS
+      componentIds:
+      - LS-EVIDENCE-EXPORT
+      - LS-FLEET-CONTROL
+      - LS-RUNTIME-AGENT
+      sourceUnitIds:
+      - SU-REQ-85df9adce2643b210e911f02
+  factsAdmission:
+    address: openpc.facts.admission.v1
+    messages:
+      FactCandidateAdmitted:
+        $ref: '#/components/messages/FactCandidateAdmitted'
+    x-openpc-ordering-key: privacyDomainId+factType
+    x-openpc-delivery: AT_LEAST_ONCE_TRANSACTIONAL_OUTBOX_AND_IDEMPOTENT_INBOX
+    x-openpc-deduplication: event id; same id+same datadigest is no-op; same id+different datadigest is tamper/conflict and
+      quarantines the stream scope
+    x-openpc-sequence: Monotonic per ordering key; a gap blocks completeness and starts replay or reconciliation before subsequent
+      effects
+    x-openpc-replay: Resume from durable per-consumer cursor; each effect is reauthorized against current authority and event-bound
+      generation
+    x-openpc-backpressure: Stop lease/ack advancement before capacity exhaustion; retain source truth; surface work item;
+      never drop or convert to success/empty
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-U00-UD-011
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-005-POLICY-LIFECYCLE
+      - AD-SR04-006-INVOCATION-CAPABILITY
+      - AD-SR04-007-EXECUTION-EVIDENCE
+      - AD-SR04-008-RGRA
+      - AD-SR04-009-DYNAMIC-EVENT
+      - AD-SR04-010-CLIENT-INDEXER
+      - AD-SR04-011-EXPLORER-FACT-SOURCE
+      - AD-SR04-012-POLICY-FACT-PROJECTION
+      - AD-SR04-014-SECURITY-OPERATIONS
+      componentIds:
+      - LS-CONTROL-WORK
+      - LS-FACT-BRIDGE
+      - LS-FLEET-CONTROL
+      sourceUnitIds:
+      - SU-REQ-c5ed1f35c895485ae0943e6a
+  factsInvalidation:
+    address: openpc.facts.invalidation.v1
+    messages:
+      FactArtifactInvalidated:
+        $ref: '#/components/messages/FactArtifactInvalidated'
+    x-openpc-ordering-key: privacyDomainId+factType
+    x-openpc-delivery: AT_LEAST_ONCE_TRANSACTIONAL_OUTBOX_AND_IDEMPOTENT_INBOX
+    x-openpc-deduplication: event id; same id+same datadigest is no-op; same id+different datadigest is tamper/conflict and
+      quarantines the stream scope
+    x-openpc-sequence: Monotonic per ordering key; a gap blocks completeness and starts replay or reconciliation before subsequent
+      effects
+    x-openpc-replay: Resume from durable per-consumer cursor; each effect is reauthorized against current authority and event-bound
+      generation
+    x-openpc-backpressure: Stop lease/ack advancement before capacity exhaustion; retain source truth; surface work item;
+      never drop or convert to success/empty
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-SEC-002
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-005-POLICY-LIFECYCLE
+      - AD-SR04-006-INVOCATION-CAPABILITY
+      - AD-SR04-007-EXECUTION-EVIDENCE
+      - AD-SR04-009-DYNAMIC-EVENT
+      - AD-SR04-010-CLIENT-INDEXER
+      - AD-SR04-014-SECURITY-OPERATIONS
+      componentIds:
+      - LS-FACT-BRIDGE
+      - LS-FLEET-CONTROL
+      - LS-RUNTIME-AGENT
+      sourceUnitIds:
+      - SU-REQ-09b19909a87bad746b27b2e3
+  factsReorg:
+    address: openpc.facts.reorg.v1
+    messages:
+      ReorgGenerationOpened:
+        $ref: '#/components/messages/ReorgGenerationOpened'
+    x-openpc-ordering-key: chainId+privacyDomainId
+    x-openpc-delivery: AT_LEAST_ONCE_TRANSACTIONAL_OUTBOX_AND_IDEMPOTENT_INBOX
+    x-openpc-deduplication: event id; same id+same datadigest is no-op; same id+different datadigest is tamper/conflict and
+      quarantines the stream scope
+    x-openpc-sequence: Monotonic per ordering key; a gap blocks completeness and starts replay or reconciliation before subsequent
+      effects
+    x-openpc-replay: Resume from durable per-consumer cursor; each effect is reauthorized against current authority and event-bound
+      generation
+    x-openpc-backpressure: Stop lease/ack advancement before capacity exhaustion; retain source truth; surface work item;
+      never drop or convert to success/empty
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-FAIL-025
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-008-RGRA
+      - AD-SR04-011-EXPLORER-FACT-SOURCE
+      - AD-SR04-012-POLICY-FACT-PROJECTION
+      - AD-SR04-014-SECURITY-OPERATIONS
+      componentIds:
+      - LS-CONTROL-WORK
+      - LS-FACT-BRIDGE
+      - LS-FLEET-CONTROL
+      - LS-RUNTIME-AGENT
+      sourceUnitIds:
+      - SU-REQ-2ad0f0cd473ecf650563dd83
+  indexerCandidates:
+    address: openpc.indexer.candidates.v1
+    messages:
+      IndexerProjectionCandidateObserved:
+        $ref: '#/components/messages/IndexerProjectionCandidateObserved'
+      IndexerProjectionCheckpointCompleted:
+        $ref: '#/components/messages/IndexerProjectionCheckpointCompleted'
+      IndexerProjectionCandidateInvalidated:
+        $ref: '#/components/messages/IndexerProjectionCandidateInvalidated'
+      IndexerProjectionSourceFenced:
+        $ref: '#/components/messages/IndexerProjectionSourceFenced'
+    x-openpc-ordering-key: candidatePartitionId
+    x-openpc-delivery: AT_LEAST_ONCE_TRANSACTIONAL_OUTBOX_AND_IDEMPOTENT_INBOX
+    x-openpc-deduplication: event id; same id+same datadigest is no-op; same id+different datadigest is tamper/conflict and
+      quarantines the stream scope
+    x-openpc-sequence: Monotonic per ordering key; a gap blocks completeness and starts replay or reconciliation before subsequent
+      effects
+    x-openpc-replay: Resume from durable per-consumer cursor; each effect is reauthorized against current authority and event-bound
+      generation
+    x-openpc-backpressure: Stop lease/ack advancement before capacity exhaustion; retain source truth; surface work item;
+      never drop or convert to success/empty
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-U00-UD-011
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-005-POLICY-LIFECYCLE
+      - AD-SR04-006-INVOCATION-CAPABILITY
+      - AD-SR04-007-EXECUTION-EVIDENCE
+      - AD-SR04-008-RGRA
+      - AD-SR04-009-DYNAMIC-EVENT
+      - AD-SR04-010-CLIENT-INDEXER
+      - AD-SR04-011-EXPLORER-FACT-SOURCE
+      - AD-SR04-012-POLICY-FACT-PROJECTION
+      - AD-SR04-014-SECURITY-OPERATIONS
+      componentIds:
+      - LS-FACT-BRIDGE
+      - LS-INDEXER-MANAGER
+      sourceUnitIds:
+      - SU-REQ-c5ed1f35c895485ae0943e6a
+  evidenceExport:
+    address: openpc.evidence.export.v1
+    messages:
+      EvidenceExportRequested:
+        $ref: '#/components/messages/EvidenceExportRequested'
+      EvidenceExportCompleted:
+        $ref: '#/components/messages/EvidenceExportCompleted'
+    x-openpc-ordering-key: evidenceExportId
+    x-openpc-delivery: AT_LEAST_ONCE_TRANSACTIONAL_OUTBOX_AND_IDEMPOTENT_INBOX
+    x-openpc-deduplication: event id; same id+same datadigest is no-op; same id+different datadigest is tamper/conflict and
+      quarantines the stream scope
+    x-openpc-sequence: Monotonic per ordering key; a gap blocks completeness and starts replay or reconciliation before subsequent
+      effects
+    x-openpc-replay: Resume from durable per-consumer cursor; each effect is reauthorized against current authority and event-bound
+      generation
+    x-openpc-backpressure: Stop lease/ack advancement before capacity exhaustion; retain source truth; surface work item;
+      never drop or convert to success/empty
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-COM-013
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-004-AUTHORITY-INTERSECTION
+      - AD-SR04-006-INVOCATION-CAPABILITY
+      - AD-SR04-007-EXECUTION-EVIDENCE
+      - AD-SR04-009-DYNAMIC-EVENT
+      - AD-SR04-014-SECURITY-OPERATIONS
+      componentIds:
+      - LS-CONTROL-WORK
+      - LS-EVIDENCE-EXPORT
+      sourceUnitIds:
+      - SU-REQ-8f7548107d9a85a393c9201e
+  notificationDelivery:
+    address: openpc.notification.delivery.v1
+    messages:
+      NotificationDeliveryRequested:
+        $ref: '#/components/messages/NotificationDeliveryRequested'
+      NotificationDeliveryCompleted:
+        $ref: '#/components/messages/NotificationDeliveryCompleted'
+    x-openpc-ordering-key: notificationOccurrenceId
+    x-openpc-delivery: AT_LEAST_ONCE_TRANSACTIONAL_OUTBOX_AND_IDEMPOTENT_INBOX
+    x-openpc-deduplication: event id; same id+same datadigest is no-op; same id+different datadigest is tamper/conflict and
+      quarantines the stream scope
+    x-openpc-sequence: Monotonic per ordering key; a gap blocks completeness and starts replay or reconciliation before subsequent
+      effects
+    x-openpc-replay: Resume from durable per-consumer cursor; each effect is reauthorized against current authority and event-bound
+      generation
+    x-openpc-backpressure: Stop lease/ack advancement before capacity exhaustion; retain source truth; surface work item;
+      never drop or convert to success/empty
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-COM-023
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-014-SECURITY-OPERATIONS
+      componentIds:
+      - LS-CONTROL-WORK
+      - LS-NOTIFICATION
+      sourceUnitIds:
+      - SU-REQ-643368a57e75bbaa76f569ab
+  uiState:
+    address: openpc.ui.state.v1
+    messages:
+      UiStateChanged:
+        $ref: '#/components/messages/UiStateChanged'
+    x-openpc-ordering-key: sessionId+subject
+    x-openpc-delivery: AT_LEAST_ONCE_TRANSACTIONAL_OUTBOX_AND_IDEMPOTENT_INBOX
+    x-openpc-deduplication: event id; same id+same datadigest is no-op; same id+different datadigest is tamper/conflict and
+      quarantines the stream scope
+    x-openpc-sequence: Monotonic per ordering key; a gap blocks completeness and starts replay or reconciliation before subsequent
+      effects
+    x-openpc-replay: Resume from durable per-consumer cursor; each effect is reauthorized against current authority and event-bound
+      generation
+    x-openpc-backpressure: Stop lease/ack advancement before capacity exhaustion; retain source truth; surface work item;
+      never drop or convert to success/empty
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-COM-024
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-004-AUTHORITY-INTERSECTION
+      - AD-SR04-014-SECURITY-OPERATIONS
+      - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+      componentIds:
+      - LS-CONTROL-API
+      - LS-WORKBENCH
+      sourceUnitIds:
+      - SU-REQ-3b7d5dff1c7a2777eef5afd7
+operations:
+  sendSecretRevoked:
+    action: send
+    channel:
+      $ref: '#/channels/controlWork'
+    messages:
+    - $ref: '#/channels/controlWork/messages/SecretRevoked'
+    x-openpc-producer: LS-CONTROL-API
+    x-openpc-consumers:
+    - LS-CONTROL-WORK
+    x-openpc-state: Exactly one event with the signed ADVANCE receipt at OLD_REVOKED; none for RECOVER.
+  sendSecretRotated:
+    action: send
+    channel:
+      $ref: '#/channels/controlWork'
+    messages:
+    - $ref: '#/channels/controlWork/messages/SecretRotated'
+    x-openpc-producer: LS-CONTROL-API
+    x-openpc-consumers:
+    - LS-CONTROL-WORK
+    x-openpc-state: Exactly one event with the signed ADVANCE receipt at COMPLETE; none for RECOVER.
+  sendCommandCommitted:
+    action: send
+    channel:
+      $ref: '#/channels/controlWork'
+    messages:
+    - $ref: '#/channels/controlWork/messages/CommandCommitted'
+    x-openpc-producer: LS-CONTROL-API
+    x-openpc-consumers:
+    - LS-CONTROL-WORK
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-COM-003
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-004-AUTHORITY-INTERSECTION
+      - AD-SR04-014-SECURITY-OPERATIONS
+      - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+      componentIds:
+      - LS-CONTROL-API
+      - LS-CONTROL-WORK
+      sourceUnitIds:
+      - SU-REQ-62eca98a0a9e10ea90981863
+  sendCompilationRequested:
+    action: send
+    channel:
+      $ref: '#/channels/compilerRequests'
+    messages:
+    - $ref: '#/channels/compilerRequests/messages/CompilationRequested'
+    x-openpc-producer: LS-CONTROL-WORK
+    x-openpc-consumers:
+    - LS-COMPILER
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-COM-004
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-004-AUTHORITY-INTERSECTION
+      - AD-SR04-006-INVOCATION-CAPABILITY
+      - AD-SR04-007-EXECUTION-EVIDENCE
+      - AD-SR04-009-DYNAMIC-EVENT
+      - AD-SR04-014-SECURITY-OPERATIONS
+      - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+      componentIds:
+      - LS-COMPILER
+      - LS-CONTROL-WORK
+      sourceUnitIds:
+      - SU-REQ-714ef70243624c78fb73c335
+  sendCompilationCompleted:
+    action: send
+    channel:
+      $ref: '#/channels/compilerResults'
+    messages:
+    - $ref: '#/channels/compilerResults/messages/CompilationCompleted'
+    x-openpc-producer: LS-COMPILER
+    x-openpc-consumers:
+    - LS-CONTROL-WORK
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-COM-004
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-004-AUTHORITY-INTERSECTION
+      - AD-SR04-006-INVOCATION-CAPABILITY
+      - AD-SR04-007-EXECUTION-EVIDENCE
+      - AD-SR04-009-DYNAMIC-EVENT
+      - AD-SR04-014-SECURITY-OPERATIONS
+      - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+      componentIds:
+      - LS-COMPILER
+      - LS-CONTROL-WORK
+      sourceUnitIds:
+      - SU-REQ-714ef70243624c78fb73c335
+  sendDesiredGenerationChanged:
+    action: send
+    channel:
+      $ref: '#/channels/fleetDesired'
+    messages:
+    - $ref: '#/channels/fleetDesired/messages/DesiredGenerationChanged'
+    x-openpc-producer: LS-FLEET-CONTROL
+    x-openpc-consumers:
+    - LS-RUNTIME-AGENT
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-COM-006
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-004-AUTHORITY-INTERSECTION
+      - AD-SR04-005-POLICY-LIFECYCLE
+      - AD-SR04-006-INVOCATION-CAPABILITY
+      - AD-SR04-007-EXECUTION-EVIDENCE
+      - AD-SR04-009-DYNAMIC-EVENT
+      - AD-SR04-014-SECURITY-OPERATIONS
+      - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+      componentIds:
+      - LS-FLEET-CONTROL
+      - LS-RUNTIME-AGENT
+      sourceUnitIds:
+      - SU-REQ-5cfae5333123b471a2d8fe17
+  sendTargetReceiptRecorded:
+    action: send
+    channel:
+      $ref: '#/channels/fleetReceipts'
+    messages:
+    - $ref: '#/channels/fleetReceipts/messages/TargetReceiptRecorded'
+    x-openpc-producer: LS-RUNTIME-AGENT
+    x-openpc-consumers:
+    - LS-FLEET-CONTROL
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-COM-008
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-004-AUTHORITY-INTERSECTION
+      - AD-SR04-006-INVOCATION-CAPABILITY
+      - AD-SR04-007-EXECUTION-EVIDENCE
+      - AD-SR04-009-DYNAMIC-EVENT
+      - AD-SR04-014-SECURITY-OPERATIONS
+      - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+      componentIds:
+      - LS-FLEET-CONTROL
+      - LS-RUNTIME-AGENT
+      sourceUnitIds:
+      - SU-REQ-99535639d7cefc9993d108a2
+  sendRuntimeGenerationActivated:
+    action: send
+    channel:
+      $ref: '#/channels/runtimeGeneration'
+    messages:
+    - $ref: '#/channels/runtimeGeneration/messages/RuntimeGenerationActivated'
+    x-openpc-producer: LS-RUNTIME-AGENT
+    x-openpc-consumers:
+    - LS-FLEET-CONTROL
+    - LS-EVIDENCE-EXPORT
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-LEDGER-RTP-238
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-014-SECURITY-OPERATIONS
+      componentIds:
+      - LS-EVIDENCE-EXPORT
+      - LS-FLEET-CONTROL
+      - LS-RUNTIME-AGENT
+      sourceUnitIds:
+      - SU-REQ-85df9adce2643b210e911f02
+  sendRuntimeGenerationActivationFailed:
+    action: send
+    channel:
+      $ref: '#/channels/runtimeGeneration'
+    messages:
+    - $ref: '#/channels/runtimeGeneration/messages/RuntimeGenerationActivationFailed'
+    x-openpc-producer: LS-RUNTIME-AGENT
+    x-openpc-consumers:
+    - LS-FLEET-CONTROL
+    - LS-EVIDENCE-EXPORT
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-FAIL-016
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-014-SECURITY-OPERATIONS
+      componentIds:
+      - LS-EVIDENCE-EXPORT
+      - LS-FLEET-CONTROL
+      - LS-RUNTIME-AGENT
+      sourceUnitIds:
+      - SU-REQ-d3465dc0c9dc5742fb820f4a
+  sendFactCandidateAdmitted:
+    action: send
+    channel:
+      $ref: '#/channels/factsAdmission'
+    messages:
+    - $ref: '#/channels/factsAdmission/messages/FactCandidateAdmitted'
+    x-openpc-producer: LS-FACT-BRIDGE
+    x-openpc-consumers:
+    - LS-CONTROL-WORK
+    - LS-FLEET-CONTROL
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-U00-UD-011
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-005-POLICY-LIFECYCLE
+      - AD-SR04-006-INVOCATION-CAPABILITY
+      - AD-SR04-007-EXECUTION-EVIDENCE
+      - AD-SR04-008-RGRA
+      - AD-SR04-009-DYNAMIC-EVENT
+      - AD-SR04-010-CLIENT-INDEXER
+      - AD-SR04-011-EXPLORER-FACT-SOURCE
+      - AD-SR04-012-POLICY-FACT-PROJECTION
+      - AD-SR04-014-SECURITY-OPERATIONS
+      componentIds:
+      - LS-CONTROL-WORK
+      - LS-FACT-BRIDGE
+      - LS-FLEET-CONTROL
+      sourceUnitIds:
+      - SU-REQ-c5ed1f35c895485ae0943e6a
+  sendFactArtifactInvalidated:
+    action: send
+    channel:
+      $ref: '#/channels/factsInvalidation'
+    messages:
+    - $ref: '#/channels/factsInvalidation/messages/FactArtifactInvalidated'
+    x-openpc-producer: LS-FACT-BRIDGE
+    x-openpc-consumers:
+    - LS-FLEET-CONTROL
+    - LS-RUNTIME-AGENT
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-SEC-002
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-005-POLICY-LIFECYCLE
+      - AD-SR04-006-INVOCATION-CAPABILITY
+      - AD-SR04-007-EXECUTION-EVIDENCE
+      - AD-SR04-009-DYNAMIC-EVENT
+      - AD-SR04-010-CLIENT-INDEXER
+      - AD-SR04-014-SECURITY-OPERATIONS
+      componentIds:
+      - LS-FACT-BRIDGE
+      - LS-FLEET-CONTROL
+      - LS-RUNTIME-AGENT
+      sourceUnitIds:
+      - SU-REQ-09b19909a87bad746b27b2e3
+  sendReorgGenerationOpened:
+    action: send
+    channel:
+      $ref: '#/channels/factsReorg'
+    messages:
+    - $ref: '#/channels/factsReorg/messages/ReorgGenerationOpened'
+    x-openpc-producer: LS-FACT-BRIDGE
+    x-openpc-consumers:
+    - LS-FLEET-CONTROL
+    - LS-RUNTIME-AGENT
+    - LS-CONTROL-WORK
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-FAIL-025
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-008-RGRA
+      - AD-SR04-011-EXPLORER-FACT-SOURCE
+      - AD-SR04-012-POLICY-FACT-PROJECTION
+      - AD-SR04-014-SECURITY-OPERATIONS
+      componentIds:
+      - LS-CONTROL-WORK
+      - LS-FACT-BRIDGE
+      - LS-FLEET-CONTROL
+      - LS-RUNTIME-AGENT
+      sourceUnitIds:
+      - SU-REQ-2ad0f0cd473ecf650563dd83
+  sendIndexerProjectionCandidateObserved:
+    action: send
+    channel:
+      $ref: '#/channels/indexerCandidates'
+    messages:
+    - $ref: '#/channels/indexerCandidates/messages/IndexerProjectionCandidateObserved'
+    x-openpc-producer: LS-INDEXER-MANAGER
+    x-openpc-consumers:
+    - LS-FACT-BRIDGE
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-U00-UD-011
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-005-POLICY-LIFECYCLE
+      - AD-SR04-006-INVOCATION-CAPABILITY
+      - AD-SR04-007-EXECUTION-EVIDENCE
+      - AD-SR04-008-RGRA
+      - AD-SR04-009-DYNAMIC-EVENT
+      - AD-SR04-010-CLIENT-INDEXER
+      - AD-SR04-011-EXPLORER-FACT-SOURCE
+      - AD-SR04-012-POLICY-FACT-PROJECTION
+      - AD-SR04-014-SECURITY-OPERATIONS
+      componentIds:
+      - LS-FACT-BRIDGE
+      - LS-INDEXER-MANAGER
+      sourceUnitIds:
+      - SU-REQ-c5ed1f35c895485ae0943e6a
+  sendIndexerProjectionCheckpointCompleted:
+    action: send
+    channel:
+      $ref: '#/channels/indexerCandidates'
+    messages:
+    - $ref: '#/channels/indexerCandidates/messages/IndexerProjectionCheckpointCompleted'
+    x-openpc-producer: LS-INDEXER-MANAGER
+    x-openpc-consumers:
+    - LS-FACT-BRIDGE
+  sendIndexerProjectionCandidateInvalidated:
+    action: send
+    channel:
+      $ref: '#/channels/indexerCandidates'
+    messages:
+    - $ref: '#/channels/indexerCandidates/messages/IndexerProjectionCandidateInvalidated'
+    x-openpc-producer: LS-INDEXER-MANAGER
+    x-openpc-consumers:
+    - LS-FACT-BRIDGE
+  sendIndexerProjectionSourceFenced:
+    action: send
+    channel:
+      $ref: '#/channels/indexerCandidates'
+    messages:
+    - $ref: '#/channels/indexerCandidates/messages/IndexerProjectionSourceFenced'
+    x-openpc-producer: LS-INDEXER-MANAGER
+    x-openpc-consumers:
+    - LS-FACT-BRIDGE
+  sendEvidenceExportRequested:
+    action: send
+    channel:
+      $ref: '#/channels/evidenceExport'
+    messages:
+    - $ref: '#/channels/evidenceExport/messages/EvidenceExportRequested'
+    x-openpc-producer: LS-CONTROL-WORK
+    x-openpc-consumers:
+    - LS-EVIDENCE-EXPORT
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-COM-013
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-004-AUTHORITY-INTERSECTION
+      - AD-SR04-006-INVOCATION-CAPABILITY
+      - AD-SR04-007-EXECUTION-EVIDENCE
+      - AD-SR04-009-DYNAMIC-EVENT
+      - AD-SR04-014-SECURITY-OPERATIONS
+      componentIds:
+      - LS-CONTROL-WORK
+      - LS-EVIDENCE-EXPORT
+      sourceUnitIds:
+      - SU-REQ-8f7548107d9a85a393c9201e
+  sendEvidenceExportCompleted:
+    action: send
+    channel:
+      $ref: '#/channels/evidenceExport'
+    messages:
+    - $ref: '#/channels/evidenceExport/messages/EvidenceExportCompleted'
+    x-openpc-producer: LS-EVIDENCE-EXPORT
+    x-openpc-consumers:
+    - LS-CONTROL-WORK
+    - LS-NOTIFICATION
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-PROVENANCE-SR01-PQ-000272
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-014-SECURITY-OPERATIONS
+      - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+      componentIds:
+      - LS-CONTROL-WORK
+      - LS-EVIDENCE-EXPORT
+      - LS-NOTIFICATION
+      sourceUnitIds:
+      - SU-REQ-0d6ec1216526a340a5579eea
+  sendNotificationDeliveryRequested:
+    action: send
+    channel:
+      $ref: '#/channels/notificationDelivery'
+    messages:
+    - $ref: '#/channels/notificationDelivery/messages/NotificationDeliveryRequested'
+    x-openpc-producer: LS-CONTROL-WORK
+    x-openpc-consumers:
+    - LS-NOTIFICATION
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-COM-023
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-014-SECURITY-OPERATIONS
+      componentIds:
+      - LS-CONTROL-WORK
+      - LS-NOTIFICATION
+      sourceUnitIds:
+      - SU-REQ-643368a57e75bbaa76f569ab
+  sendNotificationDeliveryCompleted:
+    action: send
+    channel:
+      $ref: '#/channels/notificationDelivery'
+    messages:
+    - $ref: '#/channels/notificationDelivery/messages/NotificationDeliveryCompleted'
+    x-openpc-producer: LS-NOTIFICATION
+    x-openpc-consumers:
+    - LS-CONTROL-WORK
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-FAIL-027
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-014-SECURITY-OPERATIONS
+      componentIds:
+      - LS-CONTROL-WORK
+      - LS-NOTIFICATION
+      sourceUnitIds:
+      - SU-REQ-3683eb095b707e2bcde48a93
+  sendUiStateChanged:
+    action: send
+    channel:
+      $ref: '#/channels/uiState'
+    messages:
+    - $ref: '#/channels/uiState/messages/UiStateChanged'
+    x-openpc-producer: LS-CONTROL-API
+    x-openpc-consumers:
+    - LS-WORKBENCH
+    x-openpc-trace:
+      requirementIds:
+      - REQ-SR01-B0-REQ-TARCH-COM-024
+      decisionIds:
+      - AD-SR04-001-B0-FREEZE
+      - AD-SR04-004-AUTHORITY-INTERSECTION
+      - AD-SR04-014-SECURITY-OPERATIONS
+      - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+      componentIds:
+      - LS-CONTROL-API
+      - LS-WORKBENCH
+      sourceUnitIds:
+      - SU-REQ-3b7d5dff1c7a2777eef5afd7
+components:
+  messages:
+    SecretRevoked:
+      name: SecretRevoked
+      title: SecretRevoked
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.ops.secret.revoked.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/SecretRevoked
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/SecretRevoked
+      x-openpc-privacy: Identities and public fingerprints only; secret references, values and provider bodies are forbidden.
+    SecretRotated:
+      name: SecretRotated
+      title: SecretRotated
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.ops.secret.rotated.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/SecretRotated
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/SecretRotated
+      x-openpc-privacy: Identities and public fingerprints only; secret references, values and provider bodies are forbidden.
+    CommandCommitted:
+      name: CommandCommitted
+      title: CommandCommitted
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.control.command.committed.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/CommandCommitted
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/CommandCommitted
+      x-openpc-trace:
+        requirementIds:
+        - REQ-SR01-B0-REQ-TARCH-COM-003
+        decisionIds:
+        - AD-SR04-001-B0-FREEZE
+        - AD-SR04-004-AUTHORITY-INTERSECTION
+        - AD-SR04-014-SECURITY-OPERATIONS
+        - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+        componentIds:
+        - LS-CONTROL-API
+        - LS-CONTROL-WORK
+        sourceUnitIds:
+        - SU-REQ-62eca98a0a9e10ea90981863
+      x-openpc-privacy: Payload is the minimum registered projection; secret values, raw protected payloads, provider credentials,
+        hidden existence, and protected evidence are forbidden.
+    CompilationRequested:
+      name: CompilationRequested
+      title: CompilationRequested
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.compiler.compilation.requested.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/CompilationRequested
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/CompilationRequested
+      x-openpc-trace:
+        requirementIds:
+        - REQ-SR01-B0-REQ-TARCH-COM-004
+        decisionIds:
+        - AD-SR04-001-B0-FREEZE
+        - AD-SR04-004-AUTHORITY-INTERSECTION
+        - AD-SR04-006-INVOCATION-CAPABILITY
+        - AD-SR04-007-EXECUTION-EVIDENCE
+        - AD-SR04-009-DYNAMIC-EVENT
+        - AD-SR04-014-SECURITY-OPERATIONS
+        - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+        componentIds:
+        - LS-COMPILER
+        - LS-CONTROL-WORK
+        sourceUnitIds:
+        - SU-REQ-714ef70243624c78fb73c335
+      x-openpc-privacy: Payload is the minimum registered projection; secret values, raw protected payloads, provider credentials,
+        hidden existence, and protected evidence are forbidden.
+    CompilationCompleted:
+      name: CompilationCompleted
+      title: CompilationCompleted
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.compiler.compilation.completed.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/CompilationCompleted
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/CompilationCompleted
+      x-openpc-trace:
+        requirementIds:
+        - REQ-SR01-B0-REQ-TARCH-COM-004
+        decisionIds:
+        - AD-SR04-001-B0-FREEZE
+        - AD-SR04-004-AUTHORITY-INTERSECTION
+        - AD-SR04-006-INVOCATION-CAPABILITY
+        - AD-SR04-007-EXECUTION-EVIDENCE
+        - AD-SR04-009-DYNAMIC-EVENT
+        - AD-SR04-014-SECURITY-OPERATIONS
+        - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+        componentIds:
+        - LS-COMPILER
+        - LS-CONTROL-WORK
+        sourceUnitIds:
+        - SU-REQ-714ef70243624c78fb73c335
+      x-openpc-privacy: Payload is the minimum registered projection; secret values, raw protected payloads, provider credentials,
+        hidden existence, and protected evidence are forbidden.
+    DesiredGenerationChanged:
+      name: DesiredGenerationChanged
+      title: DesiredGenerationChanged
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.fleet.desired.generation.changed.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/DesiredGenerationChanged
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/DesiredGenerationChanged
+      x-openpc-trace:
+        requirementIds:
+        - REQ-SR01-B0-REQ-TARCH-COM-006
+        decisionIds:
+        - AD-SR04-001-B0-FREEZE
+        - AD-SR04-004-AUTHORITY-INTERSECTION
+        - AD-SR04-005-POLICY-LIFECYCLE
+        - AD-SR04-006-INVOCATION-CAPABILITY
+        - AD-SR04-007-EXECUTION-EVIDENCE
+        - AD-SR04-009-DYNAMIC-EVENT
+        - AD-SR04-014-SECURITY-OPERATIONS
+        - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+        componentIds:
+        - LS-FLEET-CONTROL
+        - LS-RUNTIME-AGENT
+        sourceUnitIds:
+        - SU-REQ-5cfae5333123b471a2d8fe17
+      x-openpc-privacy: Payload is the minimum registered projection; secret values, raw protected payloads, provider credentials,
+        hidden existence, and protected evidence are forbidden.
+    TargetReceiptRecorded:
+      name: TargetReceiptRecorded
+      title: TargetReceiptRecorded
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.fleet.target.receipt.recorded.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/TargetReceiptRecorded
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/TargetReceiptRecorded
+      x-openpc-trace:
+        requirementIds:
+        - REQ-SR01-B0-REQ-TARCH-COM-008
+        decisionIds:
+        - AD-SR04-001-B0-FREEZE
+        - AD-SR04-004-AUTHORITY-INTERSECTION
+        - AD-SR04-006-INVOCATION-CAPABILITY
+        - AD-SR04-007-EXECUTION-EVIDENCE
+        - AD-SR04-009-DYNAMIC-EVENT
+        - AD-SR04-014-SECURITY-OPERATIONS
+        - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+        componentIds:
+        - LS-FLEET-CONTROL
+        - LS-RUNTIME-AGENT
+        sourceUnitIds:
+        - SU-REQ-99535639d7cefc9993d108a2
+      x-openpc-privacy: Payload is the minimum registered projection; secret values, raw protected payloads, provider credentials,
+        hidden existence, and protected evidence are forbidden.
+    RuntimeGenerationActivated:
+      name: RuntimeGenerationActivated
+      title: RuntimeGenerationActivated
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.runtime.generation.activated.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/RuntimeGenerationActivated
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/RuntimeGenerationActivated
+      x-openpc-trace:
+        requirementIds:
+        - REQ-SR01-B0-LEDGER-RTP-238
+        decisionIds:
+        - AD-SR04-001-B0-FREEZE
+        - AD-SR04-014-SECURITY-OPERATIONS
+        componentIds:
+        - LS-EVIDENCE-EXPORT
+        - LS-FLEET-CONTROL
+        - LS-RUNTIME-AGENT
+        sourceUnitIds:
+        - SU-REQ-85df9adce2643b210e911f02
+      x-openpc-privacy: Payload is the minimum registered projection; secret values, raw protected payloads, provider credentials,
+        hidden existence, and protected evidence are forbidden.
+    RuntimeGenerationActivationFailed:
+      name: RuntimeGenerationActivationFailed
+      title: RuntimeGenerationActivationFailed
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.runtime.generation.activation.failed.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/RuntimeGenerationActivationFailed
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/RuntimeGenerationActivationFailed
+      x-openpc-trace:
+        requirementIds:
+        - REQ-SR01-B0-REQ-TARCH-FAIL-016
+        decisionIds:
+        - AD-SR04-001-B0-FREEZE
+        - AD-SR04-014-SECURITY-OPERATIONS
+        componentIds:
+        - LS-EVIDENCE-EXPORT
+        - LS-FLEET-CONTROL
+        - LS-RUNTIME-AGENT
+        sourceUnitIds:
+        - SU-REQ-d3465dc0c9dc5742fb820f4a
+      x-openpc-privacy: Payload is the minimum registered projection; secret values, raw protected payloads, provider credentials,
+        hidden existence, and protected evidence are forbidden.
+    FactCandidateAdmitted:
+      name: FactCandidateAdmitted
+      title: FactCandidateAdmitted
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.fact.candidate.admitted.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/FactCandidateAdmitted
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/FactCandidateAdmitted
+      x-openpc-trace:
+        requirementIds:
+        - REQ-SR01-U00-UD-011
+        decisionIds:
+        - AD-SR04-001-B0-FREEZE
+        - AD-SR04-005-POLICY-LIFECYCLE
+        - AD-SR04-006-INVOCATION-CAPABILITY
+        - AD-SR04-007-EXECUTION-EVIDENCE
+        - AD-SR04-008-RGRA
+        - AD-SR04-009-DYNAMIC-EVENT
+        - AD-SR04-010-CLIENT-INDEXER
+        - AD-SR04-011-EXPLORER-FACT-SOURCE
+        - AD-SR04-012-POLICY-FACT-PROJECTION
+        - AD-SR04-014-SECURITY-OPERATIONS
+        componentIds:
+        - LS-CONTROL-WORK
+        - LS-FACT-BRIDGE
+        - LS-FLEET-CONTROL
+        sourceUnitIds:
+        - SU-REQ-c5ed1f35c895485ae0943e6a
+      x-openpc-privacy: Payload is the minimum registered projection; secret values, raw protected payloads, provider credentials,
+        hidden existence, and protected evidence are forbidden.
+    FactArtifactInvalidated:
+      name: FactArtifactInvalidated
+      title: FactArtifactInvalidated
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.fact.artifact.invalidated.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/FactArtifactInvalidated
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/FactArtifactInvalidated
+      x-openpc-trace:
+        requirementIds:
+        - REQ-SR01-B0-REQ-SEC-002
+        decisionIds:
+        - AD-SR04-001-B0-FREEZE
+        - AD-SR04-005-POLICY-LIFECYCLE
+        - AD-SR04-006-INVOCATION-CAPABILITY
+        - AD-SR04-007-EXECUTION-EVIDENCE
+        - AD-SR04-009-DYNAMIC-EVENT
+        - AD-SR04-010-CLIENT-INDEXER
+        - AD-SR04-014-SECURITY-OPERATIONS
+        componentIds:
+        - LS-FACT-BRIDGE
+        - LS-FLEET-CONTROL
+        - LS-RUNTIME-AGENT
+        sourceUnitIds:
+        - SU-REQ-09b19909a87bad746b27b2e3
+      x-openpc-privacy: Payload is the minimum registered projection; secret values, raw protected payloads, provider credentials,
+        hidden existence, and protected evidence are forbidden.
+    ReorgGenerationOpened:
+      name: ReorgGenerationOpened
+      title: ReorgGenerationOpened
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.fact.reorg.generation.opened.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/ReorgGenerationOpened
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/ReorgGenerationOpened
+      x-openpc-trace:
+        requirementIds:
+        - REQ-SR01-B0-REQ-TARCH-FAIL-025
+        decisionIds:
+        - AD-SR04-001-B0-FREEZE
+        - AD-SR04-008-RGRA
+        - AD-SR04-011-EXPLORER-FACT-SOURCE
+        - AD-SR04-012-POLICY-FACT-PROJECTION
+        - AD-SR04-014-SECURITY-OPERATIONS
+        componentIds:
+        - LS-CONTROL-WORK
+        - LS-FACT-BRIDGE
+        - LS-FLEET-CONTROL
+        - LS-RUNTIME-AGENT
+        sourceUnitIds:
+        - SU-REQ-2ad0f0cd473ecf650563dd83
+      x-openpc-privacy: Payload is the minimum registered projection; secret values, raw protected payloads, provider credentials,
+        hidden existence, and protected evidence are forbidden.
+    IndexerProjectionCandidateObserved:
+      name: IndexerProjectionCandidateObserved
+      title: IndexerProjectionCandidateObserved
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.indexer.projection.candidate.observed.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/IndexerProjectionCandidateObserved
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/IndexerProjectionCandidateObserved
+      x-openpc-trace:
+        requirementIds:
+        - REQ-SR01-U00-UD-011
+        decisionIds:
+        - AD-SR04-001-B0-FREEZE
+        - AD-SR04-005-POLICY-LIFECYCLE
+        - AD-SR04-006-INVOCATION-CAPABILITY
+        - AD-SR04-007-EXECUTION-EVIDENCE
+        - AD-SR04-008-RGRA
+        - AD-SR04-009-DYNAMIC-EVENT
+        - AD-SR04-010-CLIENT-INDEXER
+        - AD-SR04-011-EXPLORER-FACT-SOURCE
+        - AD-SR04-012-POLICY-FACT-PROJECTION
+        - AD-SR04-014-SECURITY-OPERATIONS
+        componentIds:
+        - LS-FACT-BRIDGE
+        - LS-INDEXER-MANAGER
+        sourceUnitIds:
+        - SU-REQ-c5ed1f35c895485ae0943e6a
+      x-openpc-privacy: Payload is the minimum registered projection; secret values, raw protected payloads, provider credentials,
+        hidden existence, and protected evidence are forbidden.
+    IndexerProjectionCheckpointCompleted:
+      name: IndexerProjectionCheckpointCompleted
+      title: IndexerProjectionCheckpointCompleted
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.indexer.projection.checkpoint.completed.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/IndexerProjectionCheckpointCompleted
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/IndexerProjectionCheckpointCompleted
+    IndexerProjectionSourceFenced:
+      name: IndexerProjectionSourceFenced
+      title: IndexerProjectionSourceFenced
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.indexer.projection.source.fenced.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/IndexerProjectionSourceFenced
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/IndexerProjectionSourceFenced
+    IndexerProjectionCandidateInvalidated:
+      name: IndexerProjectionCandidateInvalidated
+      title: IndexerProjectionCandidateInvalidated
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.indexer.projection.candidate.invalidated.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/IndexerProjectionCandidateInvalidated
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/IndexerProjectionCandidateInvalidated
+    EvidenceExportRequested:
+      name: EvidenceExportRequested
+      title: EvidenceExportRequested
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.evidence.export.requested.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/EvidenceExportRequested
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/EvidenceExportRequested
+      x-openpc-trace:
+        requirementIds:
+        - REQ-SR01-B0-REQ-TARCH-COM-013
+        decisionIds:
+        - AD-SR04-001-B0-FREEZE
+        - AD-SR04-004-AUTHORITY-INTERSECTION
+        - AD-SR04-006-INVOCATION-CAPABILITY
+        - AD-SR04-007-EXECUTION-EVIDENCE
+        - AD-SR04-009-DYNAMIC-EVENT
+        - AD-SR04-014-SECURITY-OPERATIONS
+        componentIds:
+        - LS-CONTROL-WORK
+        - LS-EVIDENCE-EXPORT
+        sourceUnitIds:
+        - SU-REQ-8f7548107d9a85a393c9201e
+      x-openpc-privacy: Payload is the minimum registered projection; secret values, raw protected payloads, provider credentials,
+        hidden existence, and protected evidence are forbidden.
+    EvidenceExportCompleted:
+      name: EvidenceExportCompleted
+      title: EvidenceExportCompleted
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.evidence.export.completed.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/EvidenceExportCompleted
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/EvidenceExportCompleted
+      x-openpc-trace:
+        requirementIds:
+        - REQ-SR01-PROVENANCE-SR01-PQ-000272
+        decisionIds:
+        - AD-SR04-001-B0-FREEZE
+        - AD-SR04-014-SECURITY-OPERATIONS
+        - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+        componentIds:
+        - LS-CONTROL-WORK
+        - LS-EVIDENCE-EXPORT
+        - LS-NOTIFICATION
+        sourceUnitIds:
+        - SU-REQ-0d6ec1216526a340a5579eea
+      x-openpc-privacy: Payload is the minimum registered projection; secret values, raw protected payloads, provider credentials,
+        hidden existence, and protected evidence are forbidden.
+    NotificationDeliveryRequested:
+      name: NotificationDeliveryRequested
+      title: NotificationDeliveryRequested
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.notification.delivery.requested.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/NotificationDeliveryRequested
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/NotificationDeliveryRequested
+      x-openpc-trace:
+        requirementIds:
+        - REQ-SR01-B0-REQ-TARCH-COM-023
+        decisionIds:
+        - AD-SR04-001-B0-FREEZE
+        - AD-SR04-014-SECURITY-OPERATIONS
+        componentIds:
+        - LS-CONTROL-WORK
+        - LS-NOTIFICATION
+        sourceUnitIds:
+        - SU-REQ-643368a57e75bbaa76f569ab
+      x-openpc-privacy: Payload is the minimum registered projection; secret values, raw protected payloads, provider credentials,
+        hidden existence, and protected evidence are forbidden.
+    NotificationDeliveryCompleted:
+      name: NotificationDeliveryCompleted
+      title: NotificationDeliveryCompleted
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.notification.delivery.completed.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/NotificationDeliveryCompleted
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/NotificationDeliveryCompleted
+      x-openpc-trace:
+        requirementIds:
+        - REQ-SR01-B0-REQ-TARCH-FAIL-027
+        decisionIds:
+        - AD-SR04-001-B0-FREEZE
+        - AD-SR04-014-SECURITY-OPERATIONS
+        componentIds:
+        - LS-CONTROL-WORK
+        - LS-NOTIFICATION
+        sourceUnitIds:
+        - SU-REQ-3683eb095b707e2bcde48a93
+      x-openpc-privacy: Payload is the minimum registered projection; secret values, raw protected payloads, provider credentials,
+        hidden existence, and protected evidence are forbidden.
+    UiStateChanged:
+      name: UiStateChanged
+      title: UiStateChanged
+      contentType: application/cloudevents+json
+      payload:
+        allOf:
+        - $ref: ../json/event-envelope.schema.json
+        - type: object
+          properties:
+            type:
+              const: io.openpc.ui.state.changed.v1
+            dataschema:
+              const: https://schemas.openpc.local/event-payloads.schema.json#/$defs/UiStateChanged
+            data:
+              $ref: ../json/event-payloads.schema.json#/$defs/UiStateChanged
+      x-openpc-trace:
+        requirementIds:
+        - REQ-SR01-B0-REQ-TARCH-COM-024
+        decisionIds:
+        - AD-SR04-001-B0-FREEZE
+        - AD-SR04-004-AUTHORITY-INTERSECTION
+        - AD-SR04-014-SECURITY-OPERATIONS
+        - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+        componentIds:
+        - LS-CONTROL-API
+        - LS-WORKBENCH
+        sourceUnitIds:
+        - SU-REQ-3b7d5dff1c7a2777eef5afd7
+      x-openpc-privacy: Payload is the minimum registered projection; secret values, raw protected payloads, provider credentials,
+        hidden existence, and protected evidence are forbidden.
+x-openpc-envelope: CloudEvents 1.0.2 structured mode validated by frozen AF-08 event-envelope.schema.json
+x-openpc-trace:
+  requirementIds:
+  - REQ-SR01-B0-REQ-DEV-006
+  - REQ-SR01-B0-REQ-TARCH-COM-003
+  - REQ-SR01-B0-REQ-TARCH-COM-008
+  - REQ-SR01-B0-REQ-TARCH-COM-024
+  decisionIds:
+  - AD-SR04-001-B0-FREEZE
+  - AD-SR04-004-AUTHORITY-INTERSECTION
+  - AD-SR04-006-INVOCATION-CAPABILITY
+  - AD-SR04-007-EXECUTION-EVIDENCE
+  - AD-SR04-009-DYNAMIC-EVENT
+  - AD-SR04-014-SECURITY-OPERATIONS
+  - AD-SR04-015-UI-TRUTH-NOT-AUTHORITY
+  componentIds:
+  - LS-CONTROL-WORK
+  - LS-FLEET-CONTROL
+  - LS-RUNTIME-AGENT
+  - LS-WORKBENCH
+  sourceUnitIds:
+  - SU-REQ-3b7d5dff1c7a2777eef5afd7
+  - SU-REQ-446f6cb0783b05c8f0fdc6ee
+  - SU-REQ-62eca98a0a9e10ea90981863
+  - SU-REQ-99535639d7cefc9993d108a2
+x-openpc-no-broker-authority: true

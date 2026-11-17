@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [
+      1,
+      2,
+      3,
+      4,
+      100,
+      101,
+      102,
+      103
+    ],
+    "criticalFields": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "extensionAuthority": "POST_C17_ASTRA_12_WORKLOAD_NOTIFICATION_ADMISSION",
+  "name": "pc.notification-worker-profile.v1",
+  "schemaId": 24018,
+  "typeName": "NotificationWorkerProfileV1",
+  "purpose": {
+    "name": "pc.cose.notification-worker-profile.v1",
+    "code": 355
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "environmentId",
+      "type": "text160"
+    },
+    {
+      "key": 2,
+      "name": "participantId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 3,
+      "name": "privacyDomainId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 4,
+      "name": "profileId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 5,
+      "name": "revision",
+      "type": "u64p"
+    },
+    {
+      "key": 6,
+      "name": "validFromMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 7,
+      "name": "validUntilMs",
+      "type": "safe_uint"
+    },
+    {
+      "name": "sourceId",
+      "type": "uuidv7",
+      "key": 8
+    },
+    {
+      "key": 9,
+      "name": "serviceId",
+      "type": "enum LS-CONTROL-WORK=1 LS-NOTIFICATION=2"
+    },
+    {
+      "key": 10,
+      "name": "processRole",
+      "type": "enum ROLE-CONTROL-WORKER=1 ROLE-NOTIFICATION-WORKER=2"
+    },
+    {
+      "key": 11,
+      "name": "subscriptionId",
+      "type": "enum SUB-EVIDENCEEXPORTCOMPLETED-CONTROL_WORK-V1=1 SUB-EVIDENCEEXPORTCOMPLETED-NOTIFICATION-V1=2 SUB-NOTIFICATIONDELIVERYREQUESTED-NOTIFICATION-V1=3"
+    },
+    {
+      "key": 12,
+      "name": "principalId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 13,
+      "name": "workloadCredentialId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 14,
+      "name": "workloadEpoch",
+      "type": "u64p"
+    },
+    {
+      "key": 15,
+      "name": "workloadId",
+      "type": "text160"
+    },
+    {
+      "key": 16,
+      "name": "producerTrustDigest",
+      "type": "H32"
+    },
+    {
+      "key": 17,
+      "name": "routingProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 18,
+      "name": "kmsInstallationDigest",
+      "type": "H32"
+    },
+    {
+      "key": 19,
+      "name": "receiptSignerSpki",
+      "type": "P256_SPKI_DER"
+    },
+    {
+      "key": 20,
+      "name": "issuerKeyId",
+      "type": "H32"
+    }
+  ],
+  "authorityRules": [
+    "C17 LS-CONTROL-WORK/ROLE-CONTROL-WORKER owns SUB-EVIDENCEEXPORTCOMPLETED-CONTROL_WORK-V1 and publication of NotificationDeliveryRequested. LS-NOTIFICATION/ROLE-NOTIFICATION-WORKER alone owns the two NOTIFICATION subscriptions. These pairs cannot be mixed or inferred from a valid credential, database role or source event.",
+    "Initial privileged installation independently pins issuer, signed profile digest, environment, participant, privacy domain, profile/revision, exact workload principal/credential/epoch and workload audience. Signature validation alone is historical integrity, never current workload authentication or effect admission.",
+    "The durable admission owner must verify the actual TLS peer with the existing Identity kernel, lock/revalidate participant/privacy/principal/credential epochs and validity, and check the installed profile current state/expiry before and after the atomic operation. No caller-supplied peer, readiness boolean, shared human session or copied admission object substitutes for those owners.",
+    "Producer trust, routing profile and KMS installation digests identify separate owners, each requiring its own source, current routing/policy/module, key and retained-ciphertext checks. A profile grants no arbitrary signing, plaintext disclosure, gateway credential, key destruction, user acknowledgement or cursor progress.",
+    "The signed receipt key is distinct from the profile issuer and workload transport key. An exact signing-key installation/version and authorized attempt must bind the complete prepared receipt before provider I/O. Retain original request/signature on ambiguous outcomes; never re-sign to create a replacement effect.",
+    "Receipt families remain distinct: NotificationOccurrenceReceiptV1 belongs only to LS-NOTIFICATION under its EvidenceExportCompleted subscription; NotificationDeliveryRequestedReceiptV1 belongs only to LS-CONTROL-WORK. The delivery-request subscriber reconciles the already committed occurrence rather than fabricating a second occurrence.",
+    "Source inbox acknowledgement, receipt, local operation result, immutable occurrence/payload references and cursor advancement need one genuine atomic durable owner. Replay matches original event ID and data digest; altered content, gaps or UNKNOWN commit stay explicit and cannot advance. Finite source retry/quarantine and the separately governed six-attempt delivery budget remain mandatory owners outside this profile."
+  ]
+}

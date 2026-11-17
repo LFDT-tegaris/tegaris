@@ -1,0 +1,23 @@
+node_modules/
+.next/
+apps/admin-web/next-env.d.ts
+test-results/
+coverage/
+dist/
+target/
+.pnpm-store/
+.openpc-toolchain/
+.openpc-tmp/
+*.tsbuildinfo
+
+# Local developer-only credentials and data are separately ignored in the
+# Compose directories; do not add committed .env files to this repository.
+.env
+.env.*
+!.env.example
+
+# Generated dependency inventories: review separately before distribution.
+/artifacts/i01/licenses-pnpm.json
+/artifacts/i01/cargo-metadata.json
+/artifacts/i01/sbom-input-index.json
+/artifacts/dependencies/

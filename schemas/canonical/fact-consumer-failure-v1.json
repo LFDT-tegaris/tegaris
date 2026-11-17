@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "extensionAuthority": "POST_C17_ASTRA_11_FACT_CONSUMER_QUARANTINE",
+  "name": "pc.fact-consumer-failure.v1",
+  "schemaId": 24007,
+  "typeName": "FactConsumerFailureV1",
+  "purpose": {
+    "name": "pc.cose.fact-consumer-failure.v1",
+    "code": 344
+  },
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [
+      1,
+      2,
+      3,
+      4,
+      100,
+      101,
+      102,
+      103
+    ],
+    "criticalFields": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "environmentId",
+      "type": "text160"
+    },
+    {
+      "key": 2,
+      "name": "participantId",
+      "type": "uuid"
+    },
+    {
+      "key": 3,
+      "name": "privacyDomainId",
+      "type": "uuid"
+    },
+    {
+      "key": 4,
+      "name": "consumerId",
+      "type": "registered FactCandidateAdmitted consumer"
+    },
+    {
+      "key": 5,
+      "name": "subscriptionId",
+      "type": "matching registered FactCandidateAdmitted subscription"
+    },
+    {
+      "key": 6,
+      "name": "eventId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 7,
+      "name": "candidateId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 8,
+      "name": "generationId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 9,
+      "name": "factType",
+      "type": "CONTRACT_STATE_CALL | RELATIONSHIP | EXTERNAL_DECISION"
+    },
+    {
+      "key": 10,
+      "name": "sequence",
+      "type": "u63p"
+    },
+    {
+      "key": 11,
+      "name": "envelopeDigest",
+      "type": "H32"
+    },
+    {
+      "key": 12,
+      "name": "dataDigest",
+      "type": "H32"
+    },
+    {
+      "key": 13,
+      "name": "materialDigest",
+      "type": "H32"
+    },
+    {
+      "key": 14,
+      "name": "initialProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 15,
+      "name": "currentProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 16,
+      "name": "failedAttempts",
+      "type": "uint 1..1000"
+    },
+    {
+      "key": 17,
+      "name": "maximumAttempts",
+      "type": "uint 1..1000; equal failedAttempts"
+    },
+    {
+      "key": 18,
+      "name": "leaseGeneration",
+      "type": "u64p"
+    },
+    {
+      "key": 19,
+      "name": "workloadCredentialId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 20,
+      "name": "workloadCredentialEpoch",
+      "type": "u64"
+    },
+    {
+      "key": 21,
+      "name": "workloadPrincipalId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 22,
+      "name": "workItemId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 23,
+      "name": "problem",
+      "type": "PC-DATA-6005"
+    },
+    {
+      "key": 24,
+      "name": "recordedAtMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 25,
+      "name": "signerKeyId",
+      "type": "H32"
+    },
+    {
+      "key": 26,
+      "name": "receiptId",
+      "type": "uuidv7"
+    }
+  ],
+  "authorityRules": [
+    "This failure receipt grants no Fact authority, effect success, delivery ACK or cursor advancement. The original source outbox and transport envelope remain retained.",
+    "Only the exact original event identity, sequence, envelope digest, data digest and durable observation material digest may be quarantined after its persisted failedAttempts equals its nonincreasing effective maximumAttempts. Capacity and unavailable releases do not consume effect attempts.",
+    "The committing owner independently locks the current installed signed consumer profile, active workload credential/principal and epoch, exact database login, exhausted original delivery and separate admitted FACT_CONSUMER_FAILURE signer grant. A signature or profile alone cannot authorize an effect.",
+    "The signer grant is scoped to environment, participant, privacy, consumer, workload credential and exact purpose 344. The runtime failure signer is separate from the consumer profile installation issuer. No human session or notification worker authority is synthesized or reused.",
+    "Allocate receiptId and workItemId once in a durable signing attempt before external signing. Reconcile the original attempt after ambiguous signing/commit; never substitute IDs or reset the retry budget. The returned signature must bind this exact canonical payload and separately admitted signer.",
+    "One atomic commit stores the original quarantine, exact signed receipt, durable outbox and actual control.work_item. Deduplicate by participant/privacy/consumer/event ID plus original material digest. Conflicting bytes fail without effects; exact replay returns original receipt/work item and never creates another.",
+    "The work item starts OPEN at revision 1 with kind FLEET_FAILURE for LS-FLEET-CONTROL or DELIVERY_FAILURE for LS-CONTROL-WORK, resource_ref urn:openpc:resource:<candidateId>, payload_digest materialDigest, created_by workloadPrincipalId, and no assignee/claim/completion. Its fixed safe reason is Fact delivery quarantined (PC-DATA-6005). ReceiptId binds the durable source-owned failure occurrence; later human claim/completion retain their independent public owners.",
+    "Persist only PC-DATA-6005 as the safe problem. Do not put raw envelopes, credential material or untrusted source messages in work-item reason, events or diagnostics. Readback requires current scoped authorization; historical receipt verification does not renew signing authority.",
+    "No production/internal effect is accepted from codec or signature checks alone: SQL state/outbox binding, native independent verification, real identity, denial, concurrency, rollback and restart acceptance remain mandatory."
+  ]
+}

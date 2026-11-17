@@ -1,0 +1,3 @@
+# OpenPC I09 foundation chart
+
+This chart currently contains no deployable Kubernetes resources and is not a release package. Under the current rescue authority, prepare and render local installation templates alongside stable runtime owners; the historical I09 receipt prerequisite does not prohibit this implementation work. Validate exact OCI image identities, versioned secret references, configuration, readiness and affected migration/recovery behavior. Preserve genuine qualification and signing obligations before claiming release readiness. Actual production deployment still requires explicit authority; local template rendering and verification do not imply that authorization.

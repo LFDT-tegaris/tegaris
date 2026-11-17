@@ -1,0 +1,266 @@
+{
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "maxNestingDepth": 8,
+    "maxCollectionEntries": 256,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; every listed key required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC or invalid UTF-8",
+      "floating point",
+      "indefinite lengths",
+      "payload tags",
+      "trailing data"
+    ]
+  },
+  "canonicalDefinitionJson": {
+    "encoding": "UTF-8 without BOM or trailing newline",
+    "unicode": "NFC; reject lone surrogates",
+    "numbers": "safe integers excluding negative zero",
+    "objectKeys": "ascending UTF-16 code units",
+    "arrays": "preserve order",
+    "rootOmit": [
+      "definitionDigest",
+      "signature"
+    ],
+    "digest": "SHA-256"
+  },
+  "name": "pc.identity.workload-renewal.policy-authorization",
+  "typeName": "WorkloadRenewalPolicyAuthorizationV1",
+  "schemaId": 24039,
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-IDENTITY",
+  "extensionAuthority": "POST_C17_R1_COORDINATOR_ADOPTION",
+  "purpose": {
+    "name": "pc.cose.identity.workload-renewal-policy-authorization.v1",
+    "code": 376
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [
+      1,
+      2,
+      3,
+      4,
+      100,
+      101,
+      102,
+      103
+    ],
+    "criticalFields": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1; exact embedded Authorization bytes; 64-byte P1363 signature",
+    "kid": "UTF-8 sha256:<lowercase SHA-256 of canonical P-256 SPKI DER>"
+  },
+  "scalarTypes": {
+    "definitionDigest": "32-byte SHA-256 of this canonical definition; supplied by codec, never caller",
+    "H32": "32-byte SHA-256; API sha256: plus 64 lowercase hex digits",
+    "uuid": "16-byte RFC network order; lowercase domain UUID versions 1..8 and RFC variant; not an allocation of UUIDv7 identities",
+    "id": "1..160 ASCII characters [A-Za-z0-9][A-Za-z0-9:._/-]*; no wildcard",
+    "u64": "unsigned uint64; API canonical decimal string",
+    "u64p": "positive uint64; API canonical decimal string",
+    "nanos": "uint64 nanoseconds since Unix epoch, divisible by 1000; finite validity only",
+    "requestProfile": {
+      "pc.identity.workload-renewal.request.v1": 1
+    },
+    "authorizationProfile": {
+      "pc.identity.workload-renewal.policy-authorization.v1": 1
+    },
+    "version1": "uint 1 only; API canonical decimal string 1",
+    "policyAuthorized": {
+      "POLICY_AUTHORIZED": 1
+    },
+    "workload": "canonical registered urn:openpc:workload:<lowercase UUID>; existing SAN semantics unchanged",
+    "requestBytes": "exact canonical Request payload as byte string; preserve submitted bytes; decode and reencode equality required"
+  },
+  "types": {
+    "Authorization": [
+      {
+        "key": 0,
+        "name": "definitionDigest",
+        "type": "definitionDigest"
+      },
+      {
+        "key": 1,
+        "name": "profileId",
+        "type": "authorizationProfile"
+      },
+      {
+        "key": 2,
+        "name": "profileVersion",
+        "type": "version1"
+      },
+      {
+        "key": 3,
+        "name": "authorizationMode",
+        "type": "policyAuthorized"
+      },
+      {
+        "key": 4,
+        "name": "requestBytes",
+        "type": "requestBytes"
+      },
+      {
+        "key": 5,
+        "name": "requestDigest",
+        "type": "H32"
+      },
+      {
+        "key": 6,
+        "name": "operationId",
+        "type": "uuid"
+      },
+      {
+        "key": 7,
+        "name": "credentialId",
+        "type": "uuid"
+      },
+      {
+        "key": 8,
+        "name": "familySecurityEpoch",
+        "type": "u64"
+      },
+      {
+        "key": 9,
+        "name": "participantEpoch",
+        "type": "u64p"
+      },
+      {
+        "key": 10,
+        "name": "principalEpoch",
+        "type": "u64p"
+      },
+      {
+        "key": 11,
+        "name": "workloadEpoch",
+        "type": "u64p"
+      },
+      {
+        "key": 12,
+        "name": "policyGovernanceReceiptId",
+        "type": "uuid"
+      },
+      {
+        "key": 13,
+        "name": "policyGovernanceReceiptDigest",
+        "type": "H32"
+      },
+      {
+        "key": 14,
+        "name": "instanceAdmissionReceiptId",
+        "type": "uuid"
+      },
+      {
+        "key": 15,
+        "name": "instanceAdmissionReceiptDigest",
+        "type": "H32"
+      },
+      {
+        "key": 16,
+        "name": "businessAncestorsDigest",
+        "type": "H32"
+      },
+      {
+        "key": 17,
+        "name": "mTlsPeerFingerprint",
+        "type": "H32"
+      },
+      {
+        "key": 18,
+        "name": "providerRequestDigest",
+        "type": "H32"
+      },
+      {
+        "key": 19,
+        "name": "attestationValidUntilNs",
+        "type": "nanos"
+      },
+      {
+        "key": 20,
+        "name": "signer",
+        "type": "Signer"
+      },
+      {
+        "key": 21,
+        "name": "issuedAtNs",
+        "type": "nanos"
+      },
+      {
+        "key": 22,
+        "name": "validUntilNs",
+        "type": "nanos"
+      }
+    ],
+    "Signer": [
+      {
+        "key": 0,
+        "name": "environmentId",
+        "type": "id"
+      },
+      {
+        "key": 1,
+        "name": "participantId",
+        "type": "uuid"
+      },
+      {
+        "key": 2,
+        "name": "privacyDomainId",
+        "type": "uuid"
+      },
+      {
+        "key": 3,
+        "name": "workloadId",
+        "type": "workload"
+      },
+      {
+        "key": 4,
+        "name": "credentialId",
+        "type": "uuid"
+      },
+      {
+        "key": 5,
+        "name": "credentialEpoch",
+        "type": "u64p"
+      },
+      {
+        "key": 6,
+        "name": "keyId",
+        "type": "H32"
+      },
+      {
+        "key": 7,
+        "name": "keyEpoch",
+        "type": "u64p"
+      },
+      {
+        "key": 8,
+        "name": "profileDigest",
+        "type": "H32"
+      },
+      {
+        "key": 9,
+        "name": "trustDigest",
+        "type": "H32"
+      }
+    ]
+  },
+  "invariants": [
+    "POLICY_AUTHORIZED is selected only by the dedicated registered operation/profile; no human approval record or receipt338 is synthesized.",
+    "Actual admitted Identity signing key/trust/profile and current policy/intentional business parents/attested instance/predecessor/current TLS peer are required by admission owner.",
+    "Original request bytes, digest, operation/credential identities, governing and instance receipts, challenge, successor key and provider request are immutable.",
+    "Assertion interval is positive and at most 30 seconds, bounded by original request and attestation validity.",
+    "Signer credential and key epochs retain their actual owning meanings; family security epoch is distinct from transport generation."
+  ]
+}

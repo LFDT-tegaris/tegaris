@@ -1,0 +1,9 @@
+{
+  "code": "PC-AUTH-0005",
+  "retryable": false,
+  "status": 404,
+  "title": "Resource is unavailable",
+  "traceId": "018f1e44-7b2c-7abc-8def-0123456789ab",
+  "truthState": "DENIED",
+  "type": "https://errors.openpc.local/hidden-or-not-found"
+}

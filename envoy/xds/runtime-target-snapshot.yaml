@@ -1,0 +1,140 @@
+schemaVersion: '1.0'
+envoyVersion: '1.39.0'
+targetId: 018f1e44-7b2c-7abd-8def-0123456789ac
+mode: ADS_STATE_OF_THE_WORLD_V3
+versionInfo: 60c16bbec0c14495be630a90579df13d46bb8d710dd86a4adfcda3f1e8271ec2
+resources:
+  clusters:
+    - name: openpc/018f1e44-7b2c-7abd-8def-0123456789ac/cluster/pds-ext-proc/v1
+      connect_timeout: 0.050s
+      type: STATIC
+      load_assignment:
+        cluster_name: openpc/018f1e44-7b2c-7abd-8def-0123456789ac/cluster/pds-ext-proc/v1
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    pipe:
+                      path: /run/openpc/pds/ext-proc.sock
+      typed_extension_protocol_options:
+        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:
+          '@type': type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions
+          explicit_http_config:
+            http2_protocol_options: {}
+      circuit_breakers:
+        thresholds:
+          - max_connections: 8
+            max_pending_requests: 32
+            max_requests: 256
+            max_retries: 0
+    - name: openpc/018f1e44-7b2c-7abd-8def-0123456789ac/cluster/broker-jsonrpc/v1
+      connect_timeout: 0.050s
+      type: STATIC
+      load_assignment:
+        cluster_name: openpc/018f1e44-7b2c-7abd-8def-0123456789ac/cluster/broker-jsonrpc/v1
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    pipe:
+                      path: /run/openpc/broker/jsonrpc.sock
+      circuit_breakers:
+        thresholds:
+          - max_connections: 64
+            max_pending_requests: 128
+            max_requests: 1024
+            max_retries: 0
+  routes:
+    - name: openpc/018f1e44-7b2c-7abd-8def-0123456789ac/route/protected-jsonrpc/v1
+      virtual_hosts:
+        - name: protected-jsonrpc
+          domains:
+            - '*'
+          request_headers_to_remove:
+            - x-openpc-internal-identity
+            - x-openpc-broker-capability
+            - x-openpc-active-generation
+          routes:
+            - match:
+                prefix: /
+              route:
+                cluster: openpc/018f1e44-7b2c-7abd-8def-0123456789ac/cluster/broker-jsonrpc/v1
+                timeout: 0s
+                retry_policy:
+                  retry_on: ''
+                  num_retries: 0
+  listeners:
+    - name: openpc/018f1e44-7b2c-7abd-8def-0123456789ac/listener/protected-jsonrpc/v1
+      address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: 8545
+      filter_chains:
+        - transport_socket:
+            name: envoy.transport_sockets.tls
+            typed_config:
+              '@type': type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
+              require_client_certificate: true
+              common_tls_context:
+                tls_params:
+                  tls_minimum_protocol_version: TLSv1_3
+                  tls_maximum_protocol_version: TLSv1_3
+                tls_certificate_sds_secret_configs:
+                  - name: openpc/018f1e44-7b2c-7abd-8def-0123456789ac/secret/edge-cert/v1
+                    sds_config:
+                      ads: {}
+                      resource_api_version: V3
+                combined_validation_context:
+                  default_validation_context: {}
+                  validation_context_sds_secret_config:
+                    name: openpc/018f1e44-7b2c-7abd-8def-0123456789ac/secret/edge-trust/v1
+                    sds_config:
+                      ads: {}
+                      resource_api_version: V3
+          filters:
+            - name: envoy.filters.network.http_connection_manager
+              typed_config:
+                '@type': type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                stat_prefix: openpc_protected_jsonrpc
+                normalize_path: true
+                merge_slashes: false
+                local_reply_config:
+                  body_format:
+                    json_format:
+                      type: about:blank
+                      title: PC-RUNTIME-3010
+                      status: '%RESPONSE_CODE%'
+                      requestTrace: '%REQ(X-REQUEST-ID)%'
+                    content_type: application/problem+json
+                upgrade_configs:
+                  - upgrade_type: websocket
+                route_config:
+                  name: openpc/018f1e44-7b2c-7abd-8def-0123456789ac/route/protected-jsonrpc/v1
+                http_filters:
+                  - name: envoy.filters.http.ext_proc
+                    typed_config:
+                      '@type': type.googleapis.com/envoy.extensions.filters.http.ext_proc.v3.ExternalProcessor
+                      grpc_service:
+                        envoy_grpc:
+                          cluster_name: openpc/018f1e44-7b2c-7abd-8def-0123456789ac/cluster/pds-ext-proc/v1
+                        timeout: 0.020s
+                      failure_mode_allow: false
+                      message_timeout: 0.020s
+                      max_message_timeout: 0.020s
+                      processing_mode:
+                        request_header_mode: SEND
+                        response_header_mode: SEND
+                        request_body_mode: BUFFERED
+                        response_body_mode: BUFFERED
+                        request_trailer_mode: SEND
+                        response_trailer_mode: SEND
+                  - name: envoy.filters.http.router
+                    typed_config:
+                      '@type': type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+  secrets:
+    - name: openpc/018f1e44-7b2c-7abd-8def-0123456789ac/secret/edge-cert/v1
+      certificate_chain_path: /var/run/openpc/tls/edge/tls.crt
+      private_key_path: /var/run/openpc/tls/edge/tls.key
+    - name: openpc/018f1e44-7b2c-7abd-8def-0123456789ac/secret/edge-trust/v1
+      trusted_ca_path: /var/run/openpc/tls/edge/ca.crt
+claimBoundary: LOCAL_BOUND_PROFILE_ONLY_NOT_PRODUCTION_QUALIFICATION

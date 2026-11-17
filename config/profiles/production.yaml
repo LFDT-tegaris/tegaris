@@ -1,0 +1,28 @@
+schemaVersion: "1.0"
+profileId: PROFILE-PRODUCTION-V1
+profile: production
+freezeId: C03-ARCHITECTURE-SHARED-PRIMITIVES-FREEZE-20260824-01
+immutableAfterStart: true
+claimState: PLANNED_TESTABLE
+deploymentUnits:
+  enabled: [DU-PC-WORKBENCH, DU-PC-CONTROL, DU-PC-COMPILER, DU-PC-FLEET-CONTROL, DU-PC-RUNTIME, DU-PC-FACT-BRIDGE, DU-ENVOY, DU-OTEL-COLLECTOR]
+  disabled: [DU-SUBQUERY]
+  coLocation: QUALIFIED_KUBERNETES_TOPOLOGY_ONLY
+conditionalComponents: {LS-INDEXER: false, STORE-VALKEY-OPTIONAL: false}
+bindings: {publicHttps: "0.0.0.0:8443", otlpGrpc: "0.0.0.0:4317", otlpHttp: "0.0.0.0:4318", prometheus: "0.0.0.0:8889", envoyAdmin: "127.0.0.1:9901", pdsUds: /run/openpc/pds.sock, brokerUds: /run/openpc/broker.sock}
+tls: {required: true, minimum: TLS1_3, workloadMtls: true, loopbackExemption: false}
+identityProfileInput: QINPUT-PRODUCTION-OIDC-CONFORMANCE-V1
+secretProvider: {providerId: kubernetes-csi, inlineValues: false, versionRequired: true, workloadIdentityRequired: true}
+resourceEnvelopeInput: QINPUT-PRODUCTION-RESOURCE-ENVELOPE-V1
+topologyQualificationInput: QINPUT-PRODUCTION-TOPOLOGY-V1
+storageQualificationInput: QINPUT-PRODUCTION-STORAGE-V1
+settingsDefaults: CONFIGURATION_SCHEMA_DEFAULTS_ONLY
+requiredSettingInputs: {ui.export_row_limit: QINPUT-PRODUCTION-UI-EXPORT-V1, runtime.local_artifact_capacity: QINPUT-PRODUCTION-RUNTIME-ARTIFACT-CAPACITY-V1, runtime.decision_deadline: QINPUT-PRODUCTION-RUNTIME-DEADLINE-V1, evidence.local_spool_capacity: QINPUT-PRODUCTION-EVIDENCE-SPOOL-V1, evidence.retention_profile: QINPUT-PRODUCTION-EVIDENCE-RETENTION-V1, provider.read_retry_limit: QINPUT-PRODUCTION-PROVIDER-READ-RETRY-V1, facts.maximum_staleness: QINPUT-PRODUCTION-FACT-STALENESS-V1, facts.reorg_retained_tail: QINPUT-PRODUCTION-FACT-REORG-TAIL-V1, module.allowed_publishers: QINPUT-PRODUCTION-MODULE-PUBLISHERS-V1, module.ui_slot_budget: QINPUT-PRODUCTION-MODULE-UI-SLOTS-V1}
+features: {privacyExplorerIntegration: false, explorerFactSource: false, clientIndexerCompatibility: false, subqueryConditional: false, optionalValkeyCache: false}
+telemetry: {collectorRequired: true, privacyProfile: STRICT_REDACTED, payloadCapture: false, debugLogLevelAllowed: false}
+backup: {requiredForAcceptance: true, restoreFixtureRequired: true, targetInput: QINPUT-PRODUCTION-BACKUP-RESTORE-V1}
+retentionInput: QINPUT-PRODUCTION-RETENTION-V1
+seedData: {allowed: NONE, customerData: false}
+externalDependencies: {realProviderRequired: true, fakeSuccessAllowed: false, exactProfileRequiredWhenEnabled: true}
+prohibitedShortcuts: [PLAINTEXT_SECRET, HTTP_AUTHORITY_PATH, DISABLE_MTLS, DISABLE_DENIAL, DEBUG_ENDPOINT_PUBLIC, DEVELOPMENT_IDP, FIXTURE_PROVIDER, SEED_DATA, FAKE_RESPONSE, UNIVERSAL_EMPTY, PERMISSIVE, RAW_PROTECTED_NODE, SILENT_WINNER]
+trace: {requirementRefs: [REQ-SR01-B0-REQ-OPS-004], decisionRefs: [DEC-C03-013], componentRefs: [DU-PC-CONTROL, DU-PC-RUNTIME, DU-PC-FACT-BRIDGE], sourceUnitRefs: [SU-10162f2c32bc27deb7624a29], testRefs: [TEST-OPS-PROFILE-PRODUCTION-001, TEST-OPS-PROFILE-PRODUCTION-002, TEST-OPS-PROFILE-PRODUCTION-003], claimCeilingRefs: [CC-GLOBAL-AUTHORITY-TRUTH, CC-NUMERIC-SLA-CERTIFICATION]}

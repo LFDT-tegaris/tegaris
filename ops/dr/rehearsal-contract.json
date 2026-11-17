@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "scope": "I09_FOUNDATION_ONLY",
+  "environment": "ISOLATED_LOCAL_DR_REHEARSAL_ONLY",
+  "notDeployable": true,
+  "notProduction": true,
+  "entryRequirements": [
+    "SYNTHETIC_FIXTURE_ONLY",
+    "EXACT_MIGRATION_PROFILE_REFERENCE",
+    "VERSIONED_SECRET_REFERENCES_ONLY",
+    "NO_EXTERNAL_PROVIDER_SIDE_EFFECTS"
+  ],
+  "failureRule": "PRESERVE_EVIDENCE_AND_FAIL_CLOSED",
+  "claimCeiling": "This contract is an integration point and does not prove production disaster-recovery qualification."
+}

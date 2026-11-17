@@ -1,0 +1,115 @@
+{
+  "schemaVersion": "1.0",
+  "stage": "I09",
+  "profile": "MIG-GREENFIELD-V1",
+  "stores": [
+    {
+      "id": "control",
+      "service": "control-pg",
+      "database": "openpc_control",
+      "migrationOwner": "DRIZZLE_GENERATED_SHARED_CONTROL_SCHEMA",
+      "migrations": [
+        [
+          "migrations/postgres/identity/0000_empty_living_lightning.sql",
+          "2362b5b4870119b242607b5e8a87564dbc3e56d2639f53c1b8e8f31fb9527e6e"
+        ],
+        [
+          "migrations/postgres/identity/0001_furry_stranger.sql",
+          "0302b9050f0e40b1dfcbf799881ff2094996f5ca3785e4515eae31e828d693f7"
+        ],
+        [
+          "migrations/postgres/identity/0002_mean_bill_hollister.sql",
+          "92f10c0763c1533e4f34150cc50b19eddbd3744ab0f3d8d374818e7bafb69a5e"
+        ],
+        [
+          "migrations/postgres/identity/0003_mysterious_eternals.sql",
+          "8409aaa2bbe88f1dc5ea995ea5f7a5bb65718aacebaf6b6785ad96ab847d2ac3"
+        ],
+        [
+          "migrations/postgres/identity/0004_gigantic_roland_deschain.sql",
+          "d61991c0abdce236ccea601e8336a4745d05942b3c7efa46321a6c326a293729"
+        ],
+        [
+          "migrations/postgres/identity/0005_tense_jean_grey.sql",
+          "60ff747a87e3045bad994cfe1755f678ba2af82b2fd1c6a1049f4a6e7056dafa"
+        ],
+        [
+          "migrations/postgres/identity/0006_dusty_luke_cage.sql",
+          "100cc49a6a9e003d1e011f5bbb6471429a704772568d2cdfa5884dbd813e1dd7"
+        ],
+        [
+          "migrations/postgres/identity/0007_useful_whizzer.sql",
+          "ee2d7d555c19670741e621760797f27f6428b5d7f7392fc414207df547fed1d8"
+        ],
+        [
+          "migrations/postgres/identity/0008_conscious_scalphunter.sql",
+          "3f5dc8f5696cee62f05c697707e5fda3b2d7257b3f9cc9d885001e0aa40c5626"
+        ],
+        [
+          "migrations/postgres/policy/0000_yummy_plazm.sql",
+          "91faa8479ee9fb1396579afb37399ba35fed7e06ca4da0c05d31dae0750c433a"
+        ],
+        [
+          "migrations/postgres/policy/0001_vengeful_human_torch.sql",
+          "2f58a7908b580b9febedb84034f30741031a0890bd5d68b7dcb2cf354d3207f1"
+        ],
+        [
+          "migrations/postgres/policy/0002_clumsy_lady_mastermind.sql",
+          "7300b242d2c334038eb02826c75f151bd11250f070f21382e40517939c66713e"
+        ]
+      ],
+      "prerequisites": ["openpc_control_owner", "openpc_control_migrator", "openpc_backup_operator"]
+    },
+    {
+      "id": "facts",
+      "service": "fact-pg",
+      "database": "openpc_facts",
+      "migrationOwner": "SQLX_SQL_FIRST",
+      "migrations": [
+        [
+          "migrations/postgres/common-primitives.sql",
+          "9624e42dd0a301888be621146015b277921efa556fdd403fdeafbbc121e8f67e"
+        ],
+        [
+          "migrations/postgres/facts/0001_fact_bridge_integrity.sql",
+          "2f2a45191da5a4d47be4d411fddf2c03f86720ae0a92013df182ca5bf296ff94"
+        ]
+      ],
+      "prerequisites": [
+        "openpc_facts_lifecycle_owner",
+        "openpc_facts_capability_owner",
+        "openpc_fact_bridge_writer",
+        "openpc_candidate_index_reader"
+      ]
+    },
+    {
+      "id": "candidate-index",
+      "service": "candidate-index-pg",
+      "database": "openpc_candidate_index",
+      "migrationOwner": "SQLX_SQL_FIRST",
+      "migrations": [
+        [
+          "migrations/postgres/candidate-index/0001_initial.sql",
+          "f25f3f390ab9519dac0b502ecb363dfc4176700ded103a3a0b32a6706b833f8f"
+        ],
+        [
+          "migrations/postgres/candidate-index/0002_forward_contract.sql",
+          "42c7cd943ea8b02ea10a003fe223b5eb78e55ffc7a99d7db20e51196de52f005"
+        ],
+        [
+          "migrations/postgres/candidate-index/0003_gate3_candidate_contract.sql",
+          "4836b44ad46c53c06ec9d43279864ca737716a22a69f9a0f8bf8f9f842b97f0a"
+        ]
+      ],
+      "prerequisites": [
+        "openpc_candidate_index_owner",
+        "openpc_indexer_writer",
+        "openpc_fact_bridge_reader",
+        "openpc_candidate_index_reader",
+        "openpc_candidate_index_maintenance",
+        "openpc_backup_operator"
+      ]
+    }
+  ],
+  "claimCeiling": "LOCAL_SYNTHETIC_ISOLATED_RECOVERY_TECHNICAL_PROOF_ONLY"
+}

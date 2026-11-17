@@ -1,0 +1,126 @@
+{
+  "profileId": "pc.control.notification.acknowledge",
+  "profileVersion": 1,
+  "schemaDefinitionDigest": "sha256:41a877ca7e00e74f32c8becf8daee38f26c12ab9d9dcf6ff80ed8e75608b3c1f",
+  "actionIntentId": "ACT-NOTIFICATION_UPDATE_ACKNOWLEDGE-V1",
+  "catalogOperationId": "CFG-OP-ACKNOWLEDGE-NOTIFICATION",
+  "resourceType": "notification",
+  "aggregateType": "notification",
+  "sequenceNamespace": "CONTROL_BUSINESS_TRANSITION_V1",
+  "transitionKind": 1,
+  "state": {
+    "owner": "control.notification",
+    "identity": [
+      "participant_id",
+      "privacy_domain_id",
+      "notification_id"
+    ],
+    "revision": "revision:u64",
+    "absence": {
+      "existence": 0,
+      "revision": 0,
+      "projection": {}
+    },
+    "projection": {
+      "0": {
+        "column": "severity",
+        "type": "TEXT",
+        "enum": [
+          "INFO",
+          "WARNING",
+          "ERROR",
+          "CRITICAL"
+        ]
+      },
+      "1": {
+        "column": "state",
+        "type": "TEXT",
+        "enum": [
+          "UNREAD",
+          "READ",
+          "ACKNOWLEDGED"
+        ]
+      },
+      "2": {
+        "column": "message_key",
+        "type": "TEXT",
+        "encoding": "registered message key; never rendered or private body"
+      },
+      "3": {
+        "column": "resource_ref",
+        "type": "U64",
+        "encoding": "0 for NULL; 1 for present exact URN"
+      },
+      "4": {
+        "column": "resource_ref",
+        "type": "TEXT",
+        "presence": "required exactly when key 3 is 1; absent when key 3 is 0"
+      },
+      "5": {
+        "column": "candidate_digest",
+        "type": "H32",
+        "encoding": "SHA-256 of original retained creation candidate; preserve across acknowledgement"
+      }
+    },
+    "digest": "pc.control.transition-state.v1; SHA-256 over canonical typed CBOR; five base fields and resource URN exactly when presence marker 3 is 1"
+  },
+  "transition": {
+    "command": "ACKNOWLEDGE",
+    "before": "PRESENT_UNREAD_OR_READ",
+    "after": "PRESENT_ACKNOWLEDGED_REVISION_PLUS_1",
+    "change": "acknowledge under current user authority; preserve severity, message key, resource and original candidate binding; transport success does not acknowledge",
+    "noOp": "REJECT_WITHOUT_EFFECTS"
+  },
+  "authority": {
+    "actor": "authenticated participant user session",
+    "action": "exact action registry, live scoped authority fence",
+    "evidence": [
+      {
+        "kind": 2,
+        "owner": "control.mutation_evidence",
+        "format": "IDENTITY_RUNTIME_ASSERTION_3002_2_13",
+        "binding": "actual operation, actor, session, participant, privacy domain, action, catalog operation, candidate and expected revision"
+      }
+    ],
+    "snapshot": "retained exact precommit authority path and live epochs/validity; no session or credential secrets",
+    "approval": "NOT_REQUIRED",
+    "stepUp": "NOT_REQUIRED"
+  },
+  "events": [
+    {
+      "eventType": "io.openpc.control.command.committed.v1",
+      "dataSchemaUri": "https://schemas.openpc.local/event-payloads.schema.json#/$defs/CommandCommitted",
+      "payload": "canonical four-key CommandCommitted CBOR; commandId=operationId, aggregateRef=canonical aggregate URN, actionIntentId, intentDigest=actionIntentDigest",
+      "cardinality": 1,
+      "effect": "local durable control-state transition only"
+    }
+  ],
+  "privacy": {
+    "placement": "same participant and privacy domain as authoritative aggregate",
+    "read": "current read authorization required; receipt is never authorization",
+    "retention": "retain receipt, typed state/authority inputs, authorization evidence, public trust and operation links under control audit retention; no automatic deletion"
+  },
+  "lifecycle": {
+    "idempotency": "exact replay returns original operation, receipt, evidence and event IDs/bytes/sequences",
+    "rollback": "notification metadata, authority, signing attempt, receipt, outbox and operation result roll back together",
+    "restart": "scoped primary operation reconciliation; preserve UNKNOWN for unresolved COMMIT",
+    "delivery": "qualified namespace and profile required; no legacy cursor merge"
+  },
+  "requestBinding": {
+    "domain": "pc.control.configuration-request.v1",
+    "encoding": "UTF-8 domain plus NUL; each field prefixed by uint32 big-endian UTF-8 byte length; SHA-256",
+    "fields": [
+      "participantId",
+      "privacyDomainId",
+      "principalId",
+      "actionIntentId",
+      "catalogOperationId",
+      "aggregateType",
+      "aggregateId",
+      "expectedRevision (canonical u64 decimal)",
+      "candidateDigest (sha256: lowercase hex)",
+      "idempotencyKey"
+    ]
+  },
+  "definitionDigest": "sha256:dd31b618e1b8df721fcc23a39214b4731b7fbb18bee13e00902a7abe6e06902b"
+}

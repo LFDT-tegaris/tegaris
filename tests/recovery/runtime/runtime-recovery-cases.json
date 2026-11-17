@@ -1,0 +1,347 @@
+{
+  "acceptedLocalRegressions": [
+    {
+      "acceptedCommit": "89441341ff285dc01644b82e4d89ea5757eb63e8",
+      "expected": "RESPONSE_WITHHELD_AMBIGUITY_PRESERVED_EXACT_REQUEST_ANCHOR_COMPLETENESS_DIGEST_AND_BUDGET_REVALIDATED",
+      "id": "BROKER_RECONCILIATION_INVALID_RESPONSE"
+    }
+  ],
+  "cases": [
+    {
+      "actor": "pc-control",
+      "condition": "control database unavailable",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-001",
+      "normativeActive": false,
+      "retryClass": "NONE_UNTIL_RECOVERY",
+      "runtimeDirective": "SOURCE_ACCOUNTED_CLOSED_BY_PRECEDENCE_DO_NOT_IMPLEMENT_FROM_THIS_ROW",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-001",
+      "truthfulResult": "API unready; runtime local continues"
+    },
+    {
+      "actor": "pc-control",
+      "condition": "DB serialization/deadlock",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-002",
+      "normativeActive": true,
+      "retryClass": "WHOLE_TX_MAX_3",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-002",
+      "truthfulResult": "no partial commit; stable conflict if exhausted"
+    },
+    {
+      "actor": "client/control API",
+      "condition": "client timeout after command commit",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-003",
+      "normativeActive": true,
+      "retryClass": "QUERY_SAME_COMMAND_ID",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-003",
+      "truthfulResult": "operation continues/queryable"
+    },
+    {
+      "actor": "control worker",
+      "condition": "outbox worker crash",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-004",
+      "normativeActive": true,
+      "retryClass": "LEASE_RECLAIM",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-004",
+      "truthfulResult": "idempotent replay"
+    },
+    {
+      "actor": "consumer",
+      "condition": "poison outbox event",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-005",
+      "normativeActive": true,
+      "retryClass": "FINITE_THEN_QUARANTINE",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-005",
+      "truthfulResult": "work item and no hidden progress"
+    },
+    {
+      "actor": "cache client",
+      "condition": "Valkey loss/eviction",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-006",
+      "normativeActive": true,
+      "retryClass": "RECOMPUTE",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-006",
+      "truthfulResult": "latency degradation only"
+    },
+    {
+      "actor": "control worker",
+      "condition": "compiler crash",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-007",
+      "normativeActive": true,
+      "retryClass": "SAFE_BY_INPUT_DIGEST",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-007",
+      "truthfulResult": "release not staged"
+    },
+    {
+      "actor": "compiler verifier",
+      "condition": "compiler nondeterminism",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-008",
+      "normativeActive": false,
+      "retryClass": "NO_RETRY_SAME_ARTIFACT",
+      "runtimeDirective": "SOURCE_ACCOUNTED_CLOSED_BY_PRECEDENCE_DO_NOT_IMPLEMENT_FROM_THIS_ROW",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-008",
+      "truthfulResult": "quarantine build/release"
+    },
+    {
+      "actor": "publisher/Agent",
+      "condition": "registry unavailable",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-009",
+      "normativeActive": true,
+      "retryClass": "BOUNDED_DIGEST_RETRY",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-009",
+      "truthfulResult": "active target unchanged; release held"
+    },
+    {
+      "actor": "Agent/compiler",
+      "condition": "artifact digest/signature/provenance mismatch",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-010",
+      "normativeActive": true,
+      "retryClass": "NO_RETRY_UNTIL_INPUT_CHANGES",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-010",
+      "truthfulResult": "quarantine and alert"
+    },
+    {
+      "actor": "Agent/Envoy/control",
+      "condition": "fleet control unavailable",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-011",
+      "normativeActive": true,
+      "retryClass": "STREAM_RECONNECT",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-011",
+      "truthfulResult": "active local state continues; releases pause"
+    },
+    {
+      "actor": "fleet control",
+      "condition": "Agent offline",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-012",
+      "normativeActive": true,
+      "retryClass": "RECONNECT_CURRENT_STATE",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-012",
+      "truthfulResult": "target offline/non-converged"
+    },
+    {
+      "actor": "Envoy",
+      "condition": "xDS NACK",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-013",
+      "normativeActive": true,
+      "retryClass": "NO_ENDLESS_RESEND",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-013",
+      "truthfulResult": "wave held; exact version quarantined"
+    },
+    {
+      "actor": "fleet derivation",
+      "condition": "xDS ACK without runtime activation",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-014",
+      "normativeActive": true,
+      "retryClass": "NONE",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-014",
+      "truthfulResult": "XDS_ACKED_NOT_ACTIVE, not green"
+    },
+    {
+      "actor": "Agent/fleet",
+      "condition": "lost activation receipt",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-015",
+      "normativeActive": true,
+      "retryClass": "JOURNAL_REPLAY_24H",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-015",
+      "truthfulResult": "reconcile without duplicate activation"
+    },
+    {
+      "actor": "runtime/fleet",
+      "condition": "runtime/desired generation mismatch",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-016",
+      "normativeActive": true,
+      "retryClass": "NO_REQUEST_RETRY",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-016",
+      "truthfulResult": "deny/quarantine"
+    },
+    {
+      "actor": "Envoy",
+      "condition": "Envoy cannot reach runtime UDS",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-017",
+      "normativeActive": true,
+      "retryClass": "NO_HOT_PATH_RETRY",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-017",
+      "truthfulResult": "protected request fails closed"
+    },
+    {
+      "actor": "Envoy",
+      "condition": "runtime decision timeout",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-018",
+      "normativeActive": true,
+      "retryClass": "NO_BYPASS",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-018",
+      "truthfulResult": "stable fail-closed error"
+    },
+    {
+      "actor": "runtime",
+      "condition": "provider read transient failure",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-019",
+      "normativeActive": false,
+      "retryClass": "PROFILE_GATED_0_TO_3",
+      "runtimeDirective": "SOURCE_ACCOUNTED_CLOSED_BY_PRECEDENCE_DO_NOT_IMPLEMENT_FROM_THIS_ROW",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-019",
+      "truthfulResult": "re-evaluate or return error"
+    },
+    {
+      "actor": "Broker",
+      "condition": "provider write unknown commit",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-020",
+      "normativeActive": false,
+      "retryClass": "NEVER_RESUBMIT",
+      "runtimeDirective": "SOURCE_ACCOUNTED_CLOSED_BY_PRECEDENCE_DO_NOT_IMPLEMENT_FROM_THIS_ROW",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-020",
+      "truthfulResult": "reconcile exact attempt identity"
+    },
+    {
+      "actor": "runtime",
+      "condition": "local evidence spool full/corrupt/key unavailable",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-021",
+      "normativeActive": true,
+      "retryClass": "NO_BYPASS",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-021",
+      "truthfulResult": "protected response fails closed"
+    },
+    {
+      "actor": "exporter",
+      "condition": "remote evidence vault unavailable",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-022",
+      "normativeActive": true,
+      "retryClass": "AT_LEAST_ONCE_BACKOFF",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-022",
+      "truthfulResult": "local backlog/capacity alert"
+    },
+    {
+      "actor": "indexer manager",
+      "condition": "orchestrator partial create",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-023",
+      "normativeActive": false,
+      "retryClass": "DECLARATIVE_RECONCILE",
+      "runtimeDirective": "SOURCE_ACCOUNTED_CLOSED_BY_PRECEDENCE_DO_NOT_IMPLEMENT_FROM_THIS_ROW",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-023",
+      "truthfulResult": "adopt exact resources or quarantine/cleanup"
+    },
+    {
+      "actor": "indexer manager/Fact Bridge",
+      "condition": "SubQuery crash/lag",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-024",
+      "normativeActive": false,
+      "retryClass": "PROFILE_RESTART",
+      "runtimeDirective": "SOURCE_ACCOUNTED_CLOSED_BY_PRECEDENCE_DO_NOT_IMPLEMENT_FROM_THIS_ROW",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-024",
+      "truthfulResult": "projection not ready"
+    },
+    {
+      "actor": "Fact Bridge",
+      "condition": "chain reorg/contradiction",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-025",
+      "normativeActive": false,
+      "retryClass": "NEW_REORG_GENERATION",
+      "runtimeDirective": "SOURCE_ACCOUNTED_CLOSED_BY_PRECEDENCE_DO_NOT_IMPLEMENT_FROM_THIS_ROW",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-025",
+      "truthfulResult": "withdraw readiness and replace shard"
+    },
+    {
+      "actor": "Fact Bridge",
+      "condition": "Fact Bridge validation rejection",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-026",
+      "normativeActive": false,
+      "retryClass": "NO_ALLOW_RETRY",
+      "runtimeDirective": "SOURCE_ACCOUNTED_CLOSED_BY_PRECEDENCE_DO_NOT_IMPLEMENT_FROM_THIS_ROW",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-026",
+      "truthfulResult": "candidate remains non-authoritative"
+    },
+    {
+      "actor": "notification worker",
+      "condition": "notification gateway unavailable",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-027",
+      "normativeActive": true,
+      "retryClass": "5S_30S_2M_10M_30M",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-027",
+      "truthfulResult": "domain occurrence unaffected; delivery work item"
+    },
+    {
+      "actor": "telemetry client",
+      "condition": "OTel backend/collector unavailable",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-028",
+      "normativeActive": true,
+      "retryClass": "BOUNDED_OTLP",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-028",
+      "truthfulResult": "drop counter/alert; no semantic effect"
+    },
+    {
+      "actor": "identity",
+      "condition": "IdP/directory unavailable or stale",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-029",
+      "normativeActive": true,
+      "retryClass": "CONTRACT_SPECIFIC",
+      "runtimeDirective": "APPLY_EXACTLY",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-029",
+      "truthfulResult": "login/provisioning unavailable; runtime local state only until expiry"
+    },
+    {
+      "actor": "acquisition worker",
+      "condition": "external decision provider malformed/timeout",
+      "evidenceAndNotification": "REGISTERED_TYPED_OCCURRENCE_REQUIRED",
+      "id": "FAIL-030",
+      "normativeActive": false,
+      "retryClass": "BOUNDED_IDEMPOTENT",
+      "runtimeDirective": "SOURCE_ACCOUNTED_CLOSED_BY_PRECEDENCE_DO_NOT_IMPLEMENT_FROM_THIS_ROW",
+      "sourceRequirementId": "REQ-SR01-B0-REQ-TARCH-FAIL-030",
+      "truthfulResult": "observation rejected; no admitted fact"
+    }
+  ],
+  "claimBoundary": "LOCAL_TECHNICAL_VALIDATION_ONLY_NOT_PROVIDER_PRODUCTION_OR_SLA_QUALIFICATION",
+  "schemaVersion": "1.0",
+  "scope": "I04_GATE4_LOCAL_BOUND_PROFILE",
+  "source": "SPECIFICATIONS/RUNTIME/fail-behavior-matrix.yaml",
+  "sourceCaseCount": 30,
+  "sourceSha256": "3904555d6ae443c826d96bb45c861986ec113fce7551a10e0ca8dbfa39eab0be"
+}

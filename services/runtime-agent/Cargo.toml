@@ -1,0 +1,42 @@
+[package]
+name = "openpc-runtime-agent"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+pc-policy-core = { path = "../../crates/pc-policy-core" }
+pc-runtime-types = { path = "../../crates/pc-runtime-types" }
+pc-provider-api = { path = "../../crates/pc-provider-api" }
+ciborium.workspace = true
+sha2.workspace = true
+ring = "=0.17.14"
+unicode-normalization = "=0.1.25"
+tokio = { workspace = true, features = ["net", "macros", "rt", "time", "io-util"] }
+openpc-pds = { path = "../pds" }
+openpc-broker = { path = "../broker" }
+openpc-fact-service = { path = "../fact-service" }
+openpc-multi-rpc = { path = "../multi-rpc" }
+tonic.workspace = true
+tonic-prost.workspace = true
+prost.workspace = true
+http.workspace = true
+axum.workspace = true
+hyper = { workspace = true, features = ["server", "http1"] }
+hyper-util = { version = "=0.1.20", features = ["tokio"] }
+futures.workspace = true
+tokio-stream = "=0.1.19"
+x509-parser = { version = "=0.18.1", default-features = false }
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+uuid = { workspace = true, features = ["v7"] }
+
+[dev-dependencies]
+k256 = { workspace = true, features = ["ecdsa"] }
+sha3.workspace = true
+tower = { workspace = true, features = ["util"] }
+pc-facts-core = { path = "../../crates/pc-facts-core" }
+sqlx.workspace = true
+rustls.workspace = true

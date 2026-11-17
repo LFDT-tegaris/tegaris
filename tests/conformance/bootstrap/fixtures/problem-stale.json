@@ -1,0 +1,9 @@
+{
+  "code": "PC-DATA-6007",
+  "retryable": false,
+  "status": 412,
+  "title": "The supplied revision is stale",
+  "traceId": "018f1e44-7b2c-7abc-8def-0123456789ab",
+  "truthState": "STALE",
+  "type": "https://errors.openpc.local/stale"
+}

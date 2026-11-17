@@ -1,0 +1,94 @@
+// C04 normative wire projection. Signed semantics are PC-CBOR-1 only.
+// JSON projections MUST validate the frozen AF-08 schemas; protobuf bytes are never an alternate signature preimage.
+// Every caller supplies grpc-timeout. The server applies min(caller deadline, signed service-profile maximum).
+// Missing/expired authority metadata fails before method execution. Unknown enum values never relax denial.
+syntax = "proto3";
+package openpc.fleet.v1;
+
+import "openpc/common/v1/common.proto";
+
+option java_multiple_files = true;
+option java_package = "io.openpc.fleet.v1";
+
+enum TargetStateV1 {
+  TARGET_STATE_V1_UNSPECIFIED = 0;
+  TARGET_STATE_V1_OFFLINE = 1;
+  TARGET_STATE_V1_DISCOVERED = 2;
+  TARGET_STATE_V1_STAGING = 3;
+  TARGET_STATE_V1_PREPARED = 4;
+  TARGET_STATE_V1_XDS_PENDING = 5;
+  TARGET_STATE_V1_XDS_ACKED_NOT_ACTIVE = 6;
+  TARGET_STATE_V1_ACTIVATING = 7;
+  TARGET_STATE_V1_ACTIVE_MATCHED = 8;
+  TARGET_STATE_V1_ACTIVE_MISMATCH = 9;
+  TARGET_STATE_V1_NACKED = 10;
+  TARGET_STATE_V1_FAILED = 11;
+  TARGET_STATE_V1_ROLLING_BACK = 12;
+  TARGET_STATE_V1_ROLLED_BACK = 13;
+  TARGET_STATE_V1_QUARANTINED = 14;
+  TARGET_STATE_V1_INCOMPATIBLE = 15;
+}
+
+message DesiredGenerationV1 {
+  openpc.common.v1.RequestMetaV1 meta = 1;
+  openpc.common.v1.Af08OpenPcUrn target_id = 2;
+  openpc.common.v1.Af08OpenPcUrn occurrence_id = 3;
+  openpc.common.v1.Af08Sha256Digest capsule_digest = 4;
+  openpc.common.v1.Af08Sha256Digest xds_snapshot_digest = 5;
+  openpc.common.v1.Af08Sha256Digest expected_previous_generation_digest = 6;
+  openpc.common.v1.Af08Rfc3339MicrosUtc expires_at = 7;
+  bytes cose_sign1_pc_cbor_1 = 8;
+  reserved 100 to 199;
+}
+
+message TargetReceiptV1 {
+  openpc.common.v1.RequestMetaV1 meta = 1;
+  openpc.common.v1.Af08UuidV7 receipt_id = 2;
+  openpc.common.v1.Af08OpenPcUrn target_id = 3;
+  openpc.common.v1.Af08Sha256Digest desired_generation_digest = 4;
+  optional openpc.common.v1.Af08Sha256Digest active_generation_digest = 5;
+  optional openpc.common.v1.Af08Sha256Digest xds_version_digest = 6;
+  TargetStateV1 state = 7;
+  openpc.common.v1.Af08Rfc3339MicrosUtc observed_at = 8;
+  openpc.common.v1.Af08Sha256Digest receipt_digest = 9;
+  bytes cose_sign1_pc_cbor_1 = 10;
+  reserved 100 to 199;
+}
+
+message PrepareGenerationRequestV1 {
+  openpc.common.v1.RequestMetaV1 meta = 1;
+  DesiredGenerationV1 desired = 2;
+  reserved 100 to 199;
+}
+
+message ActivateGenerationRequestV1 {
+  openpc.common.v1.RequestMetaV1 meta = 1;
+  openpc.common.v1.Af08OpenPcUrn target_id = 2;
+  openpc.common.v1.Af08Sha256Digest prepared_generation_digest = 3;
+  openpc.common.v1.Af08Sha256Digest xds_version_digest = 4;
+  openpc.common.v1.Af08Sha256Digest expected_previous_generation_digest = 5;
+  bytes one_use_activation_token_cose_sign1 = 6;
+  reserved 100 to 199;
+}
+
+message ActiveGenerationV1 {
+  openpc.common.v1.Af08OpenPcUrn target_id = 1;
+  openpc.common.v1.Af08Sha256Digest generation_digest = 2;
+  openpc.common.v1.Af08Sha256Digest xds_version_digest = 3;
+  openpc.common.v1.Af08UInt64String journal_sequence = 4;
+  openpc.common.v1.Af08Rfc3339MicrosUtc activated_at = 5;
+  reserved 100 to 199;
+}
+
+service FleetControlService {
+  rpc CommandTarget(DesiredGenerationV1) returns (openpc.common.v1.OperationViewV1);
+  rpc SynchronizeTarget(stream TargetReceiptV1) returns (stream DesiredGenerationV1);
+  rpc ReconcileTarget(openpc.common.v1.RequestMetaV1) returns (DesiredGenerationV1);
+}
+
+service RuntimeAgentService {
+  rpc PrepareGeneration(PrepareGenerationRequestV1) returns (TargetReceiptV1);
+  rpc ActivateGeneration(ActivateGenerationRequestV1) returns (TargetReceiptV1);
+  rpc GetActiveGeneration(openpc.common.v1.RequestMetaV1) returns (ActiveGenerationV1);
+  rpc ReplayReceipts(openpc.common.v1.RequestMetaV1) returns (stream TargetReceiptV1);
+}

@@ -1,0 +1,15 @@
+# Kubernetes 1.36.2 ConfigMap projection of the independently rendered and
+# OpenTelemetry Collector 0.159.0-validated configuration. The materializer
+# inserts every UTF-8 LF line at exactly four spaces and verifies the digest.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "OPENPC_INPUT_OTEL_CONFIGMAP_NAME"
+  namespace: "OPENPC_INPUT_NAMESPACE"
+  annotations:
+    openpc.io/otel-config-digest: "OPENPC_INPUT_OTEL_CONFIG_DIGEST"
+    openpc.io/qualification-receipt-digest: "OPENPC_INPUT_QUALIFICATION_RECEIPT_DIGEST"
+immutable: true
+data:
+  observability.yaml: |-
+    OPENPC_INPUT_OTEL_RENDERED_CONFIG

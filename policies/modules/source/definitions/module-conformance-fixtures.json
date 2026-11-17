@@ -1,0 +1,3988 @@
+{
+  "fixtureSetId": "OPENPC-C04-AF18-AF19-MODULE-FIXTURES-20260824-01",
+  "negativeCaseCount": 264,
+  "negativeCases": [
+    {
+      "caseId": "C04-MODULE-PC-CONFIG-ASSETS-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.config.assets",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-CONFIG-ASSETS-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.config.assets",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-CONFIG-ASSETS-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.deployment.governance",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.deployment.governance",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.config.assets",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-CONFIG-ASSETS-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.deployment.governance",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.deployment.governance",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.config.assets",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-CONFIG-ASSETS-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.deployment.governance",
+          "pc.evidence"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.config.assets",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-CONFIG-ASSETS-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-config-assets",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.config.assets",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-CONFIG-ASSETS-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.config.assets",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-CONFIG-ASSETS-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.config.assets",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-DEPLOYMENT-GOVERNANCE-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.deployment.governance",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.deployment.governance",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.deployment.governance",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-DEPLOYMENT-GOVERNANCE-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.deployment.governance",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-DEPLOYMENT-GOVERNANCE-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.deployment.governance",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-DEPLOYMENT-GOVERNANCE-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.deployment.governance",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-DEPLOYMENT-GOVERNANCE-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.evidence"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.deployment.governance",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-DEPLOYMENT-GOVERNANCE-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-deployment-governance",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.deployment.governance",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-DEPLOYMENT-GOVERNANCE-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.deployment.governance",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-DEPLOYMENT-GOVERNANCE-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.deployment.governance",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-EVIDENCE-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.evidence",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.evidence",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.evidence",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-EVIDENCE-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.evidence",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-EVIDENCE-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.evidence",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-EVIDENCE-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.evidence",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-EVIDENCE-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.evidence",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-EVIDENCE-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-evidence",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.evidence",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-EVIDENCE-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.evidence",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-EVIDENCE-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.evidence",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-EXTERNAL-DECISION-FACTS-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.external-decision-facts",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.external-decision-facts",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.external-decision-facts",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-EXTERNAL-DECISION-FACTS-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.external-decision-facts",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-EXTERNAL-DECISION-FACTS-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.external-decision-facts",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-EXTERNAL-DECISION-FACTS-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.external-decision-facts",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-EXTERNAL-DECISION-FACTS-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.external-decision-facts",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-EXTERNAL-DECISION-FACTS-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-external-decision-facts",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.external-decision-facts",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-EXTERNAL-DECISION-FACTS-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.external-decision-facts",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-EXTERNAL-DECISION-FACTS-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.external-decision-facts",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-FACT-BRIDGE-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.fact-bridge",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fact-bridge",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.fact-bridge",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-FACT-BRIDGE-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.fact-bridge",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-FACT-BRIDGE-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.fact-bridge",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-FACT-BRIDGE-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.fact-bridge",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-FACT-BRIDGE-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.fact-bridge",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-FACT-BRIDGE-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-fact-bridge",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.fact-bridge",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-FACT-BRIDGE-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.fact-bridge",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-FACT-BRIDGE-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.fact-bridge",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-FOUNDATION-KERNEL-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.foundation.kernel",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.foundation.kernel",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.foundation.kernel",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-FOUNDATION-KERNEL-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.foundation.kernel",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-FOUNDATION-KERNEL-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.foundation.kernel",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-FOUNDATION-KERNEL-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.foundation.kernel",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-FOUNDATION-KERNEL-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.foundation.kernel",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-FOUNDATION-KERNEL-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-foundation-kernel",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.foundation.kernel",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-FOUNDATION-KERNEL-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.foundation.kernel",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-FOUNDATION-KERNEL-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.foundation.kernel",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-IDENTITY-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.identity",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.identity",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.identity",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-IDENTITY-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.identity",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-IDENTITY-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.identity",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-IDENTITY-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.identity",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-IDENTITY-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.identity",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-IDENTITY-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-identity",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.identity",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-IDENTITY-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.identity",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-IDENTITY-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.identity",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-INDEXING-DEDICATED-POLICY-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.indexing.dedicated-policy",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.indexing.dedicated-policy",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.indexing.dedicated-policy",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-INDEXING-DEDICATED-POLICY-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.indexing.dedicated-policy",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-INDEXING-DEDICATED-POLICY-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.indexing.dedicated-policy",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-INDEXING-DEDICATED-POLICY-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.indexing.dedicated-policy",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-INDEXING-DEDICATED-POLICY-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.indexing.dedicated-policy",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-INDEXING-DEDICATED-POLICY-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-indexing-dedicated-policy",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.indexing.dedicated-policy",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-INDEXING-DEDICATED-POLICY-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.indexing.dedicated-policy",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-INDEXING-DEDICATED-POLICY-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.indexing.dedicated-policy",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-MODULE-FRAMEWORK-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.module.framework",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.module.framework",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.module.framework",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-MODULE-FRAMEWORK-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.module.framework",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-MODULE-FRAMEWORK-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.module.framework",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-MODULE-FRAMEWORK-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.module.framework",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-MODULE-FRAMEWORK-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.module.framework",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-MODULE-FRAMEWORK-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-module-framework",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.module.framework",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-MODULE-FRAMEWORK-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.module.framework",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-MODULE-FRAMEWORK-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.module.framework",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-MULTI-RPC-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.multi-rpc",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.multi-rpc",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.multi-rpc",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-MULTI-RPC-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.multi-rpc",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-MULTI-RPC-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.multi-rpc",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-MULTI-RPC-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.multi-rpc",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-MULTI-RPC-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.multi-rpc",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-MULTI-RPC-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-multi-rpc",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.multi-rpc",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-MULTI-RPC-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.multi-rpc",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-MULTI-RPC-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.multi-rpc",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-OBSERVABILITY-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.observability",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.observability",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.observability",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-OBSERVABILITY-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.observability",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-OBSERVABILITY-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.observability",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-OBSERVABILITY-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.observability",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-OBSERVABILITY-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.observability",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-OBSERVABILITY-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-observability",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.observability",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-OBSERVABILITY-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.observability",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-OBSERVABILITY-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.observability",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-PARTICIPANT-GOVERNANCE-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.participant.governance",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.participant.governance",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.participant.governance",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-PARTICIPANT-GOVERNANCE-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.participant.governance",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-PARTICIPANT-GOVERNANCE-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.participant.governance",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-PARTICIPANT-GOVERNANCE-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.participant.governance",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-PARTICIPANT-GOVERNANCE-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.participant.governance",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-PARTICIPANT-GOVERNANCE-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-participant-governance",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.participant.governance",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-PARTICIPANT-GOVERNANCE-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.participant.governance",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-PARTICIPANT-GOVERNANCE-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.participant.governance",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-ARGUMENT-GUARD-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.argument-guard",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.argument-guard",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.argument-guard",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-ARGUMENT-GUARD-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.argument-guard",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-ARGUMENT-GUARD-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.argument-guard",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-ARGUMENT-GUARD-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.argument-guard",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-ARGUMENT-GUARD-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.argument-guard",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-ARGUMENT-GUARD-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-argument-guard",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.argument-guard",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-ARGUMENT-GUARD-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.argument-guard",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-ARGUMENT-GUARD-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.argument-guard",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-CIGL-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.cigl",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.cigl",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.cigl",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-CIGL-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.cigl",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-CIGL-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.cigl",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-CIGL-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.cigl",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-CIGL-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.cigl",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-CIGL-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-cigl",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.cigl",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-CIGL-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.cigl",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-CIGL-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.cigl",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-COMPILER-DISTRIBUTOR-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.compiler-distributor",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.compiler-distributor",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.compiler-distributor",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-COMPILER-DISTRIBUTOR-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.compiler-distributor",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-COMPILER-DISTRIBUTOR-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.compiler-distributor",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-COMPILER-DISTRIBUTOR-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.compiler-distributor",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-COMPILER-DISTRIBUTOR-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.compiler-distributor",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-COMPILER-DISTRIBUTOR-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-compiler-distributor",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.compiler-distributor",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-COMPILER-DISTRIBUTOR-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.compiler-distributor",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-COMPILER-DISTRIBUTOR-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.compiler-distributor",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-CONTRACT-METHOD-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.contract-method",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.contract-method",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.contract-method",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-CONTRACT-METHOD-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.contract-method",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-CONTRACT-METHOD-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.contract-method",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-CONTRACT-METHOD-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.contract-method",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-CONTRACT-METHOD-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.contract-method",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-CONTRACT-METHOD-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-contract-method",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.contract-method",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-CONTRACT-METHOD-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.contract-method",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-CONTRACT-METHOD-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.contract-method",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DEPLOYMENT-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.deployment",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.deployment",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.deployment",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DEPLOYMENT-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.deployment",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DEPLOYMENT-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.deployment",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DEPLOYMENT-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.deployment",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DEPLOYMENT-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.deployment",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DEPLOYMENT-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-deployment",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.deployment",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DEPLOYMENT-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.deployment",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DEPLOYMENT-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.deployment",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DYNAMIC-EVENT-ORDERING-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.dynamic-event-ordering",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.dynamic-event-ordering",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.dynamic-event-ordering",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DYNAMIC-EVENT-ORDERING-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.dynamic-event-ordering",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DYNAMIC-EVENT-ORDERING-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.dynamic-event-ordering",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DYNAMIC-EVENT-ORDERING-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.dynamic-event-ordering",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DYNAMIC-EVENT-ORDERING-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.dynamic-event-ordering",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DYNAMIC-EVENT-ORDERING-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-dynamic-event-ordering",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.dynamic-event-ordering",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DYNAMIC-EVENT-ORDERING-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.dynamic-event-ordering",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DYNAMIC-EVENT-ORDERING-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.dynamic-event-ordering",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DYNAMIC-EVENT-VISIBILITY-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.dynamic-event-visibility",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.dynamic-event-visibility",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.dynamic-event-visibility",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DYNAMIC-EVENT-VISIBILITY-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.dynamic-event-visibility",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DYNAMIC-EVENT-VISIBILITY-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.dynamic-event-visibility",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DYNAMIC-EVENT-VISIBILITY-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.dynamic-event-visibility",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DYNAMIC-EVENT-VISIBILITY-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.dynamic-event-visibility",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DYNAMIC-EVENT-VISIBILITY-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-dynamic-event-visibility",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.dynamic-event-visibility",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DYNAMIC-EVENT-VISIBILITY-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.dynamic-event-visibility",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-DYNAMIC-EVENT-VISIBILITY-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.dynamic-event-visibility",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EVENT-VISIBILITY-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.event-visibility",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.event-visibility",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.event-visibility",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EVENT-VISIBILITY-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.event-visibility",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EVENT-VISIBILITY-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.event-visibility",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EVENT-VISIBILITY-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.event-visibility",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EVENT-VISIBILITY-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.event-visibility",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EVENT-VISIBILITY-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-event-visibility",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.event-visibility",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EVENT-VISIBILITY-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.event-visibility",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EVENT-VISIBILITY-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.event-visibility",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EXECUTION-PATH-OBSERVATION-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.execution-path-observation",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.execution-path-observation",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.execution-path-observation",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EXECUTION-PATH-OBSERVATION-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.execution-path-observation",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EXECUTION-PATH-OBSERVATION-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.execution-path-observation",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EXECUTION-PATH-OBSERVATION-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.execution-path-observation",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EXECUTION-PATH-OBSERVATION-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.execution-path-observation",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EXECUTION-PATH-OBSERVATION-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-execution-path-observation",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.execution-path-observation",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EXECUTION-PATH-OBSERVATION-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.execution-path-observation",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EXECUTION-PATH-OBSERVATION-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.execution-path-observation",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EXTERNAL-DECISION-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.external-decision",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.external-decision",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.external-decision",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EXTERNAL-DECISION-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.external-decision",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EXTERNAL-DECISION-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.external-decision",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EXTERNAL-DECISION-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.external-decision",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EXTERNAL-DECISION-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.external-decision",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EXTERNAL-DECISION-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-external-decision",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.external-decision",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EXTERNAL-DECISION-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.external-decision",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-EXTERNAL-DECISION-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.external-decision",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-INVOCATION-CAPABILITY-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.invocation-capability",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.invocation-capability",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.invocation-capability",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-INVOCATION-CAPABILITY-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.invocation-capability",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-INVOCATION-CAPABILITY-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.invocation-capability",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-INVOCATION-CAPABILITY-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.invocation-capability",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-INVOCATION-CAPABILITY-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.invocation-capability",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-INVOCATION-CAPABILITY-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-invocation-capability",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.invocation-capability",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-INVOCATION-CAPABILITY-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.invocation-capability",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-INVOCATION-CAPABILITY-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.invocation-capability",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-LIFECYCLE-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.lifecycle",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.lifecycle",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.lifecycle",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-LIFECYCLE-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.lifecycle",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-LIFECYCLE-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.lifecycle",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-LIFECYCLE-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.lifecycle",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-LIFECYCLE-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.lifecycle",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-LIFECYCLE-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-lifecycle",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.lifecycle",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-LIFECYCLE-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.lifecycle",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-LIFECYCLE-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.lifecycle",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-PTV-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.ptv",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.ptv",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.ptv",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-PTV-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.ptv",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-PTV-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.ptv",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-PTV-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.ptv",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-PTV-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.ptv",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-PTV-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-ptv",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.ptv",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-PTV-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.ptv",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-PTV-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.ptv",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RELATIONSHIP-FACTS-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.relationship-facts",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.relationship-facts",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.relationship-facts",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RELATIONSHIP-FACTS-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.relationship-facts",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RELATIONSHIP-FACTS-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.relationship-facts",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RELATIONSHIP-FACTS-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.relationship-facts",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RELATIONSHIP-FACTS-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.relationship-facts",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RELATIONSHIP-FACTS-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-relationship-facts",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.relationship-facts",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RELATIONSHIP-FACTS-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.relationship-facts",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RELATIONSHIP-FACTS-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.relationship-facts",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RPC-SURFACE-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.rpc-surface",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.rpc-surface",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.rpc-surface",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RPC-SURFACE-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.rpc-surface",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RPC-SURFACE-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.rpc-surface",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RPC-SURFACE-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.rpc-surface",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RPC-SURFACE-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.rpc-surface",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RPC-SURFACE-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-rpc-surface",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.rpc-surface",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RPC-SURFACE-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.rpc-surface",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RPC-SURFACE-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.rpc-surface",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RUNTIME-GUARD-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.runtime-guard",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.runtime-guard",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.runtime-guard",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RUNTIME-GUARD-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.runtime-guard",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RUNTIME-GUARD-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.runtime-guard",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RUNTIME-GUARD-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.runtime-guard",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RUNTIME-GUARD-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.runtime-guard",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RUNTIME-GUARD-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-runtime-guard",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.runtime-guard",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RUNTIME-GUARD-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.runtime-guard",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-RUNTIME-GUARD-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.runtime-guard",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-SELECTIVE-DISCLOSURE-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.selective-disclosure",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.selective-disclosure",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.selective-disclosure",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-SELECTIVE-DISCLOSURE-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.selective-disclosure",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-SELECTIVE-DISCLOSURE-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.selective-disclosure",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-SELECTIVE-DISCLOSURE-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.selective-disclosure",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-SELECTIVE-DISCLOSURE-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.selective-disclosure",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-SELECTIVE-DISCLOSURE-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-selective-disclosure",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.selective-disclosure",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-SELECTIVE-DISCLOSURE-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.selective-disclosure",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-SELECTIVE-DISCLOSURE-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.selective-disclosure",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-SIMULATION-GUARD-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.simulation-guard",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.simulation-guard",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.simulation-guard",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-SIMULATION-GUARD-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.simulation-guard",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-SIMULATION-GUARD-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.simulation-guard",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-SIMULATION-GUARD-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.simulation-guard",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-SIMULATION-GUARD-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.simulation-guard",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-SIMULATION-GUARD-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-simulation-guard",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.simulation-guard",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-SIMULATION-GUARD-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.simulation-guard",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-SIMULATION-GUARD-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.simulation-guard",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-STATE-READ-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.policy.state-read",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.policy.state-read",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.policy.state-read",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-STATE-READ-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.policy.state-read",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-STATE-READ-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.policy.state-read",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-STATE-READ-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.policy.state-read",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-STATE-READ-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.policy.state-read",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-STATE-READ-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-policy-state-read",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.policy.state-read",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-STATE-READ-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.policy.state-read",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-POLICY-STATE-READ-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.policy.state-read",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-RUNTIME-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.runtime",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.runtime",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.runtime",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-RUNTIME-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.runtime",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-RUNTIME-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.runtime",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-RUNTIME-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.runtime",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-RUNTIME-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.runtime",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-RUNTIME-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-runtime",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.runtime",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-RUNTIME-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.runtime",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-RUNTIME-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.runtime",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-TRANSACTION-DELIVERY-REJECT-CYCLE",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7002",
+      "mutation": {
+        "dependencyModuleId": "pc.transaction.delivery",
+        "expectedInvariant": "ACYCLIC_REQUIRED_INSTALL_DAG",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.transaction.delivery",
+        "version": "1.0.0"
+      },
+      "profile": "CYCLE",
+      "targetModuleId": "pc.transaction.delivery",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-TRANSACTION-DELIVERY-REJECT-MISSING_DEPENDENCY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7001",
+      "mutation": {
+        "dependencyModuleId": "pc.fixture.missing",
+        "expectedInvariant": "ALL_REQUIRED_NODES_PRESENT",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.fixture.missing",
+        "version": "1.0.0"
+      },
+      "profile": "MISSING_DEPENDENCY",
+      "targetModuleId": "pc.transaction.delivery",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-TRANSACTION-DELIVERY-REJECT-INCOMPATIBLE_VERSION",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_VERSION_EQUALITY",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "9.9.9"
+      },
+      "profile": "INCOMPATIBLE_VERSION",
+      "targetModuleId": "pc.transaction.delivery",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-TRANSACTION-DELIVERY-REJECT-DIGEST_MISMATCH",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7003",
+      "mutation": {
+        "dependencyModuleId": "pc.config.assets",
+        "expectedInvariant": "EXACT_MANIFEST_DIGEST_EQUALITY",
+        "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "operation": "ADD_REQUIRED_DEPENDENCY",
+        "providerModuleId": "pc.config.assets",
+        "version": "1.0.0"
+      },
+      "profile": "DIGEST_MISMATCH",
+      "targetModuleId": "pc.transaction.delivery",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-TRANSACTION-DELIVERY-REJECT-CONFLICTING_PROVIDER",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7004",
+      "mutation": {
+        "expectedInvariant": "ONE_EXACT_PROVIDER_PER_REQUIRED_CAPABILITY",
+        "operation": "DECLARE_TWO_PROVIDERS_FOR_ONE_REQUIRED_CAPABILITY",
+        "providerModuleIds": [
+          "pc.config.assets",
+          "pc.deployment.governance"
+        ]
+      },
+      "profile": "CONFLICTING_PROVIDER",
+      "targetModuleId": "pc.transaction.delivery",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    },
+    {
+      "caseId": "C04-MODULE-PC-TRANSACTION-DELIVERY-REJECT-ACTIVE_DEPENDENT",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7005",
+      "mutation": {
+        "activeDependentInstallationId": "urn:openpc:module-installation-fixture:pc-transaction-delivery",
+        "activeDependentState": "ENABLED",
+        "expectedInvariant": "NO_ACTIVE_REVERSE_DEPENDENT",
+        "operation": "REQUEST_UNINSTALL",
+        "targetState": "INSTALLED_DISABLED"
+      },
+      "profile": "ACTIVE_DEPENDENT",
+      "targetModuleId": "pc.transaction.delivery",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-TRANSACTION-DELIVERY-REJECT-UNCLOSED_DATA_CUSTODY",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7006",
+      "mutation": {
+        "dataDispositionState": "PENDING",
+        "expectedInvariant": "DATA_CUSTODY_AND_RETENTION_CLOSED",
+        "operation": "REQUEST_UNINSTALL",
+        "retentionAndLegalHoldClosure": false
+      },
+      "profile": "UNCLOSED_DATA_CUSTODY",
+      "targetModuleId": "pc.transaction.delivery",
+      "traceSetId": "TS-MOD-LIFECYCLE"
+    },
+    {
+      "caseId": "C04-MODULE-PC-TRANSACTION-DELIVERY-REJECT-FUTURE_HOST_AS_R1",
+      "expectedAuthorityEffect": "NONE",
+      "expectedError": "PC-MODULE-7007",
+      "mutation": {
+        "expectedInvariant": "FUTURE_COMPONENT_CANNOT_SATISFY_R1",
+        "hostId": "DU-SUBQUERY",
+        "operation": "ADD_R1_EXECUTION_HOST"
+      },
+      "profile": "FUTURE_HOST_AS_R1",
+      "targetModuleId": "pc.transaction.delivery",
+      "traceSetId": "TS-MOD-DEPENDENCY"
+    }
+  ],
+  "negativeProfileCount": 8,
+  "negativeProfiles": [
+    {
+      "expectedError": "PC-MODULE-7002",
+      "profile": "CYCLE"
+    },
+    {
+      "expectedError": "PC-MODULE-7001",
+      "profile": "MISSING_DEPENDENCY"
+    },
+    {
+      "expectedError": "PC-MODULE-7003",
+      "profile": "INCOMPATIBLE_VERSION"
+    },
+    {
+      "expectedError": "PC-MODULE-7003",
+      "profile": "DIGEST_MISMATCH"
+    },
+    {
+      "expectedError": "PC-MODULE-7004",
+      "profile": "CONFLICTING_PROVIDER"
+    },
+    {
+      "expectedError": "PC-MODULE-7005",
+      "profile": "ACTIVE_DEPENDENT"
+    },
+    {
+      "expectedError": "PC-MODULE-7006",
+      "profile": "UNCLOSED_DATA_CUSTODY"
+    },
+    {
+      "expectedError": "PC-MODULE-7007",
+      "profile": "FUTURE_HOST_AS_R1"
+    }
+  ],
+  "positiveCases": [
+    {
+      "caseId": "MOD-POS-MANIFEST-SCHEMA",
+      "expected": "33_OF_33_SCHEMA_VALID"
+    },
+    {
+      "caseId": "MOD-POS-DAG",
+      "expected": "33_NODES_69_EDGES_ACYCLIC"
+    },
+    {
+      "caseId": "MOD-POS-PROVIDER-CLOSURE",
+      "expected": "ALL_REQUIRED_CAPABILITIES_ONE_EXACT_PROVIDER"
+    },
+    {
+      "caseId": "MOD-POS-UI-SLOTS",
+      "expected": "EXACTLY_6_FROZEN_SLOTS"
+    }
+  ],
+  "schemaVersion": "1.0",
+  "status": "NORMATIVE_AUTHORING_FIXTURES_NO_IMPLEMENTATION_EXECUTION_CLAIM"
+}

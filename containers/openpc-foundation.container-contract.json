@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1.0",
+  "scope": "I09_FOUNDATION_ONLY",
+  "notBuildable": true,
+  "notDeployable": true,
+  "runtimeSecurity": {
+    "runAsUser": 65532,
+    "runAsGroup": 65532,
+    "readOnlyRootFilesystem": true,
+    "allowPrivilegeEscalation": false,
+    "privileged": false,
+    "dropCapabilities": ["ALL"],
+    "seccompProfile": "RuntimeDefault"
+  },
+  "secretPolicy": "VERSIONED_SECRET_REFERENCES_ONLY_NO_INLINE_BYTES",
+  "imagePolicy": "EXACT_PLATFORM_MANIFEST_DIGEST_AND_SIGNED_SBOM_PROVENANCE_REQUIRED_BEFORE_RENDERING",
+  "claimCeiling": "No image has been built, qualified, or deployed by this foundation artifact."
+}

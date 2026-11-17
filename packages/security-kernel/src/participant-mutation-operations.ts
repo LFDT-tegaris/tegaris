@@ -1,0 +1,90 @@
+/** Participant mutations admitted by the shared identity authorization owner. */
+export const participantMutationOperations = Object.freeze(
+  (
+    [
+      [
+        'ID-OP-PARTICIPANT-TRANSFER',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      ['ID-OP-PARTICIPANT-SHRINK', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-PARTICIPANT-ARCHIVE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-PARTICIPANT-RESTORE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-PARTICIPANT-CREATE', 'ACT-PARTICIPANTS_CREATE_RESOURCE-V1', 'participant', 'CREATE'],
+      [
+        'ID-OP-PARTICIPANT-FIRST-ADMIN-ROTATE',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      [
+        'ID-OP-PARTICIPANT-FIRST-ADMIN-REVOKE',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      [
+        'ID-OP-PARTICIPANT-ACTIVATE',
+        'ACT-PARTICIPANT_ACTIVATE_CONTEXT-V1',
+        'participant',
+        'ACTIVATE',
+      ],
+      ['ID-OP-ENVELOPE-CREATE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-ENVELOPE-ACTIVATE', 'ACT-PARTICIPANT_ACTIVATE_CONTEXT-V1', 'participant', 'ACTIVATE'],
+      ['ID-OP-ENVELOPE-REVOKE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      [
+        'ID-OP-PLATFORM-SCOPE-PREPARE',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      [
+        'ID-OP-PLATFORM-SCOPE-COMMIT',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      ['ID-OP-ASSIGNMENT-CREATE', 'ACT-PARTICIPANT_CREATE_MEMBER-V1', 'principal', 'CREATE'],
+      ['ID-OP-ASSIGNMENT-REVOKE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-DELEGATION-ISSUE', 'ACT-PARTICIPANT_CREATE_MEMBER-V1', 'principal', 'CREATE'],
+      ['ID-OP-DELEGATION-REVOKE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-GROUP-CREATE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-GROUP-DIRECTORY-MAP', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      [
+        'ID-OP-GROUP-DIRECTORY-MASS-MAP',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      [
+        'ID-OP-GROUP-DIRECTORY-REFRESH',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      [
+        'ID-OP-GROUP-DIRECTORY-MASS-REFRESH',
+        'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1',
+        'participant',
+        'UPDATE',
+      ],
+      ['ID-OP-GROUP-RENAME', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-GROUP-MEMBER-ADD', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-GROUP-MEMBER-REMOVE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-GROUP-RETIRE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-ROLE-CREATE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+      ['ID-OP-ROLE-ARCHIVE', 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1', 'participant', 'UPDATE'],
+    ] as const
+  ).map(([catalogOperationId, actionIntentId, resourceType, operationClass]) =>
+    Object.freeze({
+      catalogOperationId,
+      actionIntentId,
+      operationClass,
+      resourceType,
+      makerCheckerRequired: true,
+      stepUpRequired: true,
+      aggregateType: 'identity',
+    }),
+  ),
+);

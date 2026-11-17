@@ -1,0 +1,989 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.openpc.local/signing-key-rotation.schema.json",
+  "title": "Governed signing key lifecycle",
+  "description": "AF-25 public projection. Approval consumption owns APPROVED. ADVANCE owns its lifecycle target and events. RECOVER has its own idempotency key and exact original operation, attempt and prior observation digest. Lookup cannot redispatch a provider mutation. No private key material or arbitrary signing input is accepted.",
+  "$defs": {
+    "RequestFields": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "actionIntentId": {
+          "const": "ACT-SIGNING_KEY_ROTATIONS_CREATE_RESOURCE-V1"
+        },
+        "actionIntentDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "secretClass": {
+          "const": "SECRET-SIGNING-KEY"
+        },
+        "purpose": {
+          "enum": [
+            "pc.cose.control-business-transition.v1",
+            "pc.cose.identity-authority-envelope.v1"
+          ]
+        },
+        "environmentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "workloadCredentialId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "oldReference": {
+          "type": "string",
+          "maxLength": 331,
+          "pattern": "^secret://[a-z][a-z0-9-]{1,31}/[A-Za-z0-9._/-]{1,192}#[A-Za-z0-9._-]{1,96}$",
+          "description": "An exact version; latest/current aliases (any case) are rejected."
+        },
+        "oldFingerprint": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "newReference": {
+          "type": "string",
+          "maxLength": 331,
+          "pattern": "^secret://[a-z][a-z0-9-]{1,31}/[A-Za-z0-9._/-]{1,192}#[A-Za-z0-9._-]{1,96}$",
+          "description": "An exact version; latest/current aliases (any case) are rejected."
+        },
+        "newFingerprint": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "signerRole": {
+          "enum": [
+            "BUSINESS_EFFECT",
+            "LIFECYCLE_EVIDENCE",
+            "IDENTITY_ENVELOPE"
+          ]
+        }
+      },
+      "required": [
+        "actionIntentId",
+        "actionIntentDigest",
+        "secretClass",
+        "purpose",
+        "environmentId",
+        "workloadCredentialId",
+        "oldReference",
+        "oldFingerprint",
+        "newReference",
+        "reason",
+        "signerRole"
+      ]
+    },
+    "Request": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/RequestFields"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "purpose": {
+                  "const": "pc.cose.control-business-transition.v1"
+                },
+                "signerRole": {
+                  "enum": [
+                    "BUSINESS_EFFECT",
+                    "LIFECYCLE_EVIDENCE"
+                  ]
+                }
+              },
+              "required": [
+                "purpose",
+                "signerRole"
+              ]
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/RequestFields"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "purpose": {
+                  "const": "pc.cose.identity-authority-envelope.v1"
+                },
+                "signerRole": {
+                  "const": "IDENTITY_ENVELOPE"
+                }
+              },
+              "required": [
+                "purpose",
+                "signerRole"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "RotationFields": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "actionIntentId": {
+          "const": "ACT-SIGNING_KEY_ROTATIONS_CREATE_RESOURCE-V1"
+        },
+        "actionIntentDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "secretClass": {
+          "const": "SECRET-SIGNING-KEY"
+        },
+        "purpose": {
+          "enum": [
+            "pc.cose.control-business-transition.v1",
+            "pc.cose.identity-authority-envelope.v1"
+          ]
+        },
+        "environmentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "workloadCredentialId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "oldReference": {
+          "type": "string",
+          "maxLength": 331,
+          "pattern": "^secret://[a-z][a-z0-9-]{1,31}/[A-Za-z0-9._/-]{1,192}#[A-Za-z0-9._-]{1,96}$",
+          "description": "An exact version; latest/current aliases (any case) are rejected."
+        },
+        "oldFingerprint": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "newReference": {
+          "type": "string",
+          "maxLength": 331,
+          "pattern": "^secret://[a-z][a-z0-9-]{1,31}/[A-Za-z0-9._/-]{1,192}#[A-Za-z0-9._-]{1,96}$",
+          "description": "An exact version; latest/current aliases (any case) are rejected."
+        },
+        "newFingerprint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "rotationId": {
+          "type": "string",
+          "pattern": "^urn:openpc:resource:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "candidateDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,18}$"
+        },
+        "state": {
+          "enum": [
+            "REQUESTED",
+            "APPROVED",
+            "PREPARED",
+            "DISTRIBUTED",
+            "VERIFIED",
+            "CUTOVER_FENCED",
+            "OBSERVING",
+            "OLD_REVOKED",
+            "OLD_RETIRED",
+            "COMPLETE",
+            "FAILED",
+            "RECOVERING"
+          ]
+        },
+        "approvalRequestId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^urn:openpc:resource:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cutoverAtNs": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "history": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HistoryEntry"
+          }
+        },
+        "recoveryFromState": {
+          "anyOf": [
+            {
+              "enum": [
+                "REQUESTED",
+                "APPROVED",
+                "PREPARED",
+                "DISTRIBUTED",
+                "VERIFIED",
+                "CUTOVER_FENCED",
+                "OBSERVING",
+                "OLD_REVOKED",
+                "OLD_RETIRED",
+                "COMPLETE",
+                "FAILED",
+                "RECOVERING"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recoveryFromRevision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,18}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "signerRole": {
+          "enum": [
+            "BUSINESS_EFFECT",
+            "LIFECYCLE_EVIDENCE",
+            "IDENTITY_ENVELOPE"
+          ]
+        },
+        "pendingOperation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PendingOperation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "authorityHold": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "holdId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "reason": {
+                  "const": "AUTHORITY_CHANGED_AFTER_DISPATCH"
+                },
+                "originalOperationId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                }
+              },
+              "required": [
+                "holdId",
+                "reason",
+                "originalOperationId"
+              ]
+            }
+          ]
+        },
+        "authorizationGeneration": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "generationId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "approvalRequestId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "revision": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,18}$"
+            }
+          },
+          "required": [
+            "generationId",
+            "approvalRequestId",
+            "revision"
+          ]
+        },
+        "recoveryContext": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "originalOperationId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "attempts": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 16,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "attemptId": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                      },
+                      "method": {
+                        "enum": [
+                          "PREPARE",
+                          "DISTRIBUTE",
+                          "PROVE",
+                          "REVOKE",
+                          "RETIRE",
+                          "SIGN_RECEIPT"
+                        ]
+                      },
+                      "observationKind": {
+                        "enum": [
+                          "UNRESOLVED",
+                          "NOT_FOUND",
+                          "PROVIDER_RESULT"
+                        ]
+                      },
+                      "observationDigest": {
+                        "type": "string",
+                        "pattern": "^sha256:[0-9a-f]{64}$"
+                      }
+                    },
+                    "required": [
+                      "attemptId",
+                      "method",
+                      "observationKind",
+                      "observationDigest"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "originalOperationId",
+                "attempts"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "actionIntentId",
+        "actionIntentDigest",
+        "secretClass",
+        "purpose",
+        "environmentId",
+        "workloadCredentialId",
+        "oldReference",
+        "oldFingerprint",
+        "newReference",
+        "newFingerprint",
+        "reason",
+        "rotationId",
+        "candidateDigest",
+        "revision",
+        "state",
+        "approvalRequestId",
+        "cutoverAtNs",
+        "recoveryFromState",
+        "recoveryFromRevision",
+        "signerRole",
+        "pendingOperation"
+      ]
+    },
+    "Rotation": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/RotationFields"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "purpose": {
+                  "const": "pc.cose.control-business-transition.v1"
+                },
+                "signerRole": {
+                  "enum": [
+                    "BUSINESS_EFFECT",
+                    "LIFECYCLE_EVIDENCE"
+                  ]
+                }
+              },
+              "required": [
+                "purpose",
+                "signerRole"
+              ]
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/RotationFields"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "purpose": {
+                  "const": "pc.cose.identity-authority-envelope.v1"
+                },
+                "signerRole": {
+                  "const": "IDENTITY_ENVELOPE"
+                }
+              },
+              "required": [
+                "purpose",
+                "signerRole"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "Command": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "actionIntentId": {
+          "const": "ACT-SIGNING_KEY_ROTATIONS_ADVANCE_RESOURCE-V1"
+        },
+        "actionIntentDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,18}$"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        }
+      },
+      "required": [
+        "actionIntentId",
+        "actionIntentDigest",
+        "expectedRevision",
+        "reason"
+      ]
+    },
+    "RotationPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Rotation"
+          }
+        },
+        "total": {
+          "type": "string"
+        },
+        "nextCursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "completeness": {
+          "const": "COMPLETE"
+        },
+        "authorizedEmpty": {
+          "type": "boolean"
+        },
+        "snapshotRevision": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "items",
+        "total",
+        "nextCursor",
+        "completeness",
+        "authorizedEmpty",
+        "snapshotRevision"
+      ]
+    },
+    "Key": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "reference": {
+          "type": "string",
+          "maxLength": 331,
+          "pattern": "^secret://[a-z][a-z0-9-]{1,31}/[A-Za-z0-9._/-]{1,192}#[A-Za-z0-9._-]{1,96}$",
+          "description": "An exact version; latest/current aliases (any case) are rejected."
+        },
+        "keyEpoch": {
+          "type": "string"
+        },
+        "publicKeySpkiHex": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{182}$"
+        },
+        "admissionKind": {
+          "enum": [
+            "BOOTSTRAP",
+            "GOVERNED"
+          ]
+        },
+        "admissionReference": {
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "ADMITTED",
+            "ACTIVE",
+            "RETIRED",
+            "REVOKED",
+            "COMPROMISED"
+          ]
+        },
+        "validFromNs": {
+          "type": "string"
+        },
+        "validUntilNs": {
+          "type": "string"
+        },
+        "signerRole": {
+          "enum": [
+            "BUSINESS_EFFECT",
+            "LIFECYCLE_EVIDENCE"
+          ]
+        }
+      },
+      "required": [
+        "fingerprint",
+        "reference",
+        "keyEpoch",
+        "publicKeySpkiHex",
+        "admissionKind",
+        "admissionReference",
+        "state",
+        "validFromNs",
+        "validUntilNs",
+        "signerRole"
+      ]
+    },
+    "KeyPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Key"
+          }
+        },
+        "nextAfterEpoch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "authorizedEmpty": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "items",
+        "nextAfterEpoch",
+        "authorizedEmpty"
+      ]
+    },
+    "HistoryEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,18}$"
+        },
+        "priorState": {
+          "anyOf": [
+            {
+              "enum": [
+                "REQUESTED",
+                "APPROVED",
+                "PREPARED",
+                "DISTRIBUTED",
+                "VERIFIED",
+                "CUTOVER_FENCED",
+                "OBSERVING",
+                "OLD_REVOKED",
+                "OLD_RETIRED",
+                "COMPLETE",
+                "FAILED",
+                "RECOVERING"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "enum": [
+            "REQUESTED",
+            "APPROVED",
+            "PREPARED",
+            "DISTRIBUTED",
+            "VERIFIED",
+            "CUTOVER_FENCED",
+            "OBSERVING",
+            "OLD_REVOKED",
+            "OLD_RETIRED",
+            "COMPLETE",
+            "FAILED",
+            "RECOVERING"
+          ]
+        },
+        "operationId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "priorDigest": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "eventId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "receiptId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidenceId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "receiptNamespace": {
+          "enum": [
+            "CONTROL_SIGNING_LIFECYCLE_V1",
+            null
+          ]
+        },
+        "receiptOrdinal": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "revision",
+        "priorState",
+        "state",
+        "operationId",
+        "digest",
+        "priorDigest",
+        "eventId",
+        "receiptId",
+        "evidenceId",
+        "receiptNamespace",
+        "receiptOrdinal"
+      ]
+    },
+    "PendingOperation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "operationId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "state": {
+          "const": "WRITE_AMBIGUITY"
+        },
+        "targetState": {
+          "enum": [
+            "PREPARED",
+            "DISTRIBUTED",
+            "VERIFIED",
+            "CUTOVER_FENCED",
+            "OBSERVING",
+            "OLD_REVOKED",
+            "OLD_RETIRED",
+            "COMPLETE"
+          ]
+        },
+        "attempts": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "attemptId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "method": {
+                "enum": [
+                  "PREPARE",
+                  "DISTRIBUTE",
+                  "PROVE",
+                  "REVOKE",
+                  "RETIRE",
+                  "SIGN_RECEIPT"
+                ]
+              },
+              "observationKind": {
+                "enum": [
+                  "UNRESOLVED",
+                  "NOT_FOUND",
+                  "PROVIDER_RESULT"
+                ]
+              },
+              "observationDigest": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "attemptId",
+              "method",
+              "observationKind",
+              "observationDigest"
+            ]
+          }
+        }
+      },
+      "required": [
+        "operationId",
+        "state",
+        "targetState",
+        "attempts"
+      ]
+    },
+    "RecoverCommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "actionIntentId": {
+          "const": "ACT-SIGNING_KEY_ROTATIONS_RECOVER_RESOURCE-V1"
+        },
+        "actionIntentDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,18}$"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "originalOperationId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "attemptId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "priorObservationDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "actionIntentId",
+        "actionIntentDigest",
+        "expectedRevision",
+        "reason",
+        "originalOperationId",
+        "attemptId",
+        "priorObservationDigest"
+      ]
+    },
+    "OperationResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "NO_NEW_OBSERVATION",
+            "NEW_OBSERVATION",
+            "LOOKUP_UNAVAILABLE",
+            "SIGNATURE_UNAVAILABLE",
+            "NO_EFFECT_RETRYABLE",
+            "PROVIDER_REJECTED",
+            "AUTHORITY_CHANGED_BEFORE_DISPATCH",
+            "AUTHORITY_RENEWED",
+            "FORWARD_RECOVERY"
+          ]
+        },
+        "retryable": {
+          "type": "boolean"
+        },
+        "code": {
+          "const": "PC-INTEGRATION-5001"
+        },
+        "originalOperationId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "attemptId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "observationDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "retryable"
+      ]
+    },
+    "ApprovalRequired": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "A staged server-derived candidate awaiting the existing distinct-checker approval process. This is not an applied operation. Replay the exact command after approval.",
+      "properties": {
+        "state": {
+          "const": "APPROVAL_REQUIRED"
+        },
+        "resourceRef": {
+          "type": "string",
+          "pattern": "^urn:openpc:resource:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "actionIntentId": {
+          "enum": [
+            "ACT-SIGNING_KEY_ROTATIONS_ADVANCE_RESOURCE-V1",
+            "ACT-SIGNING_KEY_ROTATIONS_RECOVER_RESOURCE-V1"
+          ]
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,18}$"
+        },
+        "candidateRef": {
+          "type": "string",
+          "pattern": "^urn:openpc:resource:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "candidateDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "state",
+        "resourceRef",
+        "actionIntentId",
+        "expectedRevision",
+        "candidateRef",
+        "candidateDigest"
+      ]
+    },
+    "CommandResponse": {
+      "oneOf": [
+        {
+          "$ref": "control-api.schema.json#/$defs/Operation"
+        },
+        {
+          "$ref": "#/$defs/ApprovalRequired"
+        }
+      ]
+    }
+  }
+}

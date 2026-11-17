@@ -1,0 +1,28 @@
+schemaVersion: "1.0"
+profileId: PROFILE-TEST-V1
+profile: test
+freezeId: C03-ARCHITECTURE-SHARED-PRIMITIVES-FREEZE-20260824-01
+immutableAfterStart: true
+claimState: PLANNED_TESTABLE
+deploymentUnits:
+  enabled: [DU-PC-WORKBENCH, DU-PC-CONTROL, DU-PC-COMPILER, DU-PC-FLEET-CONTROL, DU-PC-RUNTIME, DU-PC-FACT-BRIDGE, DU-ENVOY, DU-OTEL-COLLECTOR]
+  disabled: [DU-SUBQUERY]
+  coLocation: DETERMINISTIC_TEST_TOPOLOGY_BOUND_BY_QINPUT_TEST_TOPOLOGY_V1
+conditionalComponents: {LS-INDEXER: false, STORE-VALKEY-OPTIONAL: false}
+bindings: {publicHttps: "0.0.0.0:8443", otlpGrpc: "0.0.0.0:4317", otlpHttp: "0.0.0.0:4318", prometheus: "0.0.0.0:8889", envoyAdmin: "127.0.0.1:9901", pdsUds: /run/openpc/pds.sock, brokerUds: /run/openpc/broker.sock}
+tls: {required: true, minimum: TLS1_3, workloadMtls: true, loopbackExemption: false}
+identityProfileInput: QINPUT-TEST-OIDC-FIXTURE-CONFORMANCE-V1
+secretProvider: {providerId: test-memory-resolver, persistence: false, fixtureReferencesOnly: true, inlineValues: false, versionRequired: true}
+resourceEnvelopeInput: QINPUT-TEST-RESOURCE-ENVELOPE-V1
+topologyQualificationInput: QINPUT-TEST-TOPOLOGY-V1
+storageQualificationInput: QINPUT-TEST-STORAGE-V1
+settingsDefaults: CONFIGURATION_SCHEMA_DEFAULTS_ONLY
+requiredSettingInputs: {ui.export_row_limit: QINPUT-TEST-UI-EXPORT-V1, runtime.local_artifact_capacity: QINPUT-TEST-RUNTIME-ARTIFACT-CAPACITY-V1, runtime.decision_deadline: QINPUT-TEST-RUNTIME-DEADLINE-V1, evidence.local_spool_capacity: QINPUT-TEST-EVIDENCE-SPOOL-V1, evidence.retention_profile: QINPUT-TEST-EVIDENCE-RETENTION-V1, provider.read_retry_limit: QINPUT-TEST-PROVIDER-READ-RETRY-V1, facts.maximum_staleness: QINPUT-TEST-FACT-STALENESS-V1, facts.reorg_retained_tail: QINPUT-TEST-FACT-REORG-TAIL-V1, module.allowed_publishers: QINPUT-TEST-MODULE-PUBLISHERS-V1, module.ui_slot_budget: QINPUT-TEST-MODULE-UI-SLOTS-V1}
+features: {privacyExplorerIntegration: false, explorerFactSource: false, clientIndexerCompatibility: false, subqueryConditional: false, optionalValkeyCache: false}
+telemetry: {collectorRequired: true, privacyProfile: STRICT_REDACTED, payloadCapture: false, debugLogLevelAllowed: true, deterministicSampling: true}
+backup: {requiredForAcceptance: false, restoreFixtureRequired: true, targetInput: QINPUT-TEST-BACKUP-RESTORE-V1}
+retentionInput: QINPUT-TEST-RETENTION-V1
+seedData: {allowed: SYNTHETIC_GOLDEN_FIXTURES_ONLY, customerData: false, deterministicReset: true}
+externalDependencies: {realProviderRequired: false, fixtureServerMayReturnTypedFailures: true, fakeSuccessAllowed: false, exactProfileRequiredWhenEnabled: true}
+prohibitedShortcuts: [PLAINTEXT_SECRET, HTTP_AUTHORITY_PATH, DISABLE_MTLS, DISABLE_DENIAL, FAKE_RESPONSE, UNIVERSAL_EMPTY, PERMISSIVE, RAW_PROTECTED_NODE, SILENT_WINNER]
+trace: {requirementRefs: [REQ-SR01-B0-REQ-OPS-004], decisionRefs: [DEC-C03-013], componentRefs: [DU-PC-CONTROL, DU-PC-RUNTIME, DU-PC-FACT-BRIDGE], sourceUnitRefs: [SU-10162f2c32bc27deb7624a29], testRefs: [TEST-OPS-PROFILE-TEST-001, TEST-OPS-PROFILE-TEST-002, TEST-OPS-PROFILE-TEST-003], claimCeilingRefs: [CC-GLOBAL-AUTHORITY-TRUTH, CC-NUMERIC-SLA-CERTIFICATION]}

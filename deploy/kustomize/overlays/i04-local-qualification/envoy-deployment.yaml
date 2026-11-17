@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openpc-i04-envoy-validation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: openpc-i04-envoy-validation
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: openpc-i04-envoy-validation
+    spec:
+      serviceAccountName: openpc-i04-harness-executor
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 101
+        runAsGroup: 101
+        fsGroup: 101
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        - name: envoy-version-probe
+          image: docker.io/envoyproxy/envoy:v1.39.0@sha256:f6e2f57b1bef8235083a2553b523508cf97d8991c893fd2aae3a94a6b21096a2
+          imagePullPolicy: IfNotPresent
+          command: ["envoy", "--version"]
+          resources:
+            requests:
+              cpu: 1m
+              memory: 8Mi
+            limits:
+              cpu: 50m
+              memory: 32Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+      containers:
+        - name: envoy
+          image: docker.io/envoyproxy/envoy:v1.39.0@sha256:f6e2f57b1bef8235083a2553b523508cf97d8991c893fd2aae3a94a6b21096a2
+          imagePullPolicy: IfNotPresent
+          args:
+            - -c
+            - /etc/envoy-local/envoy.yaml
+            - --mode
+            - serve
+            - --log-level
+            - warning
+          ports:
+            - name: admin
+              containerPort: 9901
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: admin
+            initialDelaySeconds: 1
+            periodSeconds: 2
+            timeoutSeconds: 1
+            failureThreshold: 15
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: config
+              mountPath: /etc/envoy-local
+              readOnly: true
+            - name: runtime
+              mountPath: /tmp
+      volumes:
+        - name: config
+          configMap:
+            name: openpc-i04-envoy-config
+        - name: runtime
+          emptyDir:
+            medium: Memory
+            sizeLimit: 16Mi

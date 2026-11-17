@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openpc:local-development:i00-artifact-lock:2",
+  "title": "OpenPC I00 local-development artifact lock overlay",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "lockId",
+    "scope",
+    "baseline",
+    "platform",
+    "artifacts",
+    "claimCeiling",
+    "disposition"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "2.0-local-development-overlay" },
+    "lockId": { "type": "string", "minLength": 1 },
+    "scope": { "const": "LOCAL_DEVELOPMENT_ONLY" },
+    "baseline": { "type": "object" },
+    "platform": { "type": "object" },
+    "artifacts": {
+      "type": "array",
+      "minItems": 20,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ordinal",
+          "toolId",
+          "version",
+          "purpose",
+          "artifactKind",
+          "officialSource",
+          "localIdentity",
+          "sourceEvidence",
+          "offlineDisposition",
+          "localStatus",
+          "claimCeiling"
+        ],
+        "properties": {
+          "ordinal": { "type": "integer", "minimum": 1, "maximum": 20 },
+          "toolId": { "type": "string", "minLength": 1 },
+          "version": { "type": "string", "minLength": 1 },
+          "purpose": { "type": "string", "minLength": 1 },
+          "artifactKind": { "type": "string", "minLength": 1 },
+          "officialSource": { "type": "string", "format": "uri" },
+          "localIdentity": { "type": "object" },
+          "sourceEvidence": {
+            "type": "object",
+            "required": ["type", "publisherSignatureVerified", "summary"],
+            "properties": {
+              "type": { "type": "string", "minLength": 1 },
+              "publisherSignatureVerified": { "type": "boolean" },
+              "summary": { "type": "string", "minLength": 1 }
+            }
+          },
+          "offlineDisposition": { "type": "string", "minLength": 1 },
+          "localStatus": {
+            "enum": ["LOCAL_DEVELOPMENT_QUALIFIED", "LOCAL_DEVELOPMENT_IDENTITY_ONLY"]
+          },
+          "claimCeiling": { "const": "LOCAL_DEVELOPMENT_ONLY" }
+        }
+      }
+    },
+    "claimCeiling": { "const": "LOCAL_DEVELOPMENT_ONLY" },
+    "disposition": {
+      "type": "object",
+      "required": [
+        "localDevelopmentTechnicalClosure",
+        "productionBusinessQualification",
+        "archivedC17Mutation"
+      ],
+      "properties": {
+        "localDevelopmentTechnicalClosure": { "const": "PASS" },
+        "productionBusinessQualification": { "const": "NOT_PROVEN_OPEN" },
+        "archivedC17Mutation": { "const": false }
+      }
+    }
+  }
+}

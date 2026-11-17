@@ -1,0 +1,150 @@
+{
+  "$defs": {
+    "Duration": {
+      "pattern": "^(?:[1-9][0-9]*)(?:ms|s|m|h|d)$",
+      "type": "string"
+    },
+    "Sha256Digest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "$id": "urn:openpc:schema:otel-collector-0.159-materialization-inputs:1.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "approvedSinkEndpoint": {
+      "maxLength": 2048,
+      "pattern": "^https://[A-Za-z0-9.-]+(?::[1-9][0-9]{0,4})?(?:/[A-Za-z0-9._~!$&'()*+,;=:@%/-]*)?$",
+      "type": "string"
+    },
+    "batchTimeout": {
+      "$ref": "#/$defs/Duration"
+    },
+    "exportConsumers": {
+      "maximum": 10000,
+      "minimum": 1,
+      "type": "integer"
+    },
+    "exportQueueSize": {
+      "maximum": 10000000,
+      "minimum": 1,
+      "type": "integer"
+    },
+    "memoryLimitMiB": {
+      "maximum": 1048576,
+      "minimum": 16,
+      "type": "integer"
+    },
+    "memorySpikeLimitMiB": {
+      "maximum": 1048575,
+      "minimum": 1,
+      "type": "integer"
+    },
+    "metricExpiration": {
+      "$ref": "#/$defs/Duration"
+    },
+    "qualificationReceiptDigest": {
+      "$ref": "#/$defs/Sha256Digest"
+    },
+    "retryInitialInterval": {
+      "$ref": "#/$defs/Duration"
+    },
+    "retryMaxElapsedTime": {
+      "$ref": "#/$defs/Duration"
+    },
+    "retryMaxInterval": {
+      "$ref": "#/$defs/Duration"
+    },
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "sendBatchMaxSize": {
+      "maximum": 1000000,
+      "minimum": 1,
+      "type": "integer"
+    },
+    "sendBatchSize": {
+      "maximum": 1000000,
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "qualificationReceiptDigest",
+    "memoryLimitMiB",
+    "memorySpikeLimitMiB",
+    "batchTimeout",
+    "sendBatchSize",
+    "sendBatchMaxSize",
+    "approvedSinkEndpoint",
+    "exportConsumers",
+    "exportQueueSize",
+    "retryInitialInterval",
+    "retryMaxInterval",
+    "retryMaxElapsedTime",
+    "metricExpiration"
+  ],
+  "title": "OpenPC OpenTelemetry Collector 0.159.0 materialization inputs",
+  "type": "object",
+  "x-openpc-crossConstraints": [
+    "memorySpikeLimitMiB < memoryLimitMiB",
+    "sendBatchSize <= sendBatchMaxSize",
+    "duration(retryInitialInterval) <= duration(retryMaxInterval)",
+    "duration(retryMaxInterval) <= duration(retryMaxElapsedTime)",
+    "exportQueueSize >= sendBatchMaxSize",
+    "the signed telemetry qualification receipt binds all fields, exact Collector build/config schema, workload, data class, topology, resource envelope, sink profile and failure tests"
+  ],
+  "x-openpc-materializationRules": [
+    "Every token is replaced exactly once from the JSON Pointer named by x-openpc-tokenBindings after schema and cross-constraint validation.",
+    "qualificationReceiptDigest is validation-only provenance: it binds every rendered value and is recorded in the materialization receipt, but it is never rendered into Collector configuration or emitted telemetry.",
+    "The renderer accepts no environment fallback, implicit Collector default, insecure endpoint, inline credential, unknown key, unit coercion or remaining OPENPC_INPUT_ token.",
+    "The endpoint profile supplies versioned credentials by secret reference outside this non-secret Collector configuration; no credential byte is rendered here.",
+    "The rendered configuration must pass the exact OpenTelemetry Collector 0.159.0 configuration validator before image assembly or deployment."
+  ],
+  "x-openpc-tokenBindings": {
+    "OPENPC_INPUT_OTEL_APPROVED_SINK_ENDPOINT": "/approvedSinkEndpoint",
+    "OPENPC_INPUT_OTEL_BATCH_TIMEOUT": "/batchTimeout",
+    "OPENPC_INPUT_OTEL_EXPORT_CONSUMERS": "/exportConsumers",
+    "OPENPC_INPUT_OTEL_EXPORT_QUEUE_SIZE": "/exportQueueSize",
+    "OPENPC_INPUT_OTEL_MEMORY_LIMIT_MIB": "/memoryLimitMiB",
+    "OPENPC_INPUT_OTEL_MEMORY_SPIKE_LIMIT_MIB": "/memorySpikeLimitMiB",
+    "OPENPC_INPUT_OTEL_METRIC_EXPIRATION": "/metricExpiration",
+    "OPENPC_INPUT_OTEL_RETRY_INITIAL_INTERVAL": "/retryInitialInterval",
+    "OPENPC_INPUT_OTEL_RETRY_MAX_ELAPSED_TIME": "/retryMaxElapsedTime",
+    "OPENPC_INPUT_OTEL_RETRY_MAX_INTERVAL": "/retryMaxInterval",
+    "OPENPC_INPUT_OTEL_SEND_BATCH_MAX_SIZE": "/sendBatchMaxSize",
+    "OPENPC_INPUT_OTEL_SEND_BATCH_SIZE": "/sendBatchSize"
+  },
+  "x-openpc-trace": {
+    "claimCeilingRefs": [
+      "CC-GLOBAL-AUTHORITY-TRUTH",
+      "CC-NUMERIC-SLA-CERTIFICATION"
+    ],
+    "componentRefs": [
+      "DU-OTEL-COLLECTOR",
+      "COM-020"
+    ],
+    "decisionRefs": [
+      "DEC-C03-001",
+      "DEC-C03-009",
+      "DEC-C03-013",
+      "DEC-C03-016"
+    ],
+    "requirementRefs": [
+      "REQ-SR01-B0-REQ-OPS-004",
+      "REQ-SR01-B0-REQ-TARCH-COM-020"
+    ],
+    "sourceUnitRefs": [
+      "SU-4e631802440a7af75fb60175",
+      "SU-03cb8daaec34b81f89f5ab57"
+    ],
+    "testRefs": [
+      "TEST-OPS-OTEL-MATERIALIZE-001",
+      "TEST-OPS-OTEL-MATERIALIZE-002",
+      "TEST-OPS-OTEL-MATERIALIZE-003",
+      "TEST-OPS-OTEL-MATERIALIZE-004"
+    ]
+  }
+}

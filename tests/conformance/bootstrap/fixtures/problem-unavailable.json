@@ -1,0 +1,9 @@
+{
+  "code": "PC-OPS-9002",
+  "retryable": true,
+  "status": 503,
+  "title": "The service is unavailable",
+  "traceId": "018f1e44-7b2c-7abc-8def-0123456789ab",
+  "truthState": "UNAVAILABLE",
+  "type": "https://errors.openpc.local/unavailable"
+}

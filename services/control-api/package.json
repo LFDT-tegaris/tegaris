@@ -1,0 +1,35 @@
+{
+  "name": "@openpc/control-api",
+  "version": "2.0.0-r1",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./privacy-explorer": "./src/privacy-explorer/index.ts",
+    "./configuration": "./src/configuration/index.ts"
+  },
+  "scripts": {
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --config vitest.config.ts",
+    "db:generate": "drizzle-kit generate --config drizzle.config.ts && node --import tsx src/configuration/generate-security-tail.mjs",
+    "test:b4": "vitest run --config ../../tests/privacy/i07-gate2-vitest.config.ts",
+    "lint": "pnpm exec eslint src",
+    "format": "pnpm exec prettier --check src"
+  },
+  "dependencies": {
+    "@openpc/security-kernel": "workspace:*",
+    "@noble/hashes": "2.3.0",
+    "drizzle-orm": "0.45.2",
+    "fastify": "5.10.0",
+    "pg": "8.23.0",
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.3",
+    "@types/pg": "8.23.1",
+    "drizzle-kit": "0.31.10",
+    "esbuild": "0.28.2",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10"
+  }
+}

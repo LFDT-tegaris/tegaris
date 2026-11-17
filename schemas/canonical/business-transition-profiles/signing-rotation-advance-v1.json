@@ -1,0 +1,126 @@
+{
+  "profileId": "pc.control.signing-rotation.advance",
+  "profileVersion": 1,
+  "schemaDefinitionDigest": "sha256:4e7de36861819909275bdec8103d1df04984c03b34cb593437dfe68f5c2c1d9a",
+  "actionIntentId": "ACT-SIGNING_KEY_ROTATIONS_ADVANCE_RESOURCE-V1",
+  "catalogOperationId": "OPS-OP-ADVANCE-SIGNING-KEY-ROTATION",
+  "resourceType": "signing-key-rotation",
+  "aggregateType": "signing-key-rotation",
+  "sequenceNamespace": "CONTROL_BUSINESS_TRANSITION_V1",
+  "transitionKind": 1,
+  "operationEffect": "SIGNING_ROTATION_ADVANCE",
+  "authority": {
+    "actor": "Authenticated participant user for new effects; dispatched provider truth may be finalized only by the API workload using the identity-issued SIGNING_ROTATION_ATTEMPT_RECONCILE_V1 capability.",
+    "approval": "Exact immutable creation approval or effective replacement authorization generation; replacement requires its own server-derived candidate, current maker and distinct live checker through the existing WebAuthn approval owner. Historical approvals never authorize new effects after revocation.",
+    "evidence": [
+      {
+        "kind": 2,
+        "owner": "control.mutation_evidence",
+        "format": "IDENTITY_RUNTIME_ASSERTION_3002_2_13",
+        "binding": "actual session, actor, participant, privacy domain, action, operation, rotation, input and expected revision"
+      }
+    ],
+    "snapshot": "current caller and original maker/checker paths, workload identities and live epochs",
+    "continuation": "Exact original operation, target, request, definitive observation, original actor/maker/checker/approval and current workload/authority binding; pinned ES256, finalizer audience, one-use JTI and 30-second TTL. No redispatch, cutover, trust admission or capability widening. Store assertion digest/context only. Changed original authority creates a durable hold."
+  },
+  "state": {
+    "owner": "control.signing_key_rotation",
+    "historyOwner": "control.signing_rotation_history",
+    "identity": [
+      "participant_id",
+      "privacy_domain_id",
+      "rotation_id"
+    ],
+    "revision": "revision:u64",
+    "digest": "pc.control.transition-state.v1; SHA-256 over canonical typed CBOR",
+    "projection": {
+      "0": {
+        "type": "TEXT",
+        "column": "state"
+      },
+      "1": {
+        "type": "H32",
+        "column": "candidate_digest"
+      },
+      "2": {
+        "type": "H32",
+        "column": "history_digest"
+      },
+      "3": {
+        "type": "TEXT",
+        "column": "request.signerRole"
+      },
+      "4": {
+        "type": "H32",
+        "column": "old_signer_id"
+      },
+      "5": {
+        "type": "UINT_ENUM",
+        "values": {
+          "0": "ABSENT",
+          "1": "PRESENT"
+        },
+        "column": "new_signer_id presence"
+      },
+      "6": {
+        "type": "H32",
+        "column": "new_signer_id",
+        "presence": "required iff field 5 is 1; omitted iff field 5 is 0; null, empty and all-zero sentinels rejected"
+      }
+    }
+  },
+  "transition": {
+    "before": "PRESENT_AT_CURRENT_LIFECYCLE_REVISION",
+    "after": "PRESENT_REVISION_PLUS_ONE",
+    "command": "ADVANCE",
+    "binding": "append-only history binds prior state/digest, approval authority, original pending operation, provider attempt and observation digests, target signer role/ID, lifecycle evidence signer/epoch, selected target trust/epoch, consumer acknowledgement and event/evidence identifiers",
+    "noOp": "REJECT_WITHOUT_EFFECTS"
+  },
+  "events": [
+    {
+      "eventType": "io.openpc.ops.secret.revoked.v1",
+      "cardinality": "exactly 1 only at OLD_REVOKED, otherwise 0"
+    },
+    {
+      "eventType": "io.openpc.ops.secret.rotated.v1",
+      "cardinality": "exactly 1 only at COMPLETE, otherwise 0"
+    }
+  ],
+  "eventPayload": "canonical identities and fingerprints only; no secret references or provider bodies",
+  "signer": {
+    "role": "LIFECYCLE_EVIDENCE",
+    "purpose": "pc.cose.control-business-transition.v1",
+    "grants": "exact ADVANCE/RECOVER profiles only",
+    "targetBinding": "history separately binds target signer role/ID and the attesting lifecycle evidence signer/epoch",
+    "selfRotation": "old lifecycle signer attests atomic CUTOVER_FENCED; new signer attests subsequent states; old public trust retained"
+  },
+  "requestBinding": {
+    "domain": "pc.control.configuration-request.v1",
+    "encoding": "UTF-8 domain plus NUL; each field prefixed by uint32 big-endian UTF-8 byte length; SHA-256",
+    "fields": [
+      "participantId",
+      "privacyDomainId",
+      "principalId",
+      "actionIntentId",
+      "catalogOperationId",
+      "aggregateType",
+      "aggregateId",
+      "expectedRevision (canonical u64 decimal)",
+      "candidateDigest (sha256: lowercase hex)",
+      "idempotencyKey"
+    ]
+  },
+  "lifecycle": {
+    "idempotency": "replay preserves original operation, history, receipt and event identifiers and bytes",
+    "provider": "worker-owned lifecycle mutations; commit attempt before dispatch; lookup-only reconciliation after uncertainty",
+    "rollback": "evidence/history/outbox failure rolls back local transition; retain independent provider observation; never revive revoked key",
+    "consumer": "verify exact 24001@2 receipt/COSE/profile/trust and contiguous CONTROL_SIGNING_LIFECYCLE_V1 receipt ordinal, independently of outbox aggregate sequences; persist inbox before checkpoint",
+    "failure": "Undispatched authority loss fails the original operation with protected denial evidence, no provider call or signed revision, and requires a fresh bound approval. Trusted NOT_APPLIED fails NO_EFFECT_RETRYABLE without a lifecycle revision or event. Other definitive rejection commits signed FAILED and preserves every completed cutover and selected key."
+  },
+  "privacy": {
+    "placement": "same explicit participant and privacy domain as rotation",
+    "read": "current scoped authorization; receipts never grant authority",
+    "retention": "immutable lifecycle history, public trust, receipt/evidence/outbox and original provider observations; no private key bytes"
+  },
+  "definitionDigest": "sha256:b4a8a3751e2906c5f2b085434afca448e035e1ae0e797c6b183a6e8d0c876a96"
+}

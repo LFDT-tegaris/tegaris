@@ -1,0 +1,17 @@
+[package]
+name = "openpc-explorer-adapter"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+pc-provider-api = { path = "../../crates/pc-provider-api" }
+reqwest.workspace = true
+secrecy.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+sha2.workspace = true
+thiserror.workspace = true
+tokio = { workspace = true, features = ["io-util", "macros", "net", "rt-multi-thread", "time"] }

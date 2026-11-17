@@ -1,0 +1,138 @@
+{
+  "$id": "https://schemas.openpc.local/adapter-interface.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "adapters": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "adapterId": {
+            "pattern": "^ADAPTER-[A-Z0-9-]+-V[1-9][0-9]*$",
+            "type": "string"
+          },
+          "authority": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "availability": {
+            "pattern": "^[A-Z0-9_]+$",
+            "type": "string"
+          },
+          "hotPath": {
+            "type": "boolean"
+          },
+          "methods": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "cancellation": {
+                  "type": "string"
+                },
+                "deadline": {
+                  "type": "string"
+                },
+                "error": {
+                  "type": "string"
+                },
+                "idempotency": {
+                  "type": "string"
+                },
+                "name": {
+                  "pattern": "^[a-z][A-Za-z0-9]+$",
+                  "type": "string"
+                },
+                "requestType": {
+                  "type": "string"
+                },
+                "responseType": {
+                  "type": "string"
+                },
+                "retry": {
+                  "type": "string"
+                },
+                "signature": {
+                  "type": "string"
+                },
+                "trace": {
+                  "$ref": "action-intent-registry.schema.json#/properties/entries/items/properties/trace"
+                }
+              },
+              "required": [
+                "name",
+                "signature",
+                "requestType",
+                "responseType",
+                "deadline",
+                "idempotency",
+                "retry",
+                "cancellation",
+                "error",
+                "trace"
+              ],
+              "type": "object"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "name": {
+            "pattern": "^[A-Z][A-Za-z0-9]+V[1-9][0-9]*$",
+            "type": "string"
+          },
+          "trace": {
+            "$ref": "action-intent-registry.schema.json#/properties/entries/items/properties/trace"
+          }
+        },
+        "required": [
+          "adapterId",
+          "name",
+          "availability",
+          "hotPath",
+          "authority",
+          "trace",
+          "methods"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schemaVersion": {
+      "const": "1.0"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "adapters"
+  ],
+  "title": "OpenPC adapter interface registry v1",
+  "type": "object",
+  "x-openpc-trace": {
+    "componentIds": [
+      "DU-ENVOY",
+      "LS-BROKER",
+      "LS-PDS"
+    ],
+    "decisionIds": [
+      "AD-SR04-001-B0-FREEZE",
+      "AD-SR04-005-POLICY-LIFECYCLE",
+      "AD-SR04-006-INVOCATION-CAPABILITY",
+      "AD-SR04-007-EXECUTION-EVIDENCE",
+      "AD-SR04-009-DYNAMIC-EVENT",
+      "AD-SR04-010-CLIENT-INDEXER",
+      "AD-SR04-014-SECURITY-OPERATIONS",
+      "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY"
+    ],
+    "requirementIds": [
+      "REQ-SR01-B0-LEDGER-RTP-110",
+      "REQ-SR01-B0-REQ-PERF-006",
+      "REQ-SR01-B0-REQ-SEC-002",
+      "REQ-SR01-B0-REQ-TARCH-003"
+    ],
+    "sourceUnitIds": [
+      "SU-REQ-09b19909a87bad746b27b2e3",
+      "SU-REQ-dcaf85313d7924e924f1d5b8",
+      "SU-REQ-1dd67ec91cb8e6fa9095700b",
+      "SU-REQ-9a0545c67883e271567ad117"
+    ]
+  }
+}

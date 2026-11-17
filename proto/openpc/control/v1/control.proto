@@ -1,0 +1,167 @@
+// C04 normative wire projection. Signed semantics are PC-CBOR-1 only.
+// JSON projections MUST validate the frozen AF-08 schemas; protobuf bytes are never an alternate signature preimage.
+// Every caller supplies grpc-timeout. The server applies min(caller deadline, signed service-profile maximum).
+// Missing/expired authority metadata fails before method execution. Unknown enum values never relax denial.
+syntax = "proto3";
+package openpc.control.v1;
+
+import "openpc/common/v1/common.proto";
+
+option java_multiple_files = true;
+option java_package = "io.openpc.control.v1";
+
+message GetResourceRequestV1 {
+  openpc.common.v1.RequestMetaV1 meta = 1;
+  openpc.common.v1.Af08OpenPcUrn resource_id = 2;
+  reserved 100 to 199;
+}
+
+message ResourceCommandRequestV1 {
+  openpc.common.v1.RequestMetaV1 meta = 1;
+  openpc.common.v1.Af08OpenPcUrn target_ref = 2;
+  openpc.common.v1.Af08Sha256Digest input_digest = 3;
+  openpc.common.v1.Af08UInt64String expected_revision = 4;
+  string reason = 5;
+  reserved 100 to 199;
+}
+
+message ParticipantV1 {
+  openpc.common.v1.Af08OpenPcUrn participant_id = 1;
+  string name = 2;
+  openpc.common.v1.Af08UInt64String epoch = 3;
+  string state = 4;
+  repeated openpc.common.v1.Af08OpenPcUrn privacy_domain_ids = 5;
+  openpc.common.v1.Af08UInt64String revision = 6;
+  reserved 100 to 199;
+}
+
+message ParticipantPageV1 {
+  repeated ParticipantV1 items = 1;
+  optional string next_cursor = 2;
+  optional openpc.common.v1.Af08UInt64String total = 3;
+  string completeness = 4;
+  bool authorized_empty = 5;
+  reserved 100 to 199;
+}
+
+message PolicyVersionV1 {
+  openpc.common.v1.Af08OpenPcUrn policy_version_id = 1;
+  openpc.common.v1.Af08OpenPcUrn policy_set_id = 2;
+  string semantic_version = 3;
+  openpc.common.v1.Af08Sha256Digest normalized_policy_digest = 4;
+  openpc.common.v1.Af08Sha256Digest dependency_closure_digest = 5;
+  string state = 6;
+  reserved 100 to 199;
+}
+
+message SimulationResultV1 {
+  openpc.common.v1.Af08OpenPcUrn simulation_id = 1;
+  openpc.common.v1.Af08Sha256Digest candidate_digest = 2;
+  string state = 3;
+  openpc.common.v1.Af08UInt64String allow_count = 4;
+  openpc.common.v1.Af08UInt64String deny_count = 5;
+  openpc.common.v1.Af08UInt64String unknown_count = 6;
+  reserved 100 to 199;
+}
+
+message ModuleV1 {
+  openpc.common.v1.Af08OpenPcUrn module_id = 1;
+  string name = 2;
+  string semantic_version = 3;
+  openpc.common.v1.Af08Sha256Digest manifest_digest = 4;
+  string state = 5;
+  string support_profile = 6;
+  reserved 100 to 199;
+}
+
+message ModulePageV1 {
+  repeated ModuleV1 items = 1;
+  optional string next_cursor = 2;
+  string completeness = 3;
+  bool authorized_empty = 4;
+  reserved 100 to 199;
+}
+
+message WorkItemV1 {
+  openpc.common.v1.Af08OpenPcUrn work_item_id = 1;
+  openpc.common.v1.Af08OpenPcUrn participant_id = 2;
+  string kind = 3;
+  string state = 4;
+  optional openpc.common.v1.Af08OpenPcUrn assignee_ref = 5;
+  openpc.common.v1.Af08OpenPcUrn resource_ref = 6;
+  reserved 100 to 199;
+}
+
+message WorkItemPageV1 {
+  repeated WorkItemV1 items = 1;
+  optional string next_cursor = 2;
+  string completeness = 3;
+  bool authorized_empty = 4;
+  reserved 100 to 199;
+}
+
+message NotificationV1 {
+  openpc.common.v1.Af08OpenPcUrn notification_id = 1;
+  openpc.common.v1.Af08OpenPcUrn participant_id = 2;
+  string severity = 3;
+  string state = 4;
+  optional openpc.common.v1.Af08OpenPcUrn resource_ref = 5;
+  string message_key = 6;
+  reserved 100 to 199;
+}
+
+message NotificationPageV1 {
+  repeated NotificationV1 items = 1;
+  optional string next_cursor = 2;
+  string completeness = 3;
+  bool authorized_empty = 4;
+  reserved 100 to 199;
+}
+
+service IdentityService {
+  rpc GetSession(openpc.common.v1.RequestMetaV1) returns (openpc.common.v1.AuthorityContextV1);
+  rpc ActivateParticipantContext(ResourceCommandRequestV1) returns (openpc.common.v1.OperationViewV1);
+}
+
+service ParticipantService {
+  rpc GetParticipant(GetResourceRequestV1) returns (ParticipantV1);
+  rpc ListParticipants(openpc.common.v1.PageRequestV1) returns (ParticipantPageV1);
+  rpc CreateParticipant(ResourceCommandRequestV1) returns (openpc.common.v1.OperationViewV1);
+  rpc UpdateParticipant(ResourceCommandRequestV1) returns (openpc.common.v1.OperationViewV1);
+}
+
+service PolicyLifecycleService {
+  rpc GetPolicyVersion(GetResourceRequestV1) returns (PolicyVersionV1);
+  rpc CreatePolicyVersion(ResourceCommandRequestV1) returns (openpc.common.v1.OperationViewV1);
+  rpc RequestApproval(ResourceCommandRequestV1) returns (openpc.common.v1.OperationViewV1);
+  rpc PublishRelease(ResourceCommandRequestV1) returns (openpc.common.v1.OperationViewV1);
+  rpc RollbackRelease(ResourceCommandRequestV1) returns (openpc.common.v1.OperationViewV1);
+}
+
+service ModuleRegistryService {
+  rpc ListModules(openpc.common.v1.PageRequestV1) returns (ModulePageV1);
+  rpc InstallModule(ResourceCommandRequestV1) returns (openpc.common.v1.OperationViewV1);
+  rpc ActivateModule(ResourceCommandRequestV1) returns (openpc.common.v1.OperationViewV1);
+  rpc UninstallModule(ResourceCommandRequestV1) returns (openpc.common.v1.OperationViewV1);
+}
+
+service CompilerService {
+  rpc CompilePolicy(ResourceCommandRequestV1) returns (openpc.common.v1.OperationViewV1);
+  rpc VerifyArtifact(ResourceCommandRequestV1) returns (openpc.common.v1.OperationViewV1);
+}
+
+service SimulatorService {
+  rpc SimulatePolicy(ResourceCommandRequestV1) returns (SimulationResultV1);
+}
+
+service ControlWorkService {
+  rpc GetOperation(GetResourceRequestV1) returns (openpc.common.v1.OperationViewV1);
+  rpc ListWorkItems(openpc.common.v1.PageRequestV1) returns (WorkItemPageV1);
+  rpc ClaimWorkItem(ResourceCommandRequestV1) returns (openpc.common.v1.OperationViewV1);
+  rpc CompleteWorkItem(ResourceCommandRequestV1) returns (openpc.common.v1.OperationViewV1);
+}
+
+service NotificationControlService {
+  rpc ListNotifications(openpc.common.v1.PageRequestV1) returns (NotificationPageV1);
+  rpc AcknowledgeNotification(ResourceCommandRequestV1) returns (openpc.common.v1.OperationViewV1);
+}

@@ -1,0 +1,144 @@
+{
+  "schemaVersion": "1.0",
+  "matrixId": "OPENPC-I10-WHOLE-BOUNDARY-CLOSURE-20260908",
+  "source": {
+    "af31EvidenceScheduleSha256": "0c25b1c08cd88a3fdfc5a66d2157bf58b28e0aac86e4426ca56fe2e7ec738025",
+    "af30OracleBindingsSha256": "7b3792b07a35274ec6c448295ddbd3a72ee942c43dd162d6054457bf2440615b",
+    "af30CompatibilityCasesSha256": "c072d41be92724c12ee24b2791f866461adf81e38a9c9939e3e02e88a3bb5446"
+  },
+  "denominator": {
+    "i10ScheduleRows": 37,
+    "sourceUnitClosureRows": 230077,
+    "requirementClosureRows": 22131,
+    "r1OracleBindings": 2810,
+    "compatibilityPositiveCases": 72,
+    "compatibilityNegativeVectors": 52,
+    "uninstallAssertions": 17,
+    "reconciliationNegatives": 2,
+    "i09ConformanceRows": 961
+  },
+  "rows": [
+    {
+      "surface": "UI_BFF",
+      "kind": "CLAIM_CEILING",
+      "ids": [
+        "EV-CC-ACCESSIBILITY-RESPONSIVE-EXPLAINABILITY",
+        "EV-CC-ADMITTED-LOCAL-FACT-SOURCE-NEUTRAL",
+        "EV-CC-EXACT-COMPATIBILITY-PROFILE",
+        "EV-CC-GLOBAL-AUTHORITY-TRUTH",
+        "EV-CC-NUMERIC-SLA-CERTIFICATION",
+        "EV-CC-PC-SEPARATE-PRODUCT-INTEGRATION"
+      ],
+      "validator": "validateClaimCeiling",
+      "consumer": "consumeUiBffClaim",
+      "disposition": "EXECUTE_NON_PROMOTION"
+    },
+    {
+      "surface": "UI_BFF",
+      "kind": "FORBIDDEN_FALLBACK",
+      "ids": [
+        "EV-FAKE_RESPONSE",
+        "EV-PERMISSIVE",
+        "EV-RAW_PROTECTED_NODE",
+        "EV-SILENT_WINNER",
+        "EV-UNIVERSAL_EMPTY"
+      ],
+      "validator": "validateForbiddenFallback",
+      "consumer": "consumeUiBffForbidden",
+      "disposition": "EXECUTE_REJECTION"
+    },
+    {
+      "surface": "UI_BFF",
+      "kind": "REJECTED_ALTERNATIVE",
+      "ids": [
+        "EV-RA-001",
+        "EV-RA-002",
+        "EV-RA-003",
+        "EV-RA-004",
+        "EV-RA-005",
+        "EV-RA-006",
+        "EV-RA-007",
+        "EV-RA-008",
+        "EV-RA-009",
+        "EV-RA-010"
+      ],
+      "validator": "validateRejectedAlternative",
+      "consumer": "consumeUiBffRejected",
+      "disposition": "EXECUTE_REJECTION"
+    },
+    {
+      "surface": "CONFLICT_PRIORITY_VERSIONING",
+      "kind": "CONFLICT",
+      "ids": [
+        "EV-CSR-001",
+        "EV-CSR-002",
+        "EV-CSR-005",
+        "EV-CSR-006",
+        "EV-CSR-007",
+        "EV-CSR-008",
+        "EV-CSR-009",
+        "EV-CSR-011",
+        "EV-CSR-015"
+      ],
+      "validator": "validateClosedConflict",
+      "consumer": "consumeConflict",
+      "disposition": "EXECUTE_NON_PROMOTION"
+    },
+    {
+      "surface": "MIGRATION_COMPATIBILITY",
+      "kind": "CONFLICT",
+      "ids": ["EV-CSR-003"],
+      "validator": "validateClosedConflict",
+      "consumer": "consumeMigration",
+      "disposition": "EXECUTE_NON_PROMOTION"
+    },
+    {
+      "surface": "SECURITY_PRIVACY",
+      "kind": "CONFLICT",
+      "ids": ["EV-CSR-004", "EV-CSR-013"],
+      "validator": "validateClosedConflict",
+      "consumer": "consumeSecurityPrivacy",
+      "disposition": "EXECUTE_NON_PROMOTION"
+    },
+    {
+      "surface": "CONCURRENCY",
+      "kind": "CONFLICT",
+      "ids": ["EV-CSR-010"],
+      "validator": "validateClosedConflict",
+      "consumer": "consumeConcurrency",
+      "disposition": "EXECUTE_NON_PROMOTION"
+    },
+    {
+      "surface": "ACCESSIBILITY",
+      "kind": "CONFLICT",
+      "ids": ["EV-CSR-012"],
+      "validator": "validateClosedConflict",
+      "consumer": "consumeAccessibility",
+      "disposition": "EXECUTE_NON_PROMOTION"
+    },
+    {
+      "surface": "IDENTITY_PC_CBOR_COSE",
+      "kind": "CONFLICT",
+      "ids": ["EV-CSR-014"],
+      "validator": "validateClosedConflict",
+      "consumer": "consumeIdentity",
+      "disposition": "EXECUTE_NON_PROMOTION"
+    },
+    {
+      "surface": "FAILURE_RECOVERY",
+      "kind": "HISTORICAL_CARDINALITY_CLAIM",
+      "ids": ["EV-HISTORICAL-INVESTIGATION-CARDINALITY-169"],
+      "validator": "validateHistoricalClaim",
+      "consumer": "consumeRecovery",
+      "disposition": "EXECUTE_NON_PROMOTION"
+    }
+  ],
+  "adversarialFields": [
+    "evidenceObligationId",
+    "affectedSurface",
+    "openItemKind",
+    "claimPromotion",
+    "empiricalConformance",
+    "consumerFact"
+  ]
+}

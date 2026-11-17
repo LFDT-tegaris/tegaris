@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "extensionAuthority": "POST_C17_ASTRA_11_REMOTE_CUSTODY",
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [
+      1,
+      2,
+      3,
+      4,
+      100,
+      101,
+      102,
+      103
+    ],
+    "criticalFields": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "name": "pc.evidence-protected-sink-profile.v1",
+  "schemaId": 24004,
+  "typeName": "EvidenceProtectedSinkProfileV1",
+  "purpose": {
+    "name": "pc.cose.evidence-protected-sink-profile.v1",
+    "code": 341
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "environmentId",
+      "type": "text160"
+    },
+    {
+      "key": 2,
+      "name": "participantId",
+      "type": "uuid"
+    },
+    {
+      "key": 3,
+      "name": "privacyDomainId",
+      "type": "uuid"
+    },
+    {
+      "key": 4,
+      "name": "profileId",
+      "type": "text160"
+    },
+    {
+      "key": 5,
+      "name": "sinkId",
+      "type": "text160"
+    },
+    {
+      "key": 6,
+      "name": "revision",
+      "type": "u64p"
+    },
+    {
+      "key": 7,
+      "name": "validFromMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 8,
+      "name": "validUntilMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 9,
+      "name": "transportProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 10,
+      "name": "receiptSignerSpki",
+      "type": "P256_SPKI_DER"
+    },
+    {
+      "key": 11,
+      "name": "streamIds",
+      "type": "strictly sorted unique text160 array 1..256"
+    },
+    {
+      "key": 12,
+      "name": "issuerKeyId",
+      "type": "H32"
+    },
+    {
+      "key": 13,
+      "name": "workloadCredentialId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 14,
+      "name": "workloadCredentialEpoch",
+      "type": "u64"
+    },
+    {
+      "key": 15,
+      "name": "databaseRole",
+      "type": "text160"
+    },
+    {
+      "key": 16,
+      "name": "sourceKind",
+      "type": "enum PROTECTED_PROOF=1"
+    },
+    {
+      "key": 17,
+      "name": "retentionPolicy",
+      "type": "enum SOURCE_DEADLINE_EXACT=1"
+    },
+    {
+      "key": 18,
+      "name": "heldExpiredPolicy",
+      "type": "enum PRESERVE_EXISTING_ONLY=1"
+    }
+  ],
+  "authorityRules": [
+    "Host-installed issuer key, environment and exact participant/privacy/sink scope are mandatory; a supplied public key is not trust.",
+    "The signed deadline and exact transport configuration apply before dispatch and before checkpoint commit.",
+    "Renewed profile authority may cover the original transport intent only when its exact transport digest and signer binding match; it does not authorize another PUT.",
+    "Profile admission is operational installation; no public request may install roots, profiles or receipt keys.",
+    "The immutable host grant binds the dedicated database login to one Identity workload credential and epoch; new effects require its current active credential and principal. This state check does not claim mTLS peer authentication.",
+    "This profile admits only exact encrypted RAW_SOURCE_BODY protected-proof packets from the separately authenticated source owner; it never admits ordinary segment custody or disclosure.",
+    "A fresh PUT must be admitted and dispatched before the immutable proof retain-until deadline, even when a hold exists. The provider retention timestamp must equal that deadline.",
+    "After proof expiry only the original dispatched attempt may be reconciled and an existing remote version may receive current hold updates. No deadline extension, new PUT, re-encryption, key access or resurrection is authorized."
+  ]
+}

@@ -1,0 +1,951 @@
+{
+  "$defs": {
+    "ExternalEndpointDisposition": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ProfileRef"
+        },
+        {
+          "const": "DISABLED"
+        }
+      ]
+    },
+    "ImageDigest": {
+      "pattern": "^[a-z0-9.-]+(?::[0-9]+)?/[a-z0-9._/-]+@sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "InternalEndpointDisposition": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ProfileRef"
+        },
+        {
+          "const": "IN_CLUSTER_MTLS"
+        }
+      ]
+    },
+    "ProfileRef": {
+      "pattern": "^profile://[a-z][a-z0-9-]{1,31}/[A-Za-z0-9._/-]{1,192}@sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "QualificationRef": {
+      "pattern": "^qualification://[a-z][a-z0-9-]{1,31}/[A-Za-z0-9._/-]{1,192}@sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "Quantity": {
+      "pattern": "^(?:[1-9][0-9]*(?:m|Ki|Mi|Gi|Ti)?|0\\.[0-9]+)$",
+      "type": "string"
+    },
+    "ResourceEnvelope": {
+      "additionalProperties": false,
+      "properties": {
+        "cpuLimit": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "cpuRequest": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "ephemeralStorageLimit": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "ephemeralStorageRequest": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "memoryLimit": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "memoryRequest": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "qualificationRef": {
+          "$ref": "#/$defs/QualificationRef"
+        }
+      },
+      "required": [
+        "cpuRequest",
+        "cpuLimit",
+        "memoryRequest",
+        "memoryLimit",
+        "ephemeralStorageRequest",
+        "ephemeralStorageLimit",
+        "qualificationRef"
+      ],
+      "type": "object"
+    },
+    "SecretRef": {
+      "pattern": "^secret://[a-z][a-z0-9-]{1,31}/[A-Za-z0-9._/-]{1,192}#[A-Za-z0-9._-]{1,96}$",
+      "type": "string"
+    },
+    "Sha256Digest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "StoreEndpointDisposition": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ProfileRef"
+        },
+        {
+          "const": "IN_CLUSTER_SELF_MANAGED"
+        }
+      ]
+    }
+  },
+  "$id": "urn:openpc:schema:kubernetes-materialization-inputs:1.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "images": {
+      "additionalProperties": false,
+      "properties": {
+        "compiler": {
+          "$ref": "#/$defs/ImageDigest"
+        },
+        "control": {
+          "$ref": "#/$defs/ImageDigest"
+        },
+        "envoy": {
+          "$ref": "#/$defs/ImageDigest"
+        },
+        "factBridge": {
+          "$ref": "#/$defs/ImageDigest"
+        },
+        "fleetControl": {
+          "$ref": "#/$defs/ImageDigest"
+        },
+        "otelCollector": {
+          "$ref": "#/$defs/ImageDigest"
+        },
+        "postgresql": {
+          "$ref": "#/$defs/ImageDigest"
+        },
+        "runtime": {
+          "$ref": "#/$defs/ImageDigest"
+        },
+        "valkey": {
+          "$ref": "#/$defs/ImageDigest"
+        },
+        "workbench": {
+          "$ref": "#/$defs/ImageDigest"
+        }
+      },
+      "required": [
+        "workbench",
+        "control",
+        "compiler",
+        "fleetControl",
+        "runtime",
+        "factBridge",
+        "envoy",
+        "otelCollector",
+        "postgresql",
+        "valkey"
+      ],
+      "type": "object"
+    },
+    "namespace": {
+      "maxLength": 63,
+      "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+      "type": "string"
+    },
+    "network": {
+      "additionalProperties": false,
+      "properties": {
+        "candidateIndexPostgresEndpointProfile": {
+          "$ref": "#/$defs/StoreEndpointDisposition"
+        },
+        "clientIndexerOrchestratorProfile": {
+          "const": "DISABLED_R1_FUTURE_CONDITIONAL"
+        },
+        "clusterDnsProfile": {
+          "$ref": "#/$defs/ProfileRef"
+        },
+        "clusterTimeProfile": {
+          "$ref": "#/$defs/ProfileRef"
+        },
+        "cniEgressControlProfile": {
+          "$ref": "#/$defs/ProfileRef"
+        },
+        "controlPostgresEndpointProfile": {
+          "$ref": "#/$defs/StoreEndpointDisposition"
+        },
+        "evidenceVaultEndpointProfile": {
+          "$ref": "#/$defs/ProfileRef"
+        },
+        "externalDecisionEndpointProfile": {
+          "$ref": "#/$defs/ExternalEndpointDisposition"
+        },
+        "factPostgresEndpointProfile": {
+          "$ref": "#/$defs/StoreEndpointDisposition"
+        },
+        "fleetReceiptEndpointProfile": {
+          "$ref": "#/$defs/InternalEndpointDisposition"
+        },
+        "fleetXdsEndpointProfile": {
+          "$ref": "#/$defs/InternalEndpointDisposition"
+        },
+        "ingressControllerProfile": {
+          "$ref": "#/$defs/ProfileRef"
+        },
+        "notificationEndpointProfile": {
+          "$ref": "#/$defs/ExternalEndpointDisposition"
+        },
+        "ociEndpointProfile": {
+          "$ref": "#/$defs/ProfileRef"
+        },
+        "oidcScimEndpointProfile": {
+          "$ref": "#/$defs/ProfileRef"
+        },
+        "rpcProviderEndpointProfile": {
+          "$ref": "#/$defs/ExternalEndpointDisposition"
+        }
+      },
+      "required": [
+        "ingressControllerProfile",
+        "cniEgressControlProfile",
+        "clusterDnsProfile",
+        "clusterTimeProfile",
+        "controlPostgresEndpointProfile",
+        "factPostgresEndpointProfile",
+        "candidateIndexPostgresEndpointProfile",
+        "ociEndpointProfile",
+        "fleetXdsEndpointProfile",
+        "fleetReceiptEndpointProfile",
+        "rpcProviderEndpointProfile",
+        "evidenceVaultEndpointProfile",
+        "clientIndexerOrchestratorProfile",
+        "oidcScimEndpointProfile",
+        "externalDecisionEndpointProfile",
+        "notificationEndpointProfile"
+      ],
+      "type": "object"
+    },
+    "otelConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "collectorVersion": {
+          "const": "0.159.0"
+        },
+        "configMapName": {
+          "maxLength": 63,
+          "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+          "type": "string"
+        },
+        "qualificationRef": {
+          "$ref": "#/$defs/QualificationRef"
+        },
+        "renderedConfig": {
+          "maxLength": 900000,
+          "minLength": 1,
+          "pattern": "^(?![\\s\\S]*OPENPC_INPUT_)[\\s\\S]+$",
+          "type": "string"
+        },
+        "renderedConfigDigest": {
+          "$ref": "#/$defs/Sha256Digest"
+        }
+      },
+      "required": [
+        "collectorVersion",
+        "configMapName",
+        "renderedConfig",
+        "renderedConfigDigest",
+        "qualificationRef"
+      ],
+      "type": "object"
+    },
+    "postgresTopology": {
+      "additionalProperties": false,
+      "properties": {
+        "candidateIndexReplicas": {
+          "maximum": 100,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "controlReplicas": {
+          "maximum": 100,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "factReplicas": {
+          "maximum": 100,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "mode": {
+          "enum": [
+            "SELF_MANAGED_STATEFULSET",
+            "EXACT_MANAGED_SERVICE_PROFILE"
+          ]
+        },
+        "qualificationRef": {
+          "$ref": "#/$defs/QualificationRef"
+        },
+        "runVolumeLimit": {
+          "$ref": "#/$defs/Quantity"
+        }
+      },
+      "required": [
+        "mode",
+        "controlReplicas",
+        "factReplicas",
+        "candidateIndexReplicas",
+        "runVolumeLimit",
+        "qualificationRef"
+      ],
+      "type": "object"
+    },
+    "profile": {
+      "enum": [
+        "local",
+        "development",
+        "test",
+        "staging",
+        "production"
+      ]
+    },
+    "protectedTargets": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "af16EnvoyBootstrapDigest": {
+            "$ref": "#/$defs/Sha256Digest"
+          },
+          "af16EnvoyConfigMap": {
+            "maxLength": 63,
+            "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+            "type": "string"
+          },
+          "af17RuntimeContractDigest": {
+            "$ref": "#/$defs/Sha256Digest"
+          },
+          "artifactPvc": {
+            "maxLength": 63,
+            "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+            "type": "string"
+          },
+          "controllerRef": {
+            "pattern": "^(Deployment|StatefulSet|DaemonSet)/[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+            "type": "string"
+          },
+          "evidencePvc": {
+            "maxLength": 63,
+            "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+            "type": "string"
+          },
+          "runtimeCohortDigest": {
+            "$ref": "#/$defs/Sha256Digest"
+          },
+          "serviceAccount": {
+            "maxLength": 63,
+            "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+            "type": "string"
+          },
+          "socketVolumeLimit": {
+            "$ref": "#/$defs/Quantity"
+          },
+          "targetId": {
+            "maxLength": 63,
+            "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+            "type": "string"
+          },
+          "targetImage": {
+            "$ref": "#/$defs/ImageDigest"
+          },
+          "targetResources": {
+            "$ref": "#/$defs/ResourceEnvelope"
+          }
+        },
+        "required": [
+          "targetId",
+          "controllerRef",
+          "serviceAccount",
+          "targetImage",
+          "targetResources",
+          "runtimeCohortDigest",
+          "af16EnvoyConfigMap",
+          "af16EnvoyBootstrapDigest",
+          "af17RuntimeContractDigest",
+          "artifactPvc",
+          "evidencePvc",
+          "socketVolumeLimit"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "publicDnsName": {
+      "pattern": "^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,63}$",
+      "type": "string"
+    },
+    "qualificationReceiptDigest": {
+      "$ref": "#/$defs/Sha256Digest"
+    },
+    "resources": {
+      "additionalProperties": false,
+      "properties": {
+        "compiler": {
+          "$ref": "#/$defs/ResourceEnvelope"
+        },
+        "control": {
+          "$ref": "#/$defs/ResourceEnvelope"
+        },
+        "envoy": {
+          "$ref": "#/$defs/ResourceEnvelope"
+        },
+        "factBridge": {
+          "$ref": "#/$defs/ResourceEnvelope"
+        },
+        "fleetControl": {
+          "$ref": "#/$defs/ResourceEnvelope"
+        },
+        "otelCollector": {
+          "$ref": "#/$defs/ResourceEnvelope"
+        },
+        "postgresql": {
+          "$ref": "#/$defs/ResourceEnvelope"
+        },
+        "runtime": {
+          "$ref": "#/$defs/ResourceEnvelope"
+        },
+        "valkey": {
+          "$ref": "#/$defs/ResourceEnvelope"
+        },
+        "workbench": {
+          "$ref": "#/$defs/ResourceEnvelope"
+        }
+      },
+      "required": [
+        "workbench",
+        "control",
+        "compiler",
+        "fleetControl",
+        "runtime",
+        "envoy",
+        "factBridge",
+        "otelCollector",
+        "postgresql",
+        "valkey"
+      ],
+      "type": "object"
+    },
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "secretCsiDriver": {
+      "maxLength": 253,
+      "pattern": "^[a-z0-9]([-a-z0-9.]*[a-z0-9])?$",
+      "type": "string"
+    },
+    "secretRefs": {
+      "additionalProperties": false,
+      "properties": {
+        "candidateIndexPostgres": {
+          "$ref": "#/$defs/SecretRef"
+        },
+        "controlPostgres": {
+          "$ref": "#/$defs/SecretRef"
+        },
+        "evidenceVault": {
+          "$ref": "#/$defs/SecretRef"
+        },
+        "factPostgres": {
+          "$ref": "#/$defs/SecretRef"
+        },
+        "oci": {
+          "$ref": "#/$defs/SecretRef"
+        },
+        "oidcClient": {
+          "$ref": "#/$defs/SecretRef"
+        },
+        "signingKey": {
+          "$ref": "#/$defs/SecretRef"
+        },
+        "workloadPki": {
+          "$ref": "#/$defs/SecretRef"
+        }
+      },
+      "required": [
+        "controlPostgres",
+        "factPostgres",
+        "candidateIndexPostgres",
+        "oidcClient",
+        "workloadPki",
+        "signingKey",
+        "oci",
+        "evidenceVault"
+      ],
+      "type": "object"
+    },
+    "storage": {
+      "additionalProperties": false,
+      "properties": {
+        "candidateIndexPgBytes": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "controlPgBytes": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "factPgBytes": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "qualificationRef": {
+          "$ref": "#/$defs/QualificationRef"
+        },
+        "runtimeArtifactBytes": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "runtimeEvidenceBytes": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "storageClassName": {
+          "maxLength": 253,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "storageClassName",
+        "controlPgBytes",
+        "factPgBytes",
+        "candidateIndexPgBytes",
+        "runtimeArtifactBytes",
+        "runtimeEvidenceBytes",
+        "qualificationRef"
+      ],
+      "type": "object"
+    },
+    "topology": {
+      "additionalProperties": false,
+      "properties": {
+        "compilerReplicas": {
+          "maximum": 1000,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "controlReplicas": {
+          "maximum": 1000,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "factBridgeReplicas": {
+          "maximum": 1000,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "fleetControlReplicas": {
+          "maximum": 1000,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "minReadySeconds": {
+          "maximum": 86400,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "otelCollectorReplicas": {
+          "maximum": 1000,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "qualificationRef": {
+          "$ref": "#/$defs/QualificationRef"
+        },
+        "terminationGraceSeconds": {
+          "maximum": 86400,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "topologyKey": {
+          "enum": [
+            "kubernetes.io/hostname",
+            "topology.kubernetes.io/zone",
+            "topology.kubernetes.io/region"
+          ]
+        },
+        "workbenchReplicas": {
+          "maximum": 1000,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "workbenchReplicas",
+        "controlReplicas",
+        "compilerReplicas",
+        "fleetControlReplicas",
+        "factBridgeReplicas",
+        "otelCollectorReplicas",
+        "terminationGraceSeconds",
+        "minReadySeconds",
+        "topologyKey",
+        "qualificationRef"
+      ],
+      "type": "object"
+    },
+    "valkey": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "maxmemory": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "qualificationRef": {
+          "$ref": "#/$defs/QualificationRef"
+        },
+        "replicas": {
+          "maximum": 100,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "runVolumeLimit": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "secretRef": {
+          "$ref": "#/$defs/SecretRef"
+        }
+      },
+      "required": [
+        "enabled",
+        "replicas",
+        "maxmemory",
+        "runVolumeLimit",
+        "secretRef",
+        "qualificationRef"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "profile",
+    "namespace",
+    "publicDnsName",
+    "secretCsiDriver",
+    "images",
+    "resources",
+    "topology",
+    "storage",
+    "postgresTopology",
+    "valkey",
+    "secretRefs",
+    "network",
+    "otelConfig",
+    "protectedTargets",
+    "qualificationReceiptDigest"
+  ],
+  "title": "OpenPC Kubernetes 1.36.2 required materialization inputs",
+  "type": "object",
+  "x-openpc-materializationRules": [
+    "Every value is supplied by one signed profile generation and exact executed qualification receipt.",
+    "No value is inferred from cluster defaults, environment, latest tag, storage provisioner, or namespace.",
+    "SecretRef values remain opaque references and must not be rendered as Kubernetes Secret data/stringData.",
+    "Resource requests must be <= corresponding limits; storage and topology values must match qualification receipts.",
+    "The rendered manifest must contain no OPENPC_INPUT_ token and no DU-SUBQUERY/LS-INDEXER object in R1.",
+    "network is the complete physical input set consumed by network-policy-contract.yaml; external ProfileRef records supply exact endpoint, port, CIDR/FQDN, TLS identity, data class, egress, retry and qualification evidence without widening COM-001 through COM-024.",
+    "otelConfig.renderedConfig is the UTF-8 LF output of telemetry-materialization.schema.json, has already passed Collector 0.159.0 validation, contains no secret bytes or tokens, and its exact bytes equal renderedConfigDigest."
+  ],
+  "x-openpc-tokenBindingRules": {
+    "direct": {
+      "OPENPC_INPUT_AF16_ENVOY_BOOTSTRAP_DIGEST": {
+        "pointer": "@/af16EnvoyBootstrapDigest",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_AF16_ENVOY_CONFIGMAP": {
+        "pointer": "@/af16EnvoyConfigMap",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_AF17_RUNTIME_CONTRACT_DIGEST": {
+        "pointer": "@/af17RuntimeContractDigest",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_IMAGES_PROTECTED_TARGET": {
+        "pointer": "@/targetImage",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_NAMESPACE": {
+        "pointer": "/namespace",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_OTEL_CONFIGMAP_NAME": {
+        "pointer": "/otelConfig/configMapName",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_OTEL_CONFIG_DIGEST": {
+        "pointer": "/otelConfig/renderedConfigDigest",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_OTEL_RENDERED_CONFIG": {
+        "pointer": "/otelConfig/renderedConfig",
+        "serialization": "YAML_BLOCK_SCALAR_INDENT_4_UTF8_LF"
+      },
+      "OPENPC_INPUT_POSTGRES_CANDIDATE_INDEX_REPLICAS": {
+        "pointer": "/postgresTopology/candidateIndexReplicas",
+        "serialization": "YAML_INTEGER"
+      },
+      "OPENPC_INPUT_POSTGRES_CONTROL_REPLICAS": {
+        "pointer": "/postgresTopology/controlReplicas",
+        "serialization": "YAML_INTEGER"
+      },
+      "OPENPC_INPUT_POSTGRES_FACT_REPLICAS": {
+        "pointer": "/postgresTopology/factReplicas",
+        "serialization": "YAML_INTEGER"
+      },
+      "OPENPC_INPUT_POSTGRES_RUN_VOLUME_LIMIT": {
+        "pointer": "/postgresTopology/runVolumeLimit",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_PROFILE": {
+        "pointer": "/profile",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_QUALIFICATION_RECEIPT_DIGEST": {
+        "pointer": "/qualificationReceiptDigest",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_RUNTIME_ARTIFACT_PVC": {
+        "pointer": "@/artifactPvc",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_RUNTIME_COHORT_DIGEST": {
+        "pointer": "@/runtimeCohortDigest",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_RUNTIME_EVIDENCE_PVC": {
+        "pointer": "@/evidencePvc",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_RUNTIME_SOCKET_VOLUME_LIMIT": {
+        "pointer": "@/socketVolumeLimit",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_SECRETREFS_CANDIDATE_INDEX_POSTGRES": {
+        "pointer": "/secretRefs/candidateIndexPostgres",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_SECRETREFS_CONTROL_POSTGRES": {
+        "pointer": "/secretRefs/controlPostgres",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_SECRETREFS_EVIDENCE_VAULT": {
+        "pointer": "/secretRefs/evidenceVault",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_SECRETREFS_FACT_POSTGRES": {
+        "pointer": "/secretRefs/factPostgres",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_SECRETREFS_OCI": {
+        "pointer": "/secretRefs/oci",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_SECRETREFS_OIDC_CLIENT": {
+        "pointer": "/secretRefs/oidcClient",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_SECRETREFS_SIGNING_KEY": {
+        "pointer": "/secretRefs/signingKey",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_SECRETREFS_WORKLOAD_PKI": {
+        "pointer": "/secretRefs/workloadPki",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_SECRET_CSI_DRIVER": {
+        "pointer": "/secretCsiDriver",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_STORAGE_CANDIDATE_INDEX_PG": {
+        "pointer": "/storage/candidateIndexPgBytes",
+        "serialization": "QUOTED_DECIMAL_BYTES"
+      },
+      "OPENPC_INPUT_STORAGE_CLASS_NAME": {
+        "pointer": "/storage/storageClassName",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_STORAGE_CONTROL_PG": {
+        "pointer": "/storage/controlPgBytes",
+        "serialization": "QUOTED_DECIMAL_BYTES"
+      },
+      "OPENPC_INPUT_STORAGE_FACT_PG": {
+        "pointer": "/storage/factPgBytes",
+        "serialization": "QUOTED_DECIMAL_BYTES"
+      },
+      "OPENPC_INPUT_TARGET_ID": {
+        "pointer": "@/targetId",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_TARGET_SERVICE_ACCOUNT": {
+        "pointer": "@/serviceAccount",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_TOPOLOGY_COMPILER_REPLICAS": {
+        "pointer": "/topology/compilerReplicas",
+        "serialization": "YAML_INTEGER"
+      },
+      "OPENPC_INPUT_TOPOLOGY_CONTROL_REPLICAS": {
+        "pointer": "/topology/controlReplicas",
+        "serialization": "YAML_INTEGER"
+      },
+      "OPENPC_INPUT_TOPOLOGY_FACT_BRIDGE_REPLICAS": {
+        "pointer": "/topology/factBridgeReplicas",
+        "serialization": "YAML_INTEGER"
+      },
+      "OPENPC_INPUT_TOPOLOGY_FLEET_CONTROL_REPLICAS": {
+        "pointer": "/topology/fleetControlReplicas",
+        "serialization": "YAML_INTEGER"
+      },
+      "OPENPC_INPUT_TOPOLOGY_KEY": {
+        "pointer": "/topology/topologyKey",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_TOPOLOGY_MIN_READY_SECONDS": {
+        "pointer": "/topology/minReadySeconds",
+        "serialization": "YAML_INTEGER"
+      },
+      "OPENPC_INPUT_TOPOLOGY_OTEL_COLLECTOR_REPLICAS": {
+        "pointer": "/topology/otelCollectorReplicas",
+        "serialization": "YAML_INTEGER"
+      },
+      "OPENPC_INPUT_TOPOLOGY_TERMINATION_GRACE_SECONDS": {
+        "pointer": "/topology/terminationGraceSeconds",
+        "serialization": "YAML_INTEGER"
+      },
+      "OPENPC_INPUT_TOPOLOGY_WORKBENCH_REPLICAS": {
+        "pointer": "/topology/workbenchReplicas",
+        "serialization": "YAML_INTEGER"
+      },
+      "OPENPC_INPUT_VALKEY_MAXMEMORY": {
+        "pointer": "/valkey/maxmemory",
+        "renderCondition": "/valkey/enabled == true",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_VALKEY_REPLICAS": {
+        "pointer": "/valkey/replicas",
+        "renderCondition": "/valkey/enabled == true",
+        "serialization": "YAML_INTEGER"
+      },
+      "OPENPC_INPUT_VALKEY_RUN_VOLUME_LIMIT": {
+        "pointer": "/valkey/runVolumeLimit",
+        "renderCondition": "/valkey/enabled == true",
+        "serialization": "YAML_STRING"
+      },
+      "OPENPC_INPUT_VALKEY_SECRET_REF": {
+        "pointer": "/valkey/secretRef",
+        "renderCondition": "/valkey/enabled == true",
+        "serialization": "YAML_STRING"
+      }
+    },
+    "families": [
+      {
+        "pattern": "^OPENPC_INPUT_IMAGES_(WORKBENCH|CONTROL|COMPILER|FLEET_CONTROL|RUNTIME|FACT_BRIDGE|ENVOY|OTEL_COLLECTOR|POSTGRESQL|VALKEY)$",
+        "serialization": "YAML_STRING",
+        "symbolPointers": {
+          "COMPILER": "/images/compiler",
+          "CONTROL": "/images/control",
+          "ENVOY": "/images/envoy",
+          "FACT_BRIDGE": "/images/factBridge",
+          "FLEET_CONTROL": "/images/fleetControl",
+          "OTEL_COLLECTOR": "/images/otelCollector",
+          "POSTGRESQL": "/images/postgresql",
+          "RUNTIME": "/images/runtime",
+          "VALKEY": "/images/valkey",
+          "WORKBENCH": "/images/workbench"
+        }
+      },
+      {
+        "fieldSuffixPointers": {
+          "CPU_LIMIT": "/cpuLimit",
+          "CPU_REQUEST": "/cpuRequest",
+          "EPHEMERAL_STORAGE_LIMIT": "/ephemeralStorageLimit",
+          "EPHEMERAL_STORAGE_REQUEST": "/ephemeralStorageRequest",
+          "MEMORY_LIMIT": "/memoryLimit",
+          "MEMORY_REQUEST": "/memoryRequest"
+        },
+        "pattern": "^OPENPC_INPUT_RESOURCES_(WORKBENCH|CONTROL|COMPILER|FLEET_CONTROL|RUNTIME|ENVOY|FACT_BRIDGE|OTEL_COLLECTOR|POSTGRESQL|VALKEY)_(CPU_REQUEST|CPU_LIMIT|MEMORY_REQUEST|MEMORY_LIMIT|EPHEMERAL_STORAGE_REQUEST|EPHEMERAL_STORAGE_LIMIT)$",
+        "serialization": "YAML_STRING",
+        "symbolBasePointers": {
+          "COMPILER": "/resources/compiler",
+          "CONTROL": "/resources/control",
+          "ENVOY": "/resources/envoy",
+          "FACT_BRIDGE": "/resources/factBridge",
+          "FLEET_CONTROL": "/resources/fleetControl",
+          "OTEL_COLLECTOR": "/resources/otelCollector",
+          "POSTGRESQL": "/resources/postgresql",
+          "RUNTIME": "/resources/runtime",
+          "VALKEY": "/resources/valkey",
+          "WORKBENCH": "/resources/workbench"
+        }
+      },
+      {
+        "basePointer": "@/targetResources",
+        "fieldSuffixPointers": {
+          "CPU_LIMIT": "/cpuLimit",
+          "CPU_REQUEST": "/cpuRequest",
+          "EPHEMERAL_STORAGE_LIMIT": "/ephemeralStorageLimit",
+          "EPHEMERAL_STORAGE_REQUEST": "/ephemeralStorageRequest",
+          "MEMORY_LIMIT": "/memoryLimit",
+          "MEMORY_REQUEST": "/memoryRequest"
+        },
+        "pattern": "^OPENPC_INPUT_RESOURCES_PROTECTED_TARGET_(CPU_REQUEST|CPU_LIMIT|MEMORY_REQUEST|MEMORY_LIMIT|EPHEMERAL_STORAGE_REQUEST|EPHEMERAL_STORAGE_LIMIT)$",
+        "serialization": "YAML_STRING"
+      }
+    ],
+    "protectedTargetIteration": "Render protected-target.pod-template.yaml once for each /protectedTargets item; @ is that validated item and controllerRef owns insertion of the resulting PodTemplateSpec.",
+    "templateSet": [
+      "openpc-core.template.yaml",
+      "otel-configmap.template.yaml",
+      "protected-target.pod-template.yaml",
+      "postgresql-and-valkey.template.yaml"
+    ],
+    "validation": [
+      "Every distinct OPENPC_INPUT_ token in templateSet matches exactly one direct or family binding; every occurrence receives the same validated value for its render scope.",
+      "Every direct JSON Pointer resolves; @ pointers resolve in the current protectedTargets item; no unknown or unused binding is accepted.",
+      "QUOTED_DECIMAL_BYTES serializes the positive integer as base-10 ASCII without sign, grouping or unit, which Kubernetes interprets as an exact byte quantity.",
+      "When /valkey/enabled is false, both Valkey List items are removed before token completeness validation; when true, all Valkey bindings and the optionalValkeyCache flag must agree.",
+      "Resource cpuRequest <= cpuLimit, memoryRequest <= memoryLimit and ephemeralStorageRequest <= ephemeralStorageLimit are checked by Kubernetes Quantity comparison before rendering.",
+      "The materializer emits a binding receipt containing schema/input/template/rendered digests, exact tool identities, target iteration, condition removals and validation outcomes; it never records secret bytes."
+    ]
+  },
+  "x-openpc-trace": {
+    "claimCeilingRefs": [
+      "CC-EXACT-COMPATIBILITY-PROFILE",
+      "CC-NUMERIC-SLA-CERTIFICATION"
+    ],
+    "componentRefs": [
+      "DU-PC-WORKBENCH",
+      "DU-PC-CONTROL",
+      "DU-PC-COMPILER",
+      "DU-PC-FLEET-CONTROL",
+      "DU-PC-RUNTIME",
+      "DU-PC-FACT-BRIDGE",
+      "DU-ENVOY",
+      "DU-OTEL-COLLECTOR"
+    ],
+    "decisionRefs": [
+      "DEC-C03-001",
+      "DEC-C03-009",
+      "DEC-C03-013",
+      "DEC-C03-014"
+    ],
+    "requirementRefs": [
+      "REQ-SR01-B0-REQ-OPS-004"
+    ],
+    "sourceUnitRefs": [
+      "SU-dd74529c864beeb3495f5773",
+      "SU-03cb8daaec34b81f89f5ab57"
+    ],
+    "testRefs": [
+      "TEST-OPS-K8S-001",
+      "TEST-OPS-K8S-002"
+    ]
+  }
+}

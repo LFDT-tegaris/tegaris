@@ -1,0 +1,15 @@
+[package]
+name = "openpc-pds"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+pc-policy-core = { path = "../../crates/pc-policy-core" }
+ciborium.workspace = true
+pc-runtime-types = { path = "../../crates/pc-runtime-types" }
+serde = { workspace = true, features = ["derive"] }
+sha2.workspace = true
+unicode-normalization = "=0.1.25"

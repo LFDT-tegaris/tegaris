@@ -1,0 +1,19 @@
+{
+  "name": "@openpc/design-system",
+  "version": "2.0.0-r1",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": "./src/tokens.css"
+  },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "react": "19.2.7",
+    "react-aria-components": "1.20.0"
+  }
+}

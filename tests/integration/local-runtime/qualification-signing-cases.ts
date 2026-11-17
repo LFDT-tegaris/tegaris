@@ -1,0 +1,191 @@
+import { generateKeyPairSync } from 'node:crypto';
+import {
+  encodeNotificationAsync,
+  notificationAsyncProfiles,
+  type NotificationAsyncInputClaims,
+  type NotificationAsyncCapacityClaims,
+} from '../../../packages/security-kernel/src/operations-configuration/notification-async.js';
+import { qualificationDigest as hash } from '../../../packages/security-kernel/src/operations-configuration/provider-retry-qualification.js';
+import { signConsumerCose } from '../../../packages/security-kernel/src/fact-consumer/cose-framing.js';
+import { qualificationKeyInstallation } from '../../../services/identity-service/src/domain/qualification-key-provider.js';
+import {
+  qualificationSigningPurposes,
+  qualificationSigningRequestSchema,
+  qualificationSigningRequestDigest,
+} from '../../../services/identity-service/src/domain/qualification-signing-provider.js';
+/** Synthetic external signing material for wire/storage integrity regressions.
+ * This fixture provides no native run, reviewer or current-identity admission. */
+export const qualificationSigningTestId = (n: number) =>
+  `018f0000-0000-7000-8000-${String(n).padStart(12, '0')}`;
+const id = qualificationSigningTestId;
+const digest = (s: string) => hash(Buffer.from(s));
+export function qualificationSigningWireFixture(family: 'input' | 'capacity' = 'input') {
+  const key = generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
+  const spki = key.publicKey.export({ type: 'spki', format: 'der' });
+  const peer = (n: number) => ({
+    principalId: id(n),
+    credentialId: id(n + 1),
+    participantEpoch: '1',
+    principalEpoch: '1',
+    credentialEpoch: '1',
+    workloadId: 'urn:openpc:workload:' + id(n + 2),
+    keyDigest: digest('tls-key' + n),
+    certificateDigest: digest('tls-cert' + n),
+  });
+  const installed = qualificationKeyInstallation({
+    schemaVersion: 2,
+    installationId: id(10),
+    participantId: id(1),
+    privacyDomainId: id(2),
+    environmentId: 'local-test',
+    authorityId: 'local-authority',
+    rootEpoch: '1',
+    keyId: hash(spki),
+    keyEpoch: '1',
+    purpose: qualificationSigningPurposes[family],
+    publicKeySpkiHex: spki.toString('hex'),
+    reference: 'secret://test-provider/qualification#v1',
+    version: 'v1',
+    providerId: 'external-test',
+    providerOrigin: 'https://127.0.0.1',
+    providerTlsSpkiDigest: digest('server-key'),
+    peer: peer(30),
+    observer: peer(40),
+    validFromMs: 1000,
+    validUntilMs: 100000,
+  });
+  const input: NotificationAsyncInputClaims = {
+    authorityId: 'local-authority',
+    environmentId: 'local-test',
+    profile: 'test',
+    participantId: id(1),
+    privacyDomainId: id(2),
+    task: 'ASYNC-NOTIFICATION',
+    generationId: id(3),
+    configurationDigest: digest('configuration'),
+    configurationSchemaDigest: digest('schema'),
+    namedProfileDigest: digest('profile'),
+    buildDigest: digest('build'),
+    sourceTreeDigest: digest('source'),
+    workloadIdentityDigest: digest('workload'),
+    environmentIdentityDigest: digest('environment'),
+    storeProfileDigest: digest('store'),
+    gatewayProfileDigest: digest('gateway'),
+    ratePolicyDigest: digest('rate'),
+    inputId: id(4),
+    slot: 'QINPUT-ASYNC-NOTIFICATION',
+    concurrency: 2,
+    batchSize: 3,
+    leaseMs: 10000,
+    heartbeatMs: 4000,
+    attemptTimeoutMs: 1000,
+    retryDelaysMs: [10, 20, 30, 40, 50],
+    domainDeadlineMs: 20000,
+    queueItems: 20,
+    queueBytes: 20000,
+    maximumQueueAgeMs: 20000,
+    maximumPayloadBytes: 1000,
+    dispatchRatePerSecond: 3,
+    issuerKeyId: hash(spki),
+    issuerEpoch: '1',
+    validFromMs: 1000,
+    validUntilMs: 100000,
+  };
+  const capacity: NotificationAsyncCapacityClaims = {
+    authorityId: input.authorityId,
+    environmentId: input.environmentId,
+    profile: input.profile,
+    participantId: input.participantId,
+    privacyDomainId: input.privacyDomainId,
+    task: input.task,
+    generationId: input.generationId,
+    configurationDigest: input.configurationDigest,
+    configurationSchemaDigest: input.configurationSchemaDigest,
+    namedProfileDigest: input.namedProfileDigest,
+    buildDigest: input.buildDigest,
+    sourceTreeDigest: input.sourceTreeDigest,
+    workloadIdentityDigest: input.workloadIdentityDigest,
+    environmentIdentityDigest: input.environmentIdentityDigest,
+    storeProfileDigest: input.storeProfileDigest,
+    gatewayProfileDigest: input.gatewayProfileDigest,
+    ratePolicyDigest: input.ratePolicyDigest,
+    receiptId: id(11),
+    inputPayloadDigest: digest('signed-input'),
+    issuerKeyId: hash(spki),
+    issuerEpoch: '1',
+    runId: id(6),
+    harnessDigest: digest('harness'),
+    rawEvidenceDigest: digest('raw'),
+    originalSignedOutcomesDigest: digest('outcomes'),
+    normalizedResultsDigest: digest('normalized'),
+    reviewerAttestationDigest: digest('review'),
+    subjectAuthorPrincipalId: id(20),
+    harnessAuthorPrincipalId: id(21),
+    reviewerPrincipalId: id(22),
+    signerPrincipalId: installed.pins.peer.principalId,
+    measuredConcurrency: 2,
+    measuredBatchSize: 3,
+    measuredQueueItems: 20,
+    measuredQueueBytes: 20000,
+    measuredMaximumPayloadBytes: 1000,
+    measuredDispatchRatePerSecond: 3,
+    observedMaximumQueueAgeMs: 10000,
+    observedMaximumAttemptDurationMs: 1000,
+    runStartedAtMs: 1000,
+    runCompletedAtMs: 2000,
+    keysetPayloadDigest: digest('keyset'),
+    revocationPayloadDigest: digest('revocations'),
+    issuedAtMs: 3000,
+    expiresAtMs: 100000,
+  };
+  const payload = encodeNotificationAsync(family, family === 'input' ? input : capacity);
+  const p = installed.pins;
+  if (p.schemaVersion !== 2) throw new Error();
+  const request = qualificationSigningRequestSchema.parse({
+    schemaVersion: 1,
+    method: 'SIGN',
+    family,
+    keyInstallationId: p.installationId,
+    installationDigest: installed.digest,
+    qualificationInstallationId: id(12),
+    participantId: p.participantId,
+    privacyDomainId: p.privacyDomainId,
+    environmentId: p.environmentId,
+    runId: id(6),
+    sourceDigest: digest(family === 'capacity' ? 'review' : 'run'),
+    authorityId: p.authorityId,
+    rootEpoch: p.rootEpoch,
+    keysetDigest: digest('keyset'),
+    revocationsDigest: digest('revocations'),
+    keyId: p.keyId,
+    keyEpoch: p.keyEpoch,
+    purpose: p.purpose,
+    providerId: p.providerId,
+    reference: p.reference,
+    version: p.version,
+    peer: p.peer,
+    observer: p.observer,
+    operationId: id(family === 'input' ? 7 : 17),
+    attemptId: id(family === 'input' ? 8 : 18),
+    issuedAtMs: 3000,
+    deadlineAtMs: 10000,
+    payloadHex: payload.toString('hex'),
+    payloadDigest: hash(payload),
+  });
+  const sign = (bytes = payload, signingFamily = family) =>
+    signConsumerCose(
+      notificationAsyncProfiles[signingFamily],
+      key.privateKey.export({ type: 'pkcs8', format: 'der' }),
+      spki,
+      bytes,
+    );
+  const observation = {
+    schemaVersion: 1 as const,
+    attemptId: request.attemptId,
+    requestDigest: qualificationSigningRequestDigest(request),
+    observedAtMs: 3001,
+    outcome: 'SIGNED' as const,
+    coseHex: sign().toString('hex'),
+  };
+  return { request, trust: p, payload, observation, sign, input, capacity };
+}

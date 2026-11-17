@@ -1,0 +1,16 @@
+{
+  "error": {
+    "code": -32001,
+    "data": {
+      "attemptId": null,
+      "pcCode": "PC-RUNTIME-3001",
+      "retryable": false,
+      "signedTransactionHash": null,
+      "traceId": "018f1e44-7b2c-7abc-8def-0123456789ab",
+      "truthState": "DENIED"
+    },
+    "message": "Request denied"
+  },
+  "id": "req-0001",
+  "jsonrpc": "2.0"
+}

@@ -1,0 +1,147 @@
+{
+  "profileId": "pc.control.store-retirement.admit",
+  "profileVersion": 1,
+  "schemaDefinitionDigest": "sha256:41a877ca7e00e74f32c8becf8daee38f26c12ab9d9dcf6ff80ed8e75608b3c1f",
+  "actionIntentId": "ACT-EVIDENCE_DELETIONS_ADMIT_STORE_BATCH-V1",
+  "catalogOperationId": "CFG-OP-ADMIT-STORE-RETIREMENT",
+  "resourceType": "evidence-deletions",
+  "aggregateType": "store-retirement",
+  "sequenceNamespace": "CONTROL_BUSINESS_TRANSITION_V1",
+  "transitionKind": 1,
+  "state": {
+    "owner": "control.store_retirement_admission",
+    "identity": [
+      "participant_id",
+      "privacy_domain_id",
+      "attempt_id"
+    ],
+    "revision": "revision:u64",
+    "absence": {
+      "existence": 0,
+      "revision": 0,
+      "projection": {}
+    },
+    "projection": {
+      "0": {
+        "column": "host_digest",
+        "type": "H32",
+        "encoding": "lowercase-hex"
+      },
+      "1": {
+        "column": "attempt_digest",
+        "type": "H32",
+        "encoding": "lowercase-hex"
+      },
+      "2": {
+        "column": "selection_digest",
+        "type": "H32",
+        "encoding": "lowercase-hex"
+      },
+      "3": {
+        "column": "source_binding_digest",
+        "type": "H32",
+        "encoding": "sha256-prefixed-lowercase-hex"
+      },
+      "4": {
+        "column": "retention_policy_id",
+        "type": "UUID_BYTES"
+      },
+      "5": {
+        "column": "approval_request_id",
+        "type": "UUID_BYTES"
+      },
+      "6": {
+        "column": "operation_id",
+        "type": "UUID_BYTES"
+      },
+      "7": {
+        "column": "retirement_id",
+        "type": "UUID_BYTES"
+      },
+      "8": {
+        "column": "previous_attempt_id",
+        "type": "OPTIONAL_UUID_BYTES",
+        "encoding": "empty bytes for initial admission; original predecessor UUID for a independently approved successor"
+      },
+      "9": {
+        "column": "lifecycle_revision",
+        "type": "U64"
+      },
+      "10": {
+        "column": "admitted_at",
+        "type": "U64_NANOSECONDS",
+        "encoding": "exact stored UTC microseconds multiplied by 1000"
+      },
+      "11": {
+        "column": "dispatch_not_after_ms",
+        "type": "U64_MILLISECONDS"
+      }
+    },
+    "digest": "pc.control.transition-state.v1; SHA-256 over canonical typed CBOR; every map field required"
+  },
+  "transition": {
+    "command": "ADMIT_STORE_RETIREMENT",
+    "before": "ABSENT",
+    "after": "PRESENT_ADMITTED_REVISION_1",
+    "change": "one immutable bounded Fact or candidate selection, exact installed target host, source and archive binding, independent approval, attempt and business intent commit with the admission receipt and outbox; no physical effect or transport success is asserted",
+    "noOp": "REJECT_WITHOUT_EFFECTS"
+  },
+  "authority": {
+    "actor": "authenticated participant user session",
+    "action": "exact action registry, live scoped authority fence",
+    "evidence": [
+      {
+        "kind": 3,
+        "owner": "control.approval_decision_record",
+        "format": "identity credential signed by the authorized checker",
+        "binding": "exact immutable candidate, action, scope, expected revision and distinct checker; consumed by this operation"
+      },
+      {
+        "kind": 4,
+        "owner": "control.mutation_evidence for ID-OP-WEBAUTHN-VERIFY",
+        "format": "identity owner verified WebAuthn step-up",
+        "binding": "actual operator, session, action, candidate digest and one-time challenge consumed by this operation"
+      }
+    ],
+    "snapshot": "retained exact precommit authority path and live epochs/validity; no session or credential secrets",
+    "approval": "EXACT_CONSUMED_CANDIDATE_WITH_INDEPENDENT_MAKER_CHECKER; deferred owning-row trigger binds approval and before/after state",
+    "stepUp": "FRESH_WEBAUTHN_BOUND_TO_THE_SAME_APPROVAL_AND_OPERATION"
+  },
+  "events": [
+    {
+      "eventType": "io.openpc.control.command.committed.v1",
+      "dataSchemaUri": "https://schemas.openpc.local/event-payloads.schema.json#/$defs/CommandCommitted",
+      "payload": "canonical four-key CommandCommitted CBOR; commandId=operationId, aggregateRef=canonical aggregate URN, actionIntentId, intentDigest=actionIntentDigest",
+      "cardinality": 1,
+      "effect": "one durable Control admission before target I/O; target signature verification, current target predicates, physical effect, cancellation and outcome reconciliation remain separate obligations"
+    }
+  ],
+  "privacy": {
+    "placement": "same participant and privacy domain as authoritative aggregate",
+    "read": "current read authorization required; receipt is never authorization",
+    "retention": "retain receipt, typed state/authority inputs, authorization evidence, public trust and operation links under control audit retention; no automatic deletion"
+  },
+  "lifecycle": {
+    "idempotency": "exact replay returns original operation, receipt, evidence and event IDs/bytes/sequences",
+    "rollback": "admission, evidence, signing attempt, head, event and operation result all roll back; no target I/O is allowed from an uncommitted transaction",
+    "restart": "scoped primary operation reconciliation; preserve UNKNOWN for unresolved COMMIT",
+    "delivery": "only committed primary readback may issue the finite host/scope/store-bound request; a hold or policy change blocks new dispatch and requires durable cancellation of unresolved attempts; absent or ambiguous target readback remains UNKNOWN; a successor preserves exact business intent and selection and requires original authenticated terminal no-effect outcome plus independent approval and fresh step-up Dispatch cannot outlive the receipt-bound deadline, at most 60 seconds after admission; expiry requires cancellation/readback and fresh independent successor approval, never renewed execution authority."
+  },
+  "requestBinding": {
+    "domain": "pc.control.configuration-request.v1",
+    "encoding": "UTF-8 domain plus NUL; each field prefixed by uint32 big-endian UTF-8 byte length; SHA-256",
+    "fields": [
+      "participantId",
+      "privacyDomainId",
+      "principalId",
+      "actionIntentId",
+      "catalogOperationId",
+      "aggregateType",
+      "aggregateId",
+      "expectedRevision (canonical u64 decimal)",
+      "candidateDigest (sha256: lowercase hex)",
+      "idempotencyKey"
+    ]
+  },
+  "definitionDigest": "sha256:938120e0cd02b01e01632058ca7d73fe2acc07d13f3184c10812597a6ec66d60"
+}

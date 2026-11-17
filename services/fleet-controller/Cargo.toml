@@ -1,0 +1,40 @@
+[package]
+name = "openpc-fleet-controller"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+pc-policy-core = { path = "../../crates/pc-policy-core" }
+openpc-runtime-agent = { path = "../runtime-agent" }
+openpc-indexer-adapter = { path = "../indexer-adapter" }
+openpc-multi-rpc = { path = "../multi-rpc" }
+openpc-pds = { path = "../pds" }
+openpc-broker = { path = "../broker" }
+openpc-fact-service = { path = "../fact-service" }
+pc-provider-api = { path = "../../crates/pc-provider-api" }
+pc-runtime-types = { path = "../../crates/pc-runtime-types" }
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+base64ct = { workspace = true, features = ["alloc"] }
+reqwest.workspace = true
+ciborium.workspace = true
+p256 = { workspace = true, features = ["ecdsa"] }
+sha2.workspace = true
+hmac.workspace = true
+ring = "=0.17.14"
+sqlx = { workspace = true, features = ["postgres", "runtime-tokio"] }
+tokio = { workspace = true, features = ["macros", "rt-multi-thread", "time", "net", "io-util"] }
+tonic = { workspace = true, features = ["tls-connect-info", "tls-ring"] }
+tonic-prost.workspace = true
+prost.workspace = true
+prost-types.workspace = true
+http.workspace = true
+futures.workspace = true
+rustls = { workspace = true, features = ["ring"] }
+tokio-rustls = { version = "=0.26.4", default-features = false, features = ["ring"] }
+tokio-stream = "=0.1.19"
+x509-parser = { version = "=0.18.1", default-features = false }
+uuid = { workspace = true, features = ["v7"] }

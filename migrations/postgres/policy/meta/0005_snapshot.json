@@ -1,0 +1,2848 @@
+{
+  "id": "90c6545f-f773-49f9-98ea-0e6a48514a03",
+  "prevId": "0158911e-a8d3-419a-9907-8b73a6f19410",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "control.module_capability": {
+      "name": "module_capability",
+      "schema": "control",
+      "columns": {
+        "module_version_id": {
+          "name": "module_version_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "capability_id": {
+          "name": "capability_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "contract_digest": {
+          "name": "contract_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "module_capability_module_version_id_module_version_module_version_id_fk": {
+          "name": "module_capability_module_version_id_module_version_module_version_id_fk",
+          "tableFrom": "module_capability",
+          "tableTo": "module_version",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "module_version_id"
+          ],
+          "columnsTo": [
+            "module_version_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "module_capability_pk": {
+          "name": "module_capability_pk",
+          "columns": [
+            "module_version_id",
+            "capability_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "module_capability_digest_ck": {
+          "name": "module_capability_digest_ck",
+          "value": "octet_length(\"control\".\"module_capability\".\"contract_digest\")=32"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "control.module_configuration_generation": {
+      "name": "module_configuration_generation",
+      "schema": "control",
+      "columns": {
+        "generation_id": {
+          "name": "generation_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuidv7()"
+        },
+        "participant_id": {
+          "name": "participant_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "privacy_domain_id": {
+          "name": "privacy_domain_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "module_installation_id": {
+          "name": "module_installation_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "generation": {
+          "name": "generation",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "configuration_cbor": {
+          "name": "configuration_cbor",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "configuration_digest": {
+          "name": "configuration_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        }
+      },
+      "indexes": {
+        "module_configuration_one_active_uq": {
+          "name": "module_configuration_one_active_uq",
+          "columns": [
+            {
+              "expression": "module_installation_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"control\".\"module_configuration_generation\".\"active\"",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "module_configuration_generation_module_installation_id_module_installation_module_installation_id_fk": {
+          "name": "module_configuration_generation_module_installation_id_module_installation_module_installation_id_fk",
+          "tableFrom": "module_configuration_generation",
+          "tableTo": "module_installation",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "module_installation_id"
+          ],
+          "columnsTo": [
+            "module_installation_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "module_configuration_generation_uq": {
+          "name": "module_configuration_generation_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "module_installation_id",
+            "generation"
+          ]
+        }
+      },
+      "policies": {
+        "participant_isolation": {
+          "name": "participant_isolation",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"module_configuration_generation\".\"participant_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"module_configuration_generation\".\"participant_id\")"
+        },
+        "privacy_domain_isolation": {
+          "name": "privacy_domain_isolation",
+          "as": "RESTRICTIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"module_configuration_generation\".\"participant_id\") and openpc.matches_privacy(\"control\".\"module_configuration_generation\".\"privacy_domain_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"module_configuration_generation\".\"participant_id\") and openpc.matches_privacy(\"control\".\"module_configuration_generation\".\"privacy_domain_id\")"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "control.module_conflict": {
+      "name": "module_conflict",
+      "schema": "control",
+      "columns": {
+        "conflict_id": {
+          "name": "conflict_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuidv7()"
+        },
+        "module_version_id": {
+          "name": "module_version_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "conflicting_module_version_id": {
+          "name": "conflicting_module_version_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "conflict_type": {
+          "name": "conflict_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "resolution_digest": {
+          "name": "resolution_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "module_conflict_module_version_id_module_version_module_version_id_fk": {
+          "name": "module_conflict_module_version_id_module_version_module_version_id_fk",
+          "tableFrom": "module_conflict",
+          "tableTo": "module_version",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "module_version_id"
+          ],
+          "columnsTo": [
+            "module_version_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "module_conflict_conflicting_module_version_id_module_version_module_version_id_fk": {
+          "name": "module_conflict_conflicting_module_version_id_module_version_module_version_id_fk",
+          "tableFrom": "module_conflict",
+          "tableTo": "module_version",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "conflicting_module_version_id"
+          ],
+          "columnsTo": [
+            "module_version_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "module_conflict_pair_uq": {
+          "name": "module_conflict_pair_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "module_version_id",
+            "conflicting_module_version_id",
+            "conflict_type"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "control.module_dependency": {
+      "name": "module_dependency",
+      "schema": "control",
+      "columns": {
+        "consumer_module_version_id": {
+          "name": "consumer_module_version_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "edge_id": {
+          "name": "edge_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider_module_id": {
+          "name": "provider_module_id",
+          "type": "varchar(160)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "capability_id": {
+          "name": "capability_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "semantic_version": {
+          "name": "semantic_version",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider_manifest_digest": {
+          "name": "provider_manifest_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "module_dependency_consumer_module_version_id_module_version_module_version_id_fk": {
+          "name": "module_dependency_consumer_module_version_id_module_version_module_version_id_fk",
+          "tableFrom": "module_dependency",
+          "tableTo": "module_version",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "consumer_module_version_id"
+          ],
+          "columnsTo": [
+            "module_version_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "module_dependency_pk": {
+          "name": "module_dependency_pk",
+          "columns": [
+            "consumer_module_version_id",
+            "edge_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "module_dependency_provider_uq": {
+          "name": "module_dependency_provider_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "consumer_module_version_id",
+            "capability_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "module_dependency_digest_ck": {
+          "name": "module_dependency_digest_ck",
+          "value": "octet_length(\"control\".\"module_dependency\".\"provider_manifest_digest\")=32"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "control.module_installation": {
+      "name": "module_installation",
+      "schema": "control",
+      "columns": {
+        "module_installation_id": {
+          "name": "module_installation_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuidv7()"
+        },
+        "participant_id": {
+          "name": "participant_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "privacy_domain_id": {
+          "name": "privacy_domain_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "module_version_id": {
+          "name": "module_version_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "state": {
+          "name": "state",
+          "type": "module_lifecycle_state",
+          "typeSchema": "control",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'INSTALLED_DISABLED'"
+        },
+        "authority_epoch": {
+          "name": "authority_epoch",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "delegation_epoch": {
+          "name": "delegation_epoch",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aggregate_version": {
+          "name": "aggregate_version",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "1"
+        },
+        "desired_manifest_digest": {
+          "name": "desired_manifest_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active_manifest_digest": {
+          "name": "active_manifest_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "idempotency_key": {
+          "name": "idempotency_key",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "module_installation_module_version_id_module_version_module_version_id_fk": {
+          "name": "module_installation_module_version_id_module_version_module_version_id_fk",
+          "tableFrom": "module_installation",
+          "tableTo": "module_version",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "module_version_id"
+          ],
+          "columnsTo": [
+            "module_version_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "module_installation_scope_uq": {
+          "name": "module_installation_scope_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "privacy_domain_id",
+            "module_version_id"
+          ]
+        },
+        "module_installation_idempotency_uq": {
+          "name": "module_installation_idempotency_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "idempotency_key"
+          ]
+        }
+      },
+      "policies": {
+        "participant_isolation": {
+          "name": "participant_isolation",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"module_installation\".\"participant_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"module_installation\".\"participant_id\")"
+        },
+        "privacy_domain_isolation": {
+          "name": "privacy_domain_isolation",
+          "as": "RESTRICTIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"module_installation\".\"participant_id\") and openpc.matches_privacy(\"control\".\"module_installation\".\"privacy_domain_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"module_installation\".\"participant_id\") and openpc.matches_privacy(\"control\".\"module_installation\".\"privacy_domain_id\")"
+        }
+      },
+      "checkConstraints": {
+        "module_installation_epoch_ck": {
+          "name": "module_installation_epoch_ck",
+          "value": "\"control\".\"module_installation\".\"authority_epoch\">0 and \"control\".\"module_installation\".\"delegation_epoch\">0 and \"control\".\"module_installation\".\"aggregate_version\">0"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "control.module_registration": {
+      "name": "module_registration",
+      "schema": "control",
+      "columns": {
+        "module_id": {
+          "name": "module_id",
+          "type": "varchar(160)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "display_name": {
+          "name": "display_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "owner": {
+          "name": "owner",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "state": {
+          "name": "state",
+          "type": "module_lifecycle_state",
+          "typeSchema": "control",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'ADMITTED'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "module_registration_id_ck": {
+          "name": "module_registration_id_ck",
+          "value": "\"control\".\"module_registration\".\"module_id\" ~ '^pc\\.[a-z0-9.-]+$'"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "control.module_version": {
+      "name": "module_version",
+      "schema": "control",
+      "columns": {
+        "module_version_id": {
+          "name": "module_version_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuidv7()"
+        },
+        "module_id": {
+          "name": "module_id",
+          "type": "varchar(160)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "semantic_version": {
+          "name": "semantic_version",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "manifest_cbor": {
+          "name": "manifest_cbor",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "manifest_digest": {
+          "name": "manifest_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cose_sign1": {
+          "name": "cose_sign1",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sbom_digest": {
+          "name": "sbom_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provenance_digest": {
+          "name": "provenance_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "build_receipt_digest": {
+          "name": "build_receipt_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "admitted_at": {
+          "name": "admitted_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "module_version_module_id_module_registration_module_id_fk": {
+          "name": "module_version_module_id_module_registration_module_id_fk",
+          "tableFrom": "module_version",
+          "tableTo": "module_registration",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "module_id"
+          ],
+          "columnsTo": [
+            "module_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "module_version_identity_uq": {
+          "name": "module_version_identity_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "module_id",
+            "semantic_version",
+            "manifest_digest"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "module_version_digests_ck": {
+          "name": "module_version_digests_ck",
+          "value": "octet_length(\"control\".\"module_version\".\"manifest_digest\")=32 and octet_length(\"control\".\"module_version\".\"sbom_digest\")=32 and octet_length(\"control\".\"module_version\".\"provenance_digest\")=32 and octet_length(\"control\".\"module_version\".\"build_receipt_digest\")=32"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "control.policy": {
+      "name": "policy",
+      "schema": "control",
+      "columns": {
+        "policy_id": {
+          "name": "policy_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuidv7()"
+        },
+        "participant_id": {
+          "name": "participant_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "privacy_domain_id": {
+          "name": "privacy_domain_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "policy_name": {
+          "name": "policy_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "state": {
+          "name": "state",
+          "type": "policy_lifecycle_state",
+          "typeSchema": "control",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'EDITABLE_DRAFT'"
+        },
+        "row_version": {
+          "name": "row_version",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "1"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "policy_participant_fk": {
+          "name": "policy_participant_fk",
+          "tableFrom": "policy",
+          "tableTo": "participant",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id"
+          ],
+          "columnsTo": [
+            "participant_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "policy_privacy_fk": {
+          "name": "policy_privacy_fk",
+          "tableFrom": "policy",
+          "tableTo": "privacy_domain",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "privacy_domain_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "privacy_domain_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "policy_scope_name_uq": {
+          "name": "policy_scope_name_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_name"
+          ]
+        },
+        "policy_participant_id_uq": {
+          "name": "policy_participant_id_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "policy_id"
+          ]
+        },
+        "policy_tenant_id_uq": {
+          "name": "policy_tenant_id_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_id"
+          ]
+        }
+      },
+      "policies": {
+        "participant_isolation": {
+          "name": "participant_isolation",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy\".\"participant_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy\".\"participant_id\")"
+        },
+        "privacy_domain_isolation": {
+          "name": "privacy_domain_isolation",
+          "as": "RESTRICTIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy\".\"privacy_domain_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy\".\"privacy_domain_id\")"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "control.policy_activation_occurrence_target": {
+      "name": "policy_activation_occurrence_target",
+      "schema": "control",
+      "columns": {
+        "activation_occurrence_id": {
+          "name": "activation_occurrence_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "participant_id": {
+          "name": "participant_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "privacy_domain_id": {
+          "name": "privacy_domain_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "runtime_target_id": {
+          "name": "runtime_target_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "phase": {
+          "name": "phase",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'FORWARD'"
+        },
+        "expected_target_revision": {
+          "name": "expected_target_revision",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expected_predecessor_digest": {
+          "name": "expected_predecessor_digest",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "runtime_configuration_generation_id": {
+          "name": "runtime_configuration_generation_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "configuration_work_id": {
+          "name": "configuration_work_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "command_operation_id": {
+          "name": "command_operation_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "state": {
+          "name": "state",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'REQUESTED'"
+        },
+        "observed_generation_digest": {
+          "name": "observed_generation_digest",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "activation_receipt_digest": {
+          "name": "activation_receipt_digest",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        }
+      },
+      "indexes": {
+        "policy_activation_occurrence_target_state_idx": {
+          "name": "policy_activation_occurrence_target_state_idx",
+          "columns": [
+            {
+              "expression": "participant_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "privacy_domain_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "activation_occurrence_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "phase",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "state",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "policy_activation_occurrence_target_occurrence_fk": {
+          "name": "policy_activation_occurrence_target_occurrence_fk",
+          "tableFrom": "policy_activation_occurrence_target",
+          "tableTo": "policy_activation_occurrence",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "privacy_domain_id",
+            "activation_occurrence_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "privacy_domain_id",
+            "activation_occurrence_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "policy_activation_occurrence_target_pk": {
+          "name": "policy_activation_occurrence_target_pk",
+          "columns": [
+            "activation_occurrence_id",
+            "runtime_target_id",
+            "phase"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {
+        "participant_isolation": {
+          "name": "participant_isolation",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy_activation_occurrence_target\".\"participant_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy_activation_occurrence_target\".\"participant_id\")"
+        },
+        "privacy_domain_isolation": {
+          "name": "privacy_domain_isolation",
+          "as": "RESTRICTIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy_activation_occurrence_target\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy_activation_occurrence_target\".\"privacy_domain_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy_activation_occurrence_target\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy_activation_occurrence_target\".\"privacy_domain_id\")"
+        }
+      },
+      "checkConstraints": {
+        "policy_activation_occurrence_target_phase_ck": {
+          "name": "policy_activation_occurrence_target_phase_ck",
+          "value": "\"control\".\"policy_activation_occurrence_target\".\"phase\" in ('FORWARD','ROLLBACK')"
+        },
+        "policy_activation_occurrence_target_state_ck": {
+          "name": "policy_activation_occurrence_target_state_ck",
+          "value": "\"control\".\"policy_activation_occurrence_target\".\"state\" in ('REQUESTED','STAGING','ACTIVE_MATCHED','FAILED','WRITE_AMBIGUITY','ROLLED_BACK')"
+        },
+        "policy_activation_occurrence_target_predecessor_ck": {
+          "name": "policy_activation_occurrence_target_predecessor_ck",
+          "value": "\"control\".\"policy_activation_occurrence_target\".\"expected_predecessor_digest\" is null or \"control\".\"policy_activation_occurrence_target\".\"expected_predecessor_digest\" ~ '^sha256:[0-9a-f]{64}$'"
+        },
+        "policy_activation_occurrence_target_observed_ck": {
+          "name": "policy_activation_occurrence_target_observed_ck",
+          "value": "\"control\".\"policy_activation_occurrence_target\".\"observed_generation_digest\" is null or \"control\".\"policy_activation_occurrence_target\".\"observed_generation_digest\" ~ '^sha256:[0-9a-f]{64}$'"
+        },
+        "policy_activation_occurrence_target_receipt_ck": {
+          "name": "policy_activation_occurrence_target_receipt_ck",
+          "value": "\"control\".\"policy_activation_occurrence_target\".\"activation_receipt_digest\" is null or \"control\".\"policy_activation_occurrence_target\".\"activation_receipt_digest\" ~ '^sha256:[0-9a-f]{64}$'"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "control.policy_activation_occurrence": {
+      "name": "policy_activation_occurrence",
+      "schema": "control",
+      "columns": {
+        "activation_occurrence_id": {
+          "name": "activation_occurrence_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuidv7()"
+        },
+        "participant_id": {
+          "name": "participant_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "privacy_domain_id": {
+          "name": "privacy_domain_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "release_bundle_id": {
+          "name": "release_bundle_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "policy_generation_id": {
+          "name": "policy_generation_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_by_principal_id": {
+          "name": "created_by_principal_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "target_generation_digest": {
+          "name": "target_generation_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "exact_cohort_digest": {
+          "name": "exact_cohort_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "state": {
+          "name": "state",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'REQUESTED'"
+        },
+        "matched_target_count": {
+          "name": "matched_target_count",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "0"
+        },
+        "total_target_count": {
+          "name": "total_target_count",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "revision": {
+          "name": "revision",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "1"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        },
+        "activated_at": {
+          "name": "activated_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rollback_started_at": {
+          "name": "rollback_started_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rolled_back_at": {
+          "name": "rolled_back_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "policy_activation_occurrence_release_fk": {
+          "name": "policy_activation_occurrence_release_fk",
+          "tableFrom": "policy_activation_occurrence",
+          "tableTo": "policy_release_bundle",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "privacy_domain_id",
+            "release_bundle_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "privacy_domain_id",
+            "release_bundle_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "policy_activation_occurrence_generation_fk": {
+          "name": "policy_activation_occurrence_generation_fk",
+          "tableFrom": "policy_activation_occurrence",
+          "tableTo": "policy_generation",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_generation_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_generation_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "policy_activation_occurrence_creator_fk": {
+          "name": "policy_activation_occurrence_creator_fk",
+          "tableFrom": "policy_activation_occurrence",
+          "tableTo": "principal",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "created_by_principal_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "principal_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "policy_activation_occurrence_generation_uq": {
+          "name": "policy_activation_occurrence_generation_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_generation_id"
+          ]
+        },
+        "policy_activation_occurrence_tenant_id_uq": {
+          "name": "policy_activation_occurrence_tenant_id_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "privacy_domain_id",
+            "activation_occurrence_id"
+          ]
+        }
+      },
+      "policies": {
+        "participant_isolation": {
+          "name": "participant_isolation",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy_activation_occurrence\".\"participant_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy_activation_occurrence\".\"participant_id\")"
+        },
+        "privacy_domain_isolation": {
+          "name": "privacy_domain_isolation",
+          "as": "RESTRICTIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy_activation_occurrence\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy_activation_occurrence\".\"privacy_domain_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy_activation_occurrence\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy_activation_occurrence\".\"privacy_domain_id\")"
+        }
+      },
+      "checkConstraints": {
+        "policy_activation_occurrence_state_ck": {
+          "name": "policy_activation_occurrence_state_ck",
+          "value": "\"control\".\"policy_activation_occurrence\".\"state\" in ('REQUESTED','STAGING','PARTIAL','ACTIVE_MATCHED','FAILED','ROLLING_BACK','ROLLED_BACK')"
+        },
+        "policy_activation_occurrence_digest_ck": {
+          "name": "policy_activation_occurrence_digest_ck",
+          "value": "octet_length(\"control\".\"policy_activation_occurrence\".\"target_generation_digest\")=32 and octet_length(\"control\".\"policy_activation_occurrence\".\"exact_cohort_digest\")=32"
+        },
+        "policy_activation_occurrence_count_ck": {
+          "name": "policy_activation_occurrence_count_ck",
+          "value": "\"control\".\"policy_activation_occurrence\".\"total_target_count\">0 and \"control\".\"policy_activation_occurrence\".\"matched_target_count\">=0 and \"control\".\"policy_activation_occurrence\".\"matched_target_count\"<=\"control\".\"policy_activation_occurrence\".\"total_target_count\""
+        },
+        "policy_activation_occurrence_revision_ck": {
+          "name": "policy_activation_occurrence_revision_ck",
+          "value": "\"control\".\"policy_activation_occurrence\".\"revision\">0"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "control.policy_activation_prerequisite": {
+      "name": "policy_activation_prerequisite",
+      "schema": "control",
+      "columns": {
+        "policy_activation_id": {
+          "name": "policy_activation_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "participant_id": {
+          "name": "participant_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "privacy_domain_id": {
+          "name": "privacy_domain_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "prerequisite_type": {
+          "name": "prerequisite_type",
+          "type": "policy_prerequisite_type",
+          "typeSchema": "control",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "prerequisite_subject_digest": {
+          "name": "prerequisite_subject_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "receipt_digest": {
+          "name": "receipt_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ready": {
+          "name": "ready",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "observed_at": {
+          "name": "observed_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        }
+      },
+      "indexes": {
+        "policy_activation_prerequisite_ready_idx": {
+          "name": "policy_activation_prerequisite_ready_idx",
+          "columns": [
+            {
+              "expression": "participant_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "privacy_domain_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "ready",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "policy_activation_prerequisite_activation_fk": {
+          "name": "policy_activation_prerequisite_activation_fk",
+          "tableFrom": "policy_activation_prerequisite",
+          "tableTo": "policy_activation",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_activation_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_activation_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "policy_activation_prerequisite_pk": {
+          "name": "policy_activation_prerequisite_pk",
+          "columns": [
+            "policy_activation_id",
+            "prerequisite_type"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "policy_activation_prerequisite_receipt_uq": {
+          "name": "policy_activation_prerequisite_receipt_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "privacy_domain_id",
+            "prerequisite_type",
+            "receipt_digest"
+          ]
+        }
+      },
+      "policies": {
+        "participant_isolation": {
+          "name": "participant_isolation",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy_activation_prerequisite\".\"participant_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy_activation_prerequisite\".\"participant_id\")"
+        },
+        "privacy_domain_isolation": {
+          "name": "privacy_domain_isolation",
+          "as": "RESTRICTIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy_activation_prerequisite\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy_activation_prerequisite\".\"privacy_domain_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy_activation_prerequisite\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy_activation_prerequisite\".\"privacy_domain_id\")"
+        }
+      },
+      "checkConstraints": {
+        "policy_activation_prerequisite_digest_ck": {
+          "name": "policy_activation_prerequisite_digest_ck",
+          "value": "octet_length(\"control\".\"policy_activation_prerequisite\".\"prerequisite_subject_digest\")=32 and octet_length(\"control\".\"policy_activation_prerequisite\".\"receipt_digest\")=32"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "control.policy_activation": {
+      "name": "policy_activation",
+      "schema": "control",
+      "columns": {
+        "policy_activation_id": {
+          "name": "policy_activation_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuidv7()"
+        },
+        "participant_id": {
+          "name": "participant_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "privacy_domain_id": {
+          "name": "privacy_domain_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "policy_generation_id": {
+          "name": "policy_generation_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "approval_request_id": {
+          "name": "approval_request_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mfa_challenge_id": {
+          "name": "mfa_challenge_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "exact_cohort_digest": {
+          "name": "exact_cohort_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "webauthn_assertion_binding_digest": {
+          "name": "webauthn_assertion_binding_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "prior_generation_digest": {
+          "name": "prior_generation_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "receipt_digest": {
+          "name": "receipt_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "state": {
+          "name": "state",
+          "type": "policy_lifecycle_state",
+          "typeSchema": "control",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PREPARED'"
+        },
+        "row_version": {
+          "name": "row_version",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "1"
+        },
+        "prepared_at": {
+          "name": "prepared_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        },
+        "activated_at": {
+          "name": "activated_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fenced_at": {
+          "name": "fenced_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "retired_at": {
+          "name": "retired_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "policy_activation_generation_fk": {
+          "name": "policy_activation_generation_fk",
+          "tableFrom": "policy_activation",
+          "tableTo": "policy_generation",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_generation_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_generation_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "policy_activation_approval_fk": {
+          "name": "policy_activation_approval_fk",
+          "tableFrom": "policy_activation",
+          "tableTo": "approval_request",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "approval_request_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "approval_request_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "policy_activation_mfa_fk": {
+          "name": "policy_activation_mfa_fk",
+          "tableFrom": "policy_activation",
+          "tableTo": "mfa_challenge",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "mfa_challenge_id"
+          ],
+          "columnsTo": [
+            "mfa_challenge_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "policy_activation_generation_uq": {
+          "name": "policy_activation_generation_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "policy_generation_id"
+          ]
+        },
+        "policy_activation_webauthn_one_use_uq": {
+          "name": "policy_activation_webauthn_one_use_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "mfa_challenge_id"
+          ]
+        },
+        "policy_activation_participant_id_uq": {
+          "name": "policy_activation_participant_id_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "policy_activation_id"
+          ]
+        },
+        "policy_activation_tenant_id_uq": {
+          "name": "policy_activation_tenant_id_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_activation_id"
+          ]
+        }
+      },
+      "policies": {
+        "participant_isolation": {
+          "name": "participant_isolation",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy_activation\".\"participant_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy_activation\".\"participant_id\")"
+        },
+        "privacy_domain_isolation": {
+          "name": "privacy_domain_isolation",
+          "as": "RESTRICTIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy_activation\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy_activation\".\"privacy_domain_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy_activation\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy_activation\".\"privacy_domain_id\")"
+        }
+      },
+      "checkConstraints": {
+        "policy_activation_digests_ck": {
+          "name": "policy_activation_digests_ck",
+          "value": "octet_length(\"control\".\"policy_activation\".\"exact_cohort_digest\")=32 and octet_length(\"control\".\"policy_activation\".\"webauthn_assertion_binding_digest\")=32 and (\"control\".\"policy_activation\".\"prior_generation_digest\" is null or octet_length(\"control\".\"policy_activation\".\"prior_generation_digest\")=32) and (\"control\".\"policy_activation\".\"receipt_digest\" is null or octet_length(\"control\".\"policy_activation\".\"receipt_digest\")=32)"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "control.policy_artifact": {
+      "name": "policy_artifact",
+      "schema": "control",
+      "columns": {
+        "policy_artifact_id": {
+          "name": "policy_artifact_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuidv7()"
+        },
+        "participant_id": {
+          "name": "participant_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "privacy_domain_id": {
+          "name": "privacy_domain_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "policy_id": {
+          "name": "policy_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "semantic_version": {
+          "name": "semantic_version",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "policy_schema_digest": {
+          "name": "policy_schema_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "semantic_cbor": {
+          "name": "semantic_cbor",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "semantic_digest": {
+          "name": "semantic_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "semantic_bytes_digest": {
+          "name": "semantic_bytes_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dependency_closure_digest": {
+          "name": "dependency_closure_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload_cbor": {
+          "name": "payload_cbor",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload_digest": {
+          "name": "payload_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cose_sign1": {
+          "name": "cose_sign1",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "signer_key_digest": {
+          "name": "signer_key_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "admitted_by_principal_id": {
+          "name": "admitted_by_principal_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "admitted_at": {
+          "name": "admitted_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "policy_artifact_policy_fk": {
+          "name": "policy_artifact_policy_fk",
+          "tableFrom": "policy_artifact",
+          "tableTo": "policy",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "policy_artifact_admitter_fk": {
+          "name": "policy_artifact_admitter_fk",
+          "tableFrom": "policy_artifact",
+          "tableTo": "principal",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "admitted_by_principal_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "principal_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "policy_artifact_semantic_digest_uq": {
+          "name": "policy_artifact_semantic_digest_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "privacy_domain_id",
+            "semantic_digest"
+          ]
+        },
+        "policy_artifact_version_uq": {
+          "name": "policy_artifact_version_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_id",
+            "semantic_version",
+            "policy_schema_digest"
+          ]
+        },
+        "policy_artifact_participant_id_uq": {
+          "name": "policy_artifact_participant_id_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "policy_artifact_id"
+          ]
+        },
+        "policy_artifact_tenant_id_uq": {
+          "name": "policy_artifact_tenant_id_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_artifact_id"
+          ]
+        }
+      },
+      "policies": {
+        "participant_isolation": {
+          "name": "participant_isolation",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy_artifact\".\"participant_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy_artifact\".\"participant_id\")"
+        },
+        "privacy_domain_isolation": {
+          "name": "privacy_domain_isolation",
+          "as": "RESTRICTIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy_artifact\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy_artifact\".\"privacy_domain_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy_artifact\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy_artifact\".\"privacy_domain_id\")"
+        }
+      },
+      "checkConstraints": {
+        "policy_artifact_digests_ck": {
+          "name": "policy_artifact_digests_ck",
+          "value": "octet_length(\"control\".\"policy_artifact\".\"policy_schema_digest\")=32 and octet_length(\"control\".\"policy_artifact\".\"semantic_digest\")=32 and octet_length(\"control\".\"policy_artifact\".\"semantic_bytes_digest\")=32 and octet_length(\"control\".\"policy_artifact\".\"dependency_closure_digest\")=32 and octet_length(\"control\".\"policy_artifact\".\"payload_digest\")=32 and octet_length(\"control\".\"policy_artifact\".\"signer_key_digest\")=32 and \"control\".\"policy_artifact\".\"semantic_digest\"=\"control\".\"policy_artifact\".\"semantic_bytes_digest\" and \"control\".\"policy_artifact\".\"semantic_version\" ~ '^[0-9]+.[0-9]+.[0-9]+$'"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "control.policy_generation": {
+      "name": "policy_generation",
+      "schema": "control",
+      "columns": {
+        "policy_generation_id": {
+          "name": "policy_generation_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuidv7()"
+        },
+        "participant_id": {
+          "name": "participant_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "privacy_domain_id": {
+          "name": "privacy_domain_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "policy_version_id": {
+          "name": "policy_version_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "simulation_id": {
+          "name": "simulation_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "approval_request_id": {
+          "name": "approval_request_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "generation": {
+          "name": "generation",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "scope_digest": {
+          "name": "scope_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "generation_digest": {
+          "name": "generation_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fact_generation_digest": {
+          "name": "fact_generation_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "artifact_digest": {
+          "name": "artifact_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "compiler_manifest_digest": {
+          "name": "compiler_manifest_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dependency_closure_digest": {
+          "name": "dependency_closure_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "state": {
+          "name": "state",
+          "type": "policy_lifecycle_state",
+          "typeSchema": "control",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'DESIRED'"
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        }
+      },
+      "indexes": {
+        "policy_generation_one_active_uq": {
+          "name": "policy_generation_one_active_uq",
+          "columns": [
+            {
+              "expression": "participant_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "privacy_domain_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "scope_digest",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"control\".\"policy_generation\".\"active\"",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "policy_generation_version_fk": {
+          "name": "policy_generation_version_fk",
+          "tableFrom": "policy_generation",
+          "tableTo": "policy_version",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_version_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_version_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "policy_generation_simulation_fk": {
+          "name": "policy_generation_simulation_fk",
+          "tableFrom": "policy_generation",
+          "tableTo": "policy_simulation",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "privacy_domain_id",
+            "simulation_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "privacy_domain_id",
+            "simulation_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "policy_generation_approval_fk": {
+          "name": "policy_generation_approval_fk",
+          "tableFrom": "policy_generation",
+          "tableTo": "approval_request",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "approval_request_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "approval_request_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "policy_generation_number_uq": {
+          "name": "policy_generation_number_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_version_id",
+            "generation"
+          ]
+        },
+        "policy_generation_digest_uq": {
+          "name": "policy_generation_digest_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "generation_digest"
+          ]
+        },
+        "policy_generation_participant_id_uq": {
+          "name": "policy_generation_participant_id_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "policy_generation_id"
+          ]
+        },
+        "policy_generation_tenant_id_uq": {
+          "name": "policy_generation_tenant_id_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_generation_id"
+          ]
+        }
+      },
+      "policies": {
+        "participant_isolation": {
+          "name": "participant_isolation",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy_generation\".\"participant_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy_generation\".\"participant_id\")"
+        },
+        "privacy_domain_isolation": {
+          "name": "privacy_domain_isolation",
+          "as": "RESTRICTIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy_generation\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy_generation\".\"privacy_domain_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy_generation\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy_generation\".\"privacy_domain_id\")"
+        }
+      },
+      "checkConstraints": {
+        "policy_generation_digests_ck": {
+          "name": "policy_generation_digests_ck",
+          "value": "octet_length(\"control\".\"policy_generation\".\"scope_digest\")=32 and octet_length(\"control\".\"policy_generation\".\"generation_digest\")=32 and octet_length(\"control\".\"policy_generation\".\"fact_generation_digest\")=32 and octet_length(\"control\".\"policy_generation\".\"artifact_digest\")=32 and octet_length(\"control\".\"policy_generation\".\"compiler_manifest_digest\")=32 and octet_length(\"control\".\"policy_generation\".\"dependency_closure_digest\")=32"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "control.policy_release_bundle": {
+      "name": "policy_release_bundle",
+      "schema": "control",
+      "columns": {
+        "release_bundle_id": {
+          "name": "release_bundle_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuidv7()"
+        },
+        "participant_id": {
+          "name": "participant_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "privacy_domain_id": {
+          "name": "privacy_domain_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "policy_version_id": {
+          "name": "policy_version_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "approval_request_id": {
+          "name": "approval_request_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_by_principal_id": {
+          "name": "created_by_principal_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "manifest_digest": {
+          "name": "manifest_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dependency_closure_digest": {
+          "name": "dependency_closure_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "state": {
+          "name": "state",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'DRAFT'"
+        },
+        "revision": {
+          "name": "revision",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "1"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        },
+        "published_at": {
+          "name": "published_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "policy_release_bundle_version_fk": {
+          "name": "policy_release_bundle_version_fk",
+          "tableFrom": "policy_release_bundle",
+          "tableTo": "policy_version",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_version_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_version_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "policy_release_bundle_approval_fk": {
+          "name": "policy_release_bundle_approval_fk",
+          "tableFrom": "policy_release_bundle",
+          "tableTo": "approval_request",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "approval_request_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "approval_request_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "policy_release_bundle_creator_fk": {
+          "name": "policy_release_bundle_creator_fk",
+          "tableFrom": "policy_release_bundle",
+          "tableTo": "principal",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "created_by_principal_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "principal_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "policy_release_bundle_digest_uq": {
+          "name": "policy_release_bundle_digest_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "privacy_domain_id",
+            "manifest_digest",
+            "dependency_closure_digest"
+          ]
+        },
+        "policy_release_bundle_tenant_id_uq": {
+          "name": "policy_release_bundle_tenant_id_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "privacy_domain_id",
+            "release_bundle_id"
+          ]
+        }
+      },
+      "policies": {
+        "participant_isolation": {
+          "name": "participant_isolation",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy_release_bundle\".\"participant_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy_release_bundle\".\"participant_id\")"
+        },
+        "privacy_domain_isolation": {
+          "name": "privacy_domain_isolation",
+          "as": "RESTRICTIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy_release_bundle\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy_release_bundle\".\"privacy_domain_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy_release_bundle\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy_release_bundle\".\"privacy_domain_id\")"
+        }
+      },
+      "checkConstraints": {
+        "policy_release_bundle_state_ck": {
+          "name": "policy_release_bundle_state_ck",
+          "value": "\"control\".\"policy_release_bundle\".\"state\" in ('DRAFT','APPROVAL_PENDING','APPROVED','PUBLISHED','STAGED','ACTIVE','ROLLED_BACK','RETIRED')"
+        },
+        "policy_release_bundle_digest_ck": {
+          "name": "policy_release_bundle_digest_ck",
+          "value": "octet_length(\"control\".\"policy_release_bundle\".\"manifest_digest\")=32 and octet_length(\"control\".\"policy_release_bundle\".\"dependency_closure_digest\")=32"
+        },
+        "policy_release_bundle_revision_ck": {
+          "name": "policy_release_bundle_revision_ck",
+          "value": "\"control\".\"policy_release_bundle\".\"revision\">0"
+        },
+        "policy_release_bundle_approval_ck": {
+          "name": "policy_release_bundle_approval_ck",
+          "value": "\"control\".\"policy_release_bundle\".\"state\" not in ('APPROVED','PUBLISHED','STAGED','ACTIVE','ROLLED_BACK','RETIRED') or \"control\".\"policy_release_bundle\".\"approval_request_id\" is not null"
+        },
+        "policy_release_bundle_published_ck": {
+          "name": "policy_release_bundle_published_ck",
+          "value": "(\"control\".\"policy_release_bundle\".\"state\" in ('PUBLISHED','STAGED','ACTIVE','ROLLED_BACK','RETIRED'))=(\"control\".\"policy_release_bundle\".\"published_at\" is not null)"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "control.policy_simulation": {
+      "name": "policy_simulation",
+      "schema": "control",
+      "columns": {
+        "simulation_id": {
+          "name": "simulation_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuidv7()"
+        },
+        "participant_id": {
+          "name": "participant_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "privacy_domain_id": {
+          "name": "privacy_domain_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "policy_version_id": {
+          "name": "policy_version_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "input_digest": {
+          "name": "input_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "result_digest": {
+          "name": "result_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fact_generation_digest": {
+          "name": "fact_generation_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dependency_closure_digest": {
+          "name": "dependency_closure_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "truth_state": {
+          "name": "truth_state",
+          "type": "policy_truth_state",
+          "typeSchema": "control",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "authority_label": {
+          "name": "authority_label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'SIMULATION_ONLY'"
+        },
+        "result_document": {
+          "name": "result_document",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "policy_simulation_version_fk": {
+          "name": "policy_simulation_version_fk",
+          "tableFrom": "policy_simulation",
+          "tableTo": "policy_version",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_version_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_version_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "policy_simulation_input_uq": {
+          "name": "policy_simulation_input_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "policy_version_id",
+            "input_digest",
+            "fact_generation_digest"
+          ]
+        },
+        "policy_simulation_participant_id_uq": {
+          "name": "policy_simulation_participant_id_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "simulation_id"
+          ]
+        },
+        "policy_simulation_tenant_id_uq": {
+          "name": "policy_simulation_tenant_id_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "privacy_domain_id",
+            "simulation_id"
+          ]
+        }
+      },
+      "policies": {
+        "participant_isolation": {
+          "name": "participant_isolation",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy_simulation\".\"participant_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy_simulation\".\"participant_id\")"
+        },
+        "privacy_domain_isolation": {
+          "name": "privacy_domain_isolation",
+          "as": "RESTRICTIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy_simulation\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy_simulation\".\"privacy_domain_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy_simulation\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy_simulation\".\"privacy_domain_id\")"
+        }
+      },
+      "checkConstraints": {
+        "policy_simulation_digests_ck": {
+          "name": "policy_simulation_digests_ck",
+          "value": "octet_length(\"control\".\"policy_simulation\".\"input_digest\")=32 and octet_length(\"control\".\"policy_simulation\".\"result_digest\")=32 and octet_length(\"control\".\"policy_simulation\".\"fact_generation_digest\")=32 and octet_length(\"control\".\"policy_simulation\".\"dependency_closure_digest\")=32"
+        },
+        "policy_simulation_authority_ck": {
+          "name": "policy_simulation_authority_ck",
+          "value": "\"control\".\"policy_simulation\".\"authority_label\"='SIMULATION_ONLY'"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "control.policy_version": {
+      "name": "policy_version",
+      "schema": "control",
+      "columns": {
+        "policy_version_id": {
+          "name": "policy_version_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuidv7()"
+        },
+        "policy_id": {
+          "name": "policy_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "participant_id": {
+          "name": "participant_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "privacy_domain_id": {
+          "name": "privacy_domain_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "version": {
+          "name": "version",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "schema_digest": {
+          "name": "schema_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "semantic_cbor": {
+          "name": "semantic_cbor",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "semantic_digest": {
+          "name": "semantic_digest",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cose_sign1": {
+          "name": "cose_sign1",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "state": {
+          "name": "state",
+          "type": "policy_lifecycle_state",
+          "typeSchema": "control",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'IMMUTABLE_VERSION'"
+        },
+        "created_by_principal_id": {
+          "name": "created_by_principal_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(6) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "policy_version_policy_fk": {
+          "name": "policy_version_policy_fk",
+          "tableFrom": "policy_version",
+          "tableTo": "policy",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "policy_version_creator_fk": {
+          "name": "policy_version_creator_fk",
+          "tableFrom": "policy_version",
+          "tableTo": "principal",
+          "schemaTo": "control",
+          "columnsFrom": [
+            "participant_id",
+            "created_by_principal_id"
+          ],
+          "columnsTo": [
+            "participant_id",
+            "principal_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "policy_version_number_uq": {
+          "name": "policy_version_number_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "policy_id",
+            "version",
+            "schema_digest"
+          ]
+        },
+        "policy_version_digest_uq": {
+          "name": "policy_version_digest_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "privacy_domain_id",
+            "semantic_digest"
+          ]
+        },
+        "policy_version_participant_id_uq": {
+          "name": "policy_version_participant_id_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "policy_version_id"
+          ]
+        },
+        "policy_version_tenant_id_uq": {
+          "name": "policy_version_tenant_id_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "participant_id",
+            "privacy_domain_id",
+            "policy_version_id"
+          ]
+        }
+      },
+      "policies": {
+        "participant_isolation": {
+          "name": "participant_isolation",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy_version\".\"participant_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy_version\".\"participant_id\")"
+        },
+        "privacy_domain_isolation": {
+          "name": "privacy_domain_isolation",
+          "as": "RESTRICTIVE",
+          "for": "ALL",
+          "to": [
+            "openpc_control_platform_runtime",
+            "openpc_control_reader",
+            "openpc_control_runtime",
+            "openpc_control_worker"
+          ],
+          "using": "openpc.matches_participant(\"control\".\"policy_version\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy_version\".\"privacy_domain_id\")",
+          "withCheck": "openpc.matches_participant(\"control\".\"policy_version\".\"participant_id\") and openpc.matches_privacy(\"control\".\"policy_version\".\"privacy_domain_id\")"
+        }
+      },
+      "checkConstraints": {
+        "policy_version_digest_ck": {
+          "name": "policy_version_digest_ck",
+          "value": "octet_length(\"control\".\"policy_version\".\"schema_digest\")=32 and octet_length(\"control\".\"policy_version\".\"semantic_digest\")=32 and \"control\".\"policy_version\".\"version\" ~ '^[0-9]+.[0-9]+.[0-9]+$'"
+        }
+      },
+      "isRLSEnabled": true
+    }
+  },
+  "enums": {
+    "control.module_lifecycle_state": {
+      "name": "module_lifecycle_state",
+      "schema": "control",
+      "values": [
+        "ABSENT",
+        "ADMITTED",
+        "INSTALLED_DISABLED",
+        "ENABLING",
+        "ENABLED",
+        "DISABLING",
+        "UPGRADING",
+        "DOWNGRADING",
+        "ROLLING_BACK",
+        "UNINSTALLING",
+        "REMOVED",
+        "FAILED_FENCED"
+      ]
+    },
+    "control.policy_lifecycle_state": {
+      "name": "policy_lifecycle_state",
+      "schema": "control",
+      "values": [
+        "EDITABLE_DRAFT",
+        "IMMUTABLE_VERSION",
+        "PENDING_APPROVAL",
+        "APPROVED",
+        "IMMUTABLE_RELEASE",
+        "DESIRED",
+        "PREPARED",
+        "ACTIVE",
+        "RETIRED",
+        "FAILED_FENCED"
+      ]
+    },
+    "control.policy_truth_state": {
+      "name": "policy_truth_state",
+      "schema": "control",
+      "values": [
+        "SUCCESS",
+        "AUTHORIZED_EMPTY",
+        "DENIED",
+        "LOADING",
+        "UNKNOWN",
+        "UNAVAILABLE",
+        "STALE",
+        "REORG",
+        "PARTIAL",
+        "CONFLICTING",
+        "DEGRADED",
+        "FAILED",
+        "RETRY_ELIGIBLE",
+        "FAILOVER_ELIGIBLE",
+        "WRITE_AMBIGUITY",
+        "RECOVERY",
+        "ROLLBACK",
+        "RETIREMENT",
+        "UNINSTALL",
+        "DECOMMISSION"
+      ]
+    },
+    "control.policy_prerequisite_state": {
+      "name": "policy_prerequisite_state",
+      "schema": "control",
+      "values": [
+        "PENDING",
+        "READY",
+        "FAILED",
+        "STALE"
+      ]
+    },
+    "control.policy_prerequisite_type": {
+      "name": "policy_prerequisite_type",
+      "schema": "control",
+      "values": [
+        "SIMULATION",
+        "APPROVAL",
+        "FACT_READINESS",
+        "FLEET_READY",
+        "DEPENDENCY_CLOSURE",
+        "CONFLICT_CLOSURE"
+      ]
+    }
+  },
+  "schemas": {
+    "control": "control"
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

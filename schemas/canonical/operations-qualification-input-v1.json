@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [
+      1,
+      2,
+      3,
+      4,
+      100,
+      101,
+      102,
+      103
+    ],
+    "criticalFields": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "extensionAuthority": "POST_C17_ASTRA_14_16_OPERATIONS_QUALIFICATION",
+  "name": "pc.operations-qualification-input.v1",
+  "schemaId": 24024,
+  "typeName": "OperationsQualificationInputV1",
+  "purpose": {
+    "name": "pc.cose.operations-qualification-input.v1",
+    "code": 361
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "authorityId",
+      "type": "dns_label"
+    },
+    {
+      "key": 2,
+      "name": "environmentId",
+      "type": "dns_label"
+    },
+    {
+      "key": 3,
+      "name": "profile",
+      "type": "enum local=1 development=2 test=3 staging=4 production=5"
+    },
+    {
+      "key": 4,
+      "name": "inputId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 5,
+      "name": "slot",
+      "type": "qualification_slot"
+    },
+    {
+      "key": 6,
+      "name": "setting",
+      "type": "enum provider.read_retry_limit=1"
+    },
+    {
+      "key": 7,
+      "name": "value",
+      "type": "uint_0_3"
+    },
+    {
+      "key": 8,
+      "name": "method",
+      "type": "nfc_text_1_128"
+    },
+    {
+      "key": 9,
+      "name": "methodClass",
+      "type": "enum RETRY_SAFE_READ=1"
+    },
+    {
+      "key": 10,
+      "name": "methodProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 11,
+      "name": "workloadIdentityDigest",
+      "type": "H32"
+    },
+    {
+      "key": 12,
+      "name": "environmentIdentityDigest",
+      "type": "H32"
+    },
+    {
+      "key": 13,
+      "name": "subjectArtifactDigest",
+      "type": "H32"
+    },
+    {
+      "key": 14,
+      "name": "buildDigest",
+      "type": "H32"
+    },
+    {
+      "key": 15,
+      "name": "sourceTreeDigest",
+      "type": "H32"
+    },
+    {
+      "key": 16,
+      "name": "configurationSchemaDigest",
+      "type": "H32"
+    },
+    {
+      "key": 17,
+      "name": "namedProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 18,
+      "name": "issuerKeyId",
+      "type": "H32"
+    },
+    {
+      "key": 19,
+      "name": "issuerEpoch",
+      "type": "u64p"
+    },
+    {
+      "key": 20,
+      "name": "validFromMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 21,
+      "name": "validUntilMs",
+      "type": "safe_uint"
+    }
+  ],
+  "fieldConstraints": {
+    "dns_label": "ASCII ^[a-z][a-z0-9-]{2,31}$",
+    "qualification_slot": "exact QINPUT-<selected profile uppercased>-PROVIDER-READ-RETRY-V1",
+    "qualification_ref": "qualification://<authorityId>/<inputId>@sha256:<exact input PC-CBOR payload SHA256 lowercase hex>",
+    "nfc_text_1_128": "valid NFC UTF-8, 1..128 bytes, no control characters",
+    "uint_0_3": "unsigned integer 0..3, never boolean/string/float",
+    "safe_uint": "unsigned safe integer 0..9007199254740991; time intervals strictly ordered",
+    "u64p": "decimal API string 1..18446744073709551615, canonical CBOR uint",
+    "H32": "exact 32-byte CBOR byte string; sha256:<64 lowercase hex> in API",
+    "uuidv7": "exact 16-byte canonical UUIDv7 with RFC variant"
+  },
+  "sourceRefs": [
+    "QUALITY/qualification-authority-profile.yaml",
+    "QUALITY/schemas/qualification-receipt.schema.json",
+    "QUALITY/schemas/qualification-keyset.schema.json",
+    "QUALITY/schemas/qualification-revocation.schema.json",
+    "SPECIFICATIONS/OPERATIONS/configuration-precedence.md",
+    "SPECIFICATIONS/OPERATIONS/configuration.schema.json"
+  ],
+  "authorityRules": [
+    "First bounded qualification owner: provider.read_retry_limit only, exact UINT8 value 0..3, exact QINPUT-<UPPERCASE PROFILE>-PROVIDER-READ-RETRY-V1 slot. This does not authorize other qualification slots or widen the accepted configuration schema.",
+    "The exact method and authenticated methodProfileDigest must resolve through the owning provider/method contract and demonstrate RETRY_SAFE_READ. A caller-supplied safety/currentness flag, unrelated endpoint qualification or generic provider health check cannot establish this predicate.",
+    "Input identity is SHA-256 of the exact canonical PC-CBOR payload including definition identity. Its reference is qualification://<authorityId>/<inputId>@sha256:<payload digest without prefix>. The input contains neither that reference nor any receipt, generation or effective-configuration digest; a later executed receipt binds the input. This removes self-reference and input/receipt/configuration digest cycles.",
+    "The selected authenticated C17 schema/profile, environment, subject/build/source tree, workload, method identity and exact setting value must all match the qualified subject and the consuming generation. A valid input signature alone is an unqualified design input and clears no generation blocker.",
+    "Implements only an internal adapter contract for authenticated operations qualification under the adopted ASTRA-14/16 plan. The delivered C17 authority remains DESIGNED_NOT_CONSTITUTED with keys UNPROVISIONED; local external test signers prove adapter behavior only. No production qualification, certification, SLO/SLA or product claim promotion follows.",
+    "Use existing PC-CBOR-1 and COSE_Sign1 ES256/P-256/SHA-256 profile 2, exact schema definition/AAD/purpose and exact original bytes. The verifier rejects unknown/duplicate/noncanonical fields, malformed identities, type coercion, key/purpose substitution, mutable references and ambiguous signature outcomes. Retain first failures and originals.",
+    "For JSON document digest preimages use RFC8785 with duplicate-key/NFC rejection and exact closed schemas. Every fixed signatureEnvelope descriptor is exactly {format:COSE_Sign1,algorithm:ES256,curve:P-256,hash:SHA-256,canonicalization:PC-CBOR-1}. ISO times are canonical UTC YYYY-MM-DDTHH:mm:ss.sssZ representing the exact signed millisecond field. Document digest fields use the prefix-free form required by C17; signed H32 claims use the canonical sha256: representation.",
+    "Privileged durable installation, RLS/tenant context, independent issuer eligibility, actual execution/reviewer evidence, current keyset/revocation checks and the exact generation binding remain separate required owners. These public wire declarations do not create tables, grants, runtime APIs, qualification success, effective configuration or any signing/send effect.",
+    "Bound and copy document bytes before parsing: input payload 65536 bytes, receipt document 524288 bytes, keyset document 131072 bytes and revocation document 4194304 bytes maximum. Unknown fields, duplicate keys, non-NFC strings, malformed entries and partial snapshots fail closed before database allocation."
+  ]
+}

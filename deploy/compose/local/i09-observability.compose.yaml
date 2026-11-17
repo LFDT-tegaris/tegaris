@@ -1,0 +1,28 @@
+name: openpc-i09-observability
+
+services:
+  collector:
+    image: otel/opentelemetry-collector-contrib:0.159.0@sha256:1f2c54a30e713fac6b3ae77a1ec84010c2007e29ced8ec666214fc2f6739c1cc
+    platform: linux/amd64
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    ports:
+      - "127.0.0.1::4318"
+      - "127.0.0.1::13133"
+    volumes:
+      - ../../../containers/i09-local-otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+
+  unavailable:
+    image: otel/opentelemetry-collector-contrib:0.159.0@sha256:1f2c54a30e713fac6b3ae77a1ec84010c2007e29ced8ec666214fc2f6739c1cc
+    platform: linux/amd64
+    profiles: [unavailable]
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    ports:
+      - "127.0.0.1::4318"
+    volumes:
+      - ../../../containers/i09-local-otel-unavailable.yaml:/etc/otelcol-contrib/config.yaml:ro
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]

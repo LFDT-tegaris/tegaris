@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [1, 2, 3, 4, 100, 101, 102, 103],
+    "criticalFields": [100, 101, 102, 103],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "extensionAuthority": "POST_C17_EVIDENCE_KMS_PREREQUISITE",
+  "name": "pc.evidence-kms-receipt.v1",
+  "schemaId": 24017,
+  "typeName": "EvidenceKmsReceiptV1",
+  "purpose": {
+    "name": "pc.cose.evidence-kms-receipt.v1",
+    "code": 354
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "environmentId",
+      "type": "text160"
+    },
+    {
+      "key": 2,
+      "name": "participantId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 3,
+      "name": "privacyDomainId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 4,
+      "name": "receiptId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 5,
+      "name": "profileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 6,
+      "name": "operation",
+      "type": "enum PREPARE=1 READ_ATTEMPT=2 STATUS=3 UNWRAP=4 RECOVERY_FLOOR=5 DESTROY=6"
+    },
+    {
+      "key": 7,
+      "name": "attemptId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 8,
+      "name": "exchangeId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 9,
+      "name": "requestDigest",
+      "type": "H32"
+    },
+    {
+      "key": 10,
+      "name": "challenge",
+      "type": "hex32"
+    },
+    {
+      "key": 11,
+      "name": "objectIntentDigest",
+      "type": "H32"
+    },
+    {
+      "key": 12,
+      "name": "keyId",
+      "type": "H32"
+    },
+    {
+      "key": 13,
+      "name": "keyUse",
+      "type": "enum NONE=1 ENCRYPT=2 DECRYPT=3"
+    },
+    {
+      "key": 14,
+      "name": "providerId",
+      "type": "text160"
+    },
+    {
+      "key": 15,
+      "name": "reference",
+      "type": "text331"
+    },
+    {
+      "key": 16,
+      "name": "version",
+      "type": "text96"
+    },
+    {
+      "key": 17,
+      "name": "providerKeyId",
+      "type": "text256"
+    },
+    {
+      "key": 18,
+      "name": "providerKeyVersion",
+      "type": "text96"
+    },
+    {
+      "key": 19,
+      "name": "keyEpoch",
+      "type": "u64p"
+    },
+    {
+      "key": 20,
+      "name": "wrapProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 21,
+      "name": "policyDigest",
+      "type": "H32"
+    },
+    {
+      "key": 22,
+      "name": "recoveryProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 23,
+      "name": "outcome",
+      "type": "enum PROVED=1 REJECTED=2 UNKNOWN=3"
+    },
+    {
+      "key": 24,
+      "name": "keyState",
+      "type": "enum CURRENT=1 RETAINED=2 REVOKED=3 DESTROYED=4"
+    },
+    {
+      "key": 25,
+      "name": "providerSequence",
+      "type": "u64p"
+    },
+    {
+      "key": 26,
+      "name": "recoveryFloor",
+      "type": "u64p"
+    },
+    {
+      "key": 27,
+      "name": "materialDigest",
+      "type": "H32"
+    },
+    {
+      "key": 28,
+      "name": "observedAtMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 29,
+      "name": "validUntilMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 30,
+      "name": "signerKeyId",
+      "type": "H32"
+    }
+  ],
+  "authorityRules": [
+    "Verify exact request digest, fresh unpredictable challenge, attempt/exchange, object, scope, profile, exact version and policy against independently installed trust. Fresh status/readback cannot be replaced by an old valid signed success or unsigned HTTP response.",
+    "RECOVERY_FLOOR requires the independent installed recovery signer, distinct from the provider signer, and a fresh challenge. A floor recovered from the same database backup is not independent authority. Provider sequence must meet the independently authenticated floor and must not regress relative to retained observations.",
+    "UNWRAP permits material only for PROVED with keyUse matching the admitted operation; ENCRYPT requires CURRENT, DECRYPT requires CURRENT or RETAINED, and both reject REVOKED/DESTROYED. Material digest binds exactly 32 returned bytes. No material is present for any other operation/outcome.",
+    "The all-zero H32 keyId denotes no wrapped record yet and is permitted only outside successful UNWRAP/PREPARE. The all-zero materialDigest denotes absent material. Neither sentinel is a usable key identity.",
+    "PREPARE uses the original attemptId as exchangeId. READ_ATTEMPT reconciles the original prepare identity; UNKNOWN and unsigned errors never prove no effect or authorize resubmission. Commit dispatch before provider I/O and original authenticated result before publication.",
+    "DESTROY evidence authenticates a provider observation only. Requesting destruction remains blocked without the real hold, reference, retention and recovery owners' governed closure. Local withdrawal is not destruction, and restoration cannot resurrect revoked/destroyed versions."
+  ]
+}

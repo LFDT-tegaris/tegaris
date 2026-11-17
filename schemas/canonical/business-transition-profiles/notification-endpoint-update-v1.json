@@ -1,0 +1,146 @@
+{
+  "profileId": "pc.control.notification-endpoint.update",
+  "profileVersion": 1,
+  "schemaDefinitionDigest": "sha256:41a877ca7e00e74f32c8becf8daee38f26c12ab9d9dcf6ff80ed8e75608b3c1f",
+  "actionIntentId": "ACT-NOTIFICATION_ENDPOINTS_UPDATE_RESOURCE-V1",
+  "catalogOperationId": "CFG-OP-UPDATE-NOTIFICATION-ENDPOINT",
+  "resourceType": "notification-endpoints",
+  "aggregateType": "notification-endpoint",
+  "sequenceNamespace": "CONTROL_BUSINESS_TRANSITION_V1",
+  "transitionKind": 1,
+  "state": {
+    "owner": "control.notification_endpoint",
+    "identity": [
+      "participant_id",
+      "privacy_domain_id",
+      "endpoint_id"
+    ],
+    "revision": "revision:u64",
+    "absence": {
+      "existence": 0,
+      "revision": 0,
+      "projection": {}
+    },
+    "projection": {
+      "0": {
+        "column": "channel",
+        "type": "TEXT",
+        "enum": [
+          "WEBHOOK",
+          "EMAIL",
+          "OPERATIONS_QUEUE"
+        ]
+      },
+      "1": {
+        "column": "state",
+        "type": "TEXT",
+        "enum": [
+          "ACTIVE",
+          "DISABLED",
+          "QUARANTINED",
+          "RETIRED"
+        ]
+      },
+      "2": {
+        "column": "destination_ref",
+        "type": "TEXT",
+        "encoding": "exact admitted destination URN; never an arbitrary network address"
+      },
+      "3": {
+        "column": "channel_profile_digest",
+        "type": "H32"
+      },
+      "4": {
+        "column": "credential_ref",
+        "type": "TEXT",
+        "encoding": "exact admitted immutable credential metadata URN; no secret bytes"
+      },
+      "5": {
+        "column": "arbitrary_egress",
+        "type": "U64",
+        "encoding": "must be zero"
+      },
+      "6": {
+        "column": "candidate_digest",
+        "type": "H32"
+      },
+      "7": {
+        "column": "verification_id",
+        "type": "U64",
+        "encoding": "0 for NULL; 1 for present UUID text"
+      },
+      "8": {
+        "column": "verification_id",
+        "type": "TEXT",
+        "presence": "required exactly when key 7 is 1; absent when key 7 is 0",
+        "encoding": "exact stored canonical UUIDv7 text"
+      }
+    },
+    "digest": "pc.control.transition-state.v1; SHA-256 over canonical typed CBOR; eight required projection keys and verification UUID text exactly when its presence marker is one"
+  },
+  "transition": {
+    "command": "UPDATE",
+    "before": "PRESENT_NOT_RETIRED",
+    "after": "PRESENT_DISABLED_OR_PRESERVED_QUARANTINE_REVISION_PLUS_1",
+    "change": "Consume the immutable admitted replacement bound to the current predecessor; clear verification, preserve quarantine and reject unchanged replacement.",
+    "noOp": "REJECT_WITHOUT_EFFECTS"
+  },
+  "authority": {
+    "actor": "authenticated participant user session",
+    "action": "exact action registry, live scoped authority fence",
+    "evidence": [
+      {
+        "kind": 2,
+        "owner": "control.mutation_evidence",
+        "format": "IDENTITY_RUNTIME_ASSERTION_3002_2_13",
+        "binding": "actual operation, actor, session, participant, privacy domain, action, catalog operation, candidate and expected revision"
+      },
+      {
+        "kind": 4,
+        "owner": "control.mutation_evidence for ID-OP-WEBAUTHN-VERIFY",
+        "format": "identity owner verified WebAuthn step-up",
+        "binding": "same runtime-authorized actor and session; exact action, candidate digest and one-time challenge consumed by this operation"
+      }
+    ],
+    "snapshot": "retained exact precommit authority path and live epochs/validity; no session or credential secrets",
+    "approval": "NOT_REQUIRED",
+    "stepUp": "FRESH_ACTOR_WEBAUTHN_BOUND_TO_THE_SAME_SESSION_ACTION_CANDIDATE_AND_OPERATION"
+  },
+  "events": [
+    {
+      "eventType": "io.openpc.control.command.committed.v1",
+      "dataSchemaUri": "https://schemas.openpc.local/event-payloads.schema.json#/$defs/CommandCommitted",
+      "payload": "canonical four-key CommandCommitted CBOR; commandId=operationId, aggregateRef=canonical aggregate URN, actionIntentId, intentDigest=actionIntentDigest",
+      "cardinality": 1,
+      "effect": "local durable control-state transition only"
+    }
+  ],
+  "privacy": {
+    "placement": "same participant and privacy domain as authoritative aggregate",
+    "read": "current read authorization required; receipt is never authorization",
+    "retention": "retain receipt, typed state/authority inputs, authorization evidence, public trust and operation links under control audit retention; no automatic deletion"
+  },
+  "lifecycle": {
+    "idempotency": "exact replay returns original operation, receipt, evidence and event IDs/bytes/sequences",
+    "rollback": "endpoint state, verification attachment, consumed actor challenge, authority, signing attempt, receipt, outbox and operation result roll back together; external verification observation remains retained",
+    "restart": "read original operation and durable verification attempt; DISPATCHED or UNKNOWN never authorizes automatic external resubmission",
+    "delivery": "endpoint metadata or verification is not notification delivery admission; current delivery-specific authority and references remain mandatory"
+  },
+  "requestBinding": {
+    "domain": "pc.control.configuration-request.v1",
+    "encoding": "UTF-8 domain plus NUL; each field prefixed by uint32 big-endian UTF-8 byte length; SHA-256",
+    "fields": [
+      "participantId",
+      "privacyDomainId",
+      "principalId",
+      "actionIntentId",
+      "catalogOperationId",
+      "aggregateType",
+      "aggregateId",
+      "expectedRevision (canonical u64 decimal)",
+      "candidateDigest (sha256: lowercase hex)",
+      "idempotencyKey"
+    ]
+  },
+  "definitionDigest": "sha256:946fcea402d8a83d11bbc68f962729bbafcab59d70bb9c0184da7441f904ea0d"
+}

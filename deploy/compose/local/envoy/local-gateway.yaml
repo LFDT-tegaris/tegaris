@@ -1,0 +1,266 @@
+static_resources:
+  listeners:
+    - name: public_data_plane
+      address: { socket_address: { address: 0.0.0.0, port_value: 8080 } }
+      filter_chains:
+        - filters:
+            - name: envoy.filters.network.http_connection_manager
+              typed_config:
+                '@type': type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                stat_prefix: public
+                route_config:
+                  name: local_routes
+                  virtual_hosts:
+                    - name: openpc
+                      domains: ['*']
+                      routes:
+                        - match: { path_separated_prefix: '/api/v1/ui/local-session' }
+                          route: { cluster: admin_web, timeout: 45s }
+                        - match: { path: '/api/v1/ui/webauthn/assertion/challenge' }
+                          route: { cluster: admin_web, timeout: 120s }
+                        - match: { path: '/api/v1/ui/webauthn/assertion/verify' }
+                          # Identity verification and its durable session readback
+                          # run serially; retain a finite bound for both phases.
+                          route: { cluster: admin_web, timeout: 120s }
+                        - match: { path_separated_prefix: '/api/v1/ui/platform-recovery-workbench' }
+                          route: { cluster: admin_web, timeout: 45s }
+                        - match: { path_separated_prefix: '/api/v1/ui/workload-workbench' }
+                          route: { cluster: admin_web, timeout: 180s }
+                        - match: { path_separated_prefix: '/api/v1/ui/privacy-explorer' }
+                          route: { cluster: admin_web, timeout: 45s }
+                        # Governed handoff owners perform serial approval and candidate reads.
+                        - match: { path_separated_prefix: '/api/v1/ui/platform-ceiling-workbench' }
+                          route: { cluster: admin_web, timeout: 180s }
+                        - match: { path_separated_prefix: '/api/v1/ui/rpc-access-workbench' }
+                          route: { cluster: admin_web, timeout: 180s }
+                        - match: { path_separated_prefix: '/api/v1/ui/grant-workbench' }
+                          route: { cluster: admin_web, timeout: 180s }
+                        - match: { prefix: '/api/v1/ui/' }
+                          route: { cluster: admin_web, timeout: 120s }
+                        # Governed workload commands perform serial authority,
+                        # candidate, approval and issuer owner transactions.
+                        - match: { path_separated_prefix: '/v1/identity/workloads' }
+                          route: { cluster: identity_service, timeout: 120s }
+                        - match: { path_separated_prefix: '/v1/identity/workload-proposals' }
+                          route: { cluster: identity_service, timeout: 60s }
+                        - match: { path_separated_prefix: '/v1/identity/principals' }
+                          route: { cluster: identity_service, timeout: 120s }
+                        - match: { prefix: '/v1/identity/' }
+                          route: { cluster: identity_service }
+                        - match: { path_separated_prefix: '/api/v1/session' }
+                          route: { cluster: identity_service }
+                        - match: { prefix: '/v1/participants' }
+                          route: { cluster: participant_service, timeout: 120s }
+                        - match: { path_separated_prefix: '/v1/platform-contexts' }
+                          route: { cluster: participant_service, timeout: 120s }
+                        - match: { prefix: '/v1/authority/' }
+                          route: { cluster: participant_service }
+                        - match:
+                            {
+                              path_separated_prefix: '/api/v1/modules',
+                              headers: [{ name: ':method', string_match: { exact: 'POST' } }],
+                            }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/modules' }
+                          route: { cluster: policy_service }
+                        - match: { path_separated_prefix: '/api/v1/policy-versions' }
+                          route: { cluster: policy_service }
+                        - match: { path: '/api/v1/policy-authoring-context' }
+                          route: { cluster: policy_service }
+                        - match: { path: '/api/v1/rpc-access-preview' }
+                          route: { cluster: policy_service }
+                        - match: { path_separated_prefix: '/api/v1/policy-sets' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path: '/api/v1/effective-access' }
+                          route: { cluster: policy_service }
+                        - match: { path_separated_prefix: '/api/v1/privacy-explorer-profiles' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/v1/privacy-explorer' }
+                          route: { cluster: control_api, timeout: 40s }
+                        - match: { path_separated_prefix: '/api/v1/approval-requests' }
+                          route: { cluster: policy_service, timeout: 60s }
+                        - match:
+                            {
+                              path_separated_prefix: '/api/v1/administration-resource-reservations',
+                            }
+                          route: { cluster: policy_service }
+                        - match: { path_separated_prefix: '/api/v1/policy-activation-renewals' }
+                          route: { cluster: control_api, timeout: 40s }
+                        - match: { path_separated_prefix: '/api/v1/release-bundles' }
+                          route: { cluster: policy_service }
+                        - match: { path_separated_prefix: '/api/v1/activation-occurrences' }
+                          route: { cluster: policy_service }
+                        - match: { path_separated_prefix: '/api/v1/abi-artifacts' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/contract-method-policies' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/cigl-settings' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/cigl-analyses' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/cigl-grants' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/cigl-grant-dependencies' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/deployment-policies' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/deployment-intents' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/native-value-authorizations' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/deployment-submissions' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/contract-runtime-bindings' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/indexer-profiles' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/evidence-records' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/evidence-exports' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/evidence-holds' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/protected-proofs' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/protected-proof-access' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/evidence-deletions' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/retention-policies' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/logical-contract-assets' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/fact-artifacts' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/operations' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/notifications' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/work-items' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/projection-plans' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/provider-profiles' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/signing-key-rotations' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/signing-keys' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/runtime-targets' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/runtime-target-profile-bindings' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { path_separated_prefix: '/api/v1/typed-argument-rule-versions' }
+                          route: { cluster: control_api, timeout: 60s }
+                        - match: { prefix: '/api/' }
+                          direct_response: { status: 404 }
+                        - match: { prefix: '/' }
+                          route: { cluster: admin_web }
+                http_filters:
+                  - name: envoy.filters.http.router
+                    typed_config:
+                      {
+                        '@type': type.googleapis.com/envoy.extensions.filters.http.router.v3.Router,
+                      }
+  clusters:
+    - name: admin_web
+      connect_timeout: 2s
+      type: LOGICAL_DNS
+      load_assignment:
+        cluster_name: admin_web
+        endpoints:
+          [
+            {
+              lb_endpoints:
+                [
+                  {
+                    endpoint:
+                      { address: { socket_address: { address: admin-web, port_value: 3000 } } },
+                  },
+                ],
+            },
+          ]
+    - name: identity_service
+      connect_timeout: 2s
+      type: LOGICAL_DNS
+      load_assignment:
+        cluster_name: identity_service
+        endpoints:
+          [
+            {
+              lb_endpoints:
+                [
+                  {
+                    endpoint:
+                      {
+                        address:
+                          { socket_address: { address: identity-service, port_value: 3001 } },
+                      },
+                  },
+                ],
+            },
+          ]
+    - name: participant_service
+      connect_timeout: 2s
+      type: LOGICAL_DNS
+      load_assignment:
+        cluster_name: participant_service
+        endpoints:
+          [
+            {
+              lb_endpoints:
+                [
+                  {
+                    endpoint:
+                      {
+                        address:
+                          { socket_address: { address: participant-service, port_value: 3005 } },
+                      },
+                  },
+                ],
+            },
+          ]
+    - name: policy_service
+      connect_timeout: 2s
+      type: LOGICAL_DNS
+      load_assignment:
+        cluster_name: policy_service
+        endpoints:
+          [
+            {
+              lb_endpoints:
+                [
+                  {
+                    endpoint:
+                      {
+                        address: { socket_address: { address: policy-service, port_value: 3002 } },
+                      },
+                  },
+                ],
+            },
+          ]
+    - name: control_api
+      connect_timeout: 2s
+      type: LOGICAL_DNS
+      load_assignment:
+        cluster_name: control_api
+        endpoints:
+          [
+            {
+              lb_endpoints:
+                [
+                  {
+                    endpoint:
+                      { address: { socket_address: { address: control-api, port_value: 3003 } } },
+                  },
+                ],
+            },
+          ]
+overload_manager:
+  resource_monitors:
+    - name: envoy.resource_monitors.global_downstream_max_connections
+      typed_config:
+        '@type': type.googleapis.com/envoy.extensions.resource_monitors.downstream_connections.v3.DownstreamConnectionsConfig
+        max_active_downstream_connections: 1000
+admin:
+  address: { socket_address: { address: 0.0.0.0, port_value: 9901 } }

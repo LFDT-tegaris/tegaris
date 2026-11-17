@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [1, 2, 3, 4, 100, 101, 102, 103],
+    "criticalFields": [100, 101, 102, 103],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "extensionAuthority": "POST_C17_EVIDENCE_KMS_PREREQUISITE",
+  "name": "pc.evidence-kms-profile.v1",
+  "schemaId": 24015,
+  "typeName": "EvidenceKmsProfileV1",
+  "purpose": {
+    "name": "pc.cose.evidence-kms-profile.v1",
+    "code": 352
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "environmentId",
+      "type": "text160"
+    },
+    {
+      "key": 2,
+      "name": "participantId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 3,
+      "name": "privacyDomainId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 4,
+      "name": "profileId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 5,
+      "name": "revision",
+      "type": "u64p"
+    },
+    {
+      "key": 6,
+      "name": "producerTrustDigest",
+      "type": "H32"
+    },
+    {
+      "key": 7,
+      "name": "owner",
+      "type": "enum LS-EVIDENCE-EXPORT=1"
+    },
+    {
+      "key": 8,
+      "name": "secretClass",
+      "type": "enum SECRET-EVIDENCE-VAULT=1"
+    },
+    {
+      "key": 9,
+      "name": "providerId",
+      "type": "text160"
+    },
+    {
+      "key": 10,
+      "name": "reference",
+      "type": "text331"
+    },
+    {
+      "key": 11,
+      "name": "version",
+      "type": "text96"
+    },
+    {
+      "key": 12,
+      "name": "providerKeyId",
+      "type": "text256"
+    },
+    {
+      "key": 13,
+      "name": "providerKeyVersion",
+      "type": "text96"
+    },
+    {
+      "key": 14,
+      "name": "keyEpoch",
+      "type": "u64p"
+    },
+    {
+      "key": 15,
+      "name": "wrapProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 16,
+      "name": "policyDigest",
+      "type": "H32"
+    },
+    {
+      "key": 17,
+      "name": "recoveryProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 18,
+      "name": "providerOrigin",
+      "type": "text512"
+    },
+    {
+      "key": 19,
+      "name": "providerTlsSpkiDigest",
+      "type": "H32"
+    },
+    {
+      "key": 20,
+      "name": "receiptKeyId",
+      "type": "H32"
+    },
+    {
+      "key": 21,
+      "name": "recoveryKeyId",
+      "type": "H32"
+    },
+    {
+      "key": 22,
+      "name": "permissions",
+      "type": "enum ENCRYPT=1 DECRYPT=2 ENCRYPT_AND_DECRYPT=3"
+    },
+    {
+      "key": 23,
+      "name": "kekExportPolicy",
+      "type": "enum NON_EXPORTABLE=1"
+    },
+    {
+      "key": 24,
+      "name": "recoveryMode",
+      "type": "enum THRESHOLD_ESCROW=1"
+    },
+    {
+      "key": 25,
+      "name": "validFromMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 26,
+      "name": "validUntilMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 27,
+      "name": "issuerKeyId",
+      "type": "H32"
+    }
+  ],
+  "authorityRules": [
+    "Initial privileged installation pins the exact profile COSE digest, profile issuer, provider receipt signer, independent recovery authority, TLS destination/SPKI, Evidence workload and exact versioned KEK. Parsed claims, signatures or a static descriptor alone never admit key use.",
+    "PREPARE requests are exact original canonical JSON bytes containing operation=PREPARE, recipient, attemptId, objectIntent and challenge; SHA256 of those bytes is the immutable request identity. No keyId occurs in the pre-key object intent. Other requests contain operation, exchangeId, attemptId, recipient, originalRequestDigest, objectIntentDigest, keyId, keyUse and challenge. READ_ATTEMPT additionally binds readExchangeId and readRequestDigest to the exact original provider exchange being reconciled, including an uncertain unwrap. The installation digest resolves the exact independently installed profile.",
+    "Provider HTTPS responses use a canonical CBOR map of exactly nine integer keys: 0 profile payload, 1 profile COSE, 2 receipt payload, 3 receipt COSE, 4 wrapped-record payload, 5 wrapped-record COSE, 6 recovery-floor receipt payload, 7 recovery-floor COSE, 8 DEK. Values are byte strings; absent record/DEK is an empty byte string. Each signature uses its registered shared COSE family. Maximum response size is 66560 bytes (MAX_CBOR_BYTES + 1024); DEK is empty or exactly 32 bytes.",
+    "Non-exportable KEK and threshold escrow are required provider policies, not a production qualification inferred from this signed declaration or a local fixture. Only Evidence receives a bounded unwrapped DEK; never persist it in ordinary databases, logs or backups.",
+    "Current-encrypt, retained-decrypt, historical-record verification and recovery-floor evidence are separate admissions. No delivery, disclosure, hold removal or key destruction authority is conveyed."
+  ]
+}

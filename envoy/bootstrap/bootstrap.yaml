@@ -1,0 +1,80 @@
+node:
+  id: urn:openpc:runtime-target:018f1e44-7b2c-7abd-8def-0123456789ac
+  cluster: openpc-runtime
+  metadata:
+    target_id: urn:openpc:runtime-target:018f1e44-7b2c-7abd-8def-0123456789ac
+    bootstrap_profile_id: I04-ENVOY-1_39-LOCAL-BOUND-V1
+    ordinary_hot_path_authority: TARGET_LOCAL_ONLY
+dynamic_resources:
+  ads_config:
+    api_type: GRPC
+    transport_api_version: V3
+    set_node_on_first_message_only: true
+    grpc_services:
+      - envoy_grpc:
+          cluster_name: openpc_fleet_ads
+  lds_config:
+    ads: {}
+    resource_api_version: V3
+    initial_fetch_timeout: 0s
+  cds_config:
+    ads: {}
+    resource_api_version: V3
+    initial_fetch_timeout: 0s
+static_resources:
+  clusters:
+    - name: openpc_fleet_ads
+      type: STRICT_DNS
+      connect_timeout: 5s
+      dns_lookup_family: V4_ONLY
+      load_assignment:
+        cluster_name: openpc_fleet_ads
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: pc-fleet-control.openpc.svc.cluster.local
+                      port_value: 18000
+      typed_extension_protocol_options:
+        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:
+          '@type': type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions
+          explicit_http_config:
+            http2_protocol_options: {}
+      transport_socket:
+        name: envoy.transport_sockets.tls
+        typed_config:
+          '@type': type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
+          common_tls_context:
+            tls_params:
+              tls_minimum_protocol_version: TLSv1_3
+              tls_maximum_protocol_version: TLSv1_3
+              ecdh_curves:
+                - P-256
+            tls_certificates:
+              - certificate_chain:
+                  filename: /var/run/openpc/tls/envoy/tls.crt
+                private_key:
+                  filename: /var/run/openpc/tls/envoy/tls.key
+            validation_context:
+              trusted_ca:
+                filename: /var/run/openpc/tls/envoy/ca.crt
+              match_typed_subject_alt_names:
+                - san_type: URI
+                  matcher:
+                    exact: spiffe://openpc.local/fleet-control
+            alpn_protocols:
+              - h2
+      circuit_breakers:
+        thresholds:
+          - priority: DEFAULT
+            max_connections: 2
+            max_pending_requests: 16
+            max_requests: 1024
+            max_retries: 0
+admin:
+  address:
+    pipe:
+      path: /run/openpc/envoy/admin.sock
+      mode: 432
+stats_flush_interval: 10s

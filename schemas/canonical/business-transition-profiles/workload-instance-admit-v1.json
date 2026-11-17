@@ -1,0 +1,134 @@
+{
+  "profileId": "pc.identity.workload-instance.admit.v1",
+  "profileVersion": 1,
+  "schemaDefinitionDigest": "sha256:41a877ca7e00e74f32c8becf8daee38f26c12ab9d9dcf6ff80ed8e75608b3c1f",
+  "actionIntentId": "ACT-PARTICIPANTS_UPDATE_RESOURCE-V1",
+  "catalogOperationId": "ID-OP-WORKLOAD-INSTANCE-ADMIT",
+  "resourceType": "participant",
+  "aggregateType": "workload-instance-admission",
+  "sequenceNamespace": "CONTROL_BUSINESS_TRANSITION_V1",
+  "transitionKind": 1,
+  "state": {
+    "owner": "control.workload_instance_admission; future dedicated durable owner required before admission",
+    "identity": [
+      "participant_id",
+      "privacy_domain_id",
+      "family_id"
+    ],
+    "revision": "immutable initial admission revision 1; no update, replacement or resurrection",
+    "absence": {
+      "existence": 0,
+      "revision": 0,
+      "projection": {}
+    },
+    "projection": {
+      "0": {
+        "column": "definition_digest",
+        "type": "H32",
+        "encoding": "SHA-256 over pc.control.definition-json.v1 strict stable instance admission definition; binds durable server family reservation, independent managed registration/incarnation/deployment, tenant/environment/principal/workload, original credential epoch/fingerprint, exact current policy/profile/qualification/scope and actual Participant ARCHIVE invalidation fence; no short-lived witness in human candidate"
+      },
+      "1": {
+        "column": "instance_witness_digest",
+        "type": "H32",
+        "encoding": "exact independently authenticated initial-instance witness for same immutable human candidate, reservation and durable original challenge/attempt; distinct from routine renewal proof"
+      },
+      "2": {
+        "column": "consumed_challenge_id",
+        "type": "UUID_BYTES"
+      },
+      "3": {
+        "column": "admission_operation_id",
+        "type": "UUID_BYTES"
+      },
+      "4": {
+        "column": "business_ancestors",
+        "type": "H32",
+        "encoding": "SHA-256 over pc.control.definition-json.v1 actual durable business-parent snapshot"
+      },
+      "5": {
+        "column": "participant_security_invalidation_epoch",
+        "type": "U64",
+        "meaning": "actual complete-history latest ARCHIVE fence, not an implicit zero or broad Participant counter"
+      },
+      "6": {
+        "column": "admitted_at",
+        "type": "U64_NANOSECONDS",
+        "encoding": "exact stored UTC microseconds multiplied by 1000"
+      },
+      "7": {
+        "column": "initialized_family_security_epoch",
+        "type": "U64",
+        "meaning": "explicitly initialized zero for a genuinely absent initial family; not observation of an existing family or authority"
+      }
+    },
+    "digest": "pc.control.transition-state.v1; SHA-256 over canonical typed CBOR; every map field required"
+  },
+  "transition": {
+    "command": "ADMIT",
+    "before": "AUTHORITATIVE_SCOPED_ABSENT_REVISION_0_WITH_DURABLE_FAMILY_RESERVATION",
+    "after": "ONE_IMMUTABLE_INITIAL_INSTANCE_ADMISSION_REVISION_1",
+    "change": "create exact initial instance membership and current initial family under separately installed owning admission; preserve original credential provenance and exact independent witness, consumed challenge, policy and parent links; no issuance, runtime permission, routine renewal, re-enrollment, scope transfer or resurrection",
+    "noOp": "REJECT_WITHOUT_EFFECTS; exact idempotent readback retains original operation and signed bytes"
+  },
+  "authority": {
+    "actor": "authenticated participant user session",
+    "action": "exact action registry, live scoped authority fence",
+    "evidence": [
+      {
+        "kind": 3,
+        "owner": "control.approval_decision_record",
+        "format": "identity credential signed by the authorized checker",
+        "binding": "exact immutable candidate, action, scope, expected revision and distinct checker; consumed by this operation"
+      },
+      {
+        "kind": 4,
+        "owner": "control.mutation_evidence for ID-OP-WEBAUTHN-VERIFY",
+        "format": "identity owner verified WebAuthn step-up",
+        "binding": "actual operator, session, action, candidate digest and one-time challenge consumed by this operation"
+      }
+    ],
+    "snapshot": "retained exact precommit authority path and live epochs/validity; no session or credential secrets",
+    "approval": "EXACT_CONSUMED_CANDIDATE_WITH_INDEPENDENT_MAKER_CHECKER; deferred owning-row trigger binds approval and before/after state",
+    "stepUp": "FRESH_WEBAUTHN_BOUND_TO_THE_SAME_APPROVAL_AND_OPERATION",
+    "current": "actual independent managed registration/profile/deployment/native handle and real live transport, exact ACTIVE policy/current permission and business parents, complete Participant ARCHIVE/credential/instance fences; quota and maxInstances serialized before effect; unknown/uninstalled owner denies",
+    "witness": "fresh distinct initial-instance proof is staged after stable setup/approval and binds SAME immutable human candidate, original operation/reservation/challenge/attempt; native/provider I/O outside mutation transaction, reconcile original ambiguity, revalidate before consuming governance or challenge; metadata/JSON/schema success is not admission",
+    "signing": "exact newly admitted profile/key/consumer qualification required; do not widen original338/371 grants or reinterpret manual receipts"
+  },
+  "events": [
+    {
+      "eventType": "io.openpc.control.command.committed.v1",
+      "dataSchemaUri": "https://schemas.openpc.local/event-payloads.schema.json#/$defs/CommandCommitted",
+      "payload": "canonical four-key CommandCommitted CBOR; commandId=operationId, aggregateRef=canonical aggregate URN, actionIntentId, intentDigest=actionIntentDigest",
+      "cardinality": 1,
+      "effect": "one exact initial instance admission and family linkage only; one committed receipt/evidence/event, no certificate issuance or runtime access"
+    }
+  ],
+  "privacy": {
+    "placement": "same participant and privacy domain as authoritative aggregate",
+    "read": "current read authorization required; receipt is never authorization",
+    "retention": "retain exact original instance registration, definition, witness/challenge, credential provenance, signed receipt, business parents and operation links; routine current leaf selection remains separate; no automatic deletion"
+  },
+  "lifecycle": {
+    "idempotency": "exact replay returns original operation, receipt, evidence and event IDs/bytes/sequences",
+    "rollback": "no instance/family/quota/challenge consumption/governance consumption/evidence/event/receipt/result effects",
+    "restart": "authoritative scoped original operation/witness/challenge readback; unresolved COMMIT remains UNKNOWN; no new identifiers to bypass a denial or replay a consumed effect",
+    "delivery": "qualified namespace and profile required; no legacy cursor merge"
+  },
+  "definitionDigest": "sha256:501e845d224e93d74175efe32900b2f6ef1f0a5db099107d28c491fc223f81f3",
+  "requestBinding": {
+    "domain": "pc.control.configuration-request.v1",
+    "encoding": "UTF-8 domain plus NUL; each field prefixed by uint32 big-endian UTF-8 byte length; SHA-256",
+    "fields": [
+      "participantId",
+      "privacyDomainId",
+      "principalId",
+      "actionIntentId",
+      "catalogOperationId",
+      "aggregateType",
+      "aggregateId",
+      "expectedRevision (canonical u64 decimal)",
+      "candidateDigest (sha256: lowercase hex)",
+      "idempotencyKey"
+    ]
+  }
+}

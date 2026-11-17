@@ -1,0 +1,307 @@
+{
+  "$schema": "../module-manifest.schema.json",
+  "apiVersion": "openpc.io/module-manifest/v1",
+  "capabilities": {
+    "crossCuttingRequirements": [
+      "XCAP-AUTHORITY-INTERSECTION",
+      "XCAP-TERMINAL-DENIAL",
+      "XCAP-EXACT-COMPATIBILITY",
+      "XCAP-LOCAL-FACT-ADMISSION",
+      "XCAP-CLAIM-CEILINGS",
+      "XCAP-MIGRATION",
+      "XCAP-OBSERVABILITY",
+      "XCAP-SECURITY-PRIVACY",
+      "XCAP-CONFORMANCE",
+      "XCAP-PORTABILITY",
+      "XCAP-MODULE-GOVERNANCE"
+    ],
+    "provided": [
+      {
+        "capabilityId": "urn:openpc:module-capability:pc-fact-bridge",
+        "providerModuleId": "pc.fact-bridge",
+        "traceSetId": "TS-MOD-MANIFEST",
+        "version": "1.0.0"
+      }
+    ],
+    "required": [
+      {
+        "capabilityId": "urn:openpc:module-capability:pc-config-assets",
+        "providerModuleId": "pc.config.assets",
+        "traceSetId": "TS-MOD-DEPENDENCY",
+        "version": "1.0.0"
+      },
+      {
+        "capabilityId": "urn:openpc:module-capability:pc-foundation-kernel",
+        "providerModuleId": "pc.foundation.kernel",
+        "traceSetId": "TS-MOD-DEPENDENCY",
+        "version": "1.0.0"
+      },
+      {
+        "capabilityId": "urn:openpc:module-capability:pc-identity",
+        "providerModuleId": "pc.identity",
+        "traceSetId": "TS-MOD-DEPENDENCY",
+        "version": "1.0.0"
+      }
+    ]
+  },
+  "certification": {
+    "executionState": "SPECIFIED_NOT_IMPLEMENTED",
+    "requestedLevel": "GOVERNED",
+    "targetProfiles": [
+      "local",
+      "development",
+      "test",
+      "staging",
+      "production"
+    ],
+    "traceSetId": "TS-MOD-MANIFEST"
+  },
+  "claimCeilingIds": [
+    "CC-GLOBAL-AUTHORITY-TRUTH",
+    "CC-EXACT-COMPATIBILITY-PROFILE",
+    "CC-ADMITTED-LOCAL-FACT-SOURCE-NEUTRAL",
+    "CC-PC-SEPARATE-PRODUCT-INTEGRATION",
+    "CC-NUMERIC-SLA-CERTIFICATION",
+    "CC-ACCESSIBILITY-RESPONSIVE-EXPLAINABILITY"
+  ],
+  "compatibility": {
+    "controlApi": "1.0.0",
+    "freezeId": "C03-ARCHITECTURE-SHARED-PRIMITIVES-FREEZE-20260824-01",
+    "guardPlan": "1.0.0",
+    "manifestSchemaDigest": "sha256:21652374923edec1a2b71f444c40540105dea49256189d678075e1bd2bcaa043",
+    "matchingRule": "EXACT_VERSION_AND_DIGEST",
+    "runtimeCapsule": "1.0.0",
+    "semanticKernel": "1.0.0",
+    "stackLockDigest": "sha256:11c0a9c1f86bb5f6840850030a9c930c3ace58fde02dab814552965d29a40ac1",
+    "stackLockId": "OPENPC-STACK-LOCK-C03-20260824-01",
+    "uiShell": "1.0.0"
+  },
+  "configuration": {
+    "emptyReason": "NO_C03_MODULE_SPECIFIC_CONFIGURATION_KEY_ASSIGNED",
+    "fields": [],
+    "inlineSecrets": "FORBIDDEN",
+    "schemaId": "urn:openpc:schema:module-config:pc-fact-bridge:v1",
+    "schemaVersion": "1.0.0",
+    "traceSetId": "TS-MOD-OPERATIONS",
+    "unknownKeys": "REJECT"
+  },
+  "conflicts": {
+    "declaredEmpty": true,
+    "moduleIds": [],
+    "traceSetId": "TS-MOD-DEPENDENCY"
+  },
+  "conformance": {
+    "negativeTestIds": [
+      "C04-MODULE-PC-FACT-BRIDGE-REJECT-CYCLE",
+      "C04-MODULE-PC-FACT-BRIDGE-REJECT-MISSING_DEPENDENCY",
+      "C04-MODULE-PC-FACT-BRIDGE-REJECT-INCOMPATIBLE_VERSION",
+      "C04-MODULE-PC-FACT-BRIDGE-REJECT-DIGEST_MISMATCH",
+      "C04-MODULE-PC-FACT-BRIDGE-REJECT-CONFLICTING_PROVIDER",
+      "C04-MODULE-PC-FACT-BRIDGE-REJECT-ACTIVE_DEPENDENT",
+      "C04-MODULE-PC-FACT-BRIDGE-REJECT-UNCLOSED_DATA_CUSTODY",
+      "C04-MODULE-PC-FACT-BRIDGE-REJECT-FUTURE_HOST_AS_R1"
+    ],
+    "requiredTestIds": [
+      "C04-MODULE-PC-FACT-BRIDGE-POSITIVE",
+      "C04-MODULE-PC-FACT-BRIDGE-NEGATIVE",
+      "C04-MODULE-PC-FACT-BRIDGE-UNKNOWN",
+      "C04-MODULE-PC-FACT-BRIDGE-STALE",
+      "C04-MODULE-PC-FACT-BRIDGE-UNAVAILABLE",
+      "C04-MODULE-PC-FACT-BRIDGE-TAMPERED",
+      "C04-MODULE-PC-FACT-BRIDGE-PARTIAL",
+      "C04-MODULE-PC-FACT-BRIDGE-CONFLICT",
+      "C04-MODULE-PC-FACT-BRIDGE-REORG",
+      "C04-MODULE-PC-FACT-BRIDGE-REPLAY",
+      "C04-MODULE-PC-FACT-BRIDGE-ROLLBACK",
+      "C04-MODULE-PC-FACT-BRIDGE-RECOVERY",
+      "C04-MODULE-PC-FACT-BRIDGE-RETIREMENT",
+      "C04-MODULE-PC-FACT-BRIDGE-UNINSTALL"
+    ],
+    "traceSetId": "TS-MOD-OPERATIONS"
+  },
+  "dataOwnership": {
+    "crossModuleWrite": "FORBIDDEN",
+    "namespace": "urn:openpc:module-data:pc-fact-bridge",
+    "physicalStoreIdsOwned": [],
+    "physicalStoreOwnerRule": "C03_LOGICAL_SERVICE_OWNERSHIP_UNCHANGED",
+    "retentionRule": "OWNER_TRANSACTION_AND_LEGAL_HOLD_BOUND",
+    "traceSetId": "TS-MOD-LIFECYCLE"
+  },
+  "dependencies": [
+    {
+      "capabilityId": "urn:openpc:module-capability:pc-config-assets",
+      "edgeId": "INSTALL-pc.config.assets-BEFORE-pc.fact-bridge",
+      "manifestDigest": "sha256:30564e955ba04447d90eab847bb3c6d0d67ec89409c4f4a2b312b43b71faa7ee",
+      "moduleId": "pc.config.assets",
+      "providerModuleId": "pc.config.assets",
+      "traceSetId": "TS-MOD-DEPENDENCY",
+      "version": "1.0.0"
+    },
+    {
+      "capabilityId": "urn:openpc:module-capability:pc-foundation-kernel",
+      "edgeId": "INSTALL-pc.foundation.kernel-BEFORE-pc.fact-bridge",
+      "manifestDigest": "sha256:dab4b353d766b08c6ea1dd15f0c576ab6c9daf831db2c470f3e67da96e9f2df5",
+      "moduleId": "pc.foundation.kernel",
+      "providerModuleId": "pc.foundation.kernel",
+      "traceSetId": "TS-MOD-DEPENDENCY",
+      "version": "1.0.0"
+    },
+    {
+      "capabilityId": "urn:openpc:module-capability:pc-identity",
+      "edgeId": "INSTALL-pc.identity-BEFORE-pc.fact-bridge",
+      "manifestDigest": "sha256:1309b0b07bd9a98a80a56b185459e4ca876d94b07cf2f2248415791e462d8f60",
+      "moduleId": "pc.identity",
+      "providerModuleId": "pc.identity",
+      "traceSetId": "TS-MOD-DEPENDENCY",
+      "version": "1.0.0"
+    }
+  ],
+  "deployment": {
+    "boundaryIds": [],
+    "declaredExecutionHostIds": [
+      "DU-PC-COMPILER",
+      "DU-PC-FACT-BRIDGE",
+      "DU-PC-RUNTIME"
+    ],
+    "futureOnlyExecutionHostIds": [],
+    "r1AdmittedExecutionHostIds": [
+      "DU-PC-COMPILER",
+      "DU-PC-FACT-BRIDGE",
+      "DU-PC-RUNTIME"
+    ],
+    "traceSetId": "TS-MOD-MANIFEST"
+  },
+  "events": [
+    {
+      "id": "MOD-EVT-LIFECYCLE-REQUESTED",
+      "schemaVersion": "1.0",
+      "traceSetId": "TS-MOD-LIFECYCLE",
+      "type": "openpc.module.lifecycle.requested.v1"
+    },
+    {
+      "id": "MOD-EVT-STATE-CHANGED",
+      "schemaVersion": "1.0",
+      "traceSetId": "TS-MOD-LIFECYCLE",
+      "type": "openpc.module.state.changed.v1"
+    },
+    {
+      "id": "MOD-EVT-ADMISSION-REJECTED",
+      "schemaVersion": "1.0",
+      "traceSetId": "TS-MOD-DEPENDENCY",
+      "type": "openpc.module.admission.rejected.v1"
+    }
+  ],
+  "kind": "OpenPCModule",
+  "lifecycle": {
+    "dataDisposition": "ENUMERATE_EXPORT_ARCHIVE_HOLD_DELETE_OR_CRYPTO_ERASE",
+    "migrationProfiles": [
+      "MIG-GREENFIELD-V1",
+      "MIG-PREDECESSOR-V1"
+    ],
+    "operations": [
+      {
+        "actionIntentId": "ACT-MODULE_CREATE_INSTALL-V1",
+        "id": "MOD-OP-INSTALL",
+        "traceSetId": "TS-MOD-LIFECYCLE"
+      },
+      {
+        "actionIntentId": "ACT-MODULE_ACTIVATE_RESOURCE-V1",
+        "id": "MOD-OP-ENABLE",
+        "traceSetId": "TS-MOD-LIFECYCLE"
+      },
+      {
+        "actionIntentId": "ACT-MODULES_UPDATE_RESOURCE-V1",
+        "id": "MOD-OP-DISABLE",
+        "traceSetId": "TS-MOD-LIFECYCLE"
+      },
+      {
+        "actionIntentId": "ACT-MODULES_UPDATE_RESOURCE-V1",
+        "id": "MOD-OP-UPGRADE",
+        "traceSetId": "TS-MOD-LIFECYCLE"
+      },
+      {
+        "actionIntentId": "ACT-MODULES_UPDATE_RESOURCE-V1",
+        "id": "MOD-OP-DOWNGRADE",
+        "traceSetId": "TS-MOD-LIFECYCLE"
+      },
+      {
+        "actionIntentId": "ACT-MODULES_UPDATE_RESOURCE-V1",
+        "id": "MOD-OP-ROLLBACK",
+        "traceSetId": "TS-MOD-LIFECYCLE"
+      },
+      {
+        "actionIntentId": "ACT-MODULE_UNINSTALL_RESOURCE-V1",
+        "id": "MOD-OP-UNINSTALL",
+        "traceSetId": "TS-MOD-LIFECYCLE"
+      }
+    ],
+    "traceSetId": "TS-MOD-LIFECYCLE"
+  },
+  "metadata": {
+    "description": "Verify/admit canonical facts and build local shards.",
+    "displayName": "Fact Bridge",
+    "id": "pc.fact-bridge",
+    "immutableAfterRelease": true,
+    "license": "Apache-2.0",
+    "moduleType": "BASE",
+    "riskTier": "HIGH",
+    "version": "1.0.0"
+  },
+  "observability": {
+    "authoritative": false,
+    "privacy": "NO_SECRET_OR_DENIED_RESOURCE_DISCLOSURE",
+    "signals": [
+      {
+        "id": "module_lifecycle_total",
+        "traceSetId": "TS-MOD-OPERATIONS"
+      },
+      {
+        "id": "module_admission_failures_total",
+        "traceSetId": "TS-MOD-OPERATIONS"
+      },
+      {
+        "id": "module_operation_duration_seconds",
+        "traceSetId": "TS-MOD-OPERATIONS"
+      }
+    ],
+    "traceSetId": "TS-MOD-OPERATIONS"
+  },
+  "policyContract": {
+    "compositionMode": "TYPED_DETERMINISTIC_INTERSECTION",
+    "priorityRule": "CONSTRAINED_WITHIN_NON_TERMINAL_PEERS_ONLY",
+    "simulatorParity": "SAME_EVALUATOR_AND_IMMUTABLE_INPUTS",
+    "terminalBounds": "PLATFORM_PARTICIPANT_DELEGATION_SCOPE_EPOCH_PRIVACY_DENIAL",
+    "traceSetId": "TS-MOD-POLICY"
+  },
+  "scope": {
+    "futureComponentsExcluded": [],
+    "nonLeakage": "EXISTENCE_AND_PAYLOAD_SEPARATE",
+    "r1Disposition": "R1",
+    "terminalDenial": "MONOTONIC_TERMINAL"
+  },
+  "secretAbsenceReason": "NO_SECRET_VALUE_OR_REFERENCE_EMBEDDED_IN_SPECIFICATION_MANIFEST",
+  "secrets": [],
+  "services": {
+    "absenceReason": "NO_C03_MODULE_TO_LOGICAL_SERVICE_OWNERSHIP_EDGE",
+    "logicalServiceIdsOwned": [],
+    "traceSetId": "TS-MOD-MANIFEST"
+  },
+  "supplyChain": {
+    "artifactDigest": null,
+    "buildReceiptId": null,
+    "provenanceDigest": null,
+    "releaseEvidenceState": "SPECIFIED_NOT_BUILT",
+    "requiredBeforeAdmission": true,
+    "sbomDigest": null,
+    "signature": null,
+    "traceSetId": "TS-MOD-MANIFEST"
+  },
+  "traceSetId": "TS-MOD-MANIFEST",
+  "ui": {
+    "absenceReason": "NO_C03_UI_CONTRIBUTION_OWNERSHIP_ASSIGNED",
+    "contributions": [],
+    "directBackendAccess": "FORBIDDEN",
+    "remoteCode": "FORBIDDEN",
+    "traceSetId": "TS-MOD-MANIFEST"
+  }
+}

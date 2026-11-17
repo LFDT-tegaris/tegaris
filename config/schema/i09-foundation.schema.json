@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.openpc.local/i09-foundation.schema.json",
+  "title": "OpenPC I09 foundation materialization contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "profile",
+    "qualificationReceiptRef",
+    "secretReferences",
+    "notDeployable"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "profile": { "enum": ["local", "development", "test", "staging", "production"] },
+    "qualificationReceiptRef": {
+      "type": "string",
+      "pattern": "^qualification://[A-Za-z0-9._/-]+#[A-Za-z0-9._-]+$"
+    },
+    "secretReferences": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^secret://[A-Za-z0-9._-]+/[A-Za-z0-9._/-]+#[A-Za-z0-9._-]+$"
+      }
+    },
+    "notDeployable": { "const": true }
+  },
+  "description": "Foundation-only contract. A renderer must reject a missing or unauthenticated qualification receipt, inline secret material, and every attempted deployment."
+}

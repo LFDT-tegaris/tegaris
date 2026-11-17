@@ -1,0 +1,2 @@
+export const workloadSigningHandoverAdmissionGuardsSql: string;
+export const workloadSigningHandoverAdmissionGrantsSql: string;

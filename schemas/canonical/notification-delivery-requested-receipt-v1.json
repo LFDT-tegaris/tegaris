@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "semanticVersion": "1.0.0",
+  "ownerLane": "LANE-CONTROL",
+  "wire": {
+    "profile": "PC-CBOR-1",
+    "maxPayloadBytes": 65536,
+    "mapOrder": "ascending unsigned integer keys; shortest encoding; all listed keys required",
+    "reject": [
+      "unknown or duplicate keys",
+      "noncanonical encoding",
+      "null or boolean",
+      "non-NFC text",
+      "trailing data"
+    ]
+  },
+  "cose": {
+    "contentType": "application/pc+cbor",
+    "externalAadHex": "7063706c616e653a636f73652d7369676e313a763200",
+    "signatureProfileVersion": 2,
+    "algorithm": "ES256",
+    "protectedFields": [
+      1,
+      2,
+      3,
+      4,
+      100,
+      101,
+      102,
+      103
+    ],
+    "criticalFields": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "unprotected": "empty map",
+    "container": "tag18 COSE_Sign1 with exact embedded payload and P1363 signature"
+  },
+  "extensionAuthority": "POST_C17_ASTRA_12_WORKLOAD_NOTIFICATION_ADMISSION",
+  "name": "pc.notification-delivery-requested-receipt.v1",
+  "schemaId": 24020,
+  "typeName": "NotificationDeliveryRequestedReceiptV1",
+  "purpose": {
+    "name": "pc.cose.notification-delivery-requested-receipt.v1",
+    "code": 357
+  },
+  "fields": [
+    {
+      "key": 0,
+      "name": "schemaDefinitionDigest",
+      "type": "H32"
+    },
+    {
+      "key": 1,
+      "name": "environmentId",
+      "type": "text160"
+    },
+    {
+      "key": 2,
+      "name": "participantId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 3,
+      "name": "privacyDomainId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 4,
+      "name": "receiptId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 5,
+      "name": "operationId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 6,
+      "name": "notificationId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 7,
+      "name": "notificationOccurrenceId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 8,
+      "name": "payloadObjectId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 9,
+      "name": "keyPreparationId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 10,
+      "name": "sourceEventId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 11,
+      "name": "sourceDataDigest",
+      "type": "H32"
+    },
+    {
+      "key": 12,
+      "name": "sourceReceiptDigest",
+      "type": "H32"
+    },
+    {
+      "key": 13,
+      "name": "routingProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 14,
+      "name": "workerProfileDigest",
+      "type": "H32"
+    },
+    {
+      "key": 15,
+      "name": "authoritySnapshotDigest",
+      "type": "H32"
+    },
+    {
+      "key": 16,
+      "name": "custodyDigest",
+      "type": "H32"
+    },
+    {
+      "key": 17,
+      "name": "endpointId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 18,
+      "name": "endpointRevision",
+      "type": "u64p"
+    },
+    {
+      "key": 19,
+      "name": "templateDigest",
+      "type": "H32"
+    },
+    {
+      "key": 20,
+      "name": "payloadDigest",
+      "type": "H32"
+    },
+    {
+      "key": 21,
+      "name": "encryptedObjectDigest",
+      "type": "H32"
+    },
+    {
+      "key": 22,
+      "name": "keyId",
+      "type": "H32"
+    },
+    {
+      "key": 23,
+      "name": "recordedAtMs",
+      "type": "safe_uint"
+    },
+    {
+      "key": 24,
+      "name": "signerKeyId",
+      "type": "H32"
+    },
+    {
+      "key": 25,
+      "name": "occurrenceReceiptDigest",
+      "type": "H32"
+    },
+    {
+      "key": 26,
+      "name": "eventId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 27,
+      "name": "sourceId",
+      "type": "uuidv7"
+    },
+    {
+      "key": 28,
+      "name": "sequence",
+      "type": "u64p"
+    },
+    {
+      "key": 29,
+      "name": "dataDigest",
+      "type": "H32"
+    }
+  ],
+  "authorityRules": [
+    "Only installed/current LS-CONTROL-WORK/ROLE-CONTROL-WORKER under SUB-EVIDENCEEXPORTCOMPLETED-CONTROL_WORK-V1 publishes the registered NotificationDeliveryRequested event. The exact already committed NotificationOccurrenceReceiptV1 and every immutable occurrence/payload/endpoint/key/source identity must match; no source event or human CREATE receipt grants this role. occurrenceReceiptDigest is SHA-256 of the exact canonical original occurrence receipt payload. The publication has its own distinct operationId and receiptId and cannot predate occurrence admission.",
+    "The event has type io.openpc.notification.delivery.requested.v1, canonical NotificationDeliveryRequested DATA with exactly notificationOccurrenceId, endpointId, templateDigest and payloadDigest, ordering key notificationOccurrenceId, and a distinct NOTIFICATION_DELIVERY_REQUESTED_V1 sequence namespace beginning at 1. Source is urn:openpc:service:<installed sourceId>; subject is urn:openpc:notification-occurrence:<notificationOccurrenceId>. Sequence 1 is the only initial request for that original occurrence.",
+    "Data refs use urn:openpc:notification-occurrence:<notificationOccurrenceId> and urn:openpc:resource:<endpointId>; correlationId is the original worker operationId, causationId the original authenticated sourceEventId, timestamp recordedAtMs rendered with exact six-digit UTC fractional precision. The signed dataDigest binds the canonical four-key DATA CBOR, not JSON reserialization or the receipt itself. Canonical DATA map keys are 0=occurrence URN text, 1=endpoint URN text, 2=template digest H32 bytes, 3=payload digest H32 bytes; exactly four fields in ascending key order.",
+    "Prepared signer attempt, original receipt, operation result, exact source inbox acknowledgement and one distinct bound outbox event commit atomically before cursor advance. Publication cannot mutate the original occurrence/payload or replace its admission receipt. Concurrent replay returns the same IDs, sequence, signed bytes and event. An uncertain original remains unresolved until authoritative readback; a new key or request ID is not a new business intent.",
+    "This is durable delivery-request publication only; LS-NOTIFICATION independently authenticates its subscription, reauthorizes current delivery and reconciles the original occurrence before external I/O. Gateway credentials, attempt state, five bounded retries, ambiguous-send reconciliation, delivery completion, user acknowledgement and retirement remain separate."
+  ]
+}

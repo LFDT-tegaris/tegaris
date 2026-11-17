@@ -1,0 +1,435 @@
+{
+  "$defs": {
+    "UiAuthorizedActionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "actionIntentDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "actionIntentId": {
+          "pattern": "^ACT-[A-Z][A-Z0-9_]*-V[1-9][0-9]*$",
+          "type": "string"
+        },
+        "etagRequired": {
+          "type": "boolean"
+        },
+        "idempotency": {
+          "enum": [
+            "KEY_UNTIL_TERMINAL",
+            "KEY_24H_MINIMUM",
+            "NEVER_REPLAY_EFFECT"
+          ]
+        },
+        "method": {
+          "enum": [
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE"
+          ]
+        },
+        "operationId": {
+          "pattern": "^[a-z][A-Za-z0-9]+$",
+          "type": "string"
+        },
+        "path": {
+          "pattern": "^/api/v1/",
+          "type": "string"
+        },
+        "riskClass": {
+          "enum": [
+            "LOW",
+            "STANDARD",
+            "HIGH",
+            "BREAK_GLASS"
+          ]
+        },
+        "stepUp": {
+          "enum": [
+            "NONE",
+            "FRESH_WEBAUTHN_MAX_5M",
+            "BREAK_GLASS_PROFILE"
+          ]
+        }
+      },
+      "required": [
+        "actionIntentId",
+        "actionIntentDigest",
+        "operationId",
+        "method",
+        "path",
+        "riskClass",
+        "stepUp",
+        "idempotency",
+        "etagRequired"
+      ],
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "DU-PC-WORKBENCH",
+          "LS-WORKBENCH",
+          "LS-CONTROL-API",
+          "COM-001",
+          "COM-024"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-004-AUTHORITY-INTERSECTION",
+          "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY",
+          "DEC-C03-005-IDENTITY-SESSION",
+          "DEC-C03-006-API-SCHEMA",
+          "DEC-C03-007-ERROR-EVENT",
+          "DEC-C03-010-UI-FRAMEWORK"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-LEDGER-RTP-296",
+          "REQ-SR01-B0-REQ-CMPREQ-GLOBAL-NAVIGATION",
+          "REQ-SR01-B0-REQ-SEC-005",
+          "REQ-SR01-B0-REQ-SEC-009",
+          "REQ-SR01-B0-REQ-UIX-001",
+          "REQ-SR01-B0-REQ-UIX-003",
+          "REQ-SR01-B0-REQ-UIX-006",
+          "REQ-SR01-B0-REQ-UIX-007",
+          "REQ-SR01-B0-REQ-UIX-012"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-5fccb7543499c04bd07731e5",
+          "SU-REQ-30fcace9724a5c90e8bc0b9c",
+          "SU-REQ-4088c30e20c3f984e224987d",
+          "SU-REQ-a09ba900a2d3d298c74e0530",
+          "SU-REQ-1ffab4e686849ec084be2379",
+          "SU-REQ-2c33a9ca8c81aa15e89a5e4c",
+          "SU-REQ-7b24a471c21752f35de07e43",
+          "SU-REQ-e937614f82bcbc95ad364569",
+          "SU-REQ-618a8a5ce6867a0cf8964fd9"
+        ]
+      }
+    },
+    "UiProcessItemV1": {
+      "additionalProperties": false,
+      "properties": {
+        "observedAt": {
+          "$ref": "shared-primitives.schema.json#/$defs/Rfc3339MicrosUtc"
+        },
+        "resourceRef": {
+          "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+        },
+        "scopeDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "truthState": {
+          "enum": [
+            "SUCCESS",
+            "AUTHORIZED_EMPTY",
+            "DENIED",
+            "LOADING",
+            "UNKNOWN",
+            "UNAVAILABLE",
+            "STALE",
+            "REORG",
+            "PARTIAL",
+            "CONFLICTING",
+            "DEGRADED",
+            "FAILED",
+            "RETRY_ELIGIBLE",
+            "FAILOVER_ELIGIBLE",
+            "WRITE_AMBIGUITY",
+            "RECOVERY",
+            "ROLLBACK",
+            "RETIREMENT",
+            "UNINSTALL",
+            "DECOMMISSION"
+          ]
+        }
+      },
+      "required": [
+        "resourceRef",
+        "truthState",
+        "scopeDigest",
+        "observedAt"
+      ],
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "DU-PC-WORKBENCH",
+          "LS-WORKBENCH",
+          "LS-CONTROL-API",
+          "COM-001",
+          "COM-024"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-004-AUTHORITY-INTERSECTION",
+          "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY",
+          "DEC-C03-005-IDENTITY-SESSION",
+          "DEC-C03-006-API-SCHEMA",
+          "DEC-C03-007-ERROR-EVENT",
+          "DEC-C03-010-UI-FRAMEWORK"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-LEDGER-RTP-296",
+          "REQ-SR01-B0-REQ-CMPREQ-GLOBAL-NAVIGATION",
+          "REQ-SR01-B0-REQ-SEC-005",
+          "REQ-SR01-B0-REQ-SEC-009",
+          "REQ-SR01-B0-REQ-UIX-001",
+          "REQ-SR01-B0-REQ-UIX-003",
+          "REQ-SR01-B0-REQ-UIX-006",
+          "REQ-SR01-B0-REQ-UIX-007",
+          "REQ-SR01-B0-REQ-UIX-012"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-5fccb7543499c04bd07731e5",
+          "SU-REQ-30fcace9724a5c90e8bc0b9c",
+          "SU-REQ-4088c30e20c3f984e224987d",
+          "SU-REQ-a09ba900a2d3d298c74e0530",
+          "SU-REQ-1ffab4e686849ec084be2379",
+          "SU-REQ-2c33a9ca8c81aa15e89a5e4c",
+          "SU-REQ-7b24a471c21752f35de07e43",
+          "SU-REQ-e937614f82bcbc95ad364569",
+          "SU-REQ-618a8a5ce6867a0cf8964fd9"
+        ]
+      }
+    },
+    "UiProcessSnapshotV1": {
+      "additionalProperties": false,
+      "properties": {
+        "authorityGeneration": {
+          "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+        },
+        "authorizedActions": {
+          "items": {
+            "$ref": "#/$defs/UiAuthorizedActionV1"
+          },
+          "type": "array"
+        },
+        "completeness": {
+          "enum": [
+            "COMPLETE",
+            "PARTIAL",
+            "UNKNOWN"
+          ]
+        },
+        "contextDigest": {
+          "$ref": "shared-primitives.schema.json#/$defs/Sha256Digest"
+        },
+        "evidenceRefs": {
+          "items": {
+            "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "freshness": {
+          "additionalProperties": false,
+          "properties": {
+            "observedAt": {
+              "$ref": "shared-primitives.schema.json#/$defs/Rfc3339MicrosUtc"
+            },
+            "state": {
+              "enum": [
+                "CURRENT",
+                "STALE",
+                "UNKNOWN"
+              ]
+            }
+          },
+          "required": [
+            "observedAt",
+            "state"
+          ],
+          "type": "object"
+        },
+        "items": {
+          "items": {
+            "$ref": "#/$defs/UiProcessItemV1"
+          },
+          "type": "array"
+        },
+        "observedAt": {
+          "$ref": "shared-primitives.schema.json#/$defs/Rfc3339MicrosUtc"
+        },
+        "policyGeneration": {
+          "$ref": "shared-primitives.schema.json#/$defs/UInt64String"
+        },
+        "processDomainId": {
+          "pattern": "^[A-Z][A-Z0-9_]+$",
+          "type": "string"
+        },
+        "routeId": {
+          "pattern": "^ROUTE-[A-Z0-9-]+$",
+          "type": "string"
+        },
+        "scope": {
+          "additionalProperties": false,
+          "properties": {
+            "participantId": {
+              "oneOf": [
+                {
+                  "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "plane": {
+              "enum": [
+                "PLATFORM",
+                "PARTICIPANT",
+                "WORKLOAD",
+                "SEPARATE_PRODUCT"
+              ]
+            },
+            "privacyDomainId": {
+              "oneOf": [
+                {
+                  "$ref": "shared-primitives.schema.json#/$defs/OpenPcUrn"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "plane",
+            "participantId",
+            "privacyDomainId"
+          ],
+          "type": "object"
+        },
+        "snapshotId": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+          "type": "string"
+        },
+        "truthState": {
+          "enum": [
+            "SUCCESS",
+            "AUTHORIZED_EMPTY",
+            "DENIED",
+            "LOADING",
+            "UNKNOWN",
+            "UNAVAILABLE",
+            "STALE",
+            "REORG",
+            "PARTIAL",
+            "CONFLICTING",
+            "DEGRADED",
+            "FAILED",
+            "RETRY_ELIGIBLE",
+            "FAILOVER_ELIGIBLE",
+            "WRITE_AMBIGUITY",
+            "RECOVERY",
+            "ROLLBACK",
+            "RETIREMENT",
+            "UNINSTALL",
+            "DECOMMISSION"
+          ]
+        }
+      },
+      "required": [
+        "snapshotId",
+        "routeId",
+        "processDomainId",
+        "contextDigest",
+        "authorityGeneration",
+        "policyGeneration",
+        "truthState",
+        "scope",
+        "freshness",
+        "completeness",
+        "items",
+        "authorizedActions",
+        "evidenceRefs",
+        "observedAt"
+      ],
+      "type": "object",
+      "x-openpc-trace": {
+        "componentIds": [
+          "DU-PC-WORKBENCH",
+          "LS-WORKBENCH",
+          "LS-CONTROL-API",
+          "COM-001",
+          "COM-024"
+        ],
+        "decisionIds": [
+          "AD-SR04-001-B0-FREEZE",
+          "AD-SR04-004-AUTHORITY-INTERSECTION",
+          "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY",
+          "DEC-C03-005-IDENTITY-SESSION",
+          "DEC-C03-006-API-SCHEMA",
+          "DEC-C03-007-ERROR-EVENT",
+          "DEC-C03-010-UI-FRAMEWORK"
+        ],
+        "requirementIds": [
+          "REQ-SR01-B0-LEDGER-RTP-296",
+          "REQ-SR01-B0-REQ-CMPREQ-GLOBAL-NAVIGATION",
+          "REQ-SR01-B0-REQ-SEC-005",
+          "REQ-SR01-B0-REQ-SEC-009",
+          "REQ-SR01-B0-REQ-UIX-001",
+          "REQ-SR01-B0-REQ-UIX-003",
+          "REQ-SR01-B0-REQ-UIX-006",
+          "REQ-SR01-B0-REQ-UIX-007",
+          "REQ-SR01-B0-REQ-UIX-012"
+        ],
+        "sourceUnitIds": [
+          "SU-REQ-5fccb7543499c04bd07731e5",
+          "SU-REQ-30fcace9724a5c90e8bc0b9c",
+          "SU-REQ-4088c30e20c3f984e224987d",
+          "SU-REQ-a09ba900a2d3d298c74e0530",
+          "SU-REQ-1ffab4e686849ec084be2379",
+          "SU-REQ-2c33a9ca8c81aa15e89a5e4c",
+          "SU-REQ-7b24a471c21752f35de07e43",
+          "SU-REQ-e937614f82bcbc95ad364569",
+          "SU-REQ-618a8a5ce6867a0cf8964fd9"
+        ]
+      }
+    }
+  },
+  "$id": "https://schemas.openpc.local/ui-bff.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "title": "OpenPC same-origin UI BFF contracts v1",
+  "type": "object",
+  "x-openpc-closure": "C04_CORRECTION01_LEAST_PRIVILEGE_COMPLETE_BFF_PROJECTION",
+  "x-openpc-trace": {
+    "componentIds": [
+      "DU-PC-WORKBENCH",
+      "LS-WORKBENCH",
+      "LS-CONTROL-API",
+      "COM-001",
+      "COM-024"
+    ],
+    "decisionIds": [
+      "AD-SR04-001-B0-FREEZE",
+      "AD-SR04-004-AUTHORITY-INTERSECTION",
+      "AD-SR04-015-UI-TRUTH-NOT-AUTHORITY",
+      "DEC-C03-005-IDENTITY-SESSION",
+      "DEC-C03-006-API-SCHEMA",
+      "DEC-C03-007-ERROR-EVENT",
+      "DEC-C03-010-UI-FRAMEWORK"
+    ],
+    "requirementIds": [
+      "REQ-SR01-B0-LEDGER-RTP-296",
+      "REQ-SR01-B0-REQ-CMPREQ-GLOBAL-NAVIGATION",
+      "REQ-SR01-B0-REQ-SEC-005",
+      "REQ-SR01-B0-REQ-SEC-009",
+      "REQ-SR01-B0-REQ-UIX-001",
+      "REQ-SR01-B0-REQ-UIX-003",
+      "REQ-SR01-B0-REQ-UIX-006",
+      "REQ-SR01-B0-REQ-UIX-007",
+      "REQ-SR01-B0-REQ-UIX-012"
+    ],
+    "sourceUnitIds": [
+      "SU-REQ-5fccb7543499c04bd07731e5",
+      "SU-REQ-30fcace9724a5c90e8bc0b9c",
+      "SU-REQ-4088c30e20c3f984e224987d",
+      "SU-REQ-a09ba900a2d3d298c74e0530",
+      "SU-REQ-1ffab4e686849ec084be2379",
+      "SU-REQ-2c33a9ca8c81aa15e89a5e4c",
+      "SU-REQ-7b24a471c21752f35de07e43",
+      "SU-REQ-e937614f82bcbc95ad364569",
+      "SU-REQ-618a8a5ce6867a0cf8964fd9"
+    ]
+  }
+}

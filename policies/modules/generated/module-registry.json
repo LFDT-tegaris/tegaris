@@ -1,0 +1,1355 @@
+{
+  "claimCeilingIds": [
+    "CC-GLOBAL-AUTHORITY-TRUTH",
+    "CC-EXACT-COMPATIBILITY-PROFILE",
+    "CC-ADMITTED-LOCAL-FACT-SOURCE-NEUTRAL",
+    "CC-PC-SEPARATE-PRODUCT-INTEGRATION",
+    "CC-NUMERIC-SLA-CERTIFICATION",
+    "CC-ACCESSIBILITY-RESPONSIVE-EXPLAINABILITY"
+  ],
+  "cyclePolicy": "FORBIDDEN",
+  "dagEdgeCount": 69,
+  "dagNodeCount": 33,
+  "edges": [
+    {
+      "edgeId": "INSTALL-pc.foundation.kernel-BEFORE-pc.config.assets",
+      "from": "pc.foundation.kernel",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.config.assets"
+    },
+    {
+      "edgeId": "INSTALL-pc.foundation.kernel-BEFORE-pc.identity",
+      "from": "pc.foundation.kernel",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.identity"
+    },
+    {
+      "edgeId": "INSTALL-pc.config.assets-BEFORE-pc.identity",
+      "from": "pc.config.assets",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.identity"
+    },
+    {
+      "edgeId": "INSTALL-pc.identity-BEFORE-pc.participant.governance",
+      "from": "pc.identity",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.participant.governance"
+    },
+    {
+      "edgeId": "INSTALL-pc.foundation.kernel-BEFORE-pc.module.framework",
+      "from": "pc.foundation.kernel",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.module.framework"
+    },
+    {
+      "edgeId": "INSTALL-pc.config.assets-BEFORE-pc.module.framework",
+      "from": "pc.config.assets",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.module.framework"
+    },
+    {
+      "edgeId": "INSTALL-pc.identity-BEFORE-pc.module.framework",
+      "from": "pc.identity",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.module.framework"
+    },
+    {
+      "edgeId": "INSTALL-pc.participant.governance-BEFORE-pc.policy.lifecycle",
+      "from": "pc.participant.governance",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.lifecycle"
+    },
+    {
+      "edgeId": "INSTALL-pc.module.framework-BEFORE-pc.policy.lifecycle",
+      "from": "pc.module.framework",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.lifecycle"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.lifecycle-BEFORE-pc.policy.compiler-distributor",
+      "from": "pc.policy.lifecycle",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.compiler-distributor"
+    },
+    {
+      "edgeId": "INSTALL-pc.module.framework-BEFORE-pc.policy.compiler-distributor",
+      "from": "pc.module.framework",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.compiler-distributor"
+    },
+    {
+      "edgeId": "INSTALL-pc.foundation.kernel-BEFORE-pc.runtime",
+      "from": "pc.foundation.kernel",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.runtime"
+    },
+    {
+      "edgeId": "INSTALL-pc.identity-BEFORE-pc.runtime",
+      "from": "pc.identity",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.runtime"
+    },
+    {
+      "edgeId": "INSTALL-pc.participant.governance-BEFORE-pc.runtime",
+      "from": "pc.participant.governance",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.runtime"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.compiler-distributor-BEFORE-pc.runtime",
+      "from": "pc.policy.compiler-distributor",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.runtime"
+    },
+    {
+      "edgeId": "INSTALL-pc.runtime-BEFORE-pc.multi-rpc",
+      "from": "pc.runtime",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.multi-rpc"
+    },
+    {
+      "edgeId": "INSTALL-pc.config.assets-BEFORE-pc.multi-rpc",
+      "from": "pc.config.assets",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.multi-rpc"
+    },
+    {
+      "edgeId": "INSTALL-pc.module.framework-BEFORE-pc.indexing.dedicated-policy",
+      "from": "pc.module.framework",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.indexing.dedicated-policy"
+    },
+    {
+      "edgeId": "INSTALL-pc.config.assets-BEFORE-pc.indexing.dedicated-policy",
+      "from": "pc.config.assets",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.indexing.dedicated-policy"
+    },
+    {
+      "edgeId": "INSTALL-pc.foundation.kernel-BEFORE-pc.fact-bridge",
+      "from": "pc.foundation.kernel",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.fact-bridge"
+    },
+    {
+      "edgeId": "INSTALL-pc.identity-BEFORE-pc.fact-bridge",
+      "from": "pc.identity",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.fact-bridge"
+    },
+    {
+      "edgeId": "INSTALL-pc.config.assets-BEFORE-pc.fact-bridge",
+      "from": "pc.config.assets",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.fact-bridge"
+    },
+    {
+      "edgeId": "INSTALL-pc.foundation.kernel-BEFORE-pc.evidence",
+      "from": "pc.foundation.kernel",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.evidence"
+    },
+    {
+      "edgeId": "INSTALL-pc.identity-BEFORE-pc.evidence",
+      "from": "pc.identity",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.evidence"
+    },
+    {
+      "edgeId": "INSTALL-pc.foundation.kernel-BEFORE-pc.observability",
+      "from": "pc.foundation.kernel",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.observability"
+    },
+    {
+      "edgeId": "INSTALL-pc.runtime-BEFORE-pc.transaction.delivery",
+      "from": "pc.runtime",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.transaction.delivery"
+    },
+    {
+      "edgeId": "INSTALL-pc.multi-rpc-BEFORE-pc.transaction.delivery",
+      "from": "pc.multi-rpc",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.transaction.delivery"
+    },
+    {
+      "edgeId": "INSTALL-pc.evidence-BEFORE-pc.transaction.delivery",
+      "from": "pc.evidence",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.transaction.delivery"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.lifecycle-BEFORE-pc.deployment.governance",
+      "from": "pc.policy.lifecycle",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.deployment.governance"
+    },
+    {
+      "edgeId": "INSTALL-pc.runtime-BEFORE-pc.deployment.governance",
+      "from": "pc.runtime",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.deployment.governance"
+    },
+    {
+      "edgeId": "INSTALL-pc.evidence-BEFORE-pc.deployment.governance",
+      "from": "pc.evidence",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.deployment.governance"
+    },
+    {
+      "edgeId": "INSTALL-pc.fact-bridge-BEFORE-pc.external-decision-facts",
+      "from": "pc.fact-bridge",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.external-decision-facts"
+    },
+    {
+      "edgeId": "INSTALL-pc.identity-BEFORE-pc.external-decision-facts",
+      "from": "pc.identity",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.external-decision-facts"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.lifecycle-BEFORE-pc.policy.rpc-surface",
+      "from": "pc.policy.lifecycle",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.rpc-surface"
+    },
+    {
+      "edgeId": "INSTALL-pc.runtime-BEFORE-pc.policy.rpc-surface",
+      "from": "pc.runtime",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.rpc-surface"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.lifecycle-BEFORE-pc.policy.contract-method",
+      "from": "pc.policy.lifecycle",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.contract-method"
+    },
+    {
+      "edgeId": "INSTALL-pc.runtime-BEFORE-pc.policy.contract-method",
+      "from": "pc.runtime",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.contract-method"
+    },
+    {
+      "edgeId": "INSTALL-pc.config.assets-BEFORE-pc.policy.contract-method",
+      "from": "pc.config.assets",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.contract-method"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.contract-method-BEFORE-pc.policy.argument-guard",
+      "from": "pc.policy.contract-method",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.argument-guard"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.contract-method-BEFORE-pc.policy.state-read",
+      "from": "pc.policy.contract-method",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.state-read"
+    },
+    {
+      "edgeId": "INSTALL-pc.fact-bridge-BEFORE-pc.policy.state-read",
+      "from": "pc.fact-bridge",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.state-read"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.lifecycle-BEFORE-pc.policy.event-visibility",
+      "from": "pc.policy.lifecycle",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.event-visibility"
+    },
+    {
+      "edgeId": "INSTALL-pc.runtime-BEFORE-pc.policy.event-visibility",
+      "from": "pc.runtime",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.event-visibility"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.event-visibility-BEFORE-pc.policy.dynamic-event-visibility",
+      "from": "pc.policy.event-visibility",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.dynamic-event-visibility"
+    },
+    {
+      "edgeId": "INSTALL-pc.fact-bridge-BEFORE-pc.policy.dynamic-event-visibility",
+      "from": "pc.fact-bridge",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.dynamic-event-visibility"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.lifecycle-BEFORE-pc.policy.ptv",
+      "from": "pc.policy.lifecycle",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.ptv"
+    },
+    {
+      "edgeId": "INSTALL-pc.runtime-BEFORE-pc.policy.ptv",
+      "from": "pc.runtime",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.ptv"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.argument-guard-BEFORE-pc.policy.runtime-guard",
+      "from": "pc.policy.argument-guard",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.runtime-guard"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.state-read-BEFORE-pc.policy.runtime-guard",
+      "from": "pc.policy.state-read",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.runtime-guard"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.contract-method-BEFORE-pc.policy.cigl",
+      "from": "pc.policy.contract-method",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.cigl"
+    },
+    {
+      "edgeId": "INSTALL-pc.fact-bridge-BEFORE-pc.policy.cigl",
+      "from": "pc.fact-bridge",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.cigl"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.lifecycle-BEFORE-pc.policy.simulation-guard",
+      "from": "pc.policy.lifecycle",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.simulation-guard"
+    },
+    {
+      "edgeId": "INSTALL-pc.runtime-BEFORE-pc.policy.simulation-guard",
+      "from": "pc.runtime",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.simulation-guard"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.rpc-surface-BEFORE-pc.policy.invocation-capability",
+      "from": "pc.policy.rpc-surface",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.invocation-capability"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.contract-method-BEFORE-pc.policy.invocation-capability",
+      "from": "pc.policy.contract-method",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.invocation-capability"
+    },
+    {
+      "edgeId": "INSTALL-pc.transaction.delivery-BEFORE-pc.policy.invocation-capability",
+      "from": "pc.transaction.delivery",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.invocation-capability"
+    },
+    {
+      "edgeId": "INSTALL-pc.runtime-BEFORE-pc.policy.execution-path-observation",
+      "from": "pc.runtime",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.execution-path-observation"
+    },
+    {
+      "edgeId": "INSTALL-pc.evidence-BEFORE-pc.policy.execution-path-observation",
+      "from": "pc.evidence",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.execution-path-observation"
+    },
+    {
+      "edgeId": "INSTALL-pc.fact-bridge-BEFORE-pc.policy.relationship-facts",
+      "from": "pc.fact-bridge",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.relationship-facts"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.lifecycle-BEFORE-pc.policy.relationship-facts",
+      "from": "pc.policy.lifecycle",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.relationship-facts"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.dynamic-event-visibility-BEFORE-pc.policy.dynamic-event-ordering",
+      "from": "pc.policy.dynamic-event-visibility",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.dynamic-event-ordering"
+    },
+    {
+      "edgeId": "INSTALL-pc.fact-bridge-BEFORE-pc.policy.dynamic-event-ordering",
+      "from": "pc.fact-bridge",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.dynamic-event-ordering"
+    },
+    {
+      "edgeId": "INSTALL-pc.deployment.governance-BEFORE-pc.policy.deployment",
+      "from": "pc.deployment.governance",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.deployment"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.lifecycle-BEFORE-pc.policy.deployment",
+      "from": "pc.policy.lifecycle",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.deployment"
+    },
+    {
+      "edgeId": "INSTALL-pc.external-decision-facts-BEFORE-pc.policy.external-decision",
+      "from": "pc.external-decision-facts",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.external-decision"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.lifecycle-BEFORE-pc.policy.external-decision",
+      "from": "pc.policy.lifecycle",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.external-decision"
+    },
+    {
+      "edgeId": "INSTALL-pc.policy.lifecycle-BEFORE-pc.policy.selective-disclosure",
+      "from": "pc.policy.lifecycle",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.selective-disclosure"
+    },
+    {
+      "edgeId": "INSTALL-pc.evidence-BEFORE-pc.policy.selective-disclosure",
+      "from": "pc.evidence",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.selective-disclosure"
+    },
+    {
+      "edgeId": "INSTALL-pc.identity-BEFORE-pc.policy.selective-disclosure",
+      "from": "pc.identity",
+      "relation": "REQUIRED_INSTALL_BEFORE",
+      "to": "pc.policy.selective-disclosure"
+    }
+  ],
+  "freezeId": "C03-ARCHITECTURE-SHARED-PRIMITIVES-FREEZE-20260824-01",
+  "futureComponentPolicy": "DU-SUBQUERY and LS-INDEXER cannot satisfy an R1 dependency",
+  "futureComponentsExcludedFromR1Authority": [
+    "DU-SUBQUERY",
+    "LS-INDEXER"
+  ],
+  "futureModulesIncluded": [],
+  "installOrder": [
+    "pc.foundation.kernel",
+    "pc.config.assets",
+    "pc.observability",
+    "pc.identity",
+    "pc.evidence",
+    "pc.fact-bridge",
+    "pc.module.framework",
+    "pc.participant.governance",
+    "pc.external-decision-facts",
+    "pc.indexing.dedicated-policy",
+    "pc.policy.lifecycle",
+    "pc.policy.compiler-distributor",
+    "pc.policy.external-decision",
+    "pc.policy.relationship-facts",
+    "pc.policy.selective-disclosure",
+    "pc.runtime",
+    "pc.deployment.governance",
+    "pc.multi-rpc",
+    "pc.policy.contract-method",
+    "pc.policy.event-visibility",
+    "pc.policy.execution-path-observation",
+    "pc.policy.ptv",
+    "pc.policy.rpc-surface",
+    "pc.policy.simulation-guard",
+    "pc.policy.deployment",
+    "pc.transaction.delivery",
+    "pc.policy.argument-guard",
+    "pc.policy.cigl",
+    "pc.policy.state-read",
+    "pc.policy.dynamic-event-visibility",
+    "pc.policy.invocation-capability",
+    "pc.policy.runtime-guard",
+    "pc.policy.dynamic-event-ordering"
+  ],
+  "manifestSchemaPath": "module-manifest.schema.json",
+  "manifestSchemaSha256": "21652374923edec1a2b71f444c40540105dea49256189d678075e1bd2bcaa043",
+  "moduleCount": 33,
+  "modules": [
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.config.assets.json",
+      "manifestSha256": "30564e955ba04447d90eab847bb3c6d0d67ec89409c4f4a2b312b43b71faa7ee",
+      "moduleId": "pc.config.assets",
+      "moduleType": "BASE",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-config-assets"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.deployment.governance.json",
+      "manifestSha256": "e6868525f271011b6501620f156b62b532ea0f440160a578482f7678553710f4",
+      "moduleId": "pc.deployment.governance",
+      "moduleType": "BASE",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-deployment-governance"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.evidence.json",
+      "manifestSha256": "e11ddffc8dd73994ca39a26936279a06366d38015756ce39ea6bb3d6631df43d",
+      "moduleId": "pc.evidence",
+      "moduleType": "BASE",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-evidence"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.external-decision-facts.json",
+      "manifestSha256": "38d9c19c28f54772b5e1a7760ecbe414afc51f3527495305b4a1ac6e252cb99d",
+      "moduleId": "pc.external-decision-facts",
+      "moduleType": "BASE",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-external-decision-facts"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-FACT-BRIDGE",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.fact-bridge.json",
+      "manifestSha256": "949a155d9fd7815129d7c03bd26831bd67a50a743d0e415a7be934ac8d05f1fc",
+      "moduleId": "pc.fact-bridge",
+      "moduleType": "BASE",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-fact-bridge"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-FACT-BRIDGE",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.foundation.kernel.json",
+      "manifestSha256": "dab4b353d766b08c6ea1dd15f0c576ab6c9daf831db2c470f3e67da96e9f2df5",
+      "moduleId": "pc.foundation.kernel",
+      "moduleType": "BASE",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-foundation-kernel"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.identity.json",
+      "manifestSha256": "1309b0b07bd9a98a80a56b185459e4ca876d94b07cf2f2248415791e462d8f60",
+      "moduleId": "pc.identity",
+      "moduleType": "BASE",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-identity"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-SUBQUERY"
+      ],
+      "futureOnlyExecutionHostIds": [
+        "DU-SUBQUERY"
+      ],
+      "manifestPath": "manifests/pc.indexing.dedicated-policy.json",
+      "manifestSha256": "01d4cfbd6b315207596510b9a103b549394d77cd7e0f8f58d981bda79fe779b3",
+      "moduleId": "pc.indexing.dedicated-policy",
+      "moduleType": "BASE",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-indexing-dedicated-policy"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.module.framework.json",
+      "manifestSha256": "a1256b6e517729c1731d7ec2bd693405a187601075be7cc38b465a9672f67cfa",
+      "moduleId": "pc.module.framework",
+      "moduleType": "BASE",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-module-framework"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.multi-rpc.json",
+      "manifestSha256": "9c76cc761da6d328603bad238c09876a0f43d7d38aae7cf7ab964d2b39bb74a0",
+      "moduleId": "pc.multi-rpc",
+      "moduleType": "BASE",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-multi-rpc"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-OTEL-COLLECTOR",
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.observability.json",
+      "manifestSha256": "e7ba1980acd1efd7d74aa3357918bdc44916c261509933273a5df95369e67b9e",
+      "moduleId": "pc.observability",
+      "moduleType": "BASE",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-observability"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-OTEL-COLLECTOR",
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.participant.governance.json",
+      "manifestSha256": "73b13df55266b05c6f1f0598014320d0c80b78527bd8588793544c61cc64c650",
+      "moduleId": "pc.participant.governance",
+      "moduleType": "BASE",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-participant-governance"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.argument-guard.json",
+      "manifestSha256": "c43fdfe38519bb2eec4ac4a4fb1bc75c32d249dc058f3308747af8e5cb91bf19",
+      "moduleId": "pc.policy.argument-guard",
+      "moduleType": "POLICY",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-argument-guard"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.cigl.json",
+      "manifestSha256": "b8117e6fcadc02e6b8122216a955d2575cd94a04d89b9b0858f51f1b8a42bf34",
+      "moduleId": "pc.policy.cigl",
+      "moduleType": "POLICY",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-cigl"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.compiler-distributor.json",
+      "manifestSha256": "6c337482ff7986c0cf87ea9cfdcb2cca3d039703a34f73f1e53d15ab5a6ffcb6",
+      "moduleId": "pc.policy.compiler-distributor",
+      "moduleType": "BASE",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-compiler-distributor"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.contract-method.json",
+      "manifestSha256": "afb2c0f8d70edb9ade3fd922f33892bf7d838e0b63d97edcd1e6c53d5dd90748",
+      "moduleId": "pc.policy.contract-method",
+      "moduleType": "POLICY",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-contract-method"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.deployment.json",
+      "manifestSha256": "082bf2ddce1a3bb7f9719fbbc647e28a6ca039c9008df33ca18ea33d4cb5682c",
+      "moduleId": "pc.policy.deployment",
+      "moduleType": "POLICY",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-deployment"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.dynamic-event-ordering.json",
+      "manifestSha256": "65f1e07a793888dc3f11481a3919b82a61c0d993944b9248f927936a280d6cb4",
+      "moduleId": "pc.policy.dynamic-event-ordering",
+      "moduleType": "POLICY_BRIDGE",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-dynamic-event-ordering"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.dynamic-event-visibility.json",
+      "manifestSha256": "5d12dc1aefa9a995b419330d33e690fb59a7c2cf19da2a1ebbf05ff2e4f11ee5",
+      "moduleId": "pc.policy.dynamic-event-visibility",
+      "moduleType": "POLICY",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-dynamic-event-visibility"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.event-visibility.json",
+      "manifestSha256": "9beabaf59f5b2d3f38a58337ad144c59e8d9597e54fd9828acaaabf6cd7a673e",
+      "moduleId": "pc.policy.event-visibility",
+      "moduleType": "POLICY",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-event-visibility"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.execution-path-observation.json",
+      "manifestSha256": "48020cde714da7ee45d2a326c747cc706aaae178fa26847ec9bc03e4a36b828b",
+      "moduleId": "pc.policy.execution-path-observation",
+      "moduleType": "BRIDGE_OBSERVATION",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-execution-path-observation"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.external-decision.json",
+      "manifestSha256": "78c6cf2d90ccece51420cb9be287477e5eb67a3ef6ccf025769d42721a81567c",
+      "moduleId": "pc.policy.external-decision",
+      "moduleType": "POLICY",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-external-decision"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.invocation-capability.json",
+      "manifestSha256": "5604a1d435bc76e8a5744e1feaeea92daf1f3a682e4488be14cdcf2a566d1216",
+      "moduleId": "pc.policy.invocation-capability",
+      "moduleType": "BRIDGE_POLICY",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-invocation-capability"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.lifecycle.json",
+      "manifestSha256": "90f4e7eace247b07ad992fc0037349f05e05c884675c321ad141bdb5f0a8cb3e",
+      "moduleId": "pc.policy.lifecycle",
+      "moduleType": "BASE",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-lifecycle"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.ptv.json",
+      "manifestSha256": "7877a8c4faca1dbfe26e4e0939b8fbbc179e46df72aca2763bbfc339b65e5e16",
+      "moduleId": "pc.policy.ptv",
+      "moduleType": "POLICY",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-ptv"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.relationship-facts.json",
+      "manifestSha256": "26ebb220f87b46aa3b32bace6a67491318cf50d8fa9d42b400fc79631be7d816",
+      "moduleId": "pc.policy.relationship-facts",
+      "moduleType": "POLICY",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-relationship-facts"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.rpc-surface.json",
+      "manifestSha256": "76e2b4b0c14d34f0f685f63d60dd4156205be6c4b236bee9a1adce653bbc1736",
+      "moduleId": "pc.policy.rpc-surface",
+      "moduleType": "POLICY",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-rpc-surface"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.runtime-guard.json",
+      "manifestSha256": "714f3f6a7694e97a9baed620a0675df90d3da5ebc8b24f42f6892fd3054691ef",
+      "moduleId": "pc.policy.runtime-guard",
+      "moduleType": "POLICY",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-runtime-guard"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.selective-disclosure.json",
+      "manifestSha256": "6f7797af2ee2a5b0c98e0ab944d04a3e42c01830ce5d780f5a44a676de1f32f1",
+      "moduleId": "pc.policy.selective-disclosure",
+      "moduleType": "POLICY",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-selective-disclosure"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.simulation-guard.json",
+      "manifestSha256": "1a24be8ffc201d0b8fe6c65357b0a2a6133f587ed8434fd054bd92b5a8e78849",
+      "moduleId": "pc.policy.simulation-guard",
+      "moduleType": "POLICY",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-simulation-guard"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.policy.state-read.json",
+      "manifestSha256": "b2c14cbd5cd03a63229a6b40fc440622b94b1ae9697ed1eadf4e0a0144793cde",
+      "moduleId": "pc.policy.state-read",
+      "moduleType": "POLICY",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-policy-state-read"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.runtime.json",
+      "manifestSha256": "a3176fd00ff2eb34639e789eacb1210cd17d7e609fe04a69074c61700303bde5",
+      "moduleId": "pc.runtime",
+      "moduleType": "BASE",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-runtime"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "declaredExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "futureOnlyExecutionHostIds": [],
+      "manifestPath": "manifests/pc.transaction.delivery.json",
+      "manifestSha256": "857d7acb666297a8d489c24278b2291a053ee6fa64fca11b3bbda55eb346ffd6",
+      "moduleId": "pc.transaction.delivery",
+      "moduleType": "BASE",
+      "providedCapabilityIds": [
+        "urn:openpc:module-capability:pc-transaction-delivery"
+      ],
+      "r1AdmittedExecutionHostIds": [
+        "DU-PC-COMPILER",
+        "DU-PC-CONTROL",
+        "DU-PC-RUNTIME"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "pc.foundation.kernel",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.config.assets",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.identity",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.participant.governance",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.lifecycle",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.compiler-distributor",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.runtime",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.multi-rpc",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.indexing.dedicated-policy",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.fact-bridge",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.evidence",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.observability",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.module.framework",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.transaction.delivery",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.deployment.governance",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.external-decision-facts",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.rpc-surface",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.contract-method",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.argument-guard",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.state-read",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.event-visibility",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.dynamic-event-visibility",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.ptv",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.runtime-guard",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.cigl",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.simulation-guard",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.invocation-capability",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.execution-path-observation",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.relationship-facts",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.dynamic-event-ordering",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.deployment",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.external-decision",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    },
+    {
+      "nodeId": "pc.policy.selective-disclosure",
+      "versionPolicy": "manifest semantic version and digest must be exact"
+    }
+  ],
+  "registryContentSha256": "b59855cc1183c0b117b2f5b7d16c559abadd2d776e939f33fbe4f01d2795e62c",
+  "registryId": "OPENPC-C04-MODULE-REGISTRY-20260824-01",
+  "resolverFailureRules": [
+    "cycle",
+    "absent required capability",
+    "incompatible exact range",
+    "conflicting provider",
+    "identity-authority weakening",
+    "active dependent",
+    "unclosed data custody",
+    "Future component promoted to R1"
+  ],
+  "schemaVersion": "1.0",
+  "stackLockId": "OPENPC-STACK-LOCK-C03-20260824-01",
+  "stackLockSha256": "11c0a9c1f86bb5f6840850030a9c930c3ace58fde02dab814552965d29a40ac1",
+  "status": "SPECIFICATION_ONLY_NO_RELEASE_ARTIFACTS",
+  "traceSetIds": [
+    "TS-MOD-DEPENDENCY",
+    "TS-MOD-LIFECYCLE",
+    "TS-MOD-MANIFEST",
+    "TS-MOD-OPERATIONS",
+    "TS-MOD-PARTICIPANT",
+    "TS-MOD-POLICY",
+    "TS-MOD-SIMULATION"
+  ],
+  "uiSlots": [
+    {
+      "purpose": "Truthful dashboard card contribution",
+      "slotId": "UISLOT-DASHBOARD-CARD"
+    },
+    {
+      "purpose": "Read-bounded detail panel contribution",
+      "slotId": "UISLOT-DETAIL-PANEL"
+    },
+    {
+      "purpose": "Certified primary navigation contribution",
+      "slotId": "UISLOT-NAV-PRIMARY"
+    },
+    {
+      "purpose": "Authorized object action contribution",
+      "slotId": "UISLOT-OBJECT-ACTION"
+    },
+    {
+      "purpose": "Certified route content contribution",
+      "slotId": "UISLOT-ROUTE-CONTENT"
+    },
+    {
+      "purpose": "Schema-bound settings section contribution",
+      "slotId": "UISLOT-SETTINGS-SECTION"
+    }
+  ]
+}

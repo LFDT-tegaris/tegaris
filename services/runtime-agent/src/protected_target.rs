@@ -150,6 +150,7 @@ impl ProtectedTargetOwner {
         headers: &[(String, Vec<u8>)],
         trace: &RequestTraceId,
         capture_error: Option<RuntimeError>,
+        deadline_at_ms: u64,
     ) -> RuntimeResult<Box<dyn ProtectedRequest>> {
         let analysis_id = analysis::request_analysis_id(headers)?;
         if analysis_id.is_some() && self.analysis_exporter.is_none() {
@@ -192,6 +193,8 @@ impl ProtectedTargetOwner {
             authority: Arc::clone(&self.authority),
             transport_evidence: Arc::clone(&self.transport_evidence),
             recorded_unbound_denial: None,
+            evaluation_permit: None,
+            deadline_at_ms,
             decode: self.decode.clone(),
         }))
     }
@@ -205,7 +208,10 @@ impl ExtProcRequestOwner for ProtectedTargetOwner {
         headers: &[(String, Vec<u8>)],
         trace: &RequestTraceId,
     ) -> RuntimeResult<Box<dyn ProtectedRequest>> {
-        self.begin_captured(peer, generation, headers, trace, None)
+        let deadline = (crate::target_state::wall_clock_ns()? / 1_000_000)
+            .checked_add(self.decode.timeout_ms)
+            .ok_or(RuntimeError::BudgetExhausted)?;
+        self.begin_captured(peer, generation, headers, trace, None, deadline)
     }
 
     fn prepare_begin<'a>(
@@ -220,10 +226,14 @@ impl ExtProcRequestOwner for ProtectedTargetOwner {
                 .checked_add(self.decode.timeout_ms)
                 .ok_or(RuntimeError::BudgetExhausted)?;
             match self.state.coordinate_response_release(deadline).await {
-                Ok(_permit) => self.begin_captured(peer, generation, headers, trace, None),
+                Ok(_permit) => {
+                    self.begin_captured(peer, generation, headers, trace, None, deadline)
+                }
                 // Keep failures until the body is known: an existing durable
                 // outcome remains readable without authorizing a new request.
-                Err(error) => self.begin_captured(peer, generation, headers, trace, Some(error)),
+                Err(error) => {
+                    self.begin_captured(peer, generation, headers, trace, Some(error), deadline)
+                }
             }
         })
     }
@@ -257,6 +267,8 @@ struct TargetRequest {
     authority: Arc<dyn ProtectedTargetAuthority>,
     transport_evidence: Arc<dyn TargetTransportEvidence>,
     recorded_unbound_denial: Option<RuntimeDecision>,
+    evaluation_permit: Option<crate::target_disposition::OwnedResponseReleasePermit>,
+    deadline_at_ms: u64,
     decode: OwnedDecodeLimits,
 }
 
@@ -279,7 +291,21 @@ impl ProtectedRequest for TargetRequest {
             if self.analysis_id.is_some() {
                 return Err(RuntimeError::Denied);
             }
+            if self.evaluation_permit.take().is_some() {
+                return Err(RuntimeError::Replay);
+            }
+            let mut evaluation_permit = self
+                .state
+                .coordinate_evaluation(self.deadline_at_ms)
+                .await?;
             let request = self.bind_body(body)?;
+            if request.decoded().signed_transaction().is_some()
+                || request.decoded().deployment().is_some()
+            {
+                // Writes retain their own asynchronous observation gates. A
+                // retained read permit must never surround nested source I/O.
+                evaluation_permit.take();
+            }
             let input = request.evaluation();
             let route = if request.decoded().signed_transaction().is_some() {
                 let connection = self.authority.submission_connection(&request)?;
@@ -333,6 +359,7 @@ impl ProtectedRequest for TargetRequest {
             }
             self.body = Some(body.to_vec());
             self.route = Some(Arc::new(route));
+            self.evaluation_permit = evaluation_permit;
             Ok(input)
         })
     }
@@ -434,6 +461,9 @@ impl ProtectedRequest for TargetRequest {
     }
 
     fn authorize(&mut self, decision: &RuntimeDecision) -> RuntimeResult<String> {
+        // Keep the permit through every synchronous admission and handoff check;
+        // all exits release it before the Broker starts provider I/O.
+        let _permit = self.evaluation_permit.take();
         if self.analysis_id.is_some() || decision.effect != DecisionEffect::AllowForward {
             return Err(RuntimeError::InvalidAuthorization);
         }
@@ -464,6 +494,7 @@ impl ProtectedRequest for TargetRequest {
         decision: &RuntimeDecision,
         trace: &RequestTraceId,
     ) -> RuntimeResult<()> {
+        let _permit = self.evaluation_permit.take();
         let route = self
             .route
             .as_ref()
@@ -606,7 +637,11 @@ impl TargetRequest {
         let limits = RequestDecodeLimits {
             maximum_request_bytes: self.decode.maximum_request_bytes,
             maximum_response_bytes: self.decode.maximum_response_bytes,
-            timeout_ms: self.decode.timeout_ms,
+            timeout_ms: self
+                .deadline_at_ms
+                .checked_sub(crate::target_state::wall_clock_ns()? / 1_000_000)
+                .filter(|remaining| *remaining > 0)
+                .ok_or(RuntimeError::BudgetExhausted)?,
             block_selector: &self.decode.block_selector,
         };
         let bound = match &self.deployment_worker_key {

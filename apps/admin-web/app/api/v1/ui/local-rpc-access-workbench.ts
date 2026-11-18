@@ -1381,7 +1381,13 @@ export async function mutateRpcAccessWorkbench(request: NextRequest) {
       participantIds: [input.data.targetParticipantId],
       privacyDomainIds: [input.data.targetPrivacyDomainId],
       resourceIds: [...new Set(input.data.resourceIds)].sort(),
-      dataClasses: [],
+      dataClasses: [
+        ...new Set(
+          input.data.capabilityIds.map((selected) =>
+            selected === 'CALL_RESULT_DISCLOSURE' ? 'STATE_CALL' : 'transaction',
+          ),
+        ),
+      ].sort(),
       targetProfileIds: [...new Set(input.data.targetProfileIds)].sort(),
       riskClasses: ['LOW'] as const,
     };

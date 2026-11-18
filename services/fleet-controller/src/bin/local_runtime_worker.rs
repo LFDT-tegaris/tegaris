@@ -1539,7 +1539,8 @@ async fn claim(pool: &PgPool, config: &Config) -> WorkerResult<Option<ClaimedWor
                 or (policy.participant_id=w.participant_id
               and policy.privacy_domain_id=w.privacy_domain_id
               and (policy.active=true or
-                (w.work_kind='PROVIDER_QUALIFICATION' and policy.state='PREPARED'
+                (w.work_kind in ('PROVIDER_QUALIFICATION','INDEXER_ADMISSION','PROJECTION_VALIDATION')
+                 and policy.state='PREPARED'
                  and not policy.active and exists (
                    select 1 from control.policy_release_bundle release
                     where release.participant_id=policy.participant_id

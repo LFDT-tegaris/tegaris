@@ -90,6 +90,10 @@ impl AsyncProviderTransport for PinnedProviderTransport {
             if request.validate_digest().is_err() || request != self.decoded.request() {
                 return ProviderOutcome::Rejected(RuntimeError::InvalidAuthorization);
             }
+            let dispatch_permit = match self.target.request().coordinate_revalidation().await {
+                Ok(permit) => permit,
+                Err(error) => return ProviderOutcome::Rejected(error),
+            };
             if let Err(error) = self.revalidate_target() {
                 eprintln!(
                     "{}",
@@ -134,11 +138,19 @@ impl AsyncProviderTransport for PinnedProviderTransport {
                 "{}",
                 serde_json::json!({"event":"provider_dispatch_started","requestId":request.request_id,"attemptId":attempt_id,"method":request.method})
             );
+            // Refresh may proceed during network I/O. Reacquire coordination
+            // before inspecting the response against current authority.
+            drop(dispatch_permit);
             match connection
                 .post_json(self.provider_body.clone(), deadline)
                 .await
             {
                 Ok(body) => {
+                    let _response_permit =
+                        match self.target.request().coordinate_revalidation().await {
+                            Ok(permit) => permit,
+                            Err(error) => return ProviderOutcome::Rejected(error),
+                        };
                     if let Err(error) = self.revalidate_target() {
                         eprintln!(
                             "{}",

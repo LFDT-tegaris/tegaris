@@ -631,16 +631,33 @@ async fn postgres_tls_joined_local_decision_owner() {
     let mut protected: Box<dyn ProtectedRequest> =
         owner.begin(&peer, &t.generation, &[], &trace).unwrap();
     let body = request_body();
-    let input = protected.evaluation(&body).unwrap();
+    let evaluation_gate = Arc::new(tokio::sync::RwLock::new(()));
+    t.state.set_evaluation_test_gate(evaluation_gate.clone());
+    let writer = evaluation_gate.write().await;
+    let mut waiting = Box::pin(protected.prepare_evaluation(&body));
+    assert!(futures::poll!(&mut waiting).is_pending());
+    drop(writer);
+    let input = waiting.await.unwrap();
+    assert!(evaluation_gate.try_write().is_err());
     let decision_through_ext_proc = pds
         .evaluate_for(&input, protected.decision_owner())
         .unwrap();
+    assert!(evaluation_gate.try_write().is_err());
     assert_eq!(
         decision_through_ext_proc.effect,
         DecisionEffect::AllowForward
     );
     let token = protected.authorize(&decision_through_ext_proc).unwrap();
-    let response = handoffs.execute(&token, &body).await.unwrap();
+    assert!(evaluation_gate.try_write().is_ok());
+    let before_dispatch = provider_contacts();
+    let writer = evaluation_gate.write().await;
+    let mut dispatch = Box::pin(handoffs.execute(&token, &body));
+    assert!(futures::poll!(&mut dispatch).is_pending());
+    assert_eq!(provider_contacts(), before_dispatch);
+    drop(writer);
+    let response = dispatch.await.unwrap();
+    assert_eq!(provider_contacts(), before_dispatch + 1);
+    assert!(evaluation_gate.try_write().is_ok());
     assert_eq!(
         protected
             .response_headers(&[(":status".into(), b"200".to_vec())])
@@ -671,6 +688,29 @@ async fn postgres_tls_joined_local_decision_owner() {
             ..
         } if response_digest == &Digest::of(&released_through_ext_proc)
     ));
+    let mut malformed = owner
+        .begin(&peer, &t.generation, &[], &RequestTraceId::new())
+        .unwrap();
+    assert!(malformed.prepare_evaluation(b"{}").await.is_err());
+    assert!(evaluation_gate.try_write().is_ok());
+    drop(malformed);
+    let mut abandoned = owner
+        .begin(&peer, &t.generation, &[], &RequestTraceId::new())
+        .unwrap();
+    abandoned.prepare_evaluation(&body).await.unwrap();
+    assert!(evaluation_gate.try_write().is_err());
+    drop(abandoned);
+    assert!(evaluation_gate.try_write().is_ok());
+    let mut cancelled = owner
+        .begin(&peer, &t.generation, &[], &RequestTraceId::new())
+        .unwrap();
+    let writer = evaluation_gate.write().await;
+    let mut preparation = Box::pin(cancelled.prepare_evaluation(&body));
+    assert!(futures::poll!(&mut preparation).is_pending());
+    drop(preparation);
+    drop(writer);
+    assert!(evaluation_gate.try_write().is_ok());
+    drop(cancelled);
     // The same current workload has a read-RPC action, independently of send
     // authority. Provider faults must withhold the entire protected response.
     let topic = pc_policy_core::contract_policy::event_topic(
@@ -817,6 +857,10 @@ async fn postgres_tls_joined_local_decision_owner() {
     })
     .await
     .unwrap();
+    let refresh_during_io = evaluation_gate
+        .try_write()
+        .expect("provider I/O must not hold the authority refresh gate");
+    let attempts_before_response = t.state.revalidation_attempts();
     tokio::time::timeout(
         Duration::from_secs(3),
         facts.store.invalidate_for_reorg(
@@ -836,6 +880,18 @@ async fn postgres_tls_joined_local_decision_owner() {
     );
     drop(buffered_receipt);
     fs::write(root.join("release"), b"release").unwrap();
+    tokio::time::timeout(Duration::from_secs(4), async {
+        while t.state.revalidation_attempts() == attempts_before_response {
+            tokio::time::sleep(Duration::from_millis(10)).await;
+        }
+    })
+    .await
+    .expect("response validation must reacquire the authority refresh gate");
+    assert!(
+        !pending.is_finished(),
+        "provider response must remain pending while authority refresh holds the gate"
+    );
+    drop(refresh_during_io);
     assert!(
         pending.await.unwrap().is_err(),
         "in-flight stale response must not be released"
@@ -906,6 +962,22 @@ async fn postgres_tls_joined_local_decision_owner() {
             .is_none()
     );
     drop(denied);
+    let guarded_trace = RequestTraceId::new();
+    let mut guarded_denial = owner
+        .begin(&peer, &t.generation, &[], &guarded_trace)
+        .unwrap();
+    let guarded_input = guarded_denial.prepare_evaluation(&body).await.unwrap();
+    assert!(evaluation_gate.try_write().is_err());
+    let guarded_decision = pds
+        .evaluate_for(&guarded_input, guarded_denial.decision_owner())
+        .unwrap();
+    assert_ne!(guarded_decision.effect, DecisionEffect::AllowForward);
+    assert!(evaluation_gate.try_write().is_err());
+    guarded_denial
+        .record_denial(&guarded_decision, &guarded_trace)
+        .unwrap();
+    assert!(evaluation_gate.try_write().is_ok());
+    drop(guarded_denial);
     drop(protected);
     drop(handoffs);
     drop(owner);

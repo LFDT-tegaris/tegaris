@@ -108,6 +108,41 @@ it('rejects metadata from a different Participant before binding privacy or seal
   expect(globalThis.fetch).toHaveBeenCalledTimes(1);
 });
 
+it.each([
+  { capabilities: ['CALL_RESULT_DISCLOSURE'], classes: ['STATE_CALL'] },
+  { capabilities: ['SIGNED_TRANSACTION_SUBMISSION'], classes: ['transaction'] },
+  {
+    capabilities: ['SIGNED_TRANSACTION_SUBMISSION', 'CALL_RESULT_DISCLOSURE'],
+    classes: ['STATE_CALL', 'transaction'],
+  },
+])('seals only the data classes required by $capabilities', async ({ capabilities, classes }) => {
+  const selected = { ...input(), capabilityIds: capabilities };
+  const response = await mutateRpcAccessWorkbench(request(selected));
+  expect(response.status).toBe(201);
+  const result = await response.json();
+  const sealed = openBffPayload(result.reviewToken, runtime.cookieKey, 'rpc-access-review') as {
+    body: { usable: unknown; grantable: unknown };
+  };
+  for (const scope of [sealed.body.usable, sealed.body.grantable])
+    expect(scope).toMatchObject({
+      administration: { actionIntentIds: [], dataClasses: [] },
+      runtime: {
+        capabilityIds: [...capabilities].sort(),
+        dataClasses: classes,
+        participantIds: [participantId],
+        privacyDomainIds: [privacyDomainId],
+        resourceIds: selected.resourceIds,
+        targetProfileIds: selected.targetProfileIds,
+        riskClasses: ['LOW'],
+      },
+      makerCheckerRequired: true,
+      stepUpRequired: true,
+      onwardDelegationDepth: 0,
+    });
+  expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+  expect(vi.mocked(globalThis.fetch).mock.calls[0]?.[1]?.method).not.toBe('POST');
+});
+
 describe('simulation authority catalogue', () => {
   const read = () =>
     readRpcAccessWorkbench(

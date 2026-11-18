@@ -25,7 +25,7 @@ The source and documentation are available in this repository. The first version
 
 **Building an integration?** Use the [integration guide](docs/development/integration.md) and [interface reference](docs/reference/interfaces.md), including the published schemas and their coverage limits.
 
-**Exploring the demo?** The [demo guide](docs/demo.md) covers the fictional institutions, sample payment records, access arrangements and walkthroughs.
+**Try the [interactive demo](https://sandbox.tegaris.io/demo/).** Explore three permitted contract reads and three access-boundary examples using fictional payment data, with no account required. The [demo guide](docs/demo.md) explains each example and the separate invited console walkthrough.
 
 Follow the [local setup guide](docs/getting-started.md) on a dedicated Linux machine with systemd and a local Docker Engine. Start by checking prerequisites:
 
@@ -77,7 +77,7 @@ Application and platform teams can use the [validation guide](docs/evaluation/RE
 
 Start with the [documentation index](docs/README.md). Operators should also read [operations and recovery](docs/operations/README.md); developers should use the [interface reference](docs/reference/interfaces.md) to distinguish administrative session APIs from workload/runtime interfaces.
 
-v0.9.0 has known functional and operational limits, including a failing permitted RPC request. Review the [known issues](docs/releases/v0.9.0.md#known-issues-and-limits) before choosing an integration workflow. A running demo or documented interface does not establish production qualification, regulatory compliance or a support commitment. See [release scope](docs/releases/README.md) for the current limits.
+v0.9.0 has known functional and operational limits, including an unqualified synthetic balance-read workflow. Review the [known issues](docs/releases/v0.9.0.md#known-issues-and-limits) before choosing an integration workflow. A running demo or documented interface does not establish production qualification, regulatory compliance or a support commitment. See [release scope](docs/releases/README.md) for the current limits.
 
 ## License
 

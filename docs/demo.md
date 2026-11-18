@@ -4,7 +4,26 @@ Explore how Tegaris Application Layer Privacy controls access to shared contract
 
 All organizations, accounts, instructions and amounts in this guide are synthetic. Amounts are expressed in test units; they do not represent funds or settlement obligations.
 
-## Choose your walkthrough
+## Try the interactive demo
+
+Open [sandbox.tegaris.io](https://sandbox.tegaris.io/demo/). No account, wallet, installation or per-request human approval is required. Choose a scenario, inspect its request, then select **Run request**. Switch between **Request** and **Response** to inspect the details. Selecting a different scenario clears the previous result.
+
+The three permitted examples read the populated test blockchain through Tegaris. The other examples exercise access restrictions; they do not submit blockchain transactions.
+
+| Example                       | Expected result | What it demonstrates                                              |
+| ----------------------------- | --------------- | ----------------------------------------------------------------- |
+| Payment details               | Allowed         | Read a synthetic payment between Bank Alpha and Bank Beta.        |
+| Settlement workflow           | Allowed         | Read the configured settlement workflow.                          |
+| Restricted reference          | Allowed         | Read a reference value covered by the application's permission.   |
+| Unapproved method             | Denied          | A contract binding does not authorize every method.               |
+| Unassigned contract           | Denied          | Permission for one contract does not authorize another.           |
+| Missing application assertion | Rejected        | A request must supply the required application identity evidence. |
+
+The application uses pre-approved, read-only access to these fixed examples. Visitors cannot supply arbitrary contracts, change permissions or submit transactions. Requests are rate-limited; wait briefly before trying again if the page asks you to slow down. Only fictional records are available.
+
+These six examples demonstrate permitted reads, method and contract restrictions, and rejection of missing identity evidence. They do not demonstrate field redaction, debtor-role enforcement or downstream contract isolation. The reference scenarios below describe separate console walkthroughs.
+
+## Reference console scenarios
 
 | Walkthrough             | What to examine                                                     | Expected boundary                                                                                                       |
 | ----------------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
@@ -17,9 +36,9 @@ All organizations, accounts, instructions and amounts in this guide are syntheti
 
 These are reference scenarios for a prepared workspace. The [release notes](releases/v0.9.0.md#known-issues-and-limits) identify the supported scope and known issues for v0.9.0. A populated contract library alone does not establish that its application requests are enabled.
 
-## Access your workspace
+## Invited console access
 
-For a hosted walkthrough, use the account and organization supplied with your invitation. Access details are issued privately through the [project contacts](../MAINTAINERS.md). Passwords, application certificates and private keys are never published in this guide.
+The interactive examples above require no account. For a separately invited console walkthrough, use the account and organization supplied with your invitation. Console access details are issued privately through the [project contacts](../MAINTAINERS.md). Passwords, application certificates and private keys are never published in this guide.
 
 1. Sign in with the supplied demo account.
 2. Confirm the account and organization on **Account & workspace** before opening a scenario.
@@ -27,7 +46,7 @@ For a hosted walkthrough, use the account and organization supplied with your in
 4. Open the prepared contract and policy records. Use existing records for the introductory walkthrough; creating another policy or approval is unnecessary for inspecting them.
 5. Use only the synthetic inputs provided for the selected scenario.
 
-A visitor's access should be approved before the session and limited to the selected demonstration. Routine application reads can use a bounded grant that does not require a person to approve each call. Administrative changes and writes follow the configured review and authentication requirements.
+An invited console user's access should be approved before the session and limited to the selected demonstration. Routine application reads can use a bounded grant that does not require a person to approve each call. Administrative changes and writes follow the configured review and authentication requirements.
 
 For a local workspace, follow [getting started](getting-started.md), then use the [console guide](user-guide/README.md). Local setup creates the initial workspace; it does not import the reference dataset automatically.
 
@@ -85,6 +104,8 @@ The sample data file is a set of business inputs, not an installer, database res
 
 ## Help during a session
 
-If a page denies access, first confirm the selected account and organization. If verification has expired, renew the existing session. Do not create a replacement authenticator, broader role or duplicate approval to work around the error.
+In the interactive examples, **Denied** and **Rejected** are expected results for the three access-boundary cases. If an allowed example reports an error, use the support details below; signing in is unnecessary.
+
+For invited console access, first confirm the selected account and organization. If verification has expired, renew the existing session. Do not create a replacement authenticator, broader role or duplicate approval to work around the error.
 
 Share the failing step, request reference, approximate time and a redacted screenshot through [support](../SUPPORT.md). Keep passwords, cookies, authenticator responses and private keys out of screenshots and issue reports.

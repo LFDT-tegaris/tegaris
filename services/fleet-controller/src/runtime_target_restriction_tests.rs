@@ -2056,6 +2056,92 @@ mod disposition_tests {
     }
 
     #[tokio::test]
+    async fn owned_evaluation_permit_waits_for_refresh_and_fences_the_whole_decision() {
+        let f = DispositionFixture::new();
+        let agent = f.start();
+        f.restore(&agent).await;
+        let receipts = agent.replay_canonical_receipts().unwrap();
+        let resume = Arc::new(tokio::sync::Notify::new());
+        f.control.0.lock().unwrap().read_pause =
+            Some((Arc::new(tokio::sync::Notify::new()), resume.clone()));
+        let mut refresh = Box::pin(agent.reconcile_target_disposition());
+        assert!(futures::poll!(&mut refresh).is_pending());
+        let mut evaluation =
+            Box::pin(agent.coordinate_response_release_owned(release_clock_ms() + 1000));
+        assert!(futures::poll!(&mut evaluation).is_pending());
+        f.denied(&agent);
+        f.control.0.lock().unwrap().read_pause = None;
+        resume.notify_one();
+        refresh.await.unwrap();
+        let permit = evaluation.await.unwrap().unwrap();
+        agent.require_current_target_disposition().unwrap();
+        let reads = f.control.0.lock().unwrap().current_reads;
+        let mut next_refresh = Box::pin(agent.reconcile_target_disposition());
+        assert!(futures::poll!(&mut next_refresh).is_pending());
+        assert_eq!(f.control.0.lock().unwrap().current_reads, reads);
+        agent.require_current_target_disposition().unwrap();
+        drop(permit);
+        next_refresh.await.unwrap();
+        assert_eq!(agent.replay_canonical_receipts().unwrap(), receipts);
+    }
+
+    #[tokio::test]
+    async fn owned_evaluation_permit_never_overrides_independent_withdrawal() {
+        let f = DispositionFixture::new();
+        let agent = f.start();
+        f.restore(&agent).await;
+        let permit = agent
+            .coordinate_response_release_owned(release_clock_ms() + 1000)
+            .await
+            .unwrap()
+            .unwrap();
+        let mut refresh = Box::pin(agent.reconcile_target_disposition());
+        assert!(futures::poll!(&mut refresh).is_pending());
+        agent.fence_target_disposition().unwrap();
+        f.denied(&agent);
+        drop(permit);
+        assert!(refresh.await.is_err());
+        f.denied(&agent);
+    }
+
+    #[tokio::test]
+    async fn owned_evaluation_wait_preserves_deadline_and_cancellation() {
+        let f = DispositionFixture::new();
+        let agent = f.start();
+        f.restore(&agent).await;
+        f.control.0.lock().unwrap().read_pause = Some((
+            Arc::new(tokio::sync::Notify::new()),
+            Arc::new(tokio::sync::Notify::new()),
+        ));
+        let mut refresh = Box::pin(agent.reconcile_target_disposition());
+        assert!(futures::poll!(&mut refresh).is_pending());
+        assert!(matches!(
+            agent
+                .coordinate_response_release_owned(release_clock_ms() + 10)
+                .await,
+            Err(RuntimeError::BudgetExhausted)
+        ));
+        let mut cancelled =
+            Box::pin(agent.coordinate_response_release_owned(release_clock_ms() + 1000));
+        assert!(futures::poll!(&mut cancelled).is_pending());
+        drop(cancelled);
+        drop(refresh);
+        let permit = agent
+            .coordinate_response_release_owned(release_clock_ms() + 1000)
+            .await
+            .unwrap()
+            .unwrap();
+        f.denied(&agent);
+        drop(permit);
+        assert!(matches!(
+            agent
+                .coordinate_response_release_owned(release_clock_ms())
+                .await,
+            Err(RuntimeError::BudgetExhausted)
+        ));
+    }
+
+    #[tokio::test]
     async fn response_release_waits_for_unchanged_refresh_before_reacquiring_authority() {
         let f = DispositionFixture::new();
         let agent = f.start();

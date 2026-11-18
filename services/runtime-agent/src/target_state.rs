@@ -39,6 +39,10 @@ use std::{
 /// Installed by the target bootstrap from the owning trust roots and scoped
 /// readers. No request parser accepts this object or any of its owner handles.
 pub struct TargetState {
+    #[cfg(test)]
+    evaluation_test_gate: std::sync::OnceLock<Arc<tokio::sync::RwLock<()>>>,
+    #[cfg(test)]
+    revalidation_attempts: std::sync::atomic::AtomicUsize,
     agent: Arc<RuntimeAgent>,
     protected_class_set: Digest,
     privacy_domain_id: String,
@@ -123,6 +127,35 @@ pub struct TargetStateLease<'a> {
 }
 
 impl TargetState {
+    #[cfg(test)]
+    pub(crate) fn revalidation_attempts(&self) -> usize {
+        self.revalidation_attempts
+            .load(std::sync::atomic::Ordering::SeqCst)
+    }
+
+    #[cfg(test)]
+    pub(crate) fn set_evaluation_test_gate(&self, gate: Arc<tokio::sync::RwLock<()>>) {
+        self.evaluation_test_gate.set(gate).unwrap();
+    }
+
+    pub(crate) async fn coordinate_evaluation(
+        &self,
+        deadline_at_ms: u64,
+    ) -> RuntimeResult<Option<crate::target_disposition::OwnedResponseReleasePermit>> {
+        #[cfg(test)]
+        if let Some(gate) = self.evaluation_test_gate.get() {
+            return crate::target_disposition::OwnedResponseReleasePermit::acquire(
+                gate.clone(),
+                deadline_at_ms,
+            )
+            .await
+            .map(Some);
+        }
+        self.agent
+            .coordinate_response_release_owned(deadline_at_ms)
+            .await
+    }
+
     pub(crate) async fn coordinate_response_release(
         &self,
         deadline_at_ms: u64,
@@ -176,6 +209,10 @@ impl TargetState {
         crate::capsule::digest(&protected_class_set)?;
         crate::capsule::text(&privacy_domain_id, 160)?;
         Ok(Arc::new(Self {
+            #[cfg(test)]
+            evaluation_test_gate: std::sync::OnceLock::new(),
+            #[cfg(test)]
+            revalidation_attempts: std::sync::atomic::AtomicUsize::new(0),
             agent: owners.agent,
             protected_class_set,
             privacy_domain_id,
@@ -353,6 +390,20 @@ impl CapturedTargetState {
 }
 
 impl CapturedTargetRequest {
+    pub(crate) async fn coordinate_revalidation(
+        &self,
+    ) -> RuntimeResult<Option<crate::target_disposition::OwnedResponseReleasePermit>> {
+        #[cfg(test)]
+        self.context
+            .owner
+            .revalidation_attempts
+            .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+        self.context
+            .owner
+            .coordinate_evaluation(self.decoded.request().deadline_at_ms)
+            .await
+    }
+
     pub(crate) fn peer(&self) -> &WorkloadPeer {
         &self.context.peer
     }

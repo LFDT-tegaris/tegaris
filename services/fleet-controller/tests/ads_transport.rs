@@ -1404,3 +1404,142 @@ impl openpc_runtime_agent::ext_proc::ExtProcRequestOwner for RejectingRuntimeOwn
         Ok(())
     }
 }
+
+#[tokio::test]
+async fn reset_target_keeps_discovery_without_replaying_cached_resources() {
+    let probe = Arc::new(DiscoveryProbe::default());
+    let h = Harness::build(false, Some(probe.clone()), None).await;
+    let publish = |label: &str| {
+        let resources: BTreeMap<_, _> = REQUIRED_XDS_TYPES
+            .iter()
+            .map(|kind| {
+                let name = format!(
+                    "openpc/target-1/{label}/{}",
+                    kind.rsplit('.').next().unwrap()
+                );
+                (
+                    (*kind).to_owned(),
+                    vec![prost_types::Any {
+                        type_url: (*kind).to_owned(),
+                        value: Name { name }.encode_to_vec(),
+                    }],
+                )
+            })
+            .collect();
+        let version = AdsService::resource_version(&resources).unwrap();
+        let capsule = Digest::of(label.as_bytes());
+        h.fleet
+            .command_generation(DesiredGeneration {
+                occurrence_id: label.into(),
+                target_id: "target-1".into(),
+                capsule_digest: capsule.clone(),
+                xds_snapshot_digest: version.clone(),
+                expected_previous_generation_digest: None,
+                expires_at_ms: u64::MAX,
+            })
+            .unwrap();
+        h.fleet.accept_prepared("target-1", &capsule).unwrap();
+        h.ads.publish("target-1", resources).unwrap();
+        version
+    };
+    let original = publish("original");
+    let (sender, mut stream) = h.stream(Some("client")).await.unwrap();
+    for kind in REQUIRED_XDS_TYPES {
+        sender.send(subscribe(kind)).await.unwrap();
+        let response = timeout(Duration::from_secs(3), stream.message())
+            .await
+            .unwrap()
+            .unwrap()
+            .unwrap();
+        assert_eq!(response.version_info, original.as_str());
+        sender
+            .send(DiscoveryRequest {
+                version_info: response.version_info,
+                response_nonce: response.nonce,
+                ..subscribe(kind)
+            })
+            .await
+            .unwrap();
+    }
+    timeout(Duration::from_secs(3), async {
+        while h.fleet.state("target-1").unwrap() != TargetState::XdsAckedNotActive {
+            sleep(Duration::from_millis(5)).await;
+        }
+    })
+    .await
+    .unwrap();
+    drop(sender);
+    drop(stream);
+    timeout(Duration::from_secs(3), async {
+        while probe.connection.lock().unwrap().is_some() {
+            sleep(Duration::from_millis(5)).await;
+        }
+    })
+    .await
+    .unwrap();
+
+    // A failed successor can leave this exact split: reset Fleet state and a
+    // retained ADS publication. Discovery must not depend on ACKing old bytes.
+    h.fleet
+        .register_target(h.identity.clone(), &h.identity)
+        .unwrap();
+    let (sender, mut stream) = h.stream(Some("client")).await.unwrap();
+    sender.send(subscribe(REQUIRED_XDS_TYPES[0])).await.unwrap();
+    let connection = timeout(Duration::from_secs(3), async {
+        loop {
+            if let Some(id) = probe.connection.lock().unwrap().clone() {
+                break id;
+            }
+            sleep(Duration::from_millis(5)).await;
+        }
+    })
+    .await
+    .unwrap();
+    assert!(
+        timeout(Duration::from_millis(100), stream.message())
+            .await
+            .is_err()
+    );
+    assert_eq!(h.fleet.state("target-1").unwrap(), TargetState::Discovered);
+    assert!(
+        h.ads
+            .with_current_connection("target-1", &connection, || ())
+            .is_ok()
+    );
+
+    let replacement = publish("replacement");
+    assert_ne!(replacement, original);
+    for kind in REQUIRED_XDS_TYPES {
+        sender.send(subscribe(kind)).await.unwrap();
+        let response = timeout(Duration::from_secs(3), stream.message())
+            .await
+            .unwrap()
+            .unwrap()
+            .unwrap();
+        assert_eq!(response.version_info, replacement.as_str());
+        sender
+            .send(DiscoveryRequest {
+                version_info: response.version_info,
+                response_nonce: response.nonce,
+                ..subscribe(kind)
+            })
+            .await
+            .unwrap();
+    }
+    timeout(Duration::from_secs(3), async {
+        while h.fleet.state("target-1").unwrap() != TargetState::XdsAckedNotActive {
+            sleep(Duration::from_millis(5)).await;
+        }
+    })
+    .await
+    .unwrap();
+    assert!(
+        h.ads
+            .with_current_connection("target-1", &connection, || ())
+            .is_ok()
+    );
+    assert_ne!(
+        h.fleet.state("target-1").unwrap(),
+        TargetState::ActiveMatched
+    );
+}

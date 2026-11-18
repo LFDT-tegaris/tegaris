@@ -17,6 +17,12 @@ The source and documentation are published in this repository; the v0.9.0 tag ha
 - Preserve the organization selected by an invitation when opening its sign-in page.
 - Show loading while approvals and release details are being read, then display the workflow or the reported error.
 
+### Runtime and interactive demo
+
+- Match RPC read permissions to the operation and data classes requested by the application.
+- Preserve runtime preparation during discovery reconnection and coordinate request validation with authority refresh.
+- Add an account-free hosted demo with three permitted contract reads and three access-boundary examples.
+
 ### Documentation
 
 - Expanded setup, architecture, integration, interface, security and console guidance.
@@ -27,7 +33,7 @@ The source and documentation are published in this repository; the v0.9.0 tag ha
 
 ### Known limitations
 
-- End-to-end permitted RPC execution remains unqualified. An intended permitted balance read returned an authorization denial in the latest integrated check.
+- The separate synthetic balance-read workflow remains unqualified: its intended permitted request returned an authorization denial. The six hosted demo examples have their own verified scope.
 - Persistent hosted operation, credential continuity, performance and production deployment require further validation.
 - No supported upgrade path from unpublished development builds is provided.
 

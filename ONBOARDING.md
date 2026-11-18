@@ -2,7 +2,7 @@
 
 Tegaris brings application identity, scoped permissions, policy review and runtime controls into one administration environment for shared EVM networks. Start here to inspect the source and establish a workspace for an application or platform team.
 
-The first public source release is being prepared as **v0.9.0**. Read its [release notes](docs/releases/v0.9.0.md) before selecting tests. The initial checks cover setup, workspace access, console inspection and selected component tests. The intended permitted RPC path remains unqualified; its current failure is recorded in the release notes.
+The first public source release is being prepared as **v0.9.0**. Read its [release notes](docs/releases/v0.9.0.md) before selecting tests. The initial checks cover setup, workspace access, console inspection and selected component tests. The [hosted demo](docs/demo.md) supports three permitted contract reads and three access-boundary examples. A separate synthetic balance-read workflow remains unqualified; its limitation is recorded in the release notes.
 
 ## 1. Choose the test boundary
 
@@ -64,7 +64,7 @@ Follow tests E01–E06 in the [getting-started checks](docs/releases/v0.9.0.md#g
 python3 scripts/docs/check-docs.py
 ```
 
-For application testing, define one synthetic contract method, an intended permitted caller and a caller that must be denied. Follow the [integration guide](docs/development/integration.md) and record both results independently. An approval or successful activation does not prove the permitted request succeeded. Do not treat the current known RPC failure as an expected pass.
+For application testing, define one synthetic contract method, an intended permitted caller and a caller that must be denied. Follow the [integration guide](docs/development/integration.md) and record both results independently. An approval or successful activation does not prove the permitted request succeeded. Do not treat the known synthetic balance-read failure as an expected pass.
 
 The [interface reference](docs/reference/interfaces.md) links to OpenAPI, event contracts and owning schemas. It identifies incomplete API coverage so an integration does not assume an undocumented endpoint or authentication model.
 

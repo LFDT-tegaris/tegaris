@@ -102,7 +102,7 @@ pub(crate) struct DispositionOwner {
     signer: PurposeSigner,
     authority: Arc<dyn TargetDispositionAuthority>,
     reconcile: tokio::sync::Mutex<()>,
-    source_reads: tokio::sync::RwLock<()>,
+    source_reads: Arc<tokio::sync::RwLock<()>>,
     currentness: Mutex<DispositionCurrentness>,
 }
 
@@ -132,6 +132,28 @@ pub struct SourceReadPermit<'a> {
 /// authority and does not retain any database or active-capsule lease.
 pub struct ResponseReleasePermit<'a> {
     _guard: tokio::sync::RwLockReadGuard<'a, ()>,
+}
+
+/// Keeps a synchronous request decision coordinated across its owner callbacks.
+/// It supplies no authority and must be released before provider I/O.
+pub struct OwnedResponseReleasePermit {
+    _guard: tokio::sync::OwnedRwLockReadGuard<()>,
+}
+
+impl OwnedResponseReleasePermit {
+    pub(crate) async fn acquire(
+        gate: Arc<tokio::sync::RwLock<()>>,
+        deadline_at_ms: u64,
+    ) -> RuntimeResult<Self> {
+        let remaining_ms = deadline_at_ms
+            .checked_sub(crate::target_state::wall_clock_ns()? / 1_000_000)
+            .filter(|remaining| *remaining > 0)
+            .ok_or(RuntimeError::BudgetExhausted)?;
+        let guard = tokio::time::timeout(Duration::from_millis(remaining_ms), gate.read_owned())
+            .await
+            .map_err(|_| RuntimeError::BudgetExhausted)?;
+        Ok(Self { _guard: guard })
+    }
 }
 
 impl SourceReadPermit<'_> {
@@ -381,7 +403,7 @@ impl RuntimeAgent {
             signer,
             authority,
             reconcile: tokio::sync::Mutex::new(()),
-            source_reads: tokio::sync::RwLock::new(()),
+            source_reads: Arc::new(tokio::sync::RwLock::new(())),
             currentness: Mutex::new(DispositionCurrentness {
                 until: None,
                 invalidation_epoch: Some(0),
@@ -571,6 +593,22 @@ impl RuntimeAgent {
         .await
         .map_err(|_| RuntimeError::BudgetExhausted)?;
         Ok(Some(ResponseReleasePermit { _guard: guard }))
+    }
+
+    pub async fn coordinate_response_release_owned(
+        &self,
+        deadline_at_ms: u64,
+    ) -> RuntimeResult<Option<OwnedResponseReleasePermit>> {
+        let _remaining_ms = deadline_at_ms
+            .checked_sub(crate::target_state::wall_clock_ns()? / 1_000_000)
+            .filter(|remaining| *remaining > 0)
+            .ok_or(RuntimeError::BudgetExhausted)?;
+        let Some(owner) = self.disposition_owner.get() else {
+            return Ok(None);
+        };
+        OwnedResponseReleasePermit::acquire(owner.source_reads.clone(), deadline_at_ms)
+            .await
+            .map(Some)
     }
 
     /// Fence before network I/O, persist exact denial/delivery/original ACK in

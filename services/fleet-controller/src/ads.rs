@@ -4,7 +4,7 @@ use crate::{
     FleetController, REQUIRED_XDS_TYPES, TargetIdentity, XdsSnapshot,
     ads_wire::{DiscoveryRequest, DiscoveryResponse, ResourceName},
 };
-use pc_runtime_types::{Digest, RuntimeError, RuntimeResult, canonical_bytes};
+use pc_runtime_types::{Digest, RuntimeError, RuntimeResult, TargetState, canonical_bytes};
 use prost::Message;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use std::{
@@ -20,6 +20,7 @@ struct Published {
     version: Digest,
     resources: BTreeMap<String, Vec<prost_types::Any>>,
     nonces: BTreeMap<String, String>,
+    resource_names: BTreeMap<String, Vec<String>>,
 }
 #[derive(Clone)]
 pub struct AdsService {
@@ -136,7 +137,7 @@ impl AdsService {
         let nonces = self.fleet.publish_snapshot(XdsSnapshot {
             target_id: target_id.to_owned(),
             version_digest: version.clone(),
-            resources_by_type: names,
+            resources_by_type: names.clone(),
         })?;
         published.insert(
             target_id.to_owned(),
@@ -144,6 +145,7 @@ impl AdsService {
                 version: version.clone(),
                 resources,
                 nonces,
+                resource_names: names,
             },
         );
         self.changed
@@ -151,12 +153,41 @@ impl AdsService {
         Ok(())
     }
     fn snapshot(&self, identity: &TargetIdentity) -> Result<Option<Published>, Status> {
-        self.fleet.check_current_peer(identity).map_err(status)?;
-        Ok(self
+        // Match publication's lock order. A re-registered target may have lost
+        // its Fleet snapshot while ADS still retains the previous resource bytes.
+        let published = self
             .published
             .lock()
-            .map_err(|_| Status::unavailable("ADS owner unavailable"))?
+            .map_err(|_| Status::unavailable("ADS owner unavailable"))?;
+        let targets = self
+            .fleet
+            .targets
+            .lock()
+            .map_err(|_| Status::unavailable("Fleet owner unavailable"))?;
+        let target = targets
             .get(&identity.target_id)
+            .filter(|target| target.identity == *identity)
+            .ok_or_else(|| status(RuntimeError::TargetIdentity))?;
+        Ok(published
+            .get(&identity.target_id)
+            .filter(|publication| {
+                matches!(
+                    target.state,
+                    TargetState::XdsPending
+                        | TargetState::XdsAckedNotActive
+                        | TargetState::Activating
+                        | TargetState::ActiveMatched
+                ) && target
+                    .desired
+                    .as_ref()
+                    .is_some_and(|desired| desired.xds_snapshot_digest == publication.version)
+                    && target.snapshot.as_ref().is_some_and(|snapshot| {
+                        snapshot.version_digest == publication.version
+                            && snapshot.resources_by_type == publication.resource_names
+                    })
+                    && target.nonce_by_type == publication.nonces
+                    && !target.quarantined_versions.contains(&publication.version)
+            })
             .cloned())
     }
     pub(crate) async fn stream(

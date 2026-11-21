@@ -51,7 +51,7 @@ jobs:
         with:
           node-version: 24.19.0
       - name: Test authenticated offline generation inputs
-        run: node --test --test-concurrency=1 tests/migration/legacy-inputs.test.mjs
+        run: node --test --test-concurrency=1 tests/migration/legacy-inputs.test.mjs tests/migration/policy-readiness.test.mjs tests/migration/setup-gate.test.mjs
       - name: Test dedicated server resource admission and builder identity
         run: PYTHONDONTWRITEBYTECODE=1 python3 scripts/maintenance/test_server_capacity.py
       - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
@@ -149,6 +149,14 @@ jobs:
         run: bash scripts/maintenance/run-project.sh -- pnpm exec playwright install --with-deps chromium
       - name: Prepare owned runtime scratch
         run: mkdir -p "$OPENPC_LOCAL_RUNTIME_TMP_ROOT"
+      - name: Fresh compact checkout setup and governed RPC acceptance
+        shell: bash
+        run: |
+          test -f migrations/postgres/baseline-v1/install.sql
+          test ! -e migrations/postgres/policy/0000_yummy_plazm.sql
+          bash scripts/maintenance/run-project.sh --profile runtime -- \
+            env OPENPC_LOCAL_RUNTIME=1 OPENPC_EVALUATION_UI=1 OPENPC_LOCAL_RUNTIME_FIRST_POLICY_ONLY=1 \
+            bash tests/integration/local-runtime/run-compose-e2e.sh
       - name: Populated migration and real configuration vertical
         shell: bash
         run: |

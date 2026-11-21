@@ -24,7 +24,7 @@ export async function migrationInputs(directory) {
   const source = process.env.OPENPC_LEGACY_SOURCE_ROOT;
   if (historical.some((name) => !current.includes(name)) && !source)
     throw new Error(
-      'Generation requires OPENPC_LEGACY_SOURCE_ROOT from the verified offline compatibility package',
+      'Migration source checks require OPENPC_LEGACY_SOURCE_ROOT from the verified offline compatibility package',
     );
   const migrations = [...new Set([...historical, ...current])].sort();
   async function readMigration(name) {
@@ -38,5 +38,9 @@ export async function migrationInputs(directory) {
       throw new Error('Immutable migration generation input changed');
     return data.toString('utf8');
   }
-  return { migrations, readMigration };
+  return {
+    migrations,
+    readMigration,
+    isHistoricalMigration: (name) => historical.includes(name),
+  };
 }

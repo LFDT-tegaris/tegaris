@@ -1,15 +1,12 @@
-import { readdir, readFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { migrationInputs } from '../../../../scripts/migrations/legacy-inputs.mjs';
 
 const tailMarker = '-- OPENPC GENERATED POLICY SECURITY TAIL; DO NOT EDIT';
 const directory = fileURLToPath(
   new URL('../../../../migrations/postgres/policy/', import.meta.url),
 );
-const migrations = (await readdir(directory)).filter((name) => name.endsWith('.sql')).sort();
-const sources = await Promise.all(
-  migrations.map((name) => readFile(join(directory, name), 'utf8')),
-);
+const { migrations, readMigration } = await migrationInputs(directory);
+const sources = await Promise.all(migrations.map(readMigration));
 const history = sources.join('\n');
 const latest = sources.at(-1);
 if (latest === undefined || !latest.includes(tailMarker)) {

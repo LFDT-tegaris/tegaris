@@ -1,13 +1,19 @@
 # Control database baseline v1
 
-**Local candidate, pending Linux CI.** All 20 native PostgreSQL checks passed on
-macOS through the final inline Compose dispatcher, including fresh installation,
-current handoff, populated predecessor upgrade, three backup restore paths,
-rejected inputs, rollback, concurrency, isolation and drift detection. Docker/Linux
-CI and the full repository suite must pass before release.
+**Draft: full setup is not cleared for merge.** The 20 native PostgreSQL checks
+cover baseline installation, current handoff, a populated predecessor upgrade,
+three backup restore paths, rejected inputs, rollback, concurrency, isolation and
+drift detection. They do not establish full-stack demo or deployment readiness.
+
+A role-inventory probe reproduced a catalogue-verification failure after adding
+the scope/login role layout used by runtime-source installation. Normal runtime
+and archive role lifecycles must be supported without weakening privilege or RLS
+checks before this baseline can replace the ordinary setup path. The compact
+checkout has a separate fresh setup and governed-RPC CI step; passing historical
+tests in the legacy source view cannot clear that gate.
 
 This baseline freezes the public source at `db5e64b566712e5213424db5e166775d9a15a7be`.
-It is qualified for PostgreSQL 18.6, pgcrypto 1.4, UTF-8, and database
+The current baseline tests target PostgreSQL 18.6, pgcrypto 1.4, UTF-8, and database
 `openpc_control`. Fact and candidate-index SQLx histories are unchanged.
 
 The ordinary `deploy/compose/local/migrate.sh` entrypoint uses the compact
@@ -75,14 +81,25 @@ downgrade.
 ## Generation and future database changes
 
 The latest Drizzle snapshot, original journal, and latest SQL anchor remain in
-each lane. Identity security projection needs older DDL to derive its guards, so
-generation reads authenticated historical inputs from an explicit offline cache:
+each lane. Identity and Policy security projections need older DDL to derive and
+verify their guards, so these commands read authenticated historical inputs from
+an explicit offline cache:
 
 ```sh
 export OPENPC_LEGACY_SOURCE_ROOT=/path/to/new/verified-legacy-source
 cd services/identity-service
 pnpm run db:generate
 ```
+
+Use the same cache for Policy migration generation or standalone security checks:
+
+```sh
+OPENPC_LEGACY_SOURCE_ROOT=/path/to/new/verified-legacy-source \
+  node services/module-registry/src/db/verify-policy-security.mjs
+```
+
+Run that check from the repository root. Normal image builds and empty-database
+baseline installation do not require this development cache.
 
 The cache is read only. Historical files are never materialized into the default
 checkout and every historical input used by generation is checked against its
@@ -96,6 +113,9 @@ database change must include a qualified incremental installation path or a new
 versioned baseline, with the same upgrade and restore validations.
 
 ## Backup restore
+
+These candidate commands do not yet establish recovery of a fully bootstrapped
+demo workspace. The setup and demo merge gates below remain required.
 
 Use a new, empty target with the original initdb bootstrap account name. The
 restore path provisions the pinned pgcrypto extension under its correct owner;
@@ -124,7 +144,7 @@ retain the isolated target and logs for investigation.
 
 ```sh
 python3 -m unittest discover -s tests/migration -p 'test_*.py'
-node --test --test-concurrency=1 tests/migration/legacy-inputs.test.mjs
+node --test --test-concurrency=1 tests/migration/legacy-inputs.test.mjs tests/migration/policy-readiness.test.mjs tests/migration/setup-gate.test.mjs
 python3 scripts/migrations/check-size.py
 python3 tests/migration/run-baseline-proof.py \
   --pg-bin /path/to/postgresql-18.6/bin \
@@ -138,6 +158,32 @@ own servers. It exercises both `postgres` and the Compose bootstrap account
 `openpc_control`. Bootstrap OID 10 is represented portably in catalogue comparisons;
 other role identities, grants, grant options, ownership, policies and definitions
 remain exact.
+
+## Setup and demo merge gates
+
+Qualification must use the actual compact checkout at the proposed merge commit,
+including the baseline installer. The following checks remain required:
+
+- Follow `docs/getting-started.md` in a new isolated Linux workspace: prerequisite
+  checks, locked dependencies and all seven service-image builds, including the
+  console and Rust helpers.
+- Start the documented synthetic QA workspace, confirm completed migrations and
+  healthy services, and complete sign-in with its own fixture accounts.
+- Exercise normal runtime-source and archive installation, repeated migration,
+  stop/resume and restart without changing established credentials, keys, receipt
+  identities or business data. Resolve the role-inventory blocker above first.
+- Run initial policy setup, independent review, activation, permitted and denied
+  governed requests, and the corresponding public readback and browser checks.
+- Validate supported upgrade and backup/recovery paths on populated disposable
+  workspaces; unsupported custody/cluster restoration must stay rejected.
+- Preserve the existing demo's documented coverage and limits. Reproducing the
+  hosted reference examples requires their synthetic contract fixtures and
+  matching deployment bindings; local startup does not import them automatically.
+- Pass the fresh compact-checkout gate and the separate historical/full CI suites.
+
+No merge or release is qualified by source equivalence, a successful database
+install, an image bundle, or a documentation check alone. Existing installations
+and the hosted demo are outside these disposable validation runs.
 
 Historical tests run current implementation code in a separate source view with
 SQL from the immutable public commit. They never rehydrate the default checkout.

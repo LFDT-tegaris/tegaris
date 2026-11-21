@@ -1,0 +1,978 @@
+[
+  {
+    "kind": "CHECK",
+    "object": "action_intent.action_intent_operation_ck",
+    "parsed": [
+      "((operation_class)::text = ANY (ARRAY[('READ'::character varying)::text, ('CREATE'::character varying)::text, ('UPDATE'::character varying)::text, ('DELETE'::character varying)::text, ('APPROVE'::character varying)::text, ('ACTIVATE'::character varying)::text, ('ROLLBACK'::character varying)::text, ('EXPORT'::character varying)::text, ('RECOVER'::character varying)::text, ('UNINSTALL'::character varying)::text]))",
+      "CHECK (operation_class::text = ANY (ARRAY['READ'::character varying::text, 'CREATE'::character varying::text, 'UPDATE'::character varying::text, 'DELETE'::character varying::text, 'APPROVE'::character varying::text, 'ACTIVATE'::character varying::text, 'ROLLBACK'::character varying::text, 'EXPORT'::character varying::text, 'RECOVER'::character varying::text, 'UNINSTALL'::character varying::text]))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "action_intent.action_intent_risk_ck",
+    "parsed": [
+      "((risk_class)::text = ANY (ARRAY[('LOW'::character varying)::text, ('STANDARD'::character varying)::text, ('HIGH'::character varying)::text, ('BREAK_GLASS'::character varying)::text]))",
+      "CHECK (risk_class::text = ANY (ARRAY['LOW'::character varying::text, 'STANDARD'::character varying::text, 'HIGH'::character varying::text, 'BREAK_GLASS'::character varying::text]))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "audit_occurrence.audit_occurrence_digests_ck",
+    "parsed": [
+      "((octet_length(receipt_cbor) >= 1) AND (octet_length(receipt_cbor) <= 65536) AND ((octet_length(cose_sign1) >= 1) AND (octet_length(cose_sign1) <= 66560)) AND (receipt_digest = sha256(receipt_cbor)) AND (before_state_digest = sha256(before_state_preimage)) AND (after_state_digest = sha256(after_state_preimage)) AND (pre_commit_authority_digest = sha256(authority_snapshot)))",
+      "CHECK (octet_length(receipt_cbor) >= 1 AND octet_length(receipt_cbor) <= 65536 AND octet_length(cose_sign1) >= 1 AND octet_length(cose_sign1) <= 66560 AND receipt_digest = sha256(receipt_cbor) AND before_state_digest = sha256(before_state_preimage) AND after_state_digest = sha256(after_state_preimage) AND pre_commit_authority_digest = sha256(authority_snapshot))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "audit_occurrence.audit_occurrence_time_ck",
+    "parsed": [
+      "((recorded_at_ns >= (0)::numeric) AND (recorded_at_ns <= '18446744073709551615'::numeric) AND (mod(recorded_at_ns, (1000)::numeric) = (0)::numeric))",
+      "CHECK (recorded_at_ns >= 0::numeric AND recorded_at_ns <= '18446744073709551615'::numeric AND mod(recorded_at_ns, 1000::numeric) = 0::numeric)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "authority_role.authority_role_origin_ck",
+    "parsed": [
+      "((origin)::text = ANY (ARRAY[('GOVERNED'::character varying)::text, ('MIGRATED_ASSIGNMENT'::character varying)::text, ('BOOTSTRAP'::character varying)::text]))",
+      "CHECK (origin::text = ANY (ARRAY['GOVERNED'::character varying::text, 'MIGRATED_ASSIGNMENT'::character varying::text, 'BOOTSTRAP'::character varying::text]))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "authority_role.authority_role_state_ck",
+    "parsed": [
+      "((state)::text = ANY (ARRAY[('ACTIVE'::character varying)::text, ('ARCHIVED'::character varying)::text]))",
+      "CHECK (state::text = ANY (ARRAY['ACTIVE'::character varying::text, 'ARCHIVED'::character varying::text]))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "business_signing_key.business_signing_key_epoch_ck",
+    "parsed": [
+      "((key_epoch >= (1)::numeric) AND (key_epoch <= '18446744073709551615'::numeric) AND ((workload_credential_epoch >= (0)::numeric) AND (workload_credential_epoch <= '18446744073709551615'::numeric)))",
+      "CHECK (key_epoch >= 1::numeric AND key_epoch <= '18446744073709551615'::numeric AND workload_credential_epoch >= 0::numeric AND workload_credential_epoch <= '18446744073709551615'::numeric)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "business_signing_key.business_signing_key_trust_ck",
+    "parsed": [
+      "((octet_length(trust_preimage) >= 1) AND (octet_length(trust_preimage) <= 65536) AND (octet_length(trust_digest) = 32) AND (trust_digest = sha256(trust_preimage)))",
+      "CHECK (octet_length(trust_preimage) >= 1 AND octet_length(trust_preimage) <= 65536 AND octet_length(trust_digest) = 32 AND trust_digest = sha256(trust_preimage))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "business_signing_key_state.business_signing_state_change_ck",
+    "parsed": [
+      "((changed_at_ns >= (0)::numeric) AND (changed_at_ns <= '18446744073709551615'::numeric) AND (mod(changed_at_ns, (1000)::numeric) = (0)::numeric) AND ((length(change_reference) >= 1) AND (length(change_reference) <= 256)) AND (octet_length(change_digest) = 32))",
+      "CHECK (changed_at_ns >= 0::numeric AND changed_at_ns <= '18446744073709551615'::numeric AND mod(changed_at_ns, 1000::numeric) = 0::numeric AND length(change_reference) >= 1 AND length(change_reference) <= 256 AND octet_length(change_digest) = 32)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "business_signing_selection.business_signing_selection_change_ck",
+    "parsed": [
+      "((changed_at_ns >= (0)::numeric) AND (changed_at_ns <= '18446744073709551615'::numeric) AND (mod(changed_at_ns, (1000)::numeric) = (0)::numeric) AND ((length(change_reference) >= 1) AND (length(change_reference) <= 256)) AND (octet_length(change_digest) = 32))",
+      "CHECK (changed_at_ns >= 0::numeric AND changed_at_ns <= '18446744073709551615'::numeric AND mod(changed_at_ns, 1000::numeric) = 0::numeric AND length(change_reference) >= 1 AND length(change_reference) <= 256 AND octet_length(change_digest) = 32)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "business_signing_selection.business_signing_selection_version_ck",
+    "parsed": [
+      "((row_version >= (1)::numeric) AND (row_version <= '18446744073709551615'::numeric) AND ((fence_generation >= (1)::numeric) AND (fence_generation <= '18446744073709551615'::numeric)) AND ((admission_version >= (1)::numeric) AND (admission_version <= '18446744073709551615'::numeric)))",
+      "CHECK (row_version >= 1::numeric AND row_version <= '18446744073709551615'::numeric AND fence_generation >= 1::numeric AND fence_generation <= '18446744073709551615'::numeric AND admission_version >= 1::numeric AND admission_version <= '18446744073709551615'::numeric)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "cigl_profile_dependency_path.cigl_profile_path_ordinal_ck",
+    "parsed": [
+      "((ordinal >= 1) AND (ordinal <= 2048) AND ((document ->> 'ordinal'::text) = (ordinal)::text))",
+      "CHECK (ordinal >= 1 AND ordinal <= 2048 AND (document ->> 'ordinal'::text) = ordinal::text)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "contract_governance_association.contract_association_bytes_ck",
+    "parsed": [
+      "((octet_length(document_bytes) >= 1) AND (octet_length(document_bytes) <= 4096) AND (semantic_digest ~ '^sha256:[0-9a-f]{64}$'::text))",
+      "CHECK (octet_length(document_bytes) >= 1 AND octet_length(document_bytes) <= 4096 AND semantic_digest ~ '^sha256:[0-9a-f]{64}$'::text)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "contract_governance_association.contract_association_sequences_ck",
+    "parsed": [
+      "((activation_sequence >= (1)::numeric) AND (activation_sequence <= '18446744073709551615'::numeric) AND ((current_sequence >= activation_sequence) AND (current_sequence <= '18446744073709551615'::numeric)) AND ((participant_epoch >= (1)::numeric) AND (participant_epoch <= '18446744073709551615'::numeric)))",
+      "CHECK (activation_sequence >= 1::numeric AND activation_sequence <= '18446744073709551615'::numeric AND current_sequence >= activation_sequence AND current_sequence <= '18446744073709551615'::numeric AND participant_epoch >= 1::numeric AND participant_epoch <= '18446744073709551615'::numeric)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "deletion_job.deletion_job_accounting_ck",
+    "parsed": [
+      "((before_used_bytes >= 1) AND (before_used_bytes <= 1073741824) AND (((state = 'EXECUTING'::text) AND (after_used_bytes IS NULL)) OR ((state = 'SUCCEEDED'::text) AND (after_used_bytes IS NOT NULL) AND (after_used_bytes >= 0) AND (after_used_bytes = (before_used_bytes - deleted_bytes)))))",
+      "CHECK (before_used_bytes >= 1 AND before_used_bytes <= 1073741824 AND (state = 'EXECUTING'::text AND after_used_bytes IS NULL OR state = 'SUCCEEDED'::text AND after_used_bytes IS NOT NULL AND after_used_bytes >= 0 AND after_used_bytes = (before_used_bytes - deleted_bytes)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "evidence_export_output.evidence_export_output_digest_ck",
+    "parsed": [
+      "((octet_length(artifact) >= 1) AND (octet_length(artifact) <= 1048576) AND (output_digest = ('sha256:'::text || encode(sha256(artifact), 'hex'::text))))",
+      "CHECK (octet_length(artifact) >= 1 AND octet_length(artifact) <= 1048576 AND output_digest = ('sha256:'::text || encode(sha256(artifact), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "evidence_export_request.evidence_export_request_revision_ck",
+    "parsed": [
+      "((revision >= (1)::numeric) AND (revision <= '18446744073709551615'::numeric) AND ((checkpoint >= (0)::numeric) AND (checkpoint <= '18446744073709551615'::numeric)))",
+      "CHECK (revision >= 1::numeric AND revision <= '18446744073709551615'::numeric AND checkpoint >= 0::numeric AND checkpoint <= '18446744073709551615'::numeric)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "evidence_kms_attempt.evidence_kms_attempt_request_ck",
+    "parsed": [
+      "((octet_length(request_bytes) >= 1) AND (octet_length(request_bytes) <= 32768) AND (request_digest = ('sha256:'::text || encode(sha256(request_bytes), 'hex'::text))) AND (object_version = '1'::text) AND (object_intent_digest ~ '^sha256:[0-9a-f]{64}$'::text) AND (authority_digest ~ '^sha256:[0-9a-f]{64}$'::text))",
+      "CHECK (octet_length(request_bytes) >= 1 AND octet_length(request_bytes) <= 32768 AND request_digest = ('sha256:'::text || encode(sha256(request_bytes), 'hex'::text)) AND object_version = '1'::text AND object_intent_digest ~ '^sha256:[0-9a-f]{64}$'::text AND authority_digest ~ '^sha256:[0-9a-f]{64}$'::text)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "evidence_kms_attempt.evidence_kms_attempt_result_ck",
+    "parsed": [
+      "(((state = ANY (ARRAY['PROVED'::text, 'REJECTED'::text])) = (result_receipt_bytes IS NOT NULL)) AND ((result_receipt_bytes IS NULL) = (result_receipt_digest IS NULL)) AND ((result_receipt_bytes IS NULL) OR ((octet_length(result_receipt_bytes) >= 1) AND (octet_length(result_receipt_bytes) <= 262144) AND (result_receipt_digest = ('sha256:'::text || encode(sha256(result_receipt_bytes), 'hex'::text))))))",
+      "CHECK ((state = ANY (ARRAY['PROVED'::text, 'REJECTED'::text])) = (result_receipt_bytes IS NOT NULL) AND (result_receipt_bytes IS NULL) = (result_receipt_digest IS NULL) AND (result_receipt_bytes IS NULL OR octet_length(result_receipt_bytes) >= 1 AND octet_length(result_receipt_bytes) <= 262144 AND result_receipt_digest = ('sha256:'::text || encode(sha256(result_receipt_bytes), 'hex'::text))))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "evidence_kms_exchange.evidence_kms_exchange_receipt_ck",
+    "parsed": [
+      "(((state = ANY (ARRAY['PROVED'::text, 'REJECTED'::text])) = (receipt_bytes IS NOT NULL)) AND ((receipt_bytes IS NULL) = (receipt_digest IS NULL)) AND ((receipt_bytes IS NULL) = (provider_sequence IS NULL)) AND ((receipt_bytes IS NULL) = (recovery_floor IS NULL)) AND ((receipt_bytes IS NULL) OR ((octet_length(receipt_bytes) >= 1) AND (octet_length(receipt_bytes) <= 262144) AND (receipt_digest = ('sha256:'::text || encode(sha256(receipt_bytes), 'hex'::text))) AND ((provider_sequence >= (1)::numeric) AND (provider_sequence <= '18446744073709551615'::numeric)) AND ((recovery_floor >= (1)::numeric) AND (recovery_floor <= provider_sequence)))))",
+      "CHECK ((state = ANY (ARRAY['PROVED'::text, 'REJECTED'::text])) = (receipt_bytes IS NOT NULL) AND (receipt_bytes IS NULL) = (receipt_digest IS NULL) AND (receipt_bytes IS NULL) = (provider_sequence IS NULL) AND (receipt_bytes IS NULL) = (recovery_floor IS NULL) AND (receipt_bytes IS NULL OR octet_length(receipt_bytes) >= 1 AND octet_length(receipt_bytes) <= 262144 AND receipt_digest = ('sha256:'::text || encode(sha256(receipt_bytes), 'hex'::text)) AND provider_sequence >= 1::numeric AND provider_sequence <= '18446744073709551615'::numeric AND recovery_floor >= 1::numeric AND recovery_floor <= provider_sequence))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "evidence_kms_installation.evidence_kms_installation_digest_ck",
+    "parsed": [
+      "((octet_length(pins_bytes) >= 1) AND (octet_length(pins_bytes) <= 16384) AND (installation_digest = ('sha256:'::text || encode(sha256(pins_bytes), 'hex'::text))))",
+      "CHECK (octet_length(pins_bytes) >= 1 AND octet_length(pins_bytes) <= 16384 AND installation_digest = ('sha256:'::text || encode(sha256(pins_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "evidence_projection_retirement.evidence_projection_retirement_size_ck",
+    "parsed": [
+      "((projection_bytes >= 1) AND (projection_bytes <= 16384) AND (sequence > (0)::numeric) AND (jsonb_typeof(preservation_metadata) = 'object'::text) AND (octet_length((preservation_metadata)::text) <= 2048))",
+      "CHECK (projection_bytes >= 1 AND projection_bytes <= 16384 AND sequence > 0::numeric AND jsonb_typeof(preservation_metadata) = 'object'::text AND octet_length(preservation_metadata::text) <= 2048)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "evidence_record.evidence_record_time_ck",
+    "parsed": [
+      "((recorded_at_ns >= (0)::numeric) AND (recorded_at_ns <= '18446744073709551615'::numeric) AND (mod(recorded_at_ns, (1000)::numeric) = (0)::numeric))",
+      "CHECK (recorded_at_ns >= 0::numeric AND recorded_at_ns <= '18446744073709551615'::numeric AND mod(recorded_at_ns, 1000::numeric) = 0::numeric)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "evidence_stream.evidence_stream_capacity_ck",
+    "parsed": [
+      "((capacity_bytes >= 1024) AND (capacity_bytes <= 1073741824) AND ((used_bytes >= 0) AND (used_bytes <= capacity_bytes)))",
+      "CHECK (capacity_bytes >= 1024 AND capacity_bytes <= 1073741824 AND used_bytes >= 0 AND used_bytes <= capacity_bytes)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "evidence_stream.evidence_stream_sequence_ck",
+    "parsed": [
+      "((last_sequence >= (0)::numeric) AND (last_sequence <= '18446744073709551615'::numeric) AND (((last_sequence = (0)::numeric) AND (last_segment_digest IS NULL)) OR ((last_sequence > (0)::numeric) AND (last_segment_digest ~ '^sha256:[0-9a-f]{64}$'::text))))",
+      "CHECK (last_sequence >= 0::numeric AND last_sequence <= '18446744073709551615'::numeric AND (last_sequence = 0::numeric AND last_segment_digest IS NULL OR last_sequence > 0::numeric AND last_segment_digest ~ '^sha256:[0-9a-f]{64}$'::text))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "evidence_wrapped_key.evidence_wrapped_key_bytes_ck",
+    "parsed": [
+      "((octet_length(record_bytes) >= 1) AND (octet_length(record_bytes) <= 65536) AND ((octet_length(record_cose) >= 1) AND (octet_length(record_cose) <= 131072)) AND (key_id = ('sha256:'::text || encode(sha256(record_bytes), 'hex'::text))))",
+      "CHECK (octet_length(record_bytes) >= 1 AND octet_length(record_bytes) <= 65536 AND octet_length(record_cose) >= 1 AND octet_length(record_cose) <= 131072 AND key_id = ('sha256:'::text || encode(sha256(record_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "fact_consumer_failure_signer.fact_failure_signer_time_ck",
+    "parsed": [
+      "((valid_from_ms >= (0)::numeric) AND (valid_from_ms <= ('9007199254740991'::bigint)::numeric) AND ((valid_until_ms >= (valid_from_ms + (1)::numeric)) AND (valid_until_ms <= ('9007199254740991'::bigint)::numeric)))",
+      "CHECK (valid_from_ms >= 0::numeric AND valid_from_ms <= '9007199254740991'::bigint::numeric AND valid_until_ms >= (valid_from_ms + 1::numeric) AND valid_until_ms <= '9007199254740991'::bigint::numeric)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "fleet_fact_delivery.fleet_delivery_budget_ck",
+    "parsed": [
+      "((maximum_attempts >= 1) AND (maximum_attempts <= 1000) AND ((failed_attempts >= 0) AND (failed_attempts <= maximum_attempts)) AND ((initial_backoff_ms >= 1) AND (initial_backoff_ms <= 3600000)) AND ((maximum_backoff_ms >= initial_backoff_ms) AND (maximum_backoff_ms <= 3600000)) AND ((lease_generation >= (0)::numeric) AND (lease_generation <= '18446744073709551615'::numeric)))",
+      "CHECK (maximum_attempts >= 1 AND maximum_attempts <= 1000 AND failed_attempts >= 0 AND failed_attempts <= maximum_attempts AND initial_backoff_ms >= 1 AND initial_backoff_ms <= 3600000 AND maximum_backoff_ms >= initial_backoff_ms AND maximum_backoff_ms <= 3600000 AND lease_generation >= 0::numeric AND lease_generation <= '18446744073709551615'::numeric)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "fleet_fact_delivery.fleet_delivery_material_ck",
+    "parsed": [
+      "((octet_length(material) >= 1) AND (octet_length(material) <= 65536) AND (material_digest = sha256(material)))",
+      "CHECK (octet_length(material) >= 1 AND octet_length(material) <= 65536 AND material_digest = sha256(material))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "fleet_fact_delivery.fleet_delivery_time_ck",
+    "parsed": [
+      "((next_attempt_ms >= (0)::numeric) AND (next_attempt_ms <= ('9007199254740991'::bigint)::numeric) AND ((lease_until_ms IS NULL) OR ((lease_until_ms >= (0)::numeric) AND (lease_until_ms <= ('9007199254740991'::bigint)::numeric))))",
+      "CHECK (next_attempt_ms >= 0::numeric AND next_attempt_ms <= '9007199254740991'::bigint::numeric AND (lease_until_ms IS NULL OR lease_until_ms >= 0::numeric AND lease_until_ms <= '9007199254740991'::bigint::numeric))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "fleet_fact_delivery_attempt.fleet_delivery_attempt_time_ck",
+    "parsed": [
+      "((started_at_ms >= (0)::numeric) AND (started_at_ms <= ('9007199254740991'::bigint)::numeric) AND (lease_until_ms > started_at_ms) AND (lease_until_ms <= ('9007199254740991'::bigint)::numeric) AND ((ended_at_ms IS NULL) OR ((ended_at_ms >= started_at_ms) AND (ended_at_ms <= ('9007199254740991'::bigint)::numeric))) AND ((lease_generation >= (1)::numeric) AND (lease_generation <= '18446744073709551615'::numeric)))",
+      "CHECK (started_at_ms >= 0::numeric AND started_at_ms <= '9007199254740991'::bigint::numeric AND lease_until_ms > started_at_ms AND lease_until_ms <= '9007199254740991'::bigint::numeric AND (ended_at_ms IS NULL OR ended_at_ms >= started_at_ms AND ended_at_ms <= '9007199254740991'::bigint::numeric) AND lease_generation >= 1::numeric AND lease_generation <= '18446744073709551615'::numeric)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "idempotency_record.idempotency_catalog_operation_ck",
+    "parsed": [
+      "(((catalog_operation_id)::text = 'LEGACY'::text) OR ((catalog_operation_id)::text ~ '^(ID|CFG)-OP-[A-Z0-9-]+$'::text) OR ((catalog_operation_id)::text = ANY (ARRAY[('MOD-OP-REGISTER'::character varying)::text, ('MOD-OP-INSTALL'::character varying)::text, ('MOD-OP-ENABLE'::character varying)::text, ('MOD-OP-DISABLE'::character varying)::text])) OR ((catalog_operation_id)::text = 'POL-OP-ACTIVATE'::text) OR ((catalog_operation_id)::text = ANY (ARRAY[('OPS-OP-ADVANCE-SIGNING-KEY-ROTATION'::character varying)::text, ('OPS-OP-RECOVER-SIGNING-KEY-ROTATION'::character varying)::text])))",
+      "CHECK (catalog_operation_id::text = 'LEGACY'::text OR catalog_operation_id::text ~ '^(ID|CFG)-OP-[A-Z0-9-]+$'::text OR (catalog_operation_id::text = ANY (ARRAY['MOD-OP-REGISTER'::character varying::text, 'MOD-OP-INSTALL'::character varying::text, 'MOD-OP-ENABLE'::character varying::text, 'MOD-OP-DISABLE'::character varying::text])) OR catalog_operation_id::text = 'POL-OP-ACTIVATE'::text OR (catalog_operation_id::text = ANY (ARRAY['OPS-OP-ADVANCE-SIGNING-KEY-ROTATION'::character varying::text, 'OPS-OP-RECOVER-SIGNING-KEY-ROTATION'::character varying::text])))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "identity_envelope_proposal.identity_envelope_proposal_bytes_ck",
+    "parsed": [
+      "((octet_length(proposal_cbor) >= 1) AND (octet_length(proposal_cbor) <= 65536) AND (octet_length(proposal_digest) = 32) AND (proposal_digest = sha256(proposal_cbor)))",
+      "CHECK (octet_length(proposal_cbor) >= 1 AND octet_length(proposal_cbor) <= 65536 AND octet_length(proposal_digest) = 32 AND proposal_digest = sha256(proposal_cbor))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "identity_runtime_snapshot.identity_runtime_snapshot_count_ck",
+    "parsed": [
+      "((actor_count >= 1) AND (actor_count <= 8192) AND ((shard_count >= 1) AND (shard_count <= 256)))",
+      "CHECK (actor_count >= 1 AND actor_count <= 8192 AND shard_count >= 1 AND shard_count <= 256)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "installed_secret_recipient.installed_secret_recipient_bounds_ck",
+    "parsed": [
+      "((generation >= (1)::numeric) AND (generation <= '18446744073709551615'::numeric) AND ((workload_credential_epoch >= (0)::numeric) AND (workload_credential_epoch <= '18446744073709551615'::numeric)) AND ((length(admission_reference) >= 1) AND (length(admission_reference) <= 256)))",
+      "CHECK (generation >= 1::numeric AND generation <= '18446744073709551615'::numeric AND workload_credential_epoch >= 0::numeric AND workload_credential_epoch <= '18446744073709551615'::numeric AND length(admission_reference) >= 1 AND length(admission_reference) <= 256)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "mutation_evidence.mutation_evidence_catalog_operation_ck",
+    "parsed": [
+      "(((catalog_operation_id)::text = 'LEGACY'::text) OR ((catalog_operation_id)::text ~ '^(ID|CFG)-OP-[A-Z0-9-]+$'::text) OR ((catalog_operation_id)::text = ANY (ARRAY[('MOD-OP-REGISTER'::character varying)::text, ('MOD-OP-INSTALL'::character varying)::text, ('MOD-OP-ENABLE'::character varying)::text, ('MOD-OP-DISABLE'::character varying)::text])) OR ((catalog_operation_id)::text = 'POL-OP-ACTIVATE'::text) OR ((catalog_operation_id)::text = ANY (ARRAY[('OPS-OP-ADVANCE-SIGNING-KEY-ROTATION'::character varying)::text, ('OPS-OP-RECOVER-SIGNING-KEY-ROTATION'::character varying)::text])))",
+      "CHECK (catalog_operation_id::text = 'LEGACY'::text OR catalog_operation_id::text ~ '^(ID|CFG)-OP-[A-Z0-9-]+$'::text OR (catalog_operation_id::text = ANY (ARRAY['MOD-OP-REGISTER'::character varying::text, 'MOD-OP-INSTALL'::character varying::text, 'MOD-OP-ENABLE'::character varying::text, 'MOD-OP-DISABLE'::character varying::text])) OR catalog_operation_id::text = 'POL-OP-ACTIVATE'::text OR (catalog_operation_id::text = ANY (ARRAY['OPS-OP-ADVANCE-SIGNING-KEY-ROTATION'::character varying::text, 'OPS-OP-RECOVER-SIGNING-KEY-ROTATION'::character varying::text])))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_async_work_transition.notification_async_transition_bytes_ck",
+    "parsed": [
+      "((octet_length(transition_bytes) >= 1) AND (octet_length(transition_bytes) <= 1048576) AND (transition_digest = ('sha256:'::text || encode(sha256(transition_bytes), 'hex'::text))) AND ((recorded_at_ms >= (0)::numeric) AND (recorded_at_ms <= ('9007199254740991'::bigint)::numeric)))",
+      "CHECK (octet_length(transition_bytes) >= 1 AND octet_length(transition_bytes) <= 1048576 AND transition_digest = ('sha256:'::text || encode(sha256(transition_bytes), 'hex'::text)) AND recorded_at_ms >= 0::numeric AND recorded_at_ms <= '9007199254740991'::bigint::numeric)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_cancellation_signing.notification_cancel_signing_preimage_ck",
+    "parsed": [
+      "((octet_length(preparation_bytes) >= 1) AND (octet_length(preparation_bytes) <= 1048576) AND (preparation_digest = ('sha256:'::text || encode(sha256(preparation_bytes), 'hex'::text))) AND (request_digest ~ '^sha256:[0-9a-f]{64}$'::text))",
+      "CHECK (octet_length(preparation_bytes) >= 1 AND octet_length(preparation_bytes) <= 1048576 AND preparation_digest = ('sha256:'::text || encode(sha256(preparation_bytes), 'hex'::text)) AND request_digest ~ '^sha256:[0-9a-f]{64}$'::text)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_completion_attempt.completion_attempt_bytes_ck",
+    "parsed": [
+      "((octet_length(attempt_bytes) >= 1) AND (octet_length(attempt_bytes) <= 4096) AND (attempt_digest = ('sha256:'::text || encode(sha256(attempt_bytes), 'hex'::text))))",
+      "CHECK (octet_length(attempt_bytes) >= 1 AND octet_length(attempt_bytes) <= 4096 AND attempt_digest = ('sha256:'::text || encode(sha256(attempt_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_completion_disposition.completion_disposition_bytes_ck",
+    "parsed": [
+      "((octet_length(transition_bytes) >= 1) AND (octet_length(transition_bytes) <= 1048576) AND (transition_digest = ('sha256:'::text || encode(sha256(transition_bytes), 'hex'::text))) AND ((octet_length(receipt_payload) >= 1) AND (octet_length(receipt_payload) <= 65536)) AND ((octet_length(cose_sign1) >= 65) AND (octet_length(cose_sign1) <= 131072)))",
+      "CHECK (octet_length(transition_bytes) >= 1 AND octet_length(transition_bytes) <= 1048576 AND transition_digest = ('sha256:'::text || encode(sha256(transition_bytes), 'hex'::text)) AND octet_length(receipt_payload) >= 1 AND octet_length(receipt_payload) <= 65536 AND octet_length(cose_sign1) >= 65 AND octet_length(cose_sign1) <= 131072)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_completion_disposition_signer_installation.completion_signer_bytes_ck",
+    "parsed": [
+      "((octet_length(trust_bytes) >= 1) AND (octet_length(trust_bytes) <= 65536) AND (trust_digest = ('sha256:'::text || encode(sha256(trust_bytes), 'hex'::text))))",
+      "CHECK (octet_length(trust_bytes) >= 1 AND octet_length(trust_bytes) <= 65536 AND trust_digest = ('sha256:'::text || encode(sha256(trust_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_completion_disposition_signing.completion_signing_bytes_ck",
+    "parsed": [
+      "((octet_length(preparation_bytes) >= 1) AND (octet_length(preparation_bytes) <= 1048576) AND (preparation_digest = ('sha256:'::text || encode(sha256(preparation_bytes), 'hex'::text))))",
+      "CHECK (octet_length(preparation_bytes) >= 1 AND octet_length(preparation_bytes) <= 1048576 AND preparation_digest = ('sha256:'::text || encode(sha256(preparation_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_completion_source.completion_source_bytes_ck",
+    "parsed": [
+      "((octet_length(source_bytes) >= 1) AND (octet_length(source_bytes) <= 524288) AND (source_digest = ('sha256:'::text || encode(sha256(source_bytes), 'hex'::text))))",
+      "CHECK (octet_length(source_bytes) >= 1 AND octet_length(source_bytes) <= 524288 AND source_digest = ('sha256:'::text || encode(sha256(source_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_delivery.notification_delivery_budget_ck",
+    "parsed": [
+      "((attempt_count >= 0) AND (attempt_count <= 6) AND ((attempt_limit >= 0) AND (attempt_limit <= 6)))",
+      "CHECK (attempt_count >= 0 AND attempt_count <= 6 AND attempt_limit >= 0 AND attempt_limit <= 6)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_delivery.notification_delivery_budget_provenance_ck",
+    "parsed": [
+      "((budget_configured_limit >= 0) AND (budget_configured_limit <= 100) AND (attempt_limit <= LEAST(budget_configured_limit, 6)) AND (budget_effective_digest ~ '^sha256:[0-9a-f]{64}$'::text) AND (budget_worker_installation_digest ~ '^sha256:[0-9a-f]{64}$'::text) AND (budget_environment_id ~ '^[a-zA-Z0-9][a-zA-Z0-9:._-]{0,159}$'::text))",
+      "CHECK (budget_configured_limit >= 0 AND budget_configured_limit <= 100 AND attempt_limit <= LEAST(budget_configured_limit, 6) AND budget_effective_digest ~ '^sha256:[0-9a-f]{64}$'::text AND budget_worker_installation_digest ~ '^sha256:[0-9a-f]{64}$'::text AND budget_environment_id ~ '^[a-zA-Z0-9][a-zA-Z0-9:._-]{0,159}$'::text)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_delivery_attempt.notification_attempt_count_ck",
+    "parsed": [
+      "((attempt_number >= 1) AND (attempt_number <= 6) AND ((started_at_ms >= (0)::numeric) AND (started_at_ms <= ('9007199254740991'::bigint)::numeric)) AND ((worker_credential_epoch >= (0)::numeric) AND (worker_credential_epoch <= '18446744073709551615'::numeric)))",
+      "CHECK (attempt_number >= 1 AND attempt_number <= 6 AND started_at_ms >= 0::numeric AND started_at_ms <= '9007199254740991'::bigint::numeric AND worker_credential_epoch >= 0::numeric AND worker_credential_epoch <= '18446744073709551615'::numeric)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_delivery_cancellation.notification_cancellation_transition_ck",
+    "parsed": [
+      "((octet_length(transition_bytes) >= 1) AND (octet_length(transition_bytes) <= 1048576) AND (transition_digest = ('sha256:'::text || encode(sha256(transition_bytes), 'hex'::text))))",
+      "CHECK (octet_length(transition_bytes) >= 1 AND octet_length(transition_bytes) <= 1048576 AND transition_digest = ('sha256:'::text || encode(sha256(transition_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_delivery_dispatch_intent.notification_dispatch_state_ck",
+    "parsed": [
+      "((delivery_revision >= (2)::numeric) AND (delivery_revision <= '18446744073709551615'::numeric) AND (receipt_digest ~ '^sha256:[0-9a-f]{64}$'::text) AND (((state = 'PENDING'::text) AND (claim_token IS NULL) AND (claimed_at_ms IS NULL)) OR ((state = 'CLAIMED'::text) AND (claim_token IS NOT NULL) AND (claim_token ~ '^[0-9a-f]{64}$'::text) AND (claimed_at_ms IS NOT NULL) AND ((claimed_at_ms >= (0)::numeric) AND (claimed_at_ms <= ('9007199254740991'::bigint)::numeric)))))",
+      "CHECK (delivery_revision >= 2::numeric AND delivery_revision <= '18446744073709551615'::numeric AND receipt_digest ~ '^sha256:[0-9a-f]{64}$'::text AND (state = 'PENDING'::text AND claim_token IS NULL AND claimed_at_ms IS NULL OR state = 'CLAIMED'::text AND claim_token IS NOT NULL AND claim_token ~ '^[0-9a-f]{64}$'::text AND claimed_at_ms IS NOT NULL AND claimed_at_ms >= 0::numeric AND claimed_at_ms <= '9007199254740991'::bigint::numeric))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_delivery_outcome.notification_outcome_receipt_ck",
+    "parsed": [
+      "((octet_length(receipt_payload) >= 1) AND (octet_length(receipt_payload) <= 65536) AND ((octet_length(cose_sign1) >= 65) AND (octet_length(cose_sign1) <= 131072)) AND (receipt_digest = ('sha256:'::text || encode(sha256(receipt_payload), 'hex'::text))))",
+      "CHECK (octet_length(receipt_payload) >= 1 AND octet_length(receipt_payload) <= 65536 AND octet_length(cose_sign1) >= 65 AND octet_length(cose_sign1) <= 131072 AND receipt_digest = ('sha256:'::text || encode(sha256(receipt_payload), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_delivery_outcome.notification_outcome_transition_ck",
+    "parsed": [
+      "((octet_length(transition_bytes) >= 1) AND (octet_length(transition_bytes) <= 524288) AND (transition_digest = ('sha256:'::text || encode(sha256(transition_bytes), 'hex'::text))))",
+      "CHECK (octet_length(transition_bytes) >= 1 AND octet_length(transition_bytes) <= 524288 AND transition_digest = ('sha256:'::text || encode(sha256(transition_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_delivery_outcome_signing.notification_outcome_signing_preparation_ck",
+    "parsed": [
+      "((octet_length(preparation_bytes) >= 1) AND (octet_length(preparation_bytes) <= 524288) AND (preparation_digest = ('sha256:'::text || encode(sha256(preparation_bytes), 'hex'::text))))",
+      "CHECK (octet_length(preparation_bytes) >= 1 AND octet_length(preparation_bytes) <= 524288 AND preparation_digest = ('sha256:'::text || encode(sha256(preparation_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_delivery_preparation.notification_delivery_preparation_bytes_ck",
+    "parsed": [
+      "((octet_length(preparation_bytes) >= 1) AND (octet_length(preparation_bytes) <= 262144) AND (preparation_digest = ('sha256:'::text || encode(sha256(preparation_bytes), 'hex'::text))))",
+      "CHECK (octet_length(preparation_bytes) >= 1 AND octet_length(preparation_bytes) <= 262144 AND preparation_digest = ('sha256:'::text || encode(sha256(preparation_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_delivery_preparation.notification_delivery_preparation_revision_ck",
+    "parsed": [
+      "((delivery_revision >= (1)::numeric) AND (delivery_revision <= '18446744073709551614'::numeric) AND ((attempt_number >= (1)::numeric) AND (attempt_number <= (6)::numeric)))",
+      "CHECK (delivery_revision >= 1::numeric AND delivery_revision <= '18446744073709551614'::numeric AND attempt_number >= 1::numeric AND attempt_number <= 6::numeric)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_delivery_signing.notification_delivery_signing_bytes_ck",
+    "parsed": [
+      "((octet_length(preparation_bytes) >= 1) AND (octet_length(preparation_bytes) <= 524288) AND (preparation_digest = ('sha256:'::text || encode(sha256(preparation_bytes), 'hex'::text))))",
+      "CHECK (octet_length(preparation_bytes) >= 1 AND octet_length(preparation_bytes) <= 524288 AND preparation_digest = ('sha256:'::text || encode(sha256(preparation_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_delivery_start.notification_delivery_start_receipt_ck",
+    "parsed": [
+      "((octet_length(receipt_payload) >= 1) AND (octet_length(receipt_payload) <= 65536) AND ((octet_length(cose_sign1) >= 65) AND (octet_length(cose_sign1) <= 131072)) AND (receipt_digest = ('sha256:'::text || encode(sha256(receipt_payload), 'hex'::text))))",
+      "CHECK (octet_length(receipt_payload) >= 1 AND octet_length(receipt_payload) <= 65536 AND octet_length(cose_sign1) >= 65 AND octet_length(cose_sign1) <= 131072 AND receipt_digest = ('sha256:'::text || encode(sha256(receipt_payload), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_delivery_start.notification_delivery_start_transition_ck",
+    "parsed": [
+      "((octet_length(transition_bytes) >= 1) AND (octet_length(transition_bytes) <= 262144) AND (transition_digest = ('sha256:'::text || encode(sha256(transition_bytes), 'hex'::text))))",
+      "CHECK (octet_length(transition_bytes) >= 1 AND octet_length(transition_bytes) <= 262144 AND transition_digest = ('sha256:'::text || encode(sha256(transition_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_key_preparation.notification_key_preparation_bytes_ck",
+    "parsed": [
+      "((octet_length(preparation_bytes) >= 1) AND (octet_length(preparation_bytes) <= 32768) AND (preparation_digest = ('sha256:'::text || encode(sha256(preparation_bytes), 'hex'::text))))",
+      "CHECK (octet_length(preparation_bytes) >= 1 AND octet_length(preparation_bytes) <= 32768 AND preparation_digest = ('sha256:'::text || encode(sha256(preparation_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_occurrence_observation.notification_occurrence_observation_bytes_ck",
+    "parsed": [
+      "((octet_length(receipt_payload) >= 1) AND (octet_length(receipt_payload) <= 65536) AND ((octet_length(cose_sign1) >= 65) AND (octet_length(cose_sign1) <= 131072)) AND (receipt_digest = ('sha256:'::text || encode(sha256(receipt_payload), 'hex'::text))))",
+      "CHECK (octet_length(receipt_payload) >= 1 AND octet_length(receipt_payload) <= 65536 AND octet_length(cose_sign1) >= 65 AND octet_length(cose_sign1) <= 131072 AND receipt_digest = ('sha256:'::text || encode(sha256(receipt_payload), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_occurrence_preparation.notification_occurrence_preparation_bytes_ck",
+    "parsed": [
+      "((octet_length(preparation_bytes) >= 1) AND (octet_length(preparation_bytes) <= 262144) AND (preparation_digest = ('sha256:'::text || encode(sha256(preparation_bytes), 'hex'::text))))",
+      "CHECK (octet_length(preparation_bytes) >= 1 AND octet_length(preparation_bytes) <= 262144 AND preparation_digest = ('sha256:'::text || encode(sha256(preparation_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_source_cursor.notification_cursor_position_ck",
+    "parsed": [
+      "(((last_sequence = (0)::numeric) AND (last_event_id IS NULL) AND (last_data_digest IS NULL)) OR ((last_sequence >= (1)::numeric) AND (last_sequence <= '18446744073709551615'::numeric) AND (last_event_id IS NOT NULL) AND (last_data_digest IS NOT NULL)))",
+      "CHECK (last_sequence = 0::numeric AND last_event_id IS NULL AND last_data_digest IS NULL OR last_sequence >= 1::numeric AND last_sequence <= '18446744073709551615'::numeric AND last_event_id IS NOT NULL AND last_data_digest IS NOT NULL)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_source_cursor.notification_cursor_source_ck",
+    "parsed": [
+      "((octet_length(source) >= 1) AND (octet_length(source) <= 2048) AND ((octet_length(partition) >= 1) AND (octet_length(partition) <= 256)))",
+      "CHECK (octet_length(source) >= 1 AND octet_length(source) <= 2048 AND octet_length(partition) >= 1 AND octet_length(partition) <= 256)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_source_inbox.notification_inbox_source_ck",
+    "parsed": [
+      "((octet_length(source) >= 1) AND (octet_length(source) <= 2048) AND ((octet_length(partition) >= 1) AND (octet_length(partition) <= 256)))",
+      "CHECK (octet_length(source) >= 1 AND octet_length(source) <= 2048 AND octet_length(partition) >= 1 AND octet_length(partition) <= 256)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "notification_verification_attempt.notification_verification_attempt_bytes_ck",
+    "parsed": [
+      "((octet_length(challenge_bytes) >= 1) AND (octet_length(challenge_bytes) <= 16384) AND ((response_bytes IS NULL) OR ((octet_length(response_bytes) >= 1) AND (octet_length(response_bytes) <= 270336))))",
+      "CHECK (octet_length(challenge_bytes) >= 1 AND octet_length(challenge_bytes) <= 16384 AND (response_bytes IS NULL OR octet_length(response_bytes) >= 1 AND octet_length(response_bytes) <= 270336))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "operations_generation.operations_generation_bytes_ck",
+    "parsed": [
+      "((octet_length(candidate_bytes) >= 1) AND (octet_length(candidate_bytes) <= 1048576) AND (candidate_digest = ('sha256:'::text || encode(sha256(candidate_bytes), 'hex'::text))))",
+      "CHECK (octet_length(candidate_bytes) >= 1 AND octet_length(candidate_bytes) <= 1048576 AND candidate_digest = ('sha256:'::text || encode(sha256(candidate_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "operations_generation_commit.operations_commit_sequence_ck",
+    "parsed": [
+      "((sequence >= (1)::numeric) AND (sequence <= '18446744073709551615'::numeric) AND (effective_digest ~ '^sha256:[0-9a-f]{64}$'::text))",
+      "CHECK (sequence >= 1::numeric AND sequence <= '18446744073709551615'::numeric AND effective_digest ~ '^sha256:[0-9a-f]{64}$'::text)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "operations_installation.operations_installation_bytes_ck",
+    "parsed": [
+      "((octet_length(installation_bytes) >= 1) AND (octet_length(installation_bytes) <= 1048576) AND (installation_digest = ('sha256:'::text || encode(sha256(installation_bytes), 'hex'::text))))",
+      "CHECK (octet_length(installation_bytes) >= 1 AND octet_length(installation_bytes) <= 1048576 AND installation_digest = ('sha256:'::text || encode(sha256(installation_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "operations_qualification_root.ops_qualification_root_ck",
+    "parsed": [
+      "((root_epoch >= (1)::numeric) AND (root_epoch <= '18446744073709551615'::numeric) AND (root_key_id = ('sha256:'::text || encode(sha256(root_spki), 'hex'::text))) AND ((octet_length(root_spki) >= 1) AND (octet_length(root_spki) <= 256)) AND (valid_from_ms >= (0)::numeric) AND (valid_until_ms > valid_from_ms) AND (valid_until_ms <= ('9007199254740991'::bigint)::numeric) AND (policy_signer = ANY (ARRAY['OFFLINE_TRUST_ROOT'::text, 'THRESHOLD_TRUST_ROOT'::text])) AND (state = ANY (ARRAY['ACTIVE'::text, 'REVOKED'::text])) AND (authority_id ~ '^[a-z][a-z0-9-]{2,31}$'::text))",
+      "CHECK (root_epoch >= 1::numeric AND root_epoch <= '18446744073709551615'::numeric AND root_key_id = ('sha256:'::text || encode(sha256(root_spki), 'hex'::text)) AND octet_length(root_spki) >= 1 AND octet_length(root_spki) <= 256 AND valid_from_ms >= 0::numeric AND valid_until_ms > valid_from_ms AND valid_until_ms <= '9007199254740991'::bigint::numeric AND (policy_signer = ANY (ARRAY['OFFLINE_TRUST_ROOT'::text, 'THRESHOLD_TRUST_ROOT'::text])) AND (state = ANY (ARRAY['ACTIVE'::text, 'REVOKED'::text])) AND authority_id ~ '^[a-z][a-z0-9-]{2,31}$'::text)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "operations_qualification_state.ops_qualification_state_ck",
+    "parsed": [
+      "((sequence >= (1)::numeric) AND (sequence <= '18446744073709551615'::numeric) AND ((snapshot_sequence >= (1)::numeric) AND (snapshot_sequence <= '18446744073709551615'::numeric)) AND ((valid_until_ms >= (1)::numeric) AND (valid_until_ms <= ('9007199254740991'::bigint)::numeric)) AND ((octet_length(custody_bytes) >= 1) AND (octet_length(custody_bytes) <= 10000000)) AND (custody_digest = ('sha256:'::text || encode(sha256(custody_bytes), 'hex'::text))) AND (keyset_digest ~ '^sha256:[0-9a-f]{64}$'::text) AND (revocations_digest ~ '^sha256:[0-9a-f]{64}$'::text))",
+      "CHECK (sequence >= 1::numeric AND sequence <= '18446744073709551615'::numeric AND snapshot_sequence >= 1::numeric AND snapshot_sequence <= '18446744073709551615'::numeric AND valid_until_ms >= 1::numeric AND valid_until_ms <= '9007199254740991'::bigint::numeric AND octet_length(custody_bytes) >= 1 AND octet_length(custody_bytes) <= 10000000 AND custody_digest = ('sha256:'::text || encode(sha256(custody_bytes), 'hex'::text)) AND keyset_digest ~ '^sha256:[0-9a-f]{64}$'::text AND revocations_digest ~ '^sha256:[0-9a-f]{64}$'::text)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "operations_secret_association.operations_secret_association_bytes_ck",
+    "parsed": [
+      "((octet_length(association_bytes) >= 1) AND (octet_length(association_bytes) <= 262144) AND (association_digest = ('sha256:'::text || encode(sha256(association_bytes), 'hex'::text))))",
+      "CHECK (octet_length(association_bytes) >= 1 AND octet_length(association_bytes) <= 262144 AND association_digest = ('sha256:'::text || encode(sha256(association_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "operations_secret_observation.operations_secret_observation_bytes_ck",
+    "parsed": [
+      "((octet_length(payload) >= 1) AND (octet_length(payload) <= 65536) AND ((octet_length(cose) >= 65) AND (octet_length(cose) <= 66560)) AND (source_digest = ('sha256:'::text || encode(sha256(cose), 'hex'::text))))",
+      "CHECK (octet_length(payload) >= 1 AND octet_length(payload) <= 65536 AND octet_length(cose) >= 65 AND octet_length(cose) <= 66560 AND source_digest = ('sha256:'::text || encode(sha256(cose), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "participant_bootstrap_custody.bootstrap_ttl_ck",
+    "parsed": [
+      "((first_admin_invite_ttl_ms >= 900000) AND (first_admin_invite_ttl_ms <= 604800000) AND (expires_at > created_at) AND (expires_at <= (created_at + '7 days'::interval)))",
+      "CHECK (first_admin_invite_ttl_ms >= 900000 AND first_admin_invite_ttl_ms <= 604800000 AND expires_at > created_at AND expires_at <= (created_at + '7 days'::interval))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "platform_context.platform_context_epoch_ck",
+    "parsed": [
+      "((authority_epoch >= (0)::numeric) AND (authority_epoch <= '18446744073709551615'::numeric) AND ((row_version >= (1)::numeric) AND (row_version <= '18446744073709551615'::numeric)))",
+      "CHECK (authority_epoch >= 0::numeric AND authority_epoch <= '18446744073709551615'::numeric AND row_version >= 1::numeric AND row_version <= '18446744073709551615'::numeric)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "platform_envelope_scope.platform_envelope_scope_bytes_ck",
+    "parsed": [
+      "((octet_length(scope_cbor) >= 1) AND (octet_length(scope_cbor) <= 60000) AND ((octet_length(admission_preimage) >= 1) AND (octet_length(admission_preimage) <= 65536)) AND (octet_length(admission_digest) = 32) AND (admission_digest = sha256(admission_preimage)))",
+      "CHECK (octet_length(scope_cbor) >= 1 AND octet_length(scope_cbor) <= 60000 AND octet_length(admission_preimage) >= 1 AND octet_length(admission_preimage) <= 65536 AND octet_length(admission_digest) = 32 AND admission_digest = sha256(admission_preimage))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "platform_envelope_scope_successor.platform_scope_successor_bytes_ck",
+    "parsed": [
+      "((octet_length(scope_cbor) >= 1) AND (octet_length(scope_cbor) <= 60000) AND ((octet_length(admission_preimage) >= 1) AND (octet_length(admission_preimage) <= 65536)) AND (octet_length(admission_digest) = 32) AND (admission_digest = sha256(admission_preimage)) AND (octet_length(predecessor_digest) = 32))",
+      "CHECK (octet_length(scope_cbor) >= 1 AND octet_length(scope_cbor) <= 60000 AND octet_length(admission_preimage) >= 1 AND octet_length(admission_preimage) <= 65536 AND octet_length(admission_digest) = 32 AND admission_digest = sha256(admission_preimage) AND octet_length(predecessor_digest) = 32)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "platform_envelope_scope_successor.platform_scope_successor_epoch_ck",
+    "parsed": [
+      "((platform_authority_epoch >= (2)::numeric) AND (platform_authority_epoch <= '18446744073709551615'::numeric) AND (predecessor_epoch = (platform_authority_epoch - (1)::numeric)))",
+      "CHECK (platform_authority_epoch >= 2::numeric AND platform_authority_epoch <= '18446744073709551615'::numeric AND predecessor_epoch = (platform_authority_epoch - 1::numeric))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "platform_scope_replacement.platform_scope_replacement_epoch_ck",
+    "parsed": [
+      "((predecessor_epoch >= (1)::numeric) AND (predecessor_epoch <= '18446744073709551614'::numeric) AND ((expected_root_revision >= (1)::numeric) AND (expected_root_revision <= '18446744073709551615'::numeric)))",
+      "CHECK (predecessor_epoch >= 1::numeric AND predecessor_epoch <= '18446744073709551614'::numeric AND expected_root_revision >= 1::numeric AND expected_root_revision <= '18446744073709551615'::numeric)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "protected_proof_access.protected_proof_access_purpose_ck",
+    "parsed": [
+      "((length(purpose) >= 1) AND (length(purpose) <= 256) AND ((length(case_reference) >= 1) AND (length(case_reference) <= 256)))",
+      "CHECK (length(purpose) >= 1 AND length(purpose) <= 256 AND length(case_reference) >= 1 AND length(case_reference) <= 256)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "protected_proof_checkpoint.protected_proof_checkpoint_size_ck",
+    "parsed": [
+      "((ciphertext_bytes >= 17) AND (ciphertext_bytes <= 65552) AND (sink_id ~ '^[a-zA-Z0-9][a-zA-Z0-9:._-]{0,159}$'::text))",
+      "CHECK (ciphertext_bytes >= 17 AND ciphertext_bytes <= 65552 AND sink_id ~ '^[a-zA-Z0-9][a-zA-Z0-9:._-]{0,159}$'::text)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "protected_proof_object.protected_proof_object_purpose_ck",
+    "parsed": [
+      "((length(purpose) >= 1) AND (length(purpose) <= 256) AND ((length(case_reference) >= 1) AND (length(case_reference) <= 256)) AND (retain_until > created_at))",
+      "CHECK (length(purpose) >= 1 AND length(purpose) <= 256 AND length(case_reference) >= 1 AND length(case_reference) <= 256 AND retain_until > created_at)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "protected_proof_payload.protected_proof_payload_shape_ck",
+    "parsed": [
+      "((length(key_id) >= 1) AND (length(key_id) <= 128) AND (octet_length(nonce) = 12) AND ((octet_length(ciphertext) >= 17) AND (octet_length(ciphertext) <= 65552)))",
+      "CHECK (length(key_id) >= 1 AND length(key_id) <= 128 AND octet_length(nonce) = 12 AND octet_length(ciphertext) >= 17 AND octet_length(ciphertext) <= 65552)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "qualification_deployment_attempt.qualification_deployment_attempt_bytes_ck",
+    "parsed": [
+      "((octet_length(request_bytes) >= 1) AND (octet_length(request_bytes) <= 524288) AND (request_digest = ('sha256:'::text || encode(sha256(request_bytes), 'hex'::text))))",
+      "CHECK (octet_length(request_bytes) >= 1 AND octet_length(request_bytes) <= 524288 AND request_digest = ('sha256:'::text || encode(sha256(request_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "qualification_deployment_installation.qualification_deployment_installation_bytes_ck",
+    "parsed": [
+      "((octet_length(pins_bytes) >= 1) AND (octet_length(pins_bytes) <= 65536) AND (pins_digest = ('sha256:'::text || encode(sha256(pins_bytes), 'hex'::text))))",
+      "CHECK (octet_length(pins_bytes) >= 1 AND octet_length(pins_bytes) <= 65536 AND pins_digest = ('sha256:'::text || encode(sha256(pins_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "qualification_deployment_observation.qualification_deployment_observation_bytes_ck",
+    "parsed": [
+      "((octet_length(observation_bytes) >= 1) AND (octet_length(observation_bytes) <= 524288) AND (observation_digest = ('sha256:'::text || encode(sha256(observation_bytes), 'hex'::text))))",
+      "CHECK (octet_length(observation_bytes) >= 1 AND octet_length(observation_bytes) <= 524288 AND observation_digest = ('sha256:'::text || encode(sha256(observation_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "qualification_key_attempt.qualification_key_attempt_bytes_ck",
+    "parsed": [
+      "((octet_length(request_bytes) >= 1) AND (octet_length(request_bytes) <= 131072) AND (request_digest = ('sha256:'::text || encode(sha256(((convert_to('pc.qualification-key-observation-request.v1'::text, 'UTF8'::name) || decode('00'::text, 'hex'::text)) || request_bytes)), 'hex'::text))))",
+      "CHECK (octet_length(request_bytes) >= 1 AND octet_length(request_bytes) <= 131072 AND request_digest = ('sha256:'::text || encode(sha256((convert_to('pc.qualification-key-observation-request.v1'::text, 'UTF8'::name) || decode('00'::text, 'hex'::text)) || request_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "qualification_key_installation.qualification_key_installation_bytes_ck",
+    "parsed": [
+      "((octet_length(pins_bytes) >= 1) AND (octet_length(pins_bytes) <= 131072) AND (pins_digest = ('sha256:'::text || encode(sha256(pins_bytes), 'hex'::text))))",
+      "CHECK (octet_length(pins_bytes) >= 1 AND octet_length(pins_bytes) <= 131072 AND pins_digest = ('sha256:'::text || encode(sha256(pins_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "qualification_key_observation.qualification_key_observation_bytes_ck",
+    "parsed": [
+      "((octet_length(observation_bytes) >= 1) AND (octet_length(observation_bytes) <= 131072) AND (observation_digest = ('sha256:'::text || encode(sha256(observation_bytes), 'hex'::text))))",
+      "CHECK (octet_length(observation_bytes) >= 1 AND octet_length(observation_bytes) <= 131072 AND observation_digest = ('sha256:'::text || encode(sha256(observation_bytes), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "receipt_signing_attempt.receipt_attempt_payload_ck",
+    "parsed": [
+      "((octet_length(payload_cbor) >= 1) AND (octet_length(payload_cbor) <= 65536) AND (octet_length(payload_digest) = 32) AND (payload_digest = sha256(payload_cbor)))",
+      "CHECK (octet_length(payload_cbor) >= 1 AND octet_length(payload_cbor) <= 65536 AND octet_length(payload_digest) = 32 AND payload_digest = sha256(payload_cbor))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "retention_policy.retention_policy_digest_ck",
+    "parsed": [
+      "((octet_length(policy_cbor) >= 1) AND (octet_length(policy_cbor) <= 65536) AND (policy_digest = ('sha256:'::text || encode(sha256(policy_cbor), 'hex'::text))))",
+      "CHECK (octet_length(policy_cbor) >= 1 AND octet_length(policy_cbor) <= 65536 AND policy_digest = ('sha256:'::text || encode(sha256(policy_cbor), 'hex'::text)))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "retention_policy.retention_policy_duration_ck",
+    "parsed": [
+      "((retention_period_ms >= (0)::numeric) AND (retention_period_ms <= ('9223372036854775807'::bigint)::numeric) AND ((local_grace_ms >= (0)::numeric) AND (local_grace_ms <= ('9223372036854775807'::bigint)::numeric)) AND ((sink_quorum >= 0) AND (sink_quorum <= 8)))",
+      "CHECK (retention_period_ms >= 0::numeric AND retention_period_ms <= '9223372036854775807'::bigint::numeric AND local_grace_ms >= 0::numeric AND local_grace_ms <= '9223372036854775807'::bigint::numeric AND sink_quorum >= 0 AND sink_quorum <= 8)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "root_expiry_recovery_scope.root_expiry_scope_bytes_ck",
+    "parsed": [
+      "((octet_length(scope_cbor) >= 1) AND (octet_length(scope_cbor) <= 60000) AND ((octet_length(admission_preimage) >= 1) AND (octet_length(admission_preimage) <= 65536)) AND (octet_length(admission_digest) = 32) AND (admission_digest = sha256(admission_preimage)) AND (octet_length(enrollment_digest) = 32) AND (octet_length(intent_digest) = 32) AND (octet_length(predecessor_digest) = 32))",
+      "CHECK (octet_length(scope_cbor) >= 1 AND octet_length(scope_cbor) <= 60000 AND octet_length(admission_preimage) >= 1 AND octet_length(admission_preimage) <= 65536 AND octet_length(admission_digest) = 32 AND admission_digest = sha256(admission_preimage) AND octet_length(enrollment_digest) = 32 AND octet_length(intent_digest) = 32 AND octet_length(predecessor_digest) = 32)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "root_expiry_recovery_scope.root_expiry_scope_epoch_ck",
+    "parsed": [
+      "((platform_authority_epoch >= (2)::numeric) AND (platform_authority_epoch <= '18446744073709551615'::numeric) AND (predecessor_epoch = (platform_authority_epoch - (1)::numeric)))",
+      "CHECK (platform_authority_epoch >= 2::numeric AND platform_authority_epoch <= '18446744073709551615'::numeric AND predecessor_epoch = (platform_authority_epoch - 1::numeric))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "runtime_artifact_source_denial.runtime_artifact_source_denial_wire_ck",
+    "parsed": [
+      "((sequence >= (1)::numeric) AND (sequence <= (4096)::numeric) AND ((octet_length(signed_denial) >= 1) AND (octet_length(signed_denial) <= 8192)) AND (denial_digest = sha256(signed_denial)) AND (octet_length(verification_nonce) = 32) AND (octet_length(verification_mac) = 32) AND (((sequence = (1)::numeric) AND (previous_denial_digest IS NULL)) OR ((sequence > (1)::numeric) AND (octet_length(previous_denial_digest) = 32))))",
+      "CHECK (sequence >= 1::numeric AND sequence <= 4096::numeric AND octet_length(signed_denial) >= 1 AND octet_length(signed_denial) <= 8192 AND denial_digest = sha256(signed_denial) AND octet_length(verification_nonce) = 32 AND octet_length(verification_mac) = 32 AND (sequence = 1::numeric AND previous_denial_digest IS NULL OR sequence > 1::numeric AND octet_length(previous_denial_digest) = 32))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "runtime_configuration_input.runtime_configuration_input_bytes_ck",
+    "parsed": [
+      "((octet_length(configuration_cbor) >= 1) AND (octet_length(configuration_cbor) <= 4194304) AND (configuration_digest = sha256(configuration_cbor)))",
+      "CHECK (octet_length(configuration_cbor) >= 1 AND octet_length(configuration_cbor) <= 4194304 AND configuration_digest = sha256(configuration_cbor))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "runtime_target_disposition_acknowledgement.runtime_target_disposition_ack_ck",
+    "parsed": [
+      "((octet_length(signed_acknowledgement) >= 1) AND (octet_length(signed_acknowledgement) <= 65536) AND (acknowledgement_digest = ('sha256:'::text || encode(sha256(signed_acknowledgement), 'hex'::text))) AND (jsonb_typeof(claims) = 'object'::text))",
+      "CHECK (octet_length(signed_acknowledgement) >= 1 AND octet_length(signed_acknowledgement) <= 65536 AND acknowledgement_digest = ('sha256:'::text || encode(sha256(signed_acknowledgement), 'hex'::text)) AND jsonb_typeof(claims) = 'object'::text)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "runtime_target_disposition_delivery.runtime_target_disposition_delivery_ck",
+    "parsed": [
+      "((octet_length(signed_delivery) >= 1) AND (octet_length(signed_delivery) <= 65536) AND (delivery_digest = ('sha256:'::text || encode(sha256(signed_delivery), 'hex'::text))) AND (jsonb_typeof(claims) = 'object'::text))",
+      "CHECK (octet_length(signed_delivery) >= 1 AND octet_length(signed_delivery) <= 65536 AND delivery_digest = ('sha256:'::text || encode(sha256(signed_delivery), 'hex'::text)) AND jsonb_typeof(claims) = 'object'::text)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "runtime_target_profile_binding.runtime_profile_name_ck",
+    "parsed": [
+      "((length(target_profile_id) >= 1) AND (length(target_profile_id) <= 128) AND (target_profile_id ~ '^[A-Za-z0-9][A-Za-z0-9._:-]*$'::text))",
+      "CHECK (length(target_profile_id) >= 1 AND length(target_profile_id) <= 128 AND target_profile_id ~ '^[A-Za-z0-9][A-Za-z0-9._:-]*$'::text)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "signing_continuation.signing_continuation_digest_ck",
+    "parsed": [
+      "((octet_length(context_preimage) >= 2) AND (octet_length(context_preimage) <= 16384) AND (octet_length(context_digest) = 32) AND (context_digest = sha256(context_preimage)) AND (octet_length(assertion_digest) = 32) AND (octet_length(issuer_key_digest) = 32))",
+      "CHECK (octet_length(context_preimage) >= 2 AND octet_length(context_preimage) <= 16384 AND octet_length(context_digest) = 32 AND context_digest = sha256(context_preimage) AND octet_length(assertion_digest) = 32 AND octet_length(issuer_key_digest) = 32)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "signing_rotation_attestation.signing_attestation_payload_ck",
+    "parsed": [
+      "((octet_length(receipt_cbor) >= 1) AND (octet_length(receipt_cbor) <= 65536) AND ((octet_length(authority_snapshot) >= 2) AND (octet_length(authority_snapshot) <= 65536)) AND (octet_length(signer_trust_digest) = 32))",
+      "CHECK (octet_length(receipt_cbor) >= 1 AND octet_length(receipt_cbor) <= 65536 AND octet_length(authority_snapshot) >= 2 AND octet_length(authority_snapshot) <= 65536 AND octet_length(signer_trust_digest) = 32)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "signing_rotation_command.signing_command_authorization_ck",
+    "parsed": [
+      "((octet_length(authorization_snapshot) >= 2) AND (octet_length(authorization_snapshot) <= 65536) AND (authorization_snapshot_digest = sha256(authorization_snapshot)) AND (octet_length(authorization_snapshot_digest) = 32))",
+      "CHECK (octet_length(authorization_snapshot) >= 2 AND octet_length(authorization_snapshot) <= 65536 AND authorization_snapshot_digest = sha256(authorization_snapshot) AND octet_length(authorization_snapshot_digest) = 32)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "signing_rotation_history.signing_history_digest_ck",
+    "parsed": [
+      "((octet_length(history_preimage) >= 2) AND (octet_length(history_preimage) <= 262144) AND (history_digest = sha256(history_preimage)) AND (octet_length(history_digest) = 32))",
+      "CHECK (octet_length(history_preimage) >= 2 AND octet_length(history_preimage) <= 262144 AND history_digest = sha256(history_preimage) AND octet_length(history_digest) = 32)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "signing_rotation_observation.signing_observation_digest_ck",
+    "parsed": [
+      "((octet_length(observation_preimage) >= 2) AND (octet_length(observation_preimage) <= 4096) AND (observation_digest = sha256(observation_preimage)) AND (octet_length(observation_digest) = 32))",
+      "CHECK (octet_length(observation_preimage) >= 2 AND octet_length(observation_preimage) <= 4096 AND observation_digest = sha256(observation_preimage) AND octet_length(observation_digest) = 32)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "signing_rotation_operation_evidence.signing_operation_evidence_digest_ck",
+    "parsed": [
+      "((octet_length(preimage) >= 2) AND (octet_length(preimage) <= 262144) AND (digest = sha256(preimage)) AND (octet_length(digest) = 32) AND (recorded_at_ns > (0)::numeric))",
+      "CHECK (octet_length(preimage) >= 2 AND octet_length(preimage) <= 262144 AND digest = sha256(preimage) AND octet_length(digest) = 32 AND recorded_at_ns > 0::numeric)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "store_retirement_admission.store_retirement_admission_revision_ck",
+    "parsed": [
+      "((lifecycle_revision >= (1)::numeric) AND (lifecycle_revision <= ('9223372036854775807'::bigint)::numeric) AND (revision = (1)::numeric) AND (previous_attempt_id IS DISTINCT FROM attempt_id) AND (dispatch_not_after_ms > floor((EXTRACT(epoch FROM admitted_at) * (1000)::numeric))) AND (dispatch_not_after_ms <= (floor((EXTRACT(epoch FROM admitted_at) * (1000)::numeric)) + (60000)::numeric)))",
+      "CHECK (lifecycle_revision >= 1::numeric AND lifecycle_revision <= '9223372036854775807'::bigint::numeric AND revision = 1::numeric AND previous_attempt_id IS DISTINCT FROM attempt_id AND dispatch_not_after_ms > floor(EXTRACT(epoch FROM admitted_at) * 1000::numeric) AND dispatch_not_after_ms <= (floor(EXTRACT(epoch FROM admitted_at) * 1000::numeric) + 60000::numeric))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "store_retirement_admission.store_retirement_admission_wire_ck",
+    "parsed": [
+      "((octet_length(attempt_wire) >= 1) AND (octet_length(attempt_wire) <= 1048576) AND (attempt_digest ~ '^[0-9a-f]{64}$'::text) AND (selection_digest ~ '^[0-9a-f]{64}$'::text))",
+      "CHECK (octet_length(attempt_wire) >= 1 AND octet_length(attempt_wire) <= 1048576 AND attempt_digest ~ '^[0-9a-f]{64}$'::text AND selection_digest ~ '^[0-9a-f]{64}$'::text)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "store_retirement_cancellation.store_retirement_cancellation_binding_ck",
+    "parsed": [
+      "((lifecycle_revision >= (1)::numeric) AND (lifecycle_revision <= ('9223372036854775807'::bigint)::numeric) AND (committed_digest ~ '^[0-9a-f]{64}$'::text) AND (jsonb_typeof(cause) = 'object'::text) AND ((octet_length((cause)::text) >= 1) AND (octet_length((cause)::text) <= 8192)))",
+      "CHECK (lifecycle_revision >= 1::numeric AND lifecycle_revision <= '9223372036854775807'::bigint::numeric AND committed_digest ~ '^[0-9a-f]{64}$'::text AND jsonb_typeof(cause) = 'object'::text AND octet_length(cause::text) >= 1 AND octet_length(cause::text) <= 8192)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "store_retirement_host.store_retirement_host_validity_ck",
+    "parsed": [
+      "((workload_credential_epoch >= (0)::numeric) AND (workload_credential_epoch <= '18446744073709551615'::numeric) AND (valid_from_ms >= (0)::numeric) AND (valid_until_ms > valid_from_ms) AND (valid_until_ms <= ('9223372036854775807'::bigint)::numeric))",
+      "CHECK (workload_credential_epoch >= 0::numeric AND workload_credential_epoch <= '18446744073709551615'::numeric AND valid_from_ms >= 0::numeric AND valid_until_ms > valid_from_ms AND valid_until_ms <= '9223372036854775807'::bigint::numeric)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "workload_credential_family.wr_family_bounds_ck",
+    "parsed": [
+      "((generation >= (1)::numeric) AND (generation <= '18446744073709551615'::numeric) AND ((instance_generation >= (1)::numeric) AND (instance_generation <= '18446744073709551615'::numeric)) AND ((security_epoch >= (0)::numeric) AND (security_epoch <= '18446744073709551615'::numeric)) AND ((row_version >= (1)::numeric) AND (row_version <= '18446744073709551615'::numeric)) AND (octet_length(current_fingerprint) = 32) AND (state = ANY (ARRAY['ACTIVE'::text, 'REVOKED'::text, 'TERMINATED'::text])))",
+      "CHECK (generation >= 1::numeric AND generation <= '18446744073709551615'::numeric AND instance_generation >= 1::numeric AND instance_generation <= '18446744073709551615'::numeric AND security_epoch >= 0::numeric AND security_epoch <= '18446744073709551615'::numeric AND row_version >= 1::numeric AND row_version <= '18446744073709551615'::numeric AND octet_length(current_fingerprint) = 32 AND (state = ANY (ARRAY['ACTIVE'::text, 'REVOKED'::text, 'TERMINATED'::text])))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "workload_renewal_attempt.wr_attempt_bounds_ck",
+    "parsed": [
+      "((lease_fence >= (1)::numeric) AND (lease_fence <= '18446744073709551615'::numeric) AND ((provider_timeout_ms >= (1)::numeric) AND (provider_timeout_ms <= (60000)::numeric)) AND ((length(worker_id) >= 1) AND (length(worker_id) <= 160)) AND (lease_expires_at > claimed_at))",
+      "CHECK (lease_fence >= 1::numeric AND lease_fence <= '18446744073709551615'::numeric AND provider_timeout_ms >= 1::numeric AND provider_timeout_ms <= 60000::numeric AND length(worker_id) >= 1 AND length(worker_id) <= 160 AND lease_expires_at > claimed_at)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "workload_renewal_intent.wr_intent_attestation_ck",
+    "parsed": [
+      "((octet_length(attestation_evidence) >= 1) AND (octet_length(attestation_evidence) <= 65536) AND (renewal_deadline > created_at))",
+      "CHECK (octet_length(attestation_evidence) >= 1 AND octet_length(attestation_evidence) <= 65536 AND renewal_deadline > created_at)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "workload_renewal_policy.wr_policy_bounds_ck",
+    "parsed": [
+      "((revision >= (1)::numeric) AND (revision <= '18446744073709551615'::numeric) AND (valid_until > valid_from) AND (state = ANY (ARRAY['ACTIVE'::text, 'SUSPENDED'::text, 'REVOKED'::text])) AND (jsonb_typeof(business_ancestors) = 'array'::text) AND ((jsonb_array_length(business_ancestors) >= 1) AND (jsonb_array_length(business_ancestors) <= 64)))",
+      "CHECK (revision >= 1::numeric AND revision <= '18446744073709551615'::numeric AND valid_until > valid_from AND (state = ANY (ARRAY['ACTIVE'::text, 'SUSPENDED'::text, 'REVOKED'::text])) AND jsonb_typeof(business_ancestors) = 'array'::text AND jsonb_array_length(business_ancestors) >= 1 AND jsonb_array_length(business_ancestors) <= 64)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "workload_renewal_policy.wr_policy_definition_ck",
+    "parsed": [
+      "((octet_length(definition_canonical) >= 1) AND (octet_length(definition_canonical) <= 65536) AND (digest = sha256(definition_canonical)) AND (jsonb_typeof(definition) = 'object'::text))",
+      "CHECK (octet_length(definition_canonical) >= 1 AND octet_length(definition_canonical) <= 65536 AND digest = sha256(definition_canonical) AND jsonb_typeof(definition) = 'object'::text)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "workload_renewal_policy_head.wr_policy_head_bounds_ck",
+    "parsed": [
+      "((current_revision >= (1)::numeric) AND (current_revision <= '18446744073709551615'::numeric) AND ((row_version >= (1)::numeric) AND (row_version <= '18446744073709551615'::numeric)) AND (state = ANY (ARRAY['ACTIVE'::text, 'SUSPENDED'::text, 'REVOKED'::text])))",
+      "CHECK (current_revision >= 1::numeric AND current_revision <= '18446744073709551615'::numeric AND row_version >= 1::numeric AND row_version <= '18446744073709551615'::numeric AND (state = ANY (ARRAY['ACTIVE'::text, 'SUSPENDED'::text, 'REVOKED'::text])))"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "workload_renewal_signing_grant.wr_signing_grant_security_ck",
+    "parsed": [
+      "((family_security_epoch >= (0)::numeric) AND (family_security_epoch <= '18446744073709551615'::numeric) AND ((participant_security_invalidation_epoch >= (0)::numeric) AND (participant_security_invalidation_epoch <= '18446744073709551615'::numeric)) AND ((key_security_generation >= (1)::numeric) AND (key_security_generation <= '18446744073709551615'::numeric)) AND (octet_length(provider_qualification_digest) = 32))",
+      "CHECK (family_security_epoch >= 0::numeric AND family_security_epoch <= '18446744073709551615'::numeric AND participant_security_invalidation_epoch >= 0::numeric AND participant_security_invalidation_epoch <= '18446744073709551615'::numeric AND key_security_generation >= 1::numeric AND key_security_generation <= '18446744073709551615'::numeric AND octet_length(provider_qualification_digest) = 32)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "workload_signing_handover.workload_signing_handover_sizes_ck",
+    "parsed": [
+      "((octet_length(request_canonical) >= 1) AND (octet_length(request_canonical) <= 262144) AND ((octet_length(source_canonical) >= 1) AND (octet_length(source_canonical) <= 8388608)) AND ((octet_length(authority_snapshot) >= 1) AND (octet_length(authority_snapshot) <= 65536)))",
+      "CHECK (octet_length(request_canonical) >= 1 AND octet_length(request_canonical) <= 262144 AND octet_length(source_canonical) >= 1 AND octet_length(source_canonical) <= 8388608 AND octet_length(authority_snapshot) >= 1 AND octet_length(authority_snapshot) <= 65536)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "workload_signing_handover_attempt.workload_handover_attempt_size_ck",
+    "parsed": [
+      "((octet_length(binding_canonical) >= 1) AND (octet_length(binding_canonical) <= 16384) AND ((octet_length(attempt_canonical) >= 1) AND (octet_length(attempt_canonical) <= 16384)) AND ((octet_length(authority_snapshot) >= 1) AND (octet_length(authority_snapshot) <= 65536)))",
+      "CHECK (octet_length(binding_canonical) >= 1 AND octet_length(binding_canonical) <= 16384 AND octet_length(attempt_canonical) >= 1 AND octet_length(attempt_canonical) <= 16384 AND octet_length(authority_snapshot) >= 1 AND octet_length(authority_snapshot) <= 65536)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "workload_signing_handover_generation.workload_handover_generation_size_ck",
+    "parsed": [
+      "((octet_length(request_canonical) >= 1) AND (octet_length(request_canonical) <= 8192) AND ((octet_length(document_canonical) >= 1) AND (octet_length(document_canonical) <= 1048576)) AND ((octet_length(authority_snapshot) >= 1) AND (octet_length(authority_snapshot) <= 65536)))",
+      "CHECK (octet_length(request_canonical) >= 1 AND octet_length(request_canonical) <= 8192 AND octet_length(document_canonical) >= 1 AND octet_length(document_canonical) <= 1048576 AND octet_length(authority_snapshot) >= 1 AND octet_length(authority_snapshot) <= 65536)"
+    ]
+  },
+  {
+    "kind": "CHECK",
+    "object": "workload_signing_handover_observation.workload_handover_observation_size_ck",
+    "parsed": [
+      "((octet_length(result_canonical) >= 1) AND (octet_length(result_canonical) <= 262144) AND ((octet_length(entry_canonical) >= 1) AND (octet_length(entry_canonical) <= 8192)))",
+      "CHECK (octet_length(result_canonical) >= 1 AND octet_length(result_canonical) <= 262144 AND octet_length(entry_canonical) >= 1 AND octet_length(entry_canonical) <= 8192)"
+    ]
+  },
+  {
+    "kind": "POLICY",
+    "object": "mutation_candidate.platform_recovery_pending_expiry_effect_read",
+    "parsed": [
+      "(openpc.matches_participant(participant_id) AND openpc.matches_privacy(privacy_domain_id) AND (EXISTS ( SELECT 1\n   FROM control.platform_recovery_enrollment source\n  WHERE ((source.participant_id = mutation_candidate.participant_id) AND (source.privacy_domain_id = mutation_candidate.privacy_domain_id) AND openpc.platform_recovery_continuation_root_matches(source.platform_context_id, source.participant_id, source.root_epoch, source.root_revision) AND (((source.source_purpose = 'ROOT_EXPIRY_RECOVERY_CONTINUATION'::text) AND ((source.document ->> 'schemaVersion'::text) = '3'::text)) OR ((source.source_purpose = 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text) AND ((source.document ->> 'schemaVersion'::text) = '4'::text)) OR ((source.source_purpose = 'ROOT_EXPIRY_RECOVERY'::text) AND ((source.document ->> 'schemaVersion'::text) = '2'::text) AND (jsonb_typeof((source.document -> 'uneffectedPredecessor'::text)) = 'object'::text) AND ((source.document #>> '{uneffectedPredecessor,schema}'::text[]) = 'pc.identity.platform-expired-uneffected-recovery'::text) AND ((source.document #>> '{uneffectedPredecessor,schemaVersion}'::text[]) = '1'::text))) AND ((source.document ->> 'schema'::text) = 'pc.identity.platform-recovery-enrollment'::text) AND (source.state = 'ACTIVE'::text) AND (source.row_version = (1)::numeric) AND ((source.document ->> 'assurance'::text) = 'LOCAL_QA_VIRTUAL_AUTHENTICATOR'::text) AND (NOT (current_setting('openpc.local_qa_runtime'::text, true) IS DISTINCT FROM '1'::text)) AND (source.valid_from <= clock_timestamp()) AND (source.valid_until > clock_timestamp()) AND (openpc.current_action_intent_id() = ANY (ARRAY['ACT-APPROVAL_REQUESTS_CREATE_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_COLLECTION-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_RESOURCE-V1'::text, 'ACT-IDENTITY_CREATE_SESSION-V1'::text, 'ACT-IDENTITY_DELETE_SESSION-V1'::text, 'ACT-IDENTITY_UPDATE_STEP_UP-V1'::text, 'ACT-OPERATIONS_READ_OPERATION-V1'::text, 'ACT-PARTICIPANTS_READ_RESOURCE-V1'::text, 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text, 'ACT-PARTICIPANT_ACTIVATE_CONTEXT-V1'::text, 'ACT-PARTICIPANT_CREATE_MEMBER-V1'::text, 'ACT-POLICY_APPROVE_REQUEST-V1'::text, 'ACT-POLICY_READ_EFFECTIVE_ACCESS-V1'::text, 'ACT-APPROVAL_REQUESTS_UPDATE_RESOURCE-V1'::text])) AND ((((source.source_purpose = 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text) AND ((source.document ->> 'schemaVersion'::text) = '4'::text)) OR ((source.source_purpose = 'ROOT_EXPIRY_RECOVERY_CONTINUATION'::text) AND ((source.document ->> 'schemaVersion'::text) = '3'::text) AND ((source.document #>> '{source,activatedHandoff,schemaVersion}'::text[]) = '1'::text))) AND ((openpc.current_action_intent_id() = ANY (ARRAY['ACT-APPROVAL_REQUESTS_CREATE_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_COLLECTION-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_RESOURCE-V1'::text, 'ACT-IDENTITY_CREATE_SESSION-V1'::text, 'ACT-IDENTITY_DELETE_SESSION-V1'::text, 'ACT-IDENTITY_UPDATE_STEP_UP-V1'::text, 'ACT-OPERATIONS_READ_OPERATION-V1'::text, 'ACT-PARTICIPANTS_READ_RESOURCE-V1'::text, 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text, 'ACT-PARTICIPANT_ACTIVATE_CONTEXT-V1'::text, 'ACT-PARTICIPANT_CREATE_MEMBER-V1'::text, 'ACT-POLICY_APPROVE_REQUEST-V1'::text, 'ACT-POLICY_READ_EFFECTIVE_ACCESS-V1'::text])) OR ((openpc.current_action_intent_id() = 'ACT-APPROVAL_REQUESTS_UPDATE_RESOURCE-V1'::text) AND (NOT ((source.document #> '{source}'::text[]) ? 'activatedHandoff'::text)) AND (EXISTS ( SELECT 1\n           FROM control.platform_recovery_case lease\n          WHERE ((lease.participant_id = source.participant_id) AND (lease.privacy_domain_id = source.privacy_domain_id) AND (lease.enrollment_id = source.enrollment_id) AND (lease.enrollment_revision = source.row_version) AND (lease.enrollment_digest = source.document_digest) AND (lease.state = 'ACTIVE'::text) AND (lease.valid_from <= clock_timestamp()) AND (lease.valid_until > clock_timestamp()) AND ((lease.intent ->> 'schema'::text) = 'pc.identity.platform-recovery-intent'::text) AND (lease.intent ? 'approvalContinuation'::text) AND ((lease.intent -> 'pendingExpiry'::text) = (source.document #> '{source,pendingExpiry}'::text[])) AND (lease.activation_operation_id IS NOT NULL) AND (lease.activation_evidence_digest = sha256(lease.activation_evidence_cbor)) AND (octet_length(lease.activation_cose) > 0) AND (jsonb_typeof(lease.lease_bindings) = 'array'::text) AND (jsonb_array_length(lease.lease_bindings) = 2)))))) AND (EXISTS ( SELECT 1\n           FROM jsonb_array_elements(COALESCE((source.document #> '{source,activatedHandoff,administrators}'::text[]), (source.document #> '{source,pendingExpiry,administrators}'::text[]))) partial_effect(value)\n          WHERE ((((mutation_candidate.resource_id)::text = (partial_effect.value ->> 'envelopeId'::text)) AND ((mutation_candidate.catalog_operation_id)::text = ANY (ARRAY[('ID-OP-ENVELOPE-CREATE'::character varying)::text, ('ID-OP-ENVELOPE-ACTIVATE'::character varying)::text]))) OR ((((source.document #>> '{source,pendingExpiry,schemaVersion}'::text[]) = '2'::text) OR ((source.document #>> '{source,activatedHandoff,schemaVersion}'::text[]) = '1'::text)) AND (((mutation_candidate.resource_id)::text = (partial_effect.value ->> 'envelopeId'::text)) OR ((mutation_candidate.maker_authority_envelope_id)::text = (partial_effect.value ->> 'envelopeId'::text))))))))))))",
+      null
+    ]
+  },
+  {
+    "kind": "POLICY",
+    "object": "root_expiry_recovery_case.root_expiry_admin_receipt_prerequisite_read",
+    "parsed": [
+      "(openpc.matches_participant(participant_id) AND openpc.matches_privacy(privacy_domain_id) AND (NOT (current_setting('openpc.local_qa_runtime'::text, true) IS DISTINCT FROM '1'::text)) AND (EXISTS ( SELECT 1\n   FROM (control.platform_recovery_enrollment source\n     JOIN control.platform_recovery_case lease ON (((lease.enrollment_id = source.enrollment_id) AND (lease.participant_id = source.participant_id) AND (lease.privacy_domain_id = source.privacy_domain_id) AND (lease.enrollment_revision = source.row_version) AND (lease.enrollment_digest = source.document_digest))))\n  WHERE ((source.participant_id = root_expiry_recovery_case.participant_id) AND (source.privacy_domain_id = root_expiry_recovery_case.privacy_domain_id) AND (source.source_purpose = ANY (ARRAY['ROOT_EXPIRY_RECOVERY'::text, 'ROOT_EXPIRY_RECOVERY_CONTINUATION'::text, 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text])) AND (source.expired_replacement_id IS NULL) AND (source.root_expiry_recovery_id IS NOT NULL) AND (source.state = 'ACTIVE'::text) AND (source.row_version = (1)::numeric) AND ((source.document ->> 'schema'::text) = ANY (ARRAY['pc.identity.platform-recovery-enrollment'::text, 'pc.identity.discovery-certificate-recovery-enrollment'::text])) AND (((source.source_purpose = 'ROOT_EXPIRY_RECOVERY'::text) AND ((source.document ->> 'schemaVersion'::text) = '2'::text)) OR ((source.source_purpose = 'ROOT_EXPIRY_RECOVERY_CONTINUATION'::text) AND ((source.document ->> 'schema'::text) = 'pc.identity.platform-recovery-enrollment'::text) AND ((source.document ->> 'schemaVersion'::text) = '3'::text)) OR ((source.source_purpose = 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text) AND ((source.document ->> 'schema'::text) = 'pc.identity.platform-recovery-enrollment'::text) AND ((source.document ->> 'schemaVersion'::text) = '4'::text) AND (jsonb_typeof((source.document #> '{source,pendingExpiry}'::text[])) = 'object'::text))) AND ((source.document ->> 'assurance'::text) = 'LOCAL_QA_VIRTUAL_AUTHENTICATOR'::text) AND (source.valid_from <= clock_timestamp()) AND (source.valid_until > clock_timestamp()) AND ((source.source_purpose = 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text) = (lease.intent ? 'pendingExpiry'::text)) AND ((source.source_purpose <> 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text) OR ((lease.intent -> 'pendingExpiry'::text) = (source.document #> '{source,pendingExpiry}'::text[]))) AND ((((source.document ->> 'schema'::text) = 'pc.identity.platform-recovery-enrollment'::text) AND ((lease.intent ->> 'schema'::text) = 'pc.identity.platform-recovery-intent'::text) AND ((openpc.current_action_intent_id() = ANY (ARRAY['ACT-APPROVAL_REQUESTS_CREATE_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_COLLECTION-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_RESOURCE-V1'::text, 'ACT-IDENTITY_CREATE_SESSION-V1'::text, 'ACT-IDENTITY_DELETE_SESSION-V1'::text, 'ACT-IDENTITY_UPDATE_STEP_UP-V1'::text, 'ACT-OPERATIONS_READ_OPERATION-V1'::text, 'ACT-PARTICIPANTS_READ_RESOURCE-V1'::text, 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text, 'ACT-PARTICIPANT_ACTIVATE_CONTEXT-V1'::text, 'ACT-PARTICIPANT_CREATE_MEMBER-V1'::text, 'ACT-POLICY_APPROVE_REQUEST-V1'::text, 'ACT-POLICY_READ_EFFECTIVE_ACCESS-V1'::text])) OR (((source.document ->> 'schemaVersion'::text) = '3'::text) AND (lease.intent ? 'continuation'::text) AND (openpc.current_action_intent_id() = ANY (ARRAY['ACT-APPROVAL_REQUESTS_CREATE_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_COLLECTION-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_RESOURCE-V1'::text, 'ACT-IDENTITY_CREATE_SESSION-V1'::text, 'ACT-IDENTITY_DELETE_SESSION-V1'::text, 'ACT-IDENTITY_UPDATE_STEP_UP-V1'::text, 'ACT-OPERATIONS_READ_OPERATION-V1'::text, 'ACT-PARTICIPANTS_READ_RESOURCE-V1'::text, 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text, 'ACT-PARTICIPANT_ACTIVATE_CONTEXT-V1'::text, 'ACT-PARTICIPANT_CREATE_MEMBER-V1'::text, 'ACT-POLICY_APPROVE_REQUEST-V1'::text, 'ACT-POLICY_READ_EFFECTIVE_ACCESS-V1'::text, 'ACT-APPROVAL_REQUESTS_UPDATE_RESOURCE-V1'::text]))) OR ((source.source_purpose = 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text) AND ((source.document ->> 'schemaVersion'::text) = '4'::text) AND ((lease.intent -> 'pendingExpiry'::text) = (source.document #> '{source,pendingExpiry}'::text[])) AND ((openpc.current_action_intent_id() = ANY (ARRAY['ACT-APPROVAL_REQUESTS_CREATE_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_COLLECTION-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_RESOURCE-V1'::text, 'ACT-IDENTITY_CREATE_SESSION-V1'::text, 'ACT-IDENTITY_DELETE_SESSION-V1'::text, 'ACT-IDENTITY_UPDATE_STEP_UP-V1'::text, 'ACT-OPERATIONS_READ_OPERATION-V1'::text, 'ACT-PARTICIPANTS_READ_RESOURCE-V1'::text, 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text, 'ACT-PARTICIPANT_ACTIVATE_CONTEXT-V1'::text, 'ACT-PARTICIPANT_CREATE_MEMBER-V1'::text, 'ACT-POLICY_APPROVE_REQUEST-V1'::text, 'ACT-POLICY_READ_EFFECTIVE_ACCESS-V1'::text])) OR ((lease.intent ? 'approvalContinuation'::text) AND (openpc.current_action_intent_id() = 'ACT-APPROVAL_REQUESTS_UPDATE_RESOURCE-V1'::text)))))) OR (((source.document ->> 'schema'::text) = 'pc.identity.discovery-certificate-recovery-enrollment'::text) AND ((lease.intent ->> 'schema'::text) = 'pc.identity.discovery-certificate-recovery-intent'::text) AND (openpc.current_action_intent_id() = ANY (ARRAY['ACT-APPROVAL_REQUESTS_CREATE_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_UPDATE_RESOURCE-V1'::text, 'ACT-IDENTITY_CREATE_SESSION-V1'::text, 'ACT-IDENTITY_DELETE_SESSION-V1'::text, 'ACT-IDENTITY_UPDATE_STEP_UP-V1'::text, 'ACT-OPERATIONS_READ_OPERATION-V1'::text, 'ACT-PARTICIPANTS_READ_RESOURCE-V1'::text, 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text, 'ACT-POLICY_APPROVE_REQUEST-V1'::text, 'ACT-POLICY_READ_EFFECTIVE_ACCESS-V1'::text])) AND ((openpc.current_action_intent_id() <> 'ACT-APPROVAL_REQUESTS_UPDATE_RESOURCE-V1'::text) OR ((lease.intent ->> 'schemaVersion'::text) = '2'::text)))) AND (lease.state = 'ACTIVE'::text) AND (lease.valid_from <= clock_timestamp()) AND (lease.valid_until > clock_timestamp()) AND (lease.activation_operation_id IS NOT NULL) AND (lease.activation_evidence_cbor IS NOT NULL) AND (lease.activation_evidence_digest IS NOT NULL) AND (lease.activation_cose IS NOT NULL) AND (jsonb_typeof(lease.lease_bindings) = 'array'::text) AND (jsonb_array_length(lease.lease_bindings) = 2) AND (((source.root_expiry_recovery_id = root_expiry_recovery_case.recovery_id) AND (root_expiry_recovery_case.state = 'COMPLETED'::text) AND ((source.document #>> '{source,enrollmentId}'::text[]) = (root_expiry_recovery_case.enrollment_id)::text) AND ((source.document #>> '{source,activationOperationId}'::text[]) = (root_expiry_recovery_case.operation_id)::text) AND ((source.document #>> '{source,receiptDigest}'::text[]) = ('sha256:'::text || encode(root_expiry_recovery_case.evidence_digest, 'hex'::text)))) OR ((jsonb_array_length((source.document #> '{source,ancestorReceipts}'::text[])) >= 1) AND (jsonb_array_length((source.document #> '{source,ancestorReceipts}'::text[])) <= 31) AND (EXISTS ( SELECT 1\n           FROM jsonb_array_elements((source.document #> '{source,ancestorReceipts}'::text[])) declared(value)\n          WHERE (((declared.value ->> 'recoveryId'::text) = (root_expiry_recovery_case.recovery_id)::text) AND (root_expiry_recovery_case.state = 'COMPLETED'::text) AND ((declared.value ->> 'enrollmentId'::text) = (root_expiry_recovery_case.enrollment_id)::text) AND ((declared.value ->> 'activationOperationId'::text) = (root_expiry_recovery_case.operation_id)::text) AND ((declared.value ->> 'receiptDigest'::text) = ('sha256:'::text || encode(root_expiry_recovery_case.evidence_digest, 'hex'::text))))))))))))",
+      null
+    ]
+  },
+  {
+    "kind": "POLICY",
+    "object": "root_expiry_recovery_enrollment.root_expiry_admin_receipt_prerequisite_read",
+    "parsed": [
+      "(openpc.matches_participant(participant_id) AND openpc.matches_privacy(privacy_domain_id) AND (NOT (current_setting('openpc.local_qa_runtime'::text, true) IS DISTINCT FROM '1'::text)) AND (EXISTS ( SELECT 1\n   FROM (control.platform_recovery_enrollment source\n     JOIN control.platform_recovery_case lease ON (((lease.enrollment_id = source.enrollment_id) AND (lease.participant_id = source.participant_id) AND (lease.privacy_domain_id = source.privacy_domain_id) AND (lease.enrollment_revision = source.row_version) AND (lease.enrollment_digest = source.document_digest))))\n  WHERE ((source.participant_id = root_expiry_recovery_enrollment.participant_id) AND (source.privacy_domain_id = root_expiry_recovery_enrollment.privacy_domain_id) AND (source.source_purpose = ANY (ARRAY['ROOT_EXPIRY_RECOVERY'::text, 'ROOT_EXPIRY_RECOVERY_CONTINUATION'::text, 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text])) AND (source.expired_replacement_id IS NULL) AND (source.root_expiry_recovery_id IS NOT NULL) AND (source.state = 'ACTIVE'::text) AND (source.row_version = (1)::numeric) AND ((source.document ->> 'schema'::text) = ANY (ARRAY['pc.identity.platform-recovery-enrollment'::text, 'pc.identity.discovery-certificate-recovery-enrollment'::text])) AND (((source.source_purpose = 'ROOT_EXPIRY_RECOVERY'::text) AND ((source.document ->> 'schemaVersion'::text) = '2'::text)) OR ((source.source_purpose = 'ROOT_EXPIRY_RECOVERY_CONTINUATION'::text) AND ((source.document ->> 'schema'::text) = 'pc.identity.platform-recovery-enrollment'::text) AND ((source.document ->> 'schemaVersion'::text) = '3'::text)) OR ((source.source_purpose = 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text) AND ((source.document ->> 'schema'::text) = 'pc.identity.platform-recovery-enrollment'::text) AND ((source.document ->> 'schemaVersion'::text) = '4'::text) AND (jsonb_typeof((source.document #> '{source,pendingExpiry}'::text[])) = 'object'::text))) AND ((source.document ->> 'assurance'::text) = 'LOCAL_QA_VIRTUAL_AUTHENTICATOR'::text) AND (source.valid_from <= clock_timestamp()) AND (source.valid_until > clock_timestamp()) AND ((source.source_purpose = 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text) = (lease.intent ? 'pendingExpiry'::text)) AND ((source.source_purpose <> 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text) OR ((lease.intent -> 'pendingExpiry'::text) = (source.document #> '{source,pendingExpiry}'::text[]))) AND ((((source.document ->> 'schema'::text) = 'pc.identity.platform-recovery-enrollment'::text) AND ((lease.intent ->> 'schema'::text) = 'pc.identity.platform-recovery-intent'::text) AND ((openpc.current_action_intent_id() = ANY (ARRAY['ACT-APPROVAL_REQUESTS_CREATE_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_COLLECTION-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_RESOURCE-V1'::text, 'ACT-IDENTITY_CREATE_SESSION-V1'::text, 'ACT-IDENTITY_DELETE_SESSION-V1'::text, 'ACT-IDENTITY_UPDATE_STEP_UP-V1'::text, 'ACT-OPERATIONS_READ_OPERATION-V1'::text, 'ACT-PARTICIPANTS_READ_RESOURCE-V1'::text, 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text, 'ACT-PARTICIPANT_ACTIVATE_CONTEXT-V1'::text, 'ACT-PARTICIPANT_CREATE_MEMBER-V1'::text, 'ACT-POLICY_APPROVE_REQUEST-V1'::text, 'ACT-POLICY_READ_EFFECTIVE_ACCESS-V1'::text])) OR (((source.document ->> 'schemaVersion'::text) = '3'::text) AND (lease.intent ? 'continuation'::text) AND (openpc.current_action_intent_id() = ANY (ARRAY['ACT-APPROVAL_REQUESTS_CREATE_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_COLLECTION-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_RESOURCE-V1'::text, 'ACT-IDENTITY_CREATE_SESSION-V1'::text, 'ACT-IDENTITY_DELETE_SESSION-V1'::text, 'ACT-IDENTITY_UPDATE_STEP_UP-V1'::text, 'ACT-OPERATIONS_READ_OPERATION-V1'::text, 'ACT-PARTICIPANTS_READ_RESOURCE-V1'::text, 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text, 'ACT-PARTICIPANT_ACTIVATE_CONTEXT-V1'::text, 'ACT-PARTICIPANT_CREATE_MEMBER-V1'::text, 'ACT-POLICY_APPROVE_REQUEST-V1'::text, 'ACT-POLICY_READ_EFFECTIVE_ACCESS-V1'::text, 'ACT-APPROVAL_REQUESTS_UPDATE_RESOURCE-V1'::text]))) OR ((source.source_purpose = 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text) AND ((source.document ->> 'schemaVersion'::text) = '4'::text) AND ((lease.intent -> 'pendingExpiry'::text) = (source.document #> '{source,pendingExpiry}'::text[])) AND ((openpc.current_action_intent_id() = ANY (ARRAY['ACT-APPROVAL_REQUESTS_CREATE_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_COLLECTION-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_RESOURCE-V1'::text, 'ACT-IDENTITY_CREATE_SESSION-V1'::text, 'ACT-IDENTITY_DELETE_SESSION-V1'::text, 'ACT-IDENTITY_UPDATE_STEP_UP-V1'::text, 'ACT-OPERATIONS_READ_OPERATION-V1'::text, 'ACT-PARTICIPANTS_READ_RESOURCE-V1'::text, 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text, 'ACT-PARTICIPANT_ACTIVATE_CONTEXT-V1'::text, 'ACT-PARTICIPANT_CREATE_MEMBER-V1'::text, 'ACT-POLICY_APPROVE_REQUEST-V1'::text, 'ACT-POLICY_READ_EFFECTIVE_ACCESS-V1'::text])) OR ((lease.intent ? 'approvalContinuation'::text) AND (openpc.current_action_intent_id() = 'ACT-APPROVAL_REQUESTS_UPDATE_RESOURCE-V1'::text)))))) OR (((source.document ->> 'schema'::text) = 'pc.identity.discovery-certificate-recovery-enrollment'::text) AND ((lease.intent ->> 'schema'::text) = 'pc.identity.discovery-certificate-recovery-intent'::text) AND (openpc.current_action_intent_id() = ANY (ARRAY['ACT-APPROVAL_REQUESTS_CREATE_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_UPDATE_RESOURCE-V1'::text, 'ACT-IDENTITY_CREATE_SESSION-V1'::text, 'ACT-IDENTITY_DELETE_SESSION-V1'::text, 'ACT-IDENTITY_UPDATE_STEP_UP-V1'::text, 'ACT-OPERATIONS_READ_OPERATION-V1'::text, 'ACT-PARTICIPANTS_READ_RESOURCE-V1'::text, 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text, 'ACT-POLICY_APPROVE_REQUEST-V1'::text, 'ACT-POLICY_READ_EFFECTIVE_ACCESS-V1'::text])) AND ((openpc.current_action_intent_id() <> 'ACT-APPROVAL_REQUESTS_UPDATE_RESOURCE-V1'::text) OR ((lease.intent ->> 'schemaVersion'::text) = '2'::text)))) AND (lease.state = 'ACTIVE'::text) AND (lease.valid_from <= clock_timestamp()) AND (lease.valid_until > clock_timestamp()) AND (lease.activation_operation_id IS NOT NULL) AND (lease.activation_evidence_cbor IS NOT NULL) AND (lease.activation_evidence_digest IS NOT NULL) AND (lease.activation_cose IS NOT NULL) AND (jsonb_typeof(lease.lease_bindings) = 'array'::text) AND (jsonb_array_length(lease.lease_bindings) = 2) AND (((source.document #>> '{source,enrollmentId}'::text[]) = (root_expiry_recovery_enrollment.enrollment_id)::text) OR ((jsonb_array_length((source.document #> '{source,ancestorReceipts}'::text[])) >= 1) AND (jsonb_array_length((source.document #> '{source,ancestorReceipts}'::text[])) <= 31) AND (EXISTS ( SELECT 1\n           FROM jsonb_array_elements((source.document #> '{source,ancestorReceipts}'::text[])) declared(value)\n          WHERE ((declared.value ->> 'enrollmentId'::text) = (root_expiry_recovery_enrollment.enrollment_id)::text)))))))))",
+      null
+    ]
+  },
+  {
+    "kind": "POLICY",
+    "object": "root_expiry_recovery_scope.root_expiry_admin_receipt_prerequisite_read",
+    "parsed": [
+      "(openpc.matches_participant(owner_participant_id) AND openpc.matches_privacy(installation_privacy_domain_id) AND (NOT (current_setting('openpc.local_qa_runtime'::text, true) IS DISTINCT FROM '1'::text)) AND (EXISTS ( SELECT 1\n   FROM (control.platform_recovery_enrollment source\n     JOIN control.platform_recovery_case lease ON (((lease.enrollment_id = source.enrollment_id) AND (lease.participant_id = source.participant_id) AND (lease.privacy_domain_id = source.privacy_domain_id) AND (lease.enrollment_revision = source.row_version) AND (lease.enrollment_digest = source.document_digest))))\n  WHERE ((source.participant_id = root_expiry_recovery_scope.owner_participant_id) AND (source.privacy_domain_id = root_expiry_recovery_scope.installation_privacy_domain_id) AND (source.source_purpose = ANY (ARRAY['ROOT_EXPIRY_RECOVERY'::text, 'ROOT_EXPIRY_RECOVERY_CONTINUATION'::text, 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text])) AND (source.expired_replacement_id IS NULL) AND (source.root_expiry_recovery_id IS NOT NULL) AND (source.state = 'ACTIVE'::text) AND (source.row_version = (1)::numeric) AND ((source.document ->> 'schema'::text) = ANY (ARRAY['pc.identity.platform-recovery-enrollment'::text, 'pc.identity.discovery-certificate-recovery-enrollment'::text])) AND (((source.source_purpose = 'ROOT_EXPIRY_RECOVERY'::text) AND ((source.document ->> 'schemaVersion'::text) = '2'::text)) OR ((source.source_purpose = 'ROOT_EXPIRY_RECOVERY_CONTINUATION'::text) AND ((source.document ->> 'schema'::text) = 'pc.identity.platform-recovery-enrollment'::text) AND ((source.document ->> 'schemaVersion'::text) = '3'::text)) OR ((source.source_purpose = 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text) AND ((source.document ->> 'schema'::text) = 'pc.identity.platform-recovery-enrollment'::text) AND ((source.document ->> 'schemaVersion'::text) = '4'::text) AND (jsonb_typeof((source.document #> '{source,pendingExpiry}'::text[])) = 'object'::text))) AND ((source.document ->> 'assurance'::text) = 'LOCAL_QA_VIRTUAL_AUTHENTICATOR'::text) AND (source.valid_from <= clock_timestamp()) AND (source.valid_until > clock_timestamp()) AND ((source.source_purpose = 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text) = (lease.intent ? 'pendingExpiry'::text)) AND ((source.source_purpose <> 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text) OR ((lease.intent -> 'pendingExpiry'::text) = (source.document #> '{source,pendingExpiry}'::text[]))) AND ((((source.document ->> 'schema'::text) = 'pc.identity.platform-recovery-enrollment'::text) AND ((lease.intent ->> 'schema'::text) = 'pc.identity.platform-recovery-intent'::text) AND ((openpc.current_action_intent_id() = ANY (ARRAY['ACT-APPROVAL_REQUESTS_CREATE_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_COLLECTION-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_RESOURCE-V1'::text, 'ACT-IDENTITY_CREATE_SESSION-V1'::text, 'ACT-IDENTITY_DELETE_SESSION-V1'::text, 'ACT-IDENTITY_UPDATE_STEP_UP-V1'::text, 'ACT-OPERATIONS_READ_OPERATION-V1'::text, 'ACT-PARTICIPANTS_READ_RESOURCE-V1'::text, 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text, 'ACT-PARTICIPANT_ACTIVATE_CONTEXT-V1'::text, 'ACT-PARTICIPANT_CREATE_MEMBER-V1'::text, 'ACT-POLICY_APPROVE_REQUEST-V1'::text, 'ACT-POLICY_READ_EFFECTIVE_ACCESS-V1'::text])) OR (((source.document ->> 'schemaVersion'::text) = '3'::text) AND (lease.intent ? 'continuation'::text) AND (openpc.current_action_intent_id() = ANY (ARRAY['ACT-APPROVAL_REQUESTS_CREATE_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_COLLECTION-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_RESOURCE-V1'::text, 'ACT-IDENTITY_CREATE_SESSION-V1'::text, 'ACT-IDENTITY_DELETE_SESSION-V1'::text, 'ACT-IDENTITY_UPDATE_STEP_UP-V1'::text, 'ACT-OPERATIONS_READ_OPERATION-V1'::text, 'ACT-PARTICIPANTS_READ_RESOURCE-V1'::text, 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text, 'ACT-PARTICIPANT_ACTIVATE_CONTEXT-V1'::text, 'ACT-PARTICIPANT_CREATE_MEMBER-V1'::text, 'ACT-POLICY_APPROVE_REQUEST-V1'::text, 'ACT-POLICY_READ_EFFECTIVE_ACCESS-V1'::text, 'ACT-APPROVAL_REQUESTS_UPDATE_RESOURCE-V1'::text]))) OR ((source.source_purpose = 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text) AND ((source.document ->> 'schemaVersion'::text) = '4'::text) AND ((lease.intent -> 'pendingExpiry'::text) = (source.document #> '{source,pendingExpiry}'::text[])) AND ((openpc.current_action_intent_id() = ANY (ARRAY['ACT-APPROVAL_REQUESTS_CREATE_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_COLLECTION-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_RESOURCE-V1'::text, 'ACT-IDENTITY_CREATE_SESSION-V1'::text, 'ACT-IDENTITY_DELETE_SESSION-V1'::text, 'ACT-IDENTITY_UPDATE_STEP_UP-V1'::text, 'ACT-OPERATIONS_READ_OPERATION-V1'::text, 'ACT-PARTICIPANTS_READ_RESOURCE-V1'::text, 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text, 'ACT-PARTICIPANT_ACTIVATE_CONTEXT-V1'::text, 'ACT-PARTICIPANT_CREATE_MEMBER-V1'::text, 'ACT-POLICY_APPROVE_REQUEST-V1'::text, 'ACT-POLICY_READ_EFFECTIVE_ACCESS-V1'::text])) OR ((lease.intent ? 'approvalContinuation'::text) AND (openpc.current_action_intent_id() = 'ACT-APPROVAL_REQUESTS_UPDATE_RESOURCE-V1'::text)))))) OR (((source.document ->> 'schema'::text) = 'pc.identity.discovery-certificate-recovery-enrollment'::text) AND ((lease.intent ->> 'schema'::text) = 'pc.identity.discovery-certificate-recovery-intent'::text) AND (openpc.current_action_intent_id() = ANY (ARRAY['ACT-APPROVAL_REQUESTS_CREATE_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_UPDATE_RESOURCE-V1'::text, 'ACT-IDENTITY_CREATE_SESSION-V1'::text, 'ACT-IDENTITY_DELETE_SESSION-V1'::text, 'ACT-IDENTITY_UPDATE_STEP_UP-V1'::text, 'ACT-OPERATIONS_READ_OPERATION-V1'::text, 'ACT-PARTICIPANTS_READ_RESOURCE-V1'::text, 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text, 'ACT-POLICY_APPROVE_REQUEST-V1'::text, 'ACT-POLICY_READ_EFFECTIVE_ACCESS-V1'::text])) AND ((openpc.current_action_intent_id() <> 'ACT-APPROVAL_REQUESTS_UPDATE_RESOURCE-V1'::text) OR ((lease.intent ->> 'schemaVersion'::text) = '2'::text)))) AND (lease.state = 'ACTIVE'::text) AND (lease.valid_from <= clock_timestamp()) AND (lease.valid_until > clock_timestamp()) AND (lease.activation_operation_id IS NOT NULL) AND (lease.activation_evidence_cbor IS NOT NULL) AND (lease.activation_evidence_digest IS NOT NULL) AND (lease.activation_cose IS NOT NULL) AND (jsonb_typeof(lease.lease_bindings) = 'array'::text) AND (jsonb_array_length(lease.lease_bindings) = 2) AND (((source.root_expiry_recovery_id = root_expiry_recovery_scope.recovery_id) AND (source.platform_context_id = root_expiry_recovery_scope.platform_context_id) AND (source.root_epoch = root_expiry_recovery_scope.platform_authority_epoch) AND (source.root_digest = root_expiry_recovery_scope.admission_digest) AND ((source.document #>> '{source,activationOperationId}'::text[]) = (root_expiry_recovery_scope.activation_operation_id)::text)) OR ((jsonb_array_length((source.document #> '{source,ancestorReceipts}'::text[])) >= 1) AND (jsonb_array_length((source.document #> '{source,ancestorReceipts}'::text[])) <= 31) AND (EXISTS ( SELECT 1\n           FROM jsonb_array_elements((source.document #> '{source,ancestorReceipts}'::text[])) declared(value)\n          WHERE (((declared.value ->> 'recoveryId'::text) = (root_expiry_recovery_scope.recovery_id)::text) AND (source.platform_context_id = root_expiry_recovery_scope.platform_context_id) AND (root_expiry_recovery_scope.platform_authority_epoch < source.root_epoch) AND ((declared.value ->> 'activationOperationId'::text) = (root_expiry_recovery_scope.activation_operation_id)::text))))))))))",
+      null
+    ]
+  },
+  {
+    "kind": "POLICY",
+    "object": "root_expiry_recovery_scope.root_expiry_scope_read",
+    "parsed": [
+      "\nCASE\n    WHEN ((CURRENT_USER = 'openpc_control_owner'::name) AND openpc.matches_participant(owner_participant_id) AND openpc.matches_privacy(installation_privacy_domain_id) AND ((openpc.current_action_intent_id() = 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text) OR (openpc.matches_participant(owner_participant_id) AND openpc.matches_privacy(installation_privacy_domain_id) AND (NOT (current_setting('openpc.local_qa_runtime'::text, true) IS DISTINCT FROM '1'::text)) AND (EXISTS ( SELECT 1\n       FROM (control.platform_recovery_enrollment source\n         JOIN control.platform_recovery_case lease ON (((lease.enrollment_id = source.enrollment_id) AND (lease.participant_id = source.participant_id) AND (lease.privacy_domain_id = source.privacy_domain_id) AND (lease.enrollment_revision = source.row_version) AND (lease.enrollment_digest = source.document_digest))))\n      WHERE ((source.participant_id = root_expiry_recovery_scope.owner_participant_id) AND (source.privacy_domain_id = root_expiry_recovery_scope.installation_privacy_domain_id) AND (source.source_purpose = ANY (ARRAY['ROOT_EXPIRY_RECOVERY'::text, 'ROOT_EXPIRY_RECOVERY_CONTINUATION'::text, 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text])) AND (source.expired_replacement_id IS NULL) AND (source.root_expiry_recovery_id IS NOT NULL) AND (source.state = 'ACTIVE'::text) AND (source.row_version = (1)::numeric) AND ((source.document ->> 'schema'::text) = ANY (ARRAY['pc.identity.platform-recovery-enrollment'::text, 'pc.identity.discovery-certificate-recovery-enrollment'::text])) AND (((source.source_purpose = 'ROOT_EXPIRY_RECOVERY'::text) AND ((source.document ->> 'schemaVersion'::text) = '2'::text)) OR ((source.source_purpose = 'ROOT_EXPIRY_RECOVERY_CONTINUATION'::text) AND ((source.document ->> 'schema'::text) = 'pc.identity.platform-recovery-enrollment'::text) AND ((source.document ->> 'schemaVersion'::text) = '3'::text)) OR ((source.source_purpose = 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text) AND ((source.document ->> 'schema'::text) = 'pc.identity.platform-recovery-enrollment'::text) AND ((source.document ->> 'schemaVersion'::text) = '4'::text) AND (jsonb_typeof((source.document #> '{source,pendingExpiry}'::text[])) = 'object'::text))) AND ((source.document ->> 'assurance'::text) = 'LOCAL_QA_VIRTUAL_AUTHENTICATOR'::text) AND (source.valid_from <= clock_timestamp()) AND (source.valid_until > clock_timestamp()) AND ((source.source_purpose = 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text) = (lease.intent ? 'pendingExpiry'::text)) AND ((source.source_purpose <> 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text) OR ((lease.intent -> 'pendingExpiry'::text) = (source.document #> '{source,pendingExpiry}'::text[]))) AND ((((source.document ->> 'schema'::text) = 'pc.identity.platform-recovery-enrollment'::text) AND ((lease.intent ->> 'schema'::text) = 'pc.identity.platform-recovery-intent'::text) AND ((openpc.current_action_intent_id() = ANY (ARRAY['ACT-APPROVAL_REQUESTS_CREATE_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_COLLECTION-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_RESOURCE-V1'::text, 'ACT-IDENTITY_CREATE_SESSION-V1'::text, 'ACT-IDENTITY_DELETE_SESSION-V1'::text, 'ACT-IDENTITY_UPDATE_STEP_UP-V1'::text, 'ACT-OPERATIONS_READ_OPERATION-V1'::text, 'ACT-PARTICIPANTS_READ_RESOURCE-V1'::text, 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text, 'ACT-PARTICIPANT_ACTIVATE_CONTEXT-V1'::text, 'ACT-PARTICIPANT_CREATE_MEMBER-V1'::text, 'ACT-POLICY_APPROVE_REQUEST-V1'::text, 'ACT-POLICY_READ_EFFECTIVE_ACCESS-V1'::text])) OR (((source.document ->> 'schemaVersion'::text) = '3'::text) AND (lease.intent ? 'continuation'::text) AND (openpc.current_action_intent_id() = ANY (ARRAY['ACT-APPROVAL_REQUESTS_CREATE_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_COLLECTION-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_RESOURCE-V1'::text, 'ACT-IDENTITY_CREATE_SESSION-V1'::text, 'ACT-IDENTITY_DELETE_SESSION-V1'::text, 'ACT-IDENTITY_UPDATE_STEP_UP-V1'::text, 'ACT-OPERATIONS_READ_OPERATION-V1'::text, 'ACT-PARTICIPANTS_READ_RESOURCE-V1'::text, 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text, 'ACT-PARTICIPANT_ACTIVATE_CONTEXT-V1'::text, 'ACT-PARTICIPANT_CREATE_MEMBER-V1'::text, 'ACT-POLICY_APPROVE_REQUEST-V1'::text, 'ACT-POLICY_READ_EFFECTIVE_ACCESS-V1'::text, 'ACT-APPROVAL_REQUESTS_UPDATE_RESOURCE-V1'::text]))) OR ((source.source_purpose = 'PENDING_ADMINISTRATION_EXPIRY_RECOVERY'::text) AND ((source.document ->> 'schemaVersion'::text) = '4'::text) AND ((lease.intent -> 'pendingExpiry'::text) = (source.document #> '{source,pendingExpiry}'::text[])) AND ((openpc.current_action_intent_id() = ANY (ARRAY['ACT-APPROVAL_REQUESTS_CREATE_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_COLLECTION-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_RESOURCE-V1'::text, 'ACT-IDENTITY_CREATE_SESSION-V1'::text, 'ACT-IDENTITY_DELETE_SESSION-V1'::text, 'ACT-IDENTITY_UPDATE_STEP_UP-V1'::text, 'ACT-OPERATIONS_READ_OPERATION-V1'::text, 'ACT-PARTICIPANTS_READ_RESOURCE-V1'::text, 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text, 'ACT-PARTICIPANT_ACTIVATE_CONTEXT-V1'::text, 'ACT-PARTICIPANT_CREATE_MEMBER-V1'::text, 'ACT-POLICY_APPROVE_REQUEST-V1'::text, 'ACT-POLICY_READ_EFFECTIVE_ACCESS-V1'::text])) OR ((lease.intent ? 'approvalContinuation'::text) AND (openpc.current_action_intent_id() = 'ACT-APPROVAL_REQUESTS_UPDATE_RESOURCE-V1'::text)))))) OR (((source.document ->> 'schema'::text) = 'pc.identity.discovery-certificate-recovery-enrollment'::text) AND ((lease.intent ->> 'schema'::text) = 'pc.identity.discovery-certificate-recovery-intent'::text) AND (openpc.current_action_intent_id() = ANY (ARRAY['ACT-APPROVAL_REQUESTS_CREATE_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_READ_RESOURCE-V1'::text, 'ACT-APPROVAL_REQUESTS_UPDATE_RESOURCE-V1'::text, 'ACT-IDENTITY_CREATE_SESSION-V1'::text, 'ACT-IDENTITY_DELETE_SESSION-V1'::text, 'ACT-IDENTITY_UPDATE_STEP_UP-V1'::text, 'ACT-OPERATIONS_READ_OPERATION-V1'::text, 'ACT-PARTICIPANTS_READ_RESOURCE-V1'::text, 'ACT-PARTICIPANTS_UPDATE_RESOURCE-V1'::text, 'ACT-POLICY_APPROVE_REQUEST-V1'::text, 'ACT-POLICY_READ_EFFECTIVE_ACCESS-V1'::text])) AND ((openpc.current_action_intent_id() <> 'ACT-APPROVAL_REQUESTS_UPDATE_RESOURCE-V1'::text) OR ((lease.intent ->> 'schemaVersion'::text) = '2'::text)))) AND (lease.state = 'ACTIVE'::text) AND (lease.valid_from <= clock_timestamp()) AND (lease.valid_until > clock_timestamp()) AND (lease.activation_operation_id IS NOT NULL) AND (lease.activation_evidence_cbor IS NOT NULL) AND (lease.activation_evidence_digest IS NOT NULL) AND (lease.activation_cose IS NOT NULL) AND (jsonb_typeof(lease.lease_bindings) = 'array'::text) AND (jsonb_array_length(lease.lease_bindings) = 2) AND (((source.root_expiry_recovery_id = root_expiry_recovery_scope.recovery_id) AND (source.platform_context_id = root_expiry_recovery_scope.platform_context_id) AND (source.root_epoch = root_expiry_recovery_scope.platform_authority_epoch) AND (source.root_digest = root_expiry_recovery_scope.admission_digest) AND ((source.document #>> '{source,activationOperationId}'::text[]) = (root_expiry_recovery_scope.activation_operation_id)::text)) OR ((jsonb_array_length((source.document #> '{source,ancestorReceipts}'::text[])) >= 1) AND (jsonb_array_length((source.document #> '{source,ancestorReceipts}'::text[])) <= 31) AND (EXISTS ( SELECT 1\n               FROM jsonb_array_elements((source.document #> '{source,ancestorReceipts}'::text[])) declared(value)\n              WHERE (((declared.value ->> 'recoveryId'::text) = (root_expiry_recovery_scope.recovery_id)::text) AND (source.platform_context_id = root_expiry_recovery_scope.platform_context_id) AND (root_expiry_recovery_scope.platform_authority_epoch < source.root_epoch) AND ((declared.value ->> 'activationOperationId'::text) = (root_expiry_recovery_scope.activation_operation_id)::text)))))))))))) THEN false\n    ELSE (EXISTS ( SELECT 1\n       FROM control.authority_envelope e\n      WHERE ((e.platform_context_id = root_expiry_recovery_scope.platform_context_id) AND openpc.matches_participant(e.participant_id) AND ((openpc.current_privacy_domain_id())::text = ANY (e.privacy_domain_ids)))))\nEND",
+      null
+    ]
+  }
+]

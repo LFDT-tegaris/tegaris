@@ -33,8 +33,14 @@ jobs:
       OPENPC_SYSTEM_SCOPE: 1
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0 # Offline, authenticated historical migration tests.
+      - name: Check compact migration budget and immutable baseline assets
+        run: python3 scripts/migrations/check-size.py
+      - name: Test offline compatibility package verification
+        run: python3 -m unittest discover -s tests/migration -p 'test_*.py'
       - name: Install test prerequisites
-        run: sudo apt-get update && sudo apt-get install --yes --no-install-recommends ripgrep
+        run: sudo apt-get update && sudo apt-get install --yes --no-install-recommends ripgrep curl ca-certificates build-essential bison flex libssl-dev zlib1g-dev
       - name: Configure job scratch paths
         run: |
           echo "OPENPC_TEST_TMP_ROOT=$RUNNER_TEMP/openpc-tests" >> "$GITHUB_ENV"
@@ -44,6 +50,8 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24.19.0
+      - name: Test authenticated offline generation inputs
+        run: node --test --test-concurrency=1 tests/migration/legacy-inputs.test.mjs tests/migration/policy-readiness.test.mjs tests/migration/setup-gate.test.mjs
       - name: Test dedicated server resource admission and builder identity
         run: PYTHONDONTWRITEBYTECODE=1 python3 scripts/maintenance/test_server_capacity.py
       - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
@@ -62,6 +70,8 @@ jobs:
       - uses: dtolnay/rust-toolchain@5059963b1731bf1580991b5f3b1eecfb5da406c0 # 1.98.0
       - name: Install locked dependencies
         run: bash scripts/maintenance/run-project.sh -- pnpm install --frozen-lockfile --ignore-scripts --strict-peer-dependencies
+      - name: Qualify compact baseline and compatibility on Linux PostgreSQL 18.6
+        run: bash scripts/maintenance/run-project.sh --profile database -- bash scripts/migrations/run-linux-proof.sh "$RUNNER_TEMP/tegaris-baseline"
       - name: Install isolated locked contract dependencies
         run: bash scripts/maintenance/run-project.sh -- pnpm run contracts:install
       - name: Acquire pinned contract tools
@@ -76,7 +86,7 @@ jobs:
           pnpm run format
           pnpm run lint
           pnpm run check
-          pnpm run test
+          python3 scripts/migrations/legacy-test-view.py --directory "$RUNNER_TEMP/tegaris-legacy-unit" --command pnpm run test
           bash scripts/maintenance/run-project.sh -- cargo fmt --all -- --check
           bash scripts/maintenance/run-project.sh --profile focused --memory-gib 8 --peak-disk-gib 40 -- cargo clippy --workspace --all-targets --locked -- -D warnings
           bash scripts/maintenance/run-project.sh --profile focused --memory-gib 8 --peak-disk-gib 40 -- cargo test --workspace --locked
@@ -104,6 +114,8 @@ jobs:
       OPENPC_SYSTEM_SCOPE: 1
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0 # Required only for immutable legacy fixture views.
       - name: Install test prerequisites
         run: sudo apt-get update && sudo apt-get install --yes --no-install-recommends ripgrep
       - name: Configure job scratch paths
@@ -137,10 +149,18 @@ jobs:
         run: bash scripts/maintenance/run-project.sh -- pnpm exec playwright install --with-deps chromium
       - name: Prepare owned runtime scratch
         run: mkdir -p "$OPENPC_LOCAL_RUNTIME_TMP_ROOT"
+      - name: Fresh compact checkout setup and governed RPC acceptance
+        shell: bash
+        run: |
+          test -f migrations/postgres/baseline-v1/install.sql
+          test ! -e migrations/postgres/policy/0000_yummy_plazm.sql
+          bash scripts/maintenance/run-project.sh --profile runtime -- \
+            env OPENPC_LOCAL_RUNTIME=1 OPENPC_EVALUATION_UI=1 OPENPC_LOCAL_RUNTIME_FIRST_POLICY_ONLY=1 \
+            bash tests/integration/local-runtime/run-compose-e2e.sh
       - name: Populated migration and real configuration vertical
         shell: bash
         run: |
           mkdir -p "$OPENPC_TEST_TMP_ROOT"
           # The suite includes pinned Envoy and provider probes, retains a failed
           # aggregate and continues independent scenarios under one bounded owner.
-          pnpm run test:integration:runtime
+          python3 scripts/migrations/legacy-test-view.py --directory "$RUNNER_TEMP/tegaris-legacy-runtime" --command pnpm run test:integration:runtime

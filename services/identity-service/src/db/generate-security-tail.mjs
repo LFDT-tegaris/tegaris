@@ -2,6 +2,7 @@ import {
   governedInitialEnrollmentGuardsSql,
   governedInitialEnrollmentGrantsSql,
 } from './governed-initial-enrollment-guards.mjs';
+import { migrationInputs } from '../../../../scripts/migrations/legacy-inputs.mjs';
 import { workloadSigningHandoverPossessionGuardsSql } from './workload-signing-handover-possession-guards.mjs';
 import {
   workloadSigningHandoverAdmissionGuardsSql,
@@ -121,7 +122,7 @@ import {
   verifyFunctionGrants,
 } from './function-grants.ts';
 import { signingGovernanceSql, signingGovernanceGrantsSql } from './signing-governance-guards.mjs';
-import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { orderControlMigrationConstraints } from './control-migration-order.ts';
@@ -162,7 +163,7 @@ const tailMarker = '-- OPENPC GENERATED SECURITY TAIL; DO NOT EDIT';
 const directory = fileURLToPath(
   new URL('../../../../migrations/postgres/identity/', import.meta.url),
 );
-const migrations = (await readdir(directory)).filter((name) => name.endsWith('.sql')).sort();
+const { migrations, readMigration } = await migrationInputs(directory);
 const migration = selectNewControlMigration(process.argv.slice(2), migrations);
 
 const path = join(directory, migration);
@@ -199,7 +200,7 @@ if (base.includes('CONSTRAINT "wr_signing_profile_exact_ck"')) {
 const history = (
   await Promise.all(
     migrations.map(async (name) => {
-      const contents = await readFile(join(directory, name), 'utf8');
+      const contents = await readMigration(name);
       const unwrapped = contents.includes(preambleEnd)
         ? contents.slice(contents.indexOf(preambleEnd) + preambleEnd.length)
         : contents;
@@ -1247,7 +1248,7 @@ ${allTables.includes('notification_completion_phase_admission') ? notificationCo
 ALTER DEFAULT PRIVILEGES FOR ROLE "openpc_control_owner" IN SCHEMA control REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC;`;
 
 const priorDefinitions = (
-  await Promise.all(migrations.slice(0, -1).map((name) => readFile(join(directory, name), 'utf8')))
+  await Promise.all(migrations.slice(0, -1).map((name) => readMigration(name)))
 ).join('\n');
 const unscopedSql = `${requestContextPreamble}\n${base}\n${securityTail}\n`;
 const migrationSql = restoreFunctionGrantsAfterReset(

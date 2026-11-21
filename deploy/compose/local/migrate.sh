@@ -374,8 +374,32 @@ SQL
     -v recreation_path="$recreation_path" -v recreation_digest="$recreation_digest"
 }
 
+baseline_control() {
+  baseline_root="${OPENPC_MIGRATIONS_ROOT:-/migrations/postgres}/baseline-v1"
+  [ "${PGDATABASE:?}" = openpc_control ] || { echo 'Baseline requires database openpc_control' >&2; exit 78; }
+  [ "$(psql_base -At -c 'SHOW server_version_num')" = 180006 ] || { echo 'Baseline requires PostgreSQL 18.6' >&2; exit 78; }
+  [ -f "$baseline_root/CHECKSUMS" ] || { echo 'Missing validated baseline assets' >&2; exit 78; }
+  (cd "$baseline_root" && sha256sum -c CHECKSUMS >/dev/null)
+  if [ "$checks_only" = 1 ]; then
+    baseline_sql=restore.sql
+  else
+    baseline_state="$(psql_base -At -c "SELECT CASE WHEN to_regclass('openpc_local.baseline_lineage') IS NOT NULL THEN 'BASELINE' WHEN to_regnamespace('control') IS NOT NULL THEN 'LEGACY' ELSE 'EMPTY' END")"
+    case "$baseline_state" in
+      BASELINE) baseline_sql=verify.sql ;;
+      LEGACY) baseline_sql=handoff.sql ;;
+      EMPTY) baseline_sql=install.sql ;;
+      *) echo 'Unknown installation state; no migration performed' >&2; exit 78 ;;
+    esac
+  fi
+  psql_base -f "$baseline_root/$baseline_sql"
+}
+
 case "$mode" in
   control)
+    if [ -f /migrations/postgres/baseline-v1/install.sql ]; then
+      baseline_control
+      [ "$checks_only" = 0 ] || exit 0
+    else
     if [ "$checks_only" = 1 ]; then restore_control_checks; exit 0; fi
     ensure_ledger
     # Identity 0129+ installs SQL policies over the withdrawal cohort introduced
@@ -449,6 +473,7 @@ case "$mode" in
     # Read-only installation provenance for scoped predecessor compatibility.
     # Runtime logins cannot change migration history or cluster identity.
     psql_base -c 'GRANT USAGE ON SCHEMA openpc_local TO openpc_control_worker; GRANT SELECT ON openpc_local.migration TO openpc_control_worker; GRANT EXECUTE ON FUNCTION pg_catalog.pg_control_system() TO openpc_control_worker;'
+    fi
     # Populated predecessor acceptance needs its actual schema before today's
     # initial-trust role catalogue is installed by the ordinary control mode.
     [ "$schema_only" = 0 ] || exit 0

@@ -1,0 +1,42 @@
+{
+  "baseline_id": "tegaris-control-db5e64b-v1",
+  "catalog_profiles": {
+    "canonical": {
+      "catalog_sha256": "37c340ef8185ebcafab082bc7a5c92522c8637ca94ba39a82ab145f0e95e9f27",
+      "restore_wire_catalog_sha256": "290250274c298ce51e2f5d346bd3dffd506a22ed9c556595a40d599e89d494ac",
+      "wire_catalog_sha256": "97226ba36384b41f2c8fe2e399145804fe3fb7ede8ed9f18bb356d810870295d"
+    },
+    "legacy_private_policy_trigger": {
+      "catalog_sha256": "1b128479f5766b13aca56162841ed121ee4dc7e3d8e02334e8323efe3be67d6e",
+      "restore_wire_catalog_sha256": "98819d69b892861fb981108c3e18dcc70e47ed750a3362367fdb1191bc9621c9",
+      "wire_catalog_sha256": "34af15db7e1abadf2b4a938ce976b646334a64c8153b8158f70f0b3dd945b09b"
+    }
+  },
+  "catalog_sha256": "37c340ef8185ebcafab082bc7a5c92522c8637ca94ba39a82ab145f0e95e9f27",
+  "files": {
+    "catalog-helpers.sql": "380da3d054be2048e1ff42597bdf806b4db89b334657f8b5b65c04b5ff2344a4",
+    "catalog.json": "5684553755e202432b76900fb75a889df3886f0c04958c794b49250fe6bd5c5a",
+    "catalog.sql": "2c184958e1a71ee84a8ddc5b4fe83a9ae725f3279544d710dbbc9412808073a1",
+    "control.sql": "f97758522f2aa33c0aff94398b15f75a657c239ba10cff639b587984363ab2eb",
+    "database-acls.sql": "87435877aa07ef999614a2649cd405f34d02becc4487fbd6573fde0ad91a9775",
+    "handoff.sql": "36aabd73f8e8f731068216795b75a144a95d1a8714ee3b5b1858cd20eb514aed",
+    "install.sql": "bca562eaaa725b2b7996d53dba44e330d37b06e6c17a97dc1b558776bdba3048",
+    "normalize.sql": "f94bba72b55eec3744ca3013f67ea1f9075c0254a0d1eb693eb21aa97530bc07",
+    "prepare-restore.sql": "f1a16889e25d1c3b61745c895278e2c6654c77cd3610afdbcdfd55c502a4f67b",
+    "repairs.sql": "79ca0659ccabc6fdcc563ae8f91776a3fe8f79e6730dcaffe51e2f1b6cec1bcb",
+    "restore-profile.json": "5d2927c26d435381c435b573c193cb0c52d4de6a4e5c151090b80794f866318a",
+    "restore.sql": "ad5661988e9e79b102d32dc37ccc418dc0ba7886eec4c00226a9ce3562a8ef15",
+    "roles.sql": "4e94223d8efc03914fa479016ea9c24233a6f16691e5156323546a10007f49f2",
+    "seeds.json": "efeff68023e4010df372739db7d2039813c888f71fbb464f181b00880d905d7e",
+    "source-provenance.json": "65147e1d991c558a20930cfef2e38afe4994fdb451c579004b0f0c5bf6c4d21d",
+    "verify.sql": "3906e34dcf0e0265d9586c1c0921da81a619829be96d2983d74cdf65599cc18c"
+  },
+  "format": 1,
+  "postgres_version": 180006,
+  "restore_wire_catalog_sha256": "290250274c298ce51e2f5d346bd3dffd506a22ed9c556595a40d599e89d494ac",
+  "seed_tables": [
+    "control.action_intent"
+  ],
+  "source_commit": "db5e64b566712e5213424db5e166775d9a15a7be",
+  "wire_catalog_sha256": "97226ba36384b41f2c8fe2e399145804fe3fb7ede8ed9f18bb356d810870295d"
+}

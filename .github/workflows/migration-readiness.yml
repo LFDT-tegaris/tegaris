@@ -136,6 +136,10 @@ jobs:
       # Fail database setup early, before spending time on the native build.
       - name: Fresh control installation, repeat and restart
         run: bash scripts/maintenance/run-project.sh --profile database -- bash tests/integration/identity/run-participant-readback.sh tests/integration/local-runtime/control-installation.test.mjs
+      - name: Synthetic QA tenant isolation and empty-installation boundary
+        run: bash scripts/maintenance/run-project.sh --profile database -- bash tests/integration/identity/run-participant-readback.sh tests/integration/local-runtime/qa-sandbox-postgres.test.mjs
+      - name: Initial Fact trust and partial-commit recovery
+        run: bash scripts/maintenance/run-project.sh --profile database -- bash tests/integration/identity/run-participant-readback.sh tests/integration/local-runtime/runtime-fact-initial-trust.test.mjs
       - name: Fetch locked native dependencies under resource admission
         run: bash scripts/maintenance/run-project.sh --memory-gib 8 --peak-disk-gib 40 -- cargo fetch --locked
       - name: Qualify actual runtime source and archive custody

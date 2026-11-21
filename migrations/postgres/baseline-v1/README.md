@@ -186,6 +186,11 @@ when measured capacity permits; the heavy runtime workflow also requires it
 before the historical test view. Its component result cannot qualify the full
 setup or browser/demo journey.
 
+The same disposable job first checks fresh control installation, repeated setup
+and restart, then synthetic QA tenant isolation and initial Fact trust recovery
+against separate empty compact-baseline databases. These database component
+checks do not start all services or exercise a browser sign-in.
+
 Only the standalone custody job may reclaim unused .NET/Android SDK space in
 its own fresh GitHub-hosted Linux VM. It rejects other execution environments
 before removal and rechecks free space afterward; the normal workload admission

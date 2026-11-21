@@ -85,10 +85,6 @@ jobs:
     env:
       OPENPC_SYSTEM_SCOPE: 1
       CARGO_BUILD_JOBS: 2
-      OPENPC_LOCAL_RUNTIME_TMP_ROOT: ${{ runner.temp }}/tegaris-custody
-      OPENPC_TEST_TMP_ROOT: ${{ runner.temp }}/tegaris-tests
-      OPENPC_PNC_TMP_ROOT: ${{ runner.temp }}/tegaris-pnc
-      pnpm_config_cache_dir: ${{ runner.temp }}/tegaris-pnpm-cache
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -103,7 +99,12 @@ jobs:
       - name: Install test prerequisites
         run: sudo apt-get update && sudo apt-get install --yes --no-install-recommends ripgrep
       - name: Prepare private test scratch
-        run: mkdir -p "$OPENPC_LOCAL_RUNTIME_TMP_ROOT" "$OPENPC_TEST_TMP_ROOT" "$OPENPC_PNC_TMP_ROOT"
+        run: |
+          echo "OPENPC_LOCAL_RUNTIME_TMP_ROOT=$RUNNER_TEMP/tegaris-custody" >> "$GITHUB_ENV"
+          echo "OPENPC_TEST_TMP_ROOT=$RUNNER_TEMP/tegaris-tests" >> "$GITHUB_ENV"
+          echo "OPENPC_PNC_TMP_ROOT=$RUNNER_TEMP/tegaris-pnc" >> "$GITHUB_ENV"
+          echo "pnpm_config_cache_dir=$RUNNER_TEMP/tegaris-pnpm-cache" >> "$GITHUB_ENV"
+          mkdir -p "$RUNNER_TEMP/tegaris-custody" "$RUNNER_TEMP/tegaris-tests" "$RUNNER_TEMP/tegaris-pnc"
       - name: Install locked dependencies under resource admission
         run: bash scripts/maintenance/run-project.sh --memory-gib 8 --peak-disk-gib 40 -- pnpm install --frozen-lockfile --ignore-scripts --strict-peer-dependencies
       - name: Fetch locked native dependencies under resource admission

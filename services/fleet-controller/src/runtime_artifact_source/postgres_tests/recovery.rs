@@ -230,7 +230,10 @@ impl ControlBackup {
             // Emit only closed diagnostic classes, never command arguments,
             // database rows, role comments, credentials or raw stderr.
             let stderr = String::from_utf8_lossy(&result.stderr);
-            for class in ["BASELINE-CATALOG-MISMATCH", "BASELINE-RUNTIME-ROLE-MISMATCH"] {
+            for class in [
+                "BASELINE-CATALOG-MISMATCH",
+                "BASELINE-RUNTIME-ROLE-MISMATCH",
+            ] {
                 if stderr.contains(class) {
                     eprintln!("ISOLATED_CUSTODY_DATABASE_ERROR|class={class}");
                 }

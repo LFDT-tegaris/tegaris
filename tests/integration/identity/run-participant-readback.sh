@@ -437,6 +437,9 @@ openpc_readback_keep_failure_state() {
 cleanup() {
   status=$?
   trap - EXIT
+  if [[ "$status" != 0 && -f "$root/migrations.log" && -f "${repo:-}/scripts/migrations/report-failure.py" ]]; then
+    python3 "$repo/scripts/migrations/report-failure.py" "$root/migrations.log" >&2 || true
+  fi
   if [ "$created" = 1 ]; then
     docker logs "$container" > "$root/postgres.log" 2>&1 || true
     if [ "$(docker inspect -f '{{index .Config.Labels "io.openpc.test-owner"}}' "$container")" != "$root" ]; then
@@ -568,12 +571,21 @@ else
   fi
   docker exec -e PGHOST=127.0.0.1 -e PGUSER=postgres -e PGDATABASE=openpc_control "$container" sh /local/migrate.sh "$control_mode" > "$root/migrations.log" 2>&1
 fi
+platform_login=openpc_test_platform
+fact_reader_login=openpc_fact_authority_test_reader
+if [[ -f "$repo/migrations/postgres/baseline-v1/install.sql" ]]; then
+  # Use the installed actors with the same parent grants. Extra test roles
+  # would deliberately violate the compact baseline's frozen role catalogue.
+  platform_login=openpc_participant_runtime
+  fact_reader_login=openpc_source_control_reader
+else
 docker exec -i "$container" psql -X -q -v ON_ERROR_STOP=1 -U postgres -d openpc_control <<SQL
 CREATE ROLE openpc_test_platform LOGIN INHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS PASSWORD '$password';
 GRANT openpc_control_runtime, openpc_control_platform_runtime TO openpc_test_platform;
 CREATE ROLE openpc_fact_authority_test_reader LOGIN INHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS PASSWORD '$password';
 GRANT openpc_control_reader TO openpc_fact_authority_test_reader;
 SQL
+fi
 if [[ "$snapshot_interop" = 1 || "$secret_consumer_interop" = 1 ]]; then
   # Real isolated candidate store for the Fact consumer connection lifecycle.
   # Initial database/role installation only; no candidate or business state seed.
@@ -587,13 +599,13 @@ port=$(docker port "$container" 5432/tcp)
 port=${port##*:}
 export OPENPC_I02_ADMIN_DATABASE_URL="postgresql://postgres:$password@127.0.0.1:$port/openpc_control"
 export OPENPC_I02_RUNTIME_DATABASE_URL="postgresql://openpc_identity_runtime:$password@127.0.0.1:$port/openpc_control"
-export OPENPC_I02_PLATFORM_RUNTIME_DATABASE_URL="postgresql://openpc_test_platform:$password@127.0.0.1:$port/openpc_control"
+export OPENPC_I02_PLATFORM_RUNTIME_DATABASE_URL="postgresql://$platform_login:$password@127.0.0.1:$port/openpc_control"
 export OPENPC_ASTRA05_ADMIN_DATABASE_URL="$OPENPC_I02_ADMIN_DATABASE_URL"
 export OPENPC_ASTRA05_RUNTIME_DATABASE_URL="$OPENPC_I02_RUNTIME_DATABASE_URL"
 if [[ "$snapshot_interop" = 1 || "$secret_consumer_interop" = 1 ]]; then
   export OPENPC_FACT_CANDIDATE_SESSION_TEST_URL="postgresql://openpc_fact_bridge_reader:$password@127.0.0.1:$port/openpc_candidate_index"
 fi
-export OPENPC_FACT_WORKLOAD_TEST_READER_URL="postgresql://openpc_fact_authority_test_reader:$password@127.0.0.1:$port/openpc_control"
+export OPENPC_FACT_WORKLOAD_TEST_READER_URL="postgresql://$fact_reader_login:$password@127.0.0.1:$port/openpc_control"
 export OPENPC_DEPLOYMENT_COMPILATION_DATABASE_URL="postgresql://openpc_local_control_worker:$password@127.0.0.1:$port/openpc_control"
 cd "$repo"
 if [ "$source_policy_interop" = 1 ]; then

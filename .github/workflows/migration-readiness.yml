@@ -29,6 +29,7 @@ jobs:
     timeout-minutes: 2
     outputs:
       admitted: ${{ steps.capacity.outputs.admitted }}
+      custody: ${{ steps.capacity.outputs.custody }}
     steps:
       - name: Check actual memory and disk without starting a workload
         id: capacity
@@ -40,11 +41,15 @@ jobs:
           # This is only a scheduling probe. The workload's own bounded runner
           # rechecks its actual machine and retains the 50 GiB disk reserve.
           admitted = available_kib >= 6 * 1024**2 and free_bytes >= 64 * 1024**3
+          custody = available_kib >= 12 * 1024**2 and free_bytes >= 100 * 1024**3
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               output.write('admitted=' + str(admitted).lower() + '\n')
+              output.write('custody=' + str(custody).lower() + '\n')
+          print(f'Available memory: {available_kib / 1024**2:.1f} GiB; free disk: {free_bytes / 1024**3:.1f} GiB; native={admitted}; custody={custody}')
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
               summary.write(f'Available memory: {available_kib / 1024**2:.1f} GiB; free disk: {free_bytes / 1024**3:.1f} GiB.\n\n')
               summary.write('Native proof may be scheduled; actual admission is checked again.\n' if admitted else 'Native database proof skipped: insufficient capacity. This is not a passing database or full-stack qualification.\n')
+              summary.write('\nCustody component tests may be scheduled; actual admission is checked again.\n' if custody else '\nCustody component tests skipped: insufficient capacity. Full setup and demo checks remain required.\n')
           PY
 
   native-baseline:
@@ -70,3 +75,38 @@ jobs:
         run: sudo apt-get update && sudo apt-get install --yes --no-install-recommends ripgrep curl ca-certificates build-essential bison flex libssl-dev zlib1g-dev
       - name: Run bounded proof in a new external directory
         run: bash scripts/maintenance/run-project.sh --profile database -- bash scripts/migrations/run-linux-proof.sh "$RUNNER_TEMP/tegaris-baseline"
+
+  source-custody:
+    name: Isolated compact baseline source and archive custody
+    needs: [portable-readiness, native-capacity]
+    if: needs.native-capacity.outputs.custody == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      OPENPC_SYSTEM_SCOPE: 1
+      CARGO_BUILD_JOBS: 2
+      OPENPC_LOCAL_RUNTIME_TMP_ROOT: ${{ runner.temp }}/tegaris-custody
+      OPENPC_TEST_TMP_ROOT: ${{ runner.temp }}/tegaris-tests
+      OPENPC_PNC_TMP_ROOT: ${{ runner.temp }}/tegaris-pnc
+      pnpm_config_cache_dir: ${{ runner.temp }}/tegaris-pnpm-cache
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.19.0
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          version: 11.20.0
+      - uses: dtolnay/rust-toolchain@5059963b1731bf1580991b5f3b1eecfb5da406c0 # 1.98.0
+      - name: Install test prerequisites
+        run: sudo apt-get update && sudo apt-get install --yes --no-install-recommends ripgrep
+      - name: Prepare private test scratch
+        run: mkdir -p "$OPENPC_LOCAL_RUNTIME_TMP_ROOT" "$OPENPC_TEST_TMP_ROOT" "$OPENPC_PNC_TMP_ROOT"
+      - name: Install locked dependencies under resource admission
+        run: bash scripts/maintenance/run-project.sh --memory-gib 8 --peak-disk-gib 40 -- pnpm install --frozen-lockfile --ignore-scripts --strict-peer-dependencies
+      - name: Fetch locked native dependencies under resource admission
+        run: bash scripts/maintenance/run-project.sh --memory-gib 8 --peak-disk-gib 40 -- cargo fetch --locked
+      - name: Qualify actual runtime source and archive custody
+        run: bash scripts/migrations/run-linux-custody.sh

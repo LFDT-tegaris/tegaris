@@ -179,6 +179,13 @@ Insufficient capacity skips that proof explicitly. A portable pass or capacity
 probe does not clear full setup, custody, demo or the separately required `ci`
 workflow. Those heavy jobs still require the configured larger runner.
 
+The focused `run-linux-custody.sh` gate uses the actual source installer and Rust
+source/archive recovery tests against the compact baseline. It refuses a legacy
+or rehydrated checkout before allocation. The readiness workflow attempts it only
+when measured capacity permits; the heavy runtime workflow also requires it
+before the historical test view. Its component result cannot qualify the full
+setup or browser/demo journey.
+
 ```sh
 node --version # Use the exact package.json pin.
 bash scripts/migrations/run-portable-readiness.sh

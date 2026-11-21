@@ -157,6 +157,8 @@ jobs:
           bash scripts/maintenance/run-project.sh --profile runtime -- \
             env OPENPC_LOCAL_RUNTIME=1 OPENPC_EVALUATION_UI=1 OPENPC_LOCAL_RUNTIME_FIRST_POLICY_ONLY=1 \
             bash tests/integration/local-runtime/run-compose-e2e.sh
+      - name: Fresh compact checkout runtime source and archive custody
+        run: bash scripts/migrations/run-linux-custody.sh
       - name: Populated migration and real configuration vertical
         shell: bash
         run: |

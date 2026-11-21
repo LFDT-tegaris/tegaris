@@ -83,7 +83,9 @@ async function businessState() {
   );
 }
 const journal = () =>
-  sql('select jsonb_agg(to_jsonb(m) order by path) from openpc_local.migration m');
+  sql(
+    "select coalesce(jsonb_agg(to_jsonb(m) order by path),'[]'::jsonb) from openpc_local.migration m",
+  );
 
 test(
   'Control installation creates service roles and catalogue without business trust or effects',

@@ -191,6 +191,12 @@ and restart, then synthetic QA tenant isolation and initial Fact trust recovery
 against separate empty compact-baseline databases. These database component
 checks do not start all services or exercise a browser sign-in.
 
+The custody component's same-database restore retains the original database OID,
+pgcrypto owner and public schema, then runs the qualified restore checks. It also
+requires a migration attempt after deliberate scope-marker damage to fail without
+changing persisted role/password, membership, source or lineage state. This test
+fixture does not replace the empty-target recovery command documented above.
+
 Only the standalone custody job may reclaim unused .NET/Android SDK space in
 its own fresh GitHub-hosted Linux VM. It rejects other execution environments
 before removal and rechecks free space afterward; the normal workload admission

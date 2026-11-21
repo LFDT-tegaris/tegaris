@@ -122,6 +122,10 @@ jobs:
         with:
           version: 11.20.0
       - uses: dtolnay/rust-toolchain@5059963b1731bf1580991b5f3b1eecfb5da406c0 # 1.98.0
+        with:
+          components: rustfmt
+      - name: Check custody fixture formatting
+        run: rustfmt --edition 2024 --check services/fleet-controller/src/runtime_artifact_source/postgres_tests/recovery.rs
       - name: Install test prerequisites
         run: sudo apt-get update && sudo apt-get install --yes --no-install-recommends ripgrep
       - name: Prepare private test scratch

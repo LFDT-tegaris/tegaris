@@ -14,6 +14,7 @@ node --test --test-concurrency=1 \
   tests/migration/policy-readiness.test.mjs \
   tests/migration/setup-gate.test.mjs \
   tests/migration/custody-gate.test.mjs \
+  tests/migration/custody-vm.test.mjs \
   tests/integration/local-runtime/qa-sandbox.test.mjs \
   tests/integration/local-runtime/qa-public-origin.test.mjs \
   tests/integration/local-runtime/oidc-signin.test.mjs \

@@ -186,6 +186,12 @@ when measured capacity permits; the heavy runtime workflow also requires it
 before the historical test view. Its component result cannot qualify the full
 setup or browser/demo journey.
 
+Only the standalone custody job may reclaim unused .NET/Android SDK space in
+its own fresh GitHub-hosted Linux VM. It rejects other execution environments
+before removal and rechecks free space afterward; the normal workload admission
+still enforces the memory budget and 50 GiB reserve. Existing installations and
+persistent runners are outside this preparation.
+
 ```sh
 node --version # Use the exact package.json pin.
 bash scripts/migrations/run-portable-readiness.sh

@@ -35,17 +35,26 @@ jobs:
         id: capacity
         run: |
           python3 - <<'PY'
-          import os, pathlib, shutil
+          import os, pathlib, shutil, subprocess
           available_kib = int(next(line.split()[1] for line in pathlib.Path('/proc/meminfo').read_text().splitlines() if line.startswith('MemAvailable:')))
           free_bytes = shutil.disk_usage(os.environ['RUNNER_TEMP']).free
           # This is only a scheduling probe. The workload's own bounded runner
           # rechecks its actual machine and retains the 50 GiB disk reserve.
           admitted = available_kib >= 6 * 1024**2 and free_bytes >= 64 * 1024**3
-          custody = available_kib >= 12 * 1024**2 and free_bytes >= 100 * 1024**3
+          # Only a scheduling estimate: the custody job may remove these
+          # unused SDKs from its own fresh GitHub VM, then must recheck space.
+          reclaimable = 0
+          for name in ('/usr/share/dotnet', '/usr/local/lib/android'):
+              path = pathlib.Path(name)
+              if path.is_dir() and not path.is_symlink():
+                  result = subprocess.run(['du', '-sx', '--block-size=1', name], text=True, capture_output=True)
+                  if result.returncode == 0 and result.stdout.split() and result.stdout.split()[0].isdigit():
+                      reclaimable += int(result.stdout.split()[0])
+          custody = available_kib >= 12 * 1024**2 and free_bytes + reclaimable >= 100 * 1024**3
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               output.write('admitted=' + str(admitted).lower() + '\n')
               output.write('custody=' + str(custody).lower() + '\n')
-          print(f'Available memory: {available_kib / 1024**2:.1f} GiB; free disk: {free_bytes / 1024**3:.1f} GiB; native={admitted}; custody={custody}')
+          print(f'Available memory: {available_kib / 1024**2:.1f} GiB; free disk: {free_bytes / 1024**3:.1f} GiB; unused SDK estimate: {reclaimable / 1024**3:.1f} GiB; native={admitted}; custody_candidate={custody}')
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
               summary.write(f'Available memory: {available_kib / 1024**2:.1f} GiB; free disk: {free_bytes / 1024**3:.1f} GiB.\n\n')
               summary.write('Native proof may be scheduled; actual admission is checked again.\n' if admitted else 'Native database proof skipped: insufficient capacity. This is not a passing database or full-stack qualification.\n')
@@ -89,6 +98,23 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
+      - name: Prepare disk on this fresh GitHub custody VM
+        env:
+          TEGARIS_RUNNER_KIND: ${{ runner.environment }}
+        run: |
+          [[ "$GITHUB_ACTIONS" == true && "$TEGARIS_RUNNER_KIND" == github-hosted && "$RUNNER_OS" == Linux ]] || exit 78
+          for sdk in /usr/share/dotnet /usr/local/lib/android; do
+            [[ ! -L "$sdk" ]] || exit 78
+            sudo rm -rf --one-file-system -- "$sdk"
+          done
+          python3 - <<'PY'
+          import pathlib, shutil
+          available_kib = int(next(line.split()[1] for line in pathlib.Path('/proc/meminfo').read_text().splitlines() if line.startswith('MemAvailable:')))
+          free_bytes = shutil.disk_usage('.').free
+          print(f'Custody admission precheck: {available_kib / 1024**2:.1f} GiB memory, {free_bytes / 1024**3:.1f} GiB free disk')
+          if available_kib < 12 * 1024**2 or free_bytes < 100 * 1024**3:
+              raise SystemExit('Insufficient custody capacity after VM preparation; no test workload started')
+          PY
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24.19.0

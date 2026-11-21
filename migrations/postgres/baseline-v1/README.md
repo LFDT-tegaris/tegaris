@@ -196,6 +196,10 @@ pgcrypto owner and public schema, then runs the qualified restore checks. It als
 requires a migration attempt after deliberate scope-marker damage to fail without
 changing persisted role/password, membership, source or lineage state. This test
 fixture does not replace the empty-target recovery command documented above.
+Only its disposable PostgreSQL container starts with
+`max_locks_per_transaction=1024` for the bulk drop/recreate transaction, within
+the unchanged 1 GiB container memory limit. No deployment or existing server
+setting is changed by this test.
 
 Only the standalone custody job may reclaim unused .NET/Android SDK space in
 its own fresh GitHub-hosted Linux VM. It rejects other execution environments

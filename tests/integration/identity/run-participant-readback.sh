@@ -511,11 +511,18 @@ if [ "$notification_completion_bridge" = 1 ]; then
   openssl rand -hex 32 > "$root/secrets/notification_completion_identity_admission_key"
   export OPENPC_NOTIFICATION_COMPLETION_TEST_KEY_FILE="$root/secrets/notification_completion_identity_admission_key"
 fi
+postgres_command=(postgres)
+if [[ "${test_files[0]}" == tests/integration/identity/postgres-runtime-artifact-source.test.ts ]]; then
+  # The same-database recovery case drops and recreates the full catalogue in
+  # one transaction. Provision its lock table at server startup; keep the same
+  # 1 GiB container cap and never alter an existing installation's settings.
+  postgres_command=(postgres -c max_locks_per_transaction=1024)
+fi
 docker run -d --name "$container" --memory 1g --memory-swap 1g --cpus 1 --pids-limit 256 --label "io.openpc.test-owner=$root" \
   -p 127.0.0.1::5432 -e POSTGRES_PASSWORD="$password" -e POSTGRES_DB=openpc_control \
   -v "$root/secrets:/run/secrets:ro" -v "$repo/migrations/postgres:/migrations/postgres:ro" \
   -v "$repo/deploy/compose/local/migrate.sh:/local/migrate.sh:ro" \
-  docker.io/library/postgres:18.6@sha256:7341002d2b8c7c5bdd7542a671a95b36196c0b5b888daf454ae4fc33ba5346d7 >/dev/null
+  docker.io/library/postgres:18.6@sha256:7341002d2b8c7c5bdd7542a671a95b36196c0b5b888daf454ae4fc33ba5346d7 "${postgres_command[@]}" >/dev/null
 created=1
 if [[ "${test_files[0]}" == tests/integration/identity/postgres-platform-envelope-scope.test.ts || "${test_files[0]}" == tests/integration/identity/postgres-root-expiry-installation.test.ts || "${test_files[0]}" == tests/integration/identity/postgres-root-expiry-recovery.test.ts ]]; then
   export OPENPC_PLATFORM_SCOPE_CONTAINER="$container"
@@ -528,6 +535,11 @@ for attempt in $(seq 1 60); do
   [ "$attempt" -lt 60 ] || exit 1
   sleep 1
 done
+if [[ "${test_files[0]}" == tests/integration/identity/postgres-runtime-artifact-source.test.ts ]]; then
+  lock_slots=$(docker exec "$container" psql -XqAt -v ON_ERROR_STOP=1 -U postgres -d openpc_control -c 'SHOW max_locks_per_transaction')
+  [[ "$lock_slots" == 1024 ]] || { echo 'Custody restore lock capacity unavailable' >&2; exit 1; }
+  printf 'ISOLATED_CUSTODY_POSTGRES|max_locks_per_transaction=%s|container_memory=1g\n' "$lock_slots"
+fi
 if [[ "${test_files[0]}" == tests/integration/identity/postgres-evidence-remote-upgrade.test.ts || "${test_files[0]}" == tests/integration/identity/postgres-identity-envelope-signing.test.ts || "${test_files[0]}" == tests/integration/identity/postgres-platform-envelope-scope.test.ts || "${test_files[0]}" == tests/integration/identity/postgres-envelope-proposal.test.ts ]]; then
   # Use unmodified predecessor files through the same installer. Keep today's
   # read-only migration mount on the database for the test's actual upgrade.

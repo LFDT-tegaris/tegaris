@@ -81,7 +81,7 @@ jobs:
         with:
           version: 11.20.0
       - name: Install native build prerequisites
-        run: sudo apt-get update && sudo apt-get install --yes --no-install-recommends ripgrep curl ca-certificates build-essential bison flex libssl-dev zlib1g-dev
+        run: sudo apt-get update && sudo apt-get install --yes --no-install-recommends ripgrep curl ca-certificates build-essential bison flex libssl-dev zlib1g-dev locales && sudo locale-gen en_US.UTF-8
       - name: Run bounded proof in a new external directory
         run: bash scripts/maintenance/run-project.sh --profile database -- bash scripts/migrations/run-linux-proof.sh "$RUNNER_TEMP/tegaris-baseline"
 

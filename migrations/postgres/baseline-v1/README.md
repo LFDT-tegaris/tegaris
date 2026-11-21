@@ -211,6 +211,12 @@ own servers. It exercises both `postgres` and the Compose bootstrap account
 other role identities, grants, grant options, ownership, policies and definitions
 remain exact.
 
+Catalogue and ACL ordering uses the bytewise `C` collation regardless of the
+database locale. The native proof also installs and repeats the baseline in an
+`en_US.UTF-8` database, retaining the original catalogue and permission profile
+fingerprints. Install that libc locale on the disposable proof runner; deployment
+does not require changing an existing database's locale.
+
 ## Setup and demo merge gates
 
 Qualification must use the actual compact checkout at the proposed merge commit,

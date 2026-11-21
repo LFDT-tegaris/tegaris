@@ -40,7 +40,7 @@ jobs:
       - name: Test offline compatibility package verification
         run: python3 -m unittest discover -s tests/migration -p 'test_*.py'
       - name: Install test prerequisites
-        run: sudo apt-get update && sudo apt-get install --yes --no-install-recommends ripgrep curl ca-certificates build-essential bison flex libssl-dev zlib1g-dev
+        run: sudo apt-get update && sudo apt-get install --yes --no-install-recommends ripgrep curl ca-certificates build-essential bison flex libssl-dev zlib1g-dev locales && sudo locale-gen en_US.UTF-8
       - name: Configure job scratch paths
         run: |
           echo "OPENPC_TEST_TMP_ROOT=$RUNNER_TEMP/openpc-tests" >> "$GITHUB_ENV"

@@ -7,7 +7,7 @@ $role$;
 CREATE OR REPLACE FUNCTION pg_temp.tegaris_acl(value aclitem[])
 RETURNS jsonb LANGUAGE sql STABLE AS $acl$
  SELECT coalesce(jsonb_agg(jsonb_build_array(pg_temp.tegaris_role(grantee),privilege_type,is_grantable,pg_temp.tegaris_role(grantor))
-  ORDER BY pg_temp.tegaris_role(grantee),privilege_type,is_grantable,pg_temp.tegaris_role(grantor)),'[]'::jsonb)
+  ORDER BY pg_temp.tegaris_role(grantee) COLLATE "C",privilege_type COLLATE "C",is_grantable,pg_temp.tegaris_role(grantor) COLLATE "C"),'[]'::jsonb)
  FROM aclexplode(value)
 $acl$;
 

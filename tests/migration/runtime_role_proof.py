@@ -192,3 +192,25 @@ class RuntimeRoleProof:
         assert rejected.returncode and 'source binding roles are missing' in rejected.stderr
         assert p.sql("SELECT count(*) FROM pg_roles WHERE starts_with(rolname,'openpc_rs_') OR starts_with(rolname,'openpc_ra_')", 4).stdout.strip() == '0'
         p.mark('source-bearing restore without original cluster bindings is rejected without fabricating roles')
+        # Reuse only this owned rejected-restore target. The frozen catalogue
+        # must not depend on the target database's text sort order.
+        p.sql('DROP DATABASE openpc_control WITH (FORCE)', 4, db='postgres')
+        p.sql("CREATE DATABASE openpc_control TEMPLATE template0 ENCODING 'UTF8' LOCALE_PROVIDER libc LC_COLLATE 'en_US.UTF-8' LC_CTYPE 'en_US.UTF-8'", 4, db='postgres')
+        p.migrate('candidate', 4, 'control-installation')
+        p.file(self.base / 'verify.sql', 4)
+        before = self.state(4); data_before = p.data_hash(4)
+        p.migrate('candidate', 4, 'control-installation')
+        assert self.state(4) == before and p.data_hash(4) == data_before
+        assert p.sql("SELECT catalog_profile FROM openpc_local.baseline_lineage", 4).stdout.strip() == 'canonical'
+        p.mark('English UTF-8 locale installs and repeats with the original catalogue and permission fingerprints')
+        for change, undo in [
+            ('ALTER TABLE control.participant DISABLE ROW LEVEL SECURITY', 'ALTER TABLE control.participant ENABLE ROW LEVEL SECURITY'),
+            ('ALTER ROLE openpc_control_reader BYPASSRLS', 'ALTER ROLE openpc_control_reader NOBYPASSRLS'),
+        ]:
+            p.sql(change, 4)
+            rejected = p.migrate('candidate', 4, 'control-schema', ok=False)
+            assert rejected.returncode and 'BASELINE-CATALOG-MISMATCH' in rejected.stderr
+            assert p.data_hash(4) == data_before
+            p.sql(undo, 4)
+            p.file(self.base / 'verify.sql', 4)
+        p.mark('English UTF-8 locale still rejects RLS and role-privilege drift without changing application data')

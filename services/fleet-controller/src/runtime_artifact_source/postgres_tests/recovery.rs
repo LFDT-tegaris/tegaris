@@ -1,6 +1,9 @@
 //! Actual same-cluster per-database backup/restore inside the existing isolated
 //! PostgreSQL runner. Globals and host files are deliberately outside the dump.
 use std::{
+    fs::OpenOptions,
+    io::Write,
+    os::unix::fs::OpenOptionsExt,
     path::PathBuf,
     process::{Command, Output},
 };
@@ -162,8 +165,35 @@ impl ControlBackup {
 
     #[track_caller]
     fn execute(&self, arguments: &[&str]) {
+        let result = self.output(arguments);
+        if !result.status.success() {
+            // Retain raw diagnostics privately in the owned fixture only. The
+            // existing bounded reporter emits redacted error classes to CI.
+            let path = self
+                .owner
+                .join(format!("custody-command-{}.log", uuid::Uuid::now_v7()));
+            OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .mode(0o600)
+                .open(&path)
+                .unwrap()
+                .write_all(&result.stderr)
+                .unwrap();
+            let report = Command::new("python3")
+                .arg(
+                    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                        .join("../../scripts/migrations/report-failure.py"),
+                )
+                .arg(path)
+                .output()
+                .unwrap();
+            if report.status.success() {
+                eprint!("{}", String::from_utf8_lossy(&report.stdout));
+            }
+        }
         assert!(
-            self.run(arguments),
+            result.status.success(),
             "isolated database recovery or host registration failed ({})",
             arguments[0]
         );

@@ -2178,10 +2178,15 @@ test('ordinary RPC CI connects real decisions to encrypted custody and governed 
 
 test('ordinary CI reaches the governed hold database and browser custody journeys', async () => {
   const gateway = await readFile('deploy/compose/local/envoy/local-gateway.yaml', 'utf8');
-  assert.match(
-    gateway,
-    /path_separated_prefix: "\/api\/v1\/evidence-holds"[\s\S]*?cluster: control_api/u,
-  );
+  const controlRoute = (path) =>
+    assert.match(
+      gateway,
+      new RegExp(
+        `- match: \\{ path_separated_prefix: (['"])${path}\\1 \\}\\n\\s+route: \\{ cluster: control_api(?:,| \\})`,
+        'u',
+      ),
+    );
+  controlRoute('/api/v1/evidence-holds');
   const runner = await readFile('tests/integration/identity/run-participant-readback.sh', 'utf8');
   assert.match(runner, /tests\/integration\/identity\/postgres-evidence-holds\.test\.ts/u);
   assert.match(runner, /tests\/integration\/policy\/approval-candidate-contract\.test\.ts/u);
@@ -2204,14 +2209,8 @@ test('ordinary CI reaches the governed hold database and browser custody journey
     composeRunner,
     /node --import tsx tests\/integration\/local-runtime\/evidence-protected-browser\.mjs/u,
   );
-  assert.match(
-    gateway,
-    /path_separated_prefix: "\/api\/v1\/protected-proofs"[\s\S]*?cluster: control_api/u,
-  );
-  assert.match(
-    gateway,
-    /path_separated_prefix: "\/api\/v1\/protected-proof-access"[\s\S]*?cluster: control_api/u,
-  );
+  controlRoute('/api/v1/protected-proofs');
+  controlRoute('/api/v1/protected-proof-access');
   assert.match(runner, /tests\/integration\/identity\/postgres-evidence-deletion\.test\.ts/u);
   assert.match(runner, /tests\/integration\/identity\/postgres-evidence-raw-deletion\.test\.ts/u);
   assert.match(
@@ -2236,10 +2235,7 @@ test('ordinary CI reaches the governed hold database and browser custody journey
     composeRunner,
     /node --import tsx tests\/integration\/local-runtime\/retention-policy-browser\.mjs/u,
   );
-  assert.match(
-    gateway,
-    /path_separated_prefix: "\/api\/v1\/retention-policies"[\s\S]*?cluster: control_api/u,
-  );
+  controlRoute('/api/v1/retention-policies');
   assert.match(
     composeRunner,
     /node --import tsx tests\/integration\/local-runtime\/evidence-hold-custody\.mjs/u,
@@ -2260,6 +2256,9 @@ test('ordinary CI reaches the governed hold database and browser custody journey
     composeRunner.indexOf('evidence-rejection-deletion-browser.mjs') <
       composeRunner.indexOf('retention-policy-browser.mjs'),
   );
+});
+
+test('governed evidence browser commands require the live canonical owner before loading runtime inputs', () => {
   for (const script of [
     'evidence-hold-custody',
     'retention-policy-browser',
@@ -3344,10 +3343,21 @@ test('installed secret recipient CI rejects failed connected contracts before Po
 });
 
 test('ordinary CI executes installation configuration behavior with the existing TypeScript loader', () => {
-  assert.match(
-    packageDocument.scripts['test:unit'],
-    /node --import tsx --test (?:[\w./-]+\.mjs )*scripts\/operations\/installation-config\.test\.mjs scripts\/operations\/installation-effective-projection\.test\.mjs scripts\/operations\/installation-preflight\.test\.mjs scripts\/operations\/test-secret-provider\.test\.mjs scripts\/operations\/test-fact-secret-mount\.test\.mjs scripts\/operations\/test-fact-secret-delivery\.test\.mjs tests\/recovery\/kubernetes-materialization\.test\.mjs \|\| status=1/u,
-  );
+  const required = [
+    'scripts/operations/installation-config.test.mjs',
+    'scripts/operations/installation-effective-projection.test.mjs',
+    'scripts/operations/installation-preflight.test.mjs',
+    'scripts/operations/test-secret-provider.test.mjs',
+    'scripts/operations/test-fact-secret-mount.test.mjs',
+    'scripts/operations/test-fact-secret-delivery.test.mjs',
+    'tests/recovery/kubernetes-materialization.test.mjs',
+  ];
+  const commands = [
+    ...packageDocument.scripts['test:unit'].matchAll(
+      /node --import tsx --test ([^|]+)\|\| status=1/gu,
+    ),
+  ].map((match) => new Set(match[1].trim().split(/\s+/u)));
+  assert.ok(commands.some((files) => required.every((file) => files.has(file))));
   assert.match(packageDocument.scripts['test:unit'], /exit "\$status"/u);
   const kernel = workflow.slice(
     workflow.indexOf('- name: Real Fact secret tmpfs publication'),

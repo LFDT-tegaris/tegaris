@@ -12,6 +12,7 @@ import {
   mkdir,
   stat,
   readFile,
+  realpath,
 } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -831,7 +832,7 @@ test('QA has four distinct tenant-bound Platform operators and an explicit admin
   assert.equal(qaRpcPlatformTrust.targetProfileId, 'devnet-rpc-v1');
 });
 test('QA ownership rejects missing, foreign and symlinked roots; account secrets remain explicit', async () => {
-  const root = await mkdtemp(join(tmpdir(), 'openpc-qa-test-'));
+  const root = await realpath(await mkdtemp(join(tmpdir(), 'openpc-qa-test-')));
   try {
     await assert.rejects(qaRoot(root));
     await writeFile(join(root, '.openpc-local-runtime-owner'), 'foreign');

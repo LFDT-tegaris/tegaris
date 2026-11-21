@@ -171,7 +171,17 @@ retain the isolated target and logs for investigation.
 
 ## Validation and reproducibility
 
+The separate `Migration readiness` workflow runs dependency-free synthetic setup,
+sign-in, RPC evidence and recovery contract checks on a disposable Linux runner.
+It also checks available capacity before scheduling the native database proof;
+the proof rechecks admission on its own runner and retains the 50 GiB reserve.
+Insufficient capacity skips that proof explicitly. A portable pass or capacity
+probe does not clear full setup, custody, demo or the separately required `ci`
+workflow. Those heavy jobs still require the configured larger runner.
+
 ```sh
+node --version # Use the exact package.json pin.
+bash scripts/migrations/run-portable-readiness.sh
 python3 -m unittest discover -s tests/migration -p 'test_*.py'
 node --test --test-concurrency=1 tests/migration/legacy-inputs.test.mjs tests/migration/policy-readiness.test.mjs tests/migration/setup-gate.test.mjs
 python3 scripts/migrations/check-size.py

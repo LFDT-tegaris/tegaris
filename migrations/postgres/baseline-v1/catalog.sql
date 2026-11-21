@@ -1,5 +1,5 @@
 SET search_path=pg_catalog;
-SELECT jsonb_build_object(
+SELECT pg_temp.tegaris_static_catalog(jsonb_build_object(
  'bootstrap',(SELECT jsonb_build_array(rolsuper,rolinherit,rolcreaterole,rolcreatedb,rolcanlogin,rolreplication,rolbypassrls,rolconnlimit,rolvaliduntil,rolconfig) FROM pg_roles WHERE oid=10),
  'database_acl',(SELECT jsonb_build_array(datname,pg_temp.tegaris_role(datdba),pg_temp.tegaris_acl(coalesce(datacl,acldefault('d'::"char",datdba)))) FROM pg_database WHERE datname=current_database()),
  'schemas',(SELECT jsonb_agg(jsonb_build_array(n.nspname,pg_temp.tegaris_role(n.nspowner),pg_temp.tegaris_acl(coalesce(n.nspacl,acldefault('n'::"char",n.nspowner)))) ORDER BY n.nspname)
@@ -44,4 +44,4 @@ SELECT jsonb_build_object(
  'memberships',(SELECT jsonb_agg(jsonb_build_array(pg_temp.tegaris_role(r.oid),pg_temp.tegaris_role(m.oid),pg_temp.tegaris_role(g.oid),a.admin_option,a.inherit_option,a.set_option) ORDER BY pg_temp.tegaris_role(r.oid),pg_temp.tegaris_role(m.oid),pg_temp.tegaris_role(g.oid))
    FROM pg_auth_members a JOIN pg_roles r ON r.oid=a.roleid JOIN pg_roles m ON m.oid=a.member JOIN pg_roles g ON g.oid=a.grantor
    WHERE r.rolname LIKE 'openpc\_%' ESCAPE '\' OR m.rolname LIKE 'openpc\_%' ESCAPE '\')
-);
+));

@@ -13,12 +13,12 @@ SET search_path=pg_catalog;
 DO $restore$ DECLARE actual text; expected jsonb; BEGIN
  IF to_regclass('openpc_local.baseline_lineage') IS NULL THEN RAISE EXCEPTION 'Restore requires verified baseline lineage'; END IF;
  SELECT profile.value INTO expected FROM openpc_local.baseline_lineage l
- JOIN jsonb_each('{"canonical": {"catalog_sha256": "37c340ef8185ebcafab082bc7a5c92522c8637ca94ba39a82ab145f0e95e9f27", "wire_catalog_sha256": "97226ba36384b41f2c8fe2e399145804fe3fb7ede8ed9f18bb356d810870295d", "restore_wire_catalog_sha256": "290250274c298ce51e2f5d346bd3dffd506a22ed9c556595a40d599e89d494ac"}, "legacy_private_policy_trigger": {"catalog_sha256": "1b128479f5766b13aca56162841ed121ee4dc7e3d8e02334e8323efe3be67d6e", "wire_catalog_sha256": "34af15db7e1abadf2b4a938ce976b646334a64c8153b8158f70f0b3dd945b09b", "restore_wire_catalog_sha256": "98819d69b892861fb981108c3e18dcc70e47ed750a3362367fdb1191bc9621c9"}}'::jsonb) profile ON profile.key=l.catalog_profile
+ JOIN jsonb_each('{"canonical": {"catalog_sha256": "37c340ef8185ebcafab082bc7a5c92522c8637ca94ba39a82ab145f0e95e9f27", "restore_wire_catalog_sha256": "290250274c298ce51e2f5d346bd3dffd506a22ed9c556595a40d599e89d494ac", "wire_catalog_sha256": "97226ba36384b41f2c8fe2e399145804fe3fb7ede8ed9f18bb356d810870295d"}, "legacy_private_policy_trigger": {"catalog_sha256": "1b128479f5766b13aca56162841ed121ee4dc7e3d8e02334e8323efe3be67d6e", "restore_wire_catalog_sha256": "98819d69b892861fb981108c3e18dcc70e47ed750a3362367fdb1191bc9621c9", "wire_catalog_sha256": "34af15db7e1abadf2b4a938ce976b646334a64c8153b8158f70f0b3dd945b09b"}}'::jsonb) profile ON profile.key=l.catalog_profile
  WHERE baseline_id='tegaris-control-db5e64b-v1' AND source_commit='db5e64b566712e5213424db5e166775d9a15a7be'
  AND sql_sha256='f97758522f2aa33c0aff94398b15f75a657c239ba10cff639b587984363ab2eb' AND l.catalog_sha256=profile.value->>'catalog_sha256';
  IF expected IS NULL OR (SELECT count(*) FROM openpc_local.baseline_lineage)<>1
  THEN RAISE EXCEPTION 'Restore requires verified baseline lineage'; END IF;
- SELECT encode(sha256(convert_to(pg_temp.tegaris_catalog_canonical(j)::text,'UTF8')),'hex') INTO actual FROM (SELECT jsonb_build_object(
+ SELECT encode(sha256(convert_to(pg_temp.tegaris_catalog_canonical(j)::text,'UTF8')),'hex') INTO actual FROM (SELECT pg_temp.tegaris_static_catalog(jsonb_build_object(
  'bootstrap',(SELECT jsonb_build_array(rolsuper,rolinherit,rolcreaterole,rolcreatedb,rolcanlogin,rolreplication,rolbypassrls,rolconnlimit,rolvaliduntil,rolconfig) FROM pg_roles WHERE oid=10),
  'database_acl',(SELECT jsonb_build_array(datname,pg_temp.tegaris_role(datdba),pg_temp.tegaris_acl(coalesce(datacl,acldefault('d'::"char",datdba)))) FROM pg_database WHERE datname=current_database()),
  'schemas',(SELECT jsonb_agg(jsonb_build_array(n.nspname,pg_temp.tegaris_role(n.nspowner),pg_temp.tegaris_acl(coalesce(n.nspacl,acldefault('n'::"char",n.nspowner)))) ORDER BY n.nspname)
@@ -63,11 +63,11 @@ DO $restore$ DECLARE actual text; expected jsonb; BEGIN
  'memberships',(SELECT jsonb_agg(jsonb_build_array(pg_temp.tegaris_role(r.oid),pg_temp.tegaris_role(m.oid),pg_temp.tegaris_role(g.oid),a.admin_option,a.inherit_option,a.set_option) ORDER BY pg_temp.tegaris_role(r.oid),pg_temp.tegaris_role(m.oid),pg_temp.tegaris_role(g.oid))
    FROM pg_auth_members a JOIN pg_roles r ON r.oid=a.roleid JOIN pg_roles m ON m.oid=a.member JOIN pg_roles g ON g.oid=a.grantor
    WHERE r.rolname LIKE 'openpc\_%' ESCAPE '\' OR m.rolname LIKE 'openpc\_%' ESCAPE '\')
-)) x(j);
+))) x(j);
  IF actual<>expected->>'wire_catalog_sha256' AND actual<>expected->>'restore_wire_catalog_sha256'
  THEN RAISE EXCEPTION 'Unrecognized restore catalogue; no repair permitted'; END IF;
 END $restore$;
-SELECT encode(sha256(convert_to(pg_temp.tegaris_catalog_canonical(j)::text,'UTF8')),'hex') NOT IN ('97226ba36384b41f2c8fe2e399145804fe3fb7ede8ed9f18bb356d810870295d','34af15db7e1abadf2b4a938ce976b646334a64c8153b8158f70f0b3dd945b09b') AS needs_restore FROM (SELECT jsonb_build_object(
+SELECT encode(sha256(convert_to(pg_temp.tegaris_catalog_canonical(j)::text,'UTF8')),'hex') NOT IN ('97226ba36384b41f2c8fe2e399145804fe3fb7ede8ed9f18bb356d810870295d','34af15db7e1abadf2b4a938ce976b646334a64c8153b8158f70f0b3dd945b09b') AS needs_restore FROM (SELECT pg_temp.tegaris_static_catalog(jsonb_build_object(
  'bootstrap',(SELECT jsonb_build_array(rolsuper,rolinherit,rolcreaterole,rolcreatedb,rolcanlogin,rolreplication,rolbypassrls,rolconnlimit,rolvaliduntil,rolconfig) FROM pg_roles WHERE oid=10),
  'database_acl',(SELECT jsonb_build_array(datname,pg_temp.tegaris_role(datdba),pg_temp.tegaris_acl(coalesce(datacl,acldefault('d'::"char",datdba)))) FROM pg_database WHERE datname=current_database()),
  'schemas',(SELECT jsonb_agg(jsonb_build_array(n.nspname,pg_temp.tegaris_role(n.nspowner),pg_temp.tegaris_acl(coalesce(n.nspacl,acldefault('n'::"char",n.nspowner)))) ORDER BY n.nspname)
@@ -112,7 +112,7 @@ SELECT encode(sha256(convert_to(pg_temp.tegaris_catalog_canonical(j)::text,'UTF8
  'memberships',(SELECT jsonb_agg(jsonb_build_array(pg_temp.tegaris_role(r.oid),pg_temp.tegaris_role(m.oid),pg_temp.tegaris_role(g.oid),a.admin_option,a.inherit_option,a.set_option) ORDER BY pg_temp.tegaris_role(r.oid),pg_temp.tegaris_role(m.oid),pg_temp.tegaris_role(g.oid))
    FROM pg_auth_members a JOIN pg_roles r ON r.oid=a.roleid JOIN pg_roles m ON m.oid=a.member JOIN pg_roles g ON g.oid=a.grantor
    WHERE r.rolname LIKE 'openpc\_%' ESCAPE '\' OR m.rolname LIKE 'openpc\_%' ESCAPE '\')
-)) x(j) \gset
+))) x(j) \gset
 \if :needs_restore
 \ir repairs.sql
 \endif

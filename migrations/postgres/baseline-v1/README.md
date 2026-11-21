@@ -1,16 +1,12 @@
 # Control database baseline v1
 
-**Draft: full setup is not cleared for merge.** The 20 native PostgreSQL checks
-cover baseline installation, current handoff, a populated predecessor upgrade,
-three backup restore paths, rejected inputs, rollback, concurrency, isolation and
-drift detection. They do not establish full-stack demo or deployment readiness.
-
-A role-inventory probe reproduced a catalogue-verification failure after adding
-the scope/login role layout used by runtime-source installation. Normal runtime
-and archive role lifecycles must be supported without weakening privilege or RLS
-checks before this baseline can replace the ordinary setup path. The compact
-checkout has a separate fresh setup and governed-RPC CI step; passing historical
-tests in the legacy source view cannot clear that gate.
+**Draft: full setup and demo checks are still required before merge.** Native
+PostgreSQL checks cover baseline installation, current handoff, a populated
+predecessor upgrade, database backup/restore, runtime role contracts, rejected
+inputs, rollback, concurrency, isolation and drift detection. They do not
+establish full-stack demo or deployment readiness. The compact checkout has a
+separate fresh setup and governed-RPC CI step; passing historical tests in the
+legacy source view cannot clear that gate.
 
 This baseline freezes the public source at `db5e64b566712e5213424db5e166775d9a15a7be`.
 The current baseline tests target PostgreSQL 18.6, pgcrypto 1.4, UTF-8, and database
@@ -37,6 +33,30 @@ privileges, and unsupported PostgreSQL versions stop before installation changes
 An older database needs an explicit upgrade through the verified compatibility
 package first. Installing or upgrading an existing environment is a separate
 operator action; this repository change does not deploy anything.
+
+## Runtime role lifecycle
+
+Runtime-source installation creates scoped marker/login roles after database
+setup; an optional archive has its own login. These identities vary by workspace
+and cannot be part of the frozen schema fingerprint. Before projecting them out,
+the verifier checks their exact reserved name format, scope-name derivation,
+installation/root binding shape, paired identities and archive profile. A v2
+materialization binding must still name the current database and cluster.
+
+These roles must retain the installer-created attributes and memberships: no
+superuser, role/database creation, replication, RLS bypass, role settings, direct
+object ownership or ACL/policy privileges, including outside the frozen schemas.
+Source and archive logins inherit only `openpc_control_worker`; a source login
+also has its own marker membership with ADMIN, INHERIT and SET disabled. Grantors
+must be superusers and no other consumer can inherit a source or marker identity.
+All static catalogue fields, grants, grant options, ownership and RLS checks stay
+exact. Unrecognized role layouts remain rejected. The verifier never creates,
+repairs or reenrolls runtime identities, copies passwords or rewrites bindings.
+
+This is a migration compatibility check, not custody authentication. The Rust
+source installer/authenticator remains responsible for actual keys, retained
+files, journals, scope authority and consumer startup. Synthetic SQL role probes
+cannot substitute for the fresh runtime and demo checks below.
 
 ## Offline compatibility package
 
@@ -122,6 +142,15 @@ restore path provisions the pinned pgcrypto extension under its correct owner;
 ordinary pg_restore does not preserve that extension owner. Database ACLs are
 also prepared explicitly because a restore without `--create` omits them.
 
+A database dump does not contain cluster roles. A source-bearing restore must
+retain the original scope/login bindings; missing roles are rejected rather than
+recreated from database rows. The native v1 restore test retains those roles in
+the same disposable cluster. A v2 materialization binding also pins the database
+OID and cluster identifier: moving it to a different database or cluster is
+rejected. This tool does not restore cluster globals or custody files. Keep the
+original keys, retained files and journals; their recovery and consumer startup
+still need independent qualification.
+
 Set `PGHOST`, `PGPORT`, `PGUSER`, and `PGDATABASE=openpc_control` for that target:
 
 ```sh
@@ -171,7 +200,7 @@ including the baseline installer. The following checks remain required:
   healthy services, and complete sign-in with its own fixture accounts.
 - Exercise normal runtime-source and archive installation, repeated migration,
   stop/resume and restart without changing established credentials, keys, receipt
-  identities or business data. Resolve the role-inventory blocker above first.
+  identities or business data. Use the actual source installer, not SQL fixtures.
 - Run initial policy setup, independent review, activation, permitted and denied
   governed requests, and the corresponding public readback and browser checks.
 - Validate supported upgrade and backup/recovery paths on populated disposable

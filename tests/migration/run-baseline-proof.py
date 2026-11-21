@@ -18,6 +18,7 @@ import time
 REPO=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(REPO/'scripts/migrations'))
 import compatibility
+from runtime_role_proof import RuntimeRoleProof
 
 
 class Proof:
@@ -281,7 +282,9 @@ def main():
             (proof.root/f'cluster-{args.inspect_cluster}-catalog.json').write_text(json.dumps(actual,indent=2,sort_keys=True)+'\n')
             expected=json.loads((base/'catalog.json').read_text())
             print('Catalogue fields requiring investigation:',[k for k in expected if expected[k]!=actual[k]],flush=True)
-        else:proof.run_proof()
+        else:
+            proof.run_proof()
+            RuntimeRoleProof(proof).run()
     finally:proof.close()
     print(json.dumps({'passed':len(proof.results),'evidence':str(proof.root),'seconds':round(time.monotonic()-proof.started_at,2)}))
 

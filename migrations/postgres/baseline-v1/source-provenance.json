@@ -1,0 +1,612 @@
+[
+  {
+    "object": "workload_signing_handover_generation.workload_handover_generation_size_ck",
+    "source": "migrations/postgres/identity/0229_clumsy_giant_man.sql",
+    "source_sha256": "aab173b005fbae857c9ae1df12e028a8d5c662e81316a39d12ca3d8bc494a71c"
+  },
+  {
+    "object": "workload_signing_handover_observation.workload_handover_observation_size_ck",
+    "source": "migrations/postgres/identity/0228_left_veda.sql",
+    "source_sha256": "b34cc2e5b6fb6b33052a0d38782e9992b5792d56e69f12e08628e65ff74c29d9"
+  },
+  {
+    "object": "workload_signing_handover.workload_signing_handover_sizes_ck",
+    "source": "migrations/postgres/identity/0226_little_bloodaxe.sql",
+    "source_sha256": "6aed9572f1867baa0430333fbce406c0409410e60d25815460c4ff3c2aab36e3"
+  },
+  {
+    "object": "workload_signing_handover_attempt.workload_handover_attempt_size_ck",
+    "source": "migrations/postgres/identity/0226_little_bloodaxe.sql",
+    "source_sha256": "6aed9572f1867baa0430333fbce406c0409410e60d25815460c4ff3c2aab36e3"
+  },
+  {
+    "object": "workload_renewal_signing_grant.wr_signing_grant_security_ck",
+    "source": "migrations/postgres/identity/0171_wise_swordsman.sql",
+    "source_sha256": "f357ccdbb1d37f0d5125a5e7bca504977ff3e9343aaa12fce4c651eba399cd61"
+  },
+  {
+    "object": "workload_renewal_policy.wr_policy_bounds_ck",
+    "source": "migrations/postgres/identity/0170_remarkable_star_brand.sql",
+    "source_sha256": "5bacf5d7ba681b5dfd630914a124392d36d69b6a46075c093d480f7420a7269f"
+  },
+  {
+    "object": "workload_renewal_policy.wr_policy_definition_ck",
+    "source": "migrations/postgres/identity/0170_remarkable_star_brand.sql",
+    "source_sha256": "5bacf5d7ba681b5dfd630914a124392d36d69b6a46075c093d480f7420a7269f"
+  },
+  {
+    "object": "workload_renewal_policy_head.wr_policy_head_bounds_ck",
+    "source": "migrations/postgres/identity/0170_remarkable_star_brand.sql",
+    "source_sha256": "5bacf5d7ba681b5dfd630914a124392d36d69b6a46075c093d480f7420a7269f"
+  },
+  {
+    "object": "workload_credential_family.wr_family_bounds_ck",
+    "source": "migrations/postgres/identity/0168_next_giant_girl.sql",
+    "source_sha256": "1909256c392895ac8b89f09419d71645967cdb57104680d2fcfce97a198b697c"
+  },
+  {
+    "object": "workload_renewal_attempt.wr_attempt_bounds_ck",
+    "source": "migrations/postgres/identity/0168_next_giant_girl.sql",
+    "source_sha256": "1909256c392895ac8b89f09419d71645967cdb57104680d2fcfce97a198b697c"
+  },
+  {
+    "object": "workload_renewal_intent.wr_intent_attestation_ck",
+    "source": "migrations/postgres/identity/0168_next_giant_girl.sql",
+    "source_sha256": "1909256c392895ac8b89f09419d71645967cdb57104680d2fcfce97a198b697c"
+  },
+  {
+    "object": "root_expiry_recovery_scope.root_expiry_scope_bytes_ck",
+    "source": "migrations/postgres/identity/0151_typical_karen_page.sql",
+    "source_sha256": "4c06c1cf62808f595a716da80127d0d9d642a4e992fdf09c83b0d027dcb5d590"
+  },
+  {
+    "object": "root_expiry_recovery_scope.root_expiry_scope_epoch_ck",
+    "source": "migrations/postgres/identity/0151_typical_karen_page.sql",
+    "source_sha256": "4c06c1cf62808f595a716da80127d0d9d642a4e992fdf09c83b0d027dcb5d590"
+  },
+  {
+    "object": "platform_envelope_scope_successor.platform_scope_successor_bytes_ck",
+    "source": "migrations/postgres/identity/0125_silky_vindicator.sql",
+    "source_sha256": "c5406909ffc862c7a0b149f20c3633343baf39c29f896e47b3c342ebe29e0541"
+  },
+  {
+    "object": "platform_envelope_scope_successor.platform_scope_successor_epoch_ck",
+    "source": "migrations/postgres/identity/0125_silky_vindicator.sql",
+    "source_sha256": "c5406909ffc862c7a0b149f20c3633343baf39c29f896e47b3c342ebe29e0541"
+  },
+  {
+    "object": "platform_scope_replacement.platform_scope_replacement_epoch_ck",
+    "source": "migrations/postgres/identity/0125_silky_vindicator.sql",
+    "source_sha256": "c5406909ffc862c7a0b149f20c3633343baf39c29f896e47b3c342ebe29e0541"
+  },
+  {
+    "object": "identity_envelope_proposal.identity_envelope_proposal_bytes_ck",
+    "source": "migrations/postgres/identity/0107_oval_falcon.sql",
+    "source_sha256": "6acdd8b204a1c29b22a44791dc8db614fe4f65834c471a185c1af630c922cc38"
+  },
+  {
+    "object": "platform_envelope_scope.platform_envelope_scope_bytes_ck",
+    "source": "migrations/postgres/identity/0106_eminent_rachel_grey.sql",
+    "source_sha256": "d4afae0194bc76949b5f85d889d6858a27d6ff3c71eba14227751c82beee3333"
+  },
+  {
+    "object": "idempotency_record.idempotency_catalog_operation_ck",
+    "source": "migrations/postgres/identity/0088_cuddly_vector.sql",
+    "source_sha256": "f7f9458fd8cdda6ff6d1410dabd1232b0d31b48bd2d691e11a100c0bd41a9455"
+  },
+  {
+    "object": "mutation_evidence.mutation_evidence_catalog_operation_ck",
+    "source": "migrations/postgres/identity/0088_cuddly_vector.sql",
+    "source_sha256": "f7f9458fd8cdda6ff6d1410dabd1232b0d31b48bd2d691e11a100c0bd41a9455"
+  },
+  {
+    "object": "installed_secret_recipient.installed_secret_recipient_bounds_ck",
+    "source": "migrations/postgres/identity/0085_installed_secret_recipient.sql",
+    "source_sha256": "fbe933a8f276286aa389bf3fcf1eeec2b4e8d250e54e2d63b271517d7e876ec5"
+  },
+  {
+    "object": "platform_context.platform_context_epoch_ck",
+    "source": "migrations/postgres/identity/0056_blue_inertia.sql",
+    "source_sha256": "2119cee90c71166b6354ae3804ba36764e35b80deb2082dcd89acd018d317b11"
+  },
+  {
+    "object": "participant_bootstrap_custody.bootstrap_ttl_ck",
+    "source": "migrations/postgres/identity/0049_wooden_stature.sql",
+    "source_sha256": "009a6de83379a8944dee0d17c9f8770b6e59f842cb2ad0c354523bb8b66a005c"
+  },
+  {
+    "object": "authority_role.authority_role_origin_ck",
+    "source": "migrations/postgres/identity/0030_absurd_greymalkin.sql",
+    "source_sha256": "2b32a97ab57429fa14c77116d57f03daea029ce5c82fbe147f853f8806e3c657"
+  },
+  {
+    "object": "authority_role.authority_role_state_ck",
+    "source": "migrations/postgres/identity/0030_absurd_greymalkin.sql",
+    "source_sha256": "2b32a97ab57429fa14c77116d57f03daea029ce5c82fbe147f853f8806e3c657"
+  },
+  {
+    "object": "identity_runtime_snapshot.identity_runtime_snapshot_count_ck",
+    "source": "migrations/postgres/identity/0028_slim_vengeance.sql",
+    "source_sha256": "148d67dd2dd5eec0ac088162a8314bb619758a068cc52669500febabe503afa5"
+  },
+  {
+    "object": "business_signing_selection.business_signing_selection_version_ck",
+    "source": "migrations/postgres/identity/0019_yummy_rocket_racer.sql",
+    "source_sha256": "9d3f69f107a151794b0baece00e26d08cf1d28664114c8a876e4054f8c19a6fe"
+  },
+  {
+    "object": "receipt_signing_attempt.receipt_attempt_payload_ck",
+    "source": "migrations/postgres/identity/0019_yummy_rocket_racer.sql",
+    "source_sha256": "9d3f69f107a151794b0baece00e26d08cf1d28664114c8a876e4054f8c19a6fe"
+  },
+  {
+    "object": "signing_continuation.signing_continuation_digest_ck",
+    "source": "migrations/postgres/identity/0019_yummy_rocket_racer.sql",
+    "source_sha256": "9d3f69f107a151794b0baece00e26d08cf1d28664114c8a876e4054f8c19a6fe"
+  },
+  {
+    "object": "signing_rotation_attestation.signing_attestation_payload_ck",
+    "source": "migrations/postgres/identity/0019_yummy_rocket_racer.sql",
+    "source_sha256": "9d3f69f107a151794b0baece00e26d08cf1d28664114c8a876e4054f8c19a6fe"
+  },
+  {
+    "object": "signing_rotation_command.signing_command_authorization_ck",
+    "source": "migrations/postgres/identity/0019_yummy_rocket_racer.sql",
+    "source_sha256": "9d3f69f107a151794b0baece00e26d08cf1d28664114c8a876e4054f8c19a6fe"
+  },
+  {
+    "object": "signing_rotation_history.signing_history_digest_ck",
+    "source": "migrations/postgres/identity/0019_yummy_rocket_racer.sql",
+    "source_sha256": "9d3f69f107a151794b0baece00e26d08cf1d28664114c8a876e4054f8c19a6fe"
+  },
+  {
+    "object": "signing_rotation_observation.signing_observation_digest_ck",
+    "source": "migrations/postgres/identity/0019_yummy_rocket_racer.sql",
+    "source_sha256": "9d3f69f107a151794b0baece00e26d08cf1d28664114c8a876e4054f8c19a6fe"
+  },
+  {
+    "object": "signing_rotation_operation_evidence.signing_operation_evidence_digest_ck",
+    "source": "migrations/postgres/identity/0019_yummy_rocket_racer.sql",
+    "source_sha256": "9d3f69f107a151794b0baece00e26d08cf1d28664114c8a876e4054f8c19a6fe"
+  },
+  {
+    "object": "audit_occurrence.audit_occurrence_digests_ck",
+    "source": "migrations/postgres/identity/0017_absurd_the_initiative.sql",
+    "source_sha256": "54e8ebcf58e40e39f39520a215a1a45aadb6bde0bf7f36173c6b0487e03cccec"
+  },
+  {
+    "object": "audit_occurrence.audit_occurrence_time_ck",
+    "source": "migrations/postgres/identity/0017_absurd_the_initiative.sql",
+    "source_sha256": "54e8ebcf58e40e39f39520a215a1a45aadb6bde0bf7f36173c6b0487e03cccec"
+  },
+  {
+    "object": "business_signing_key.business_signing_key_epoch_ck",
+    "source": "migrations/postgres/identity/0017_absurd_the_initiative.sql",
+    "source_sha256": "54e8ebcf58e40e39f39520a215a1a45aadb6bde0bf7f36173c6b0487e03cccec"
+  },
+  {
+    "object": "business_signing_key.business_signing_key_trust_ck",
+    "source": "migrations/postgres/identity/0017_absurd_the_initiative.sql",
+    "source_sha256": "54e8ebcf58e40e39f39520a215a1a45aadb6bde0bf7f36173c6b0487e03cccec"
+  },
+  {
+    "object": "business_signing_key_state.business_signing_state_change_ck",
+    "source": "migrations/postgres/identity/0017_absurd_the_initiative.sql",
+    "source_sha256": "54e8ebcf58e40e39f39520a215a1a45aadb6bde0bf7f36173c6b0487e03cccec"
+  },
+  {
+    "object": "business_signing_selection.business_signing_selection_change_ck",
+    "source": "migrations/postgres/identity/0017_absurd_the_initiative.sql",
+    "source_sha256": "54e8ebcf58e40e39f39520a215a1a45aadb6bde0bf7f36173c6b0487e03cccec"
+  },
+  {
+    "object": "evidence_record.evidence_record_time_ck",
+    "source": "migrations/postgres/identity/0017_absurd_the_initiative.sql",
+    "source_sha256": "54e8ebcf58e40e39f39520a215a1a45aadb6bde0bf7f36173c6b0487e03cccec"
+  },
+  {
+    "object": "action_intent.action_intent_operation_ck",
+    "source": "migrations/postgres/identity/0000_empty_living_lightning.sql",
+    "source_sha256": "2362b5b4870119b242607b5e8a87564dbc3e56d2639f53c1b8e8f31fb9527e6e"
+  },
+  {
+    "object": "action_intent.action_intent_risk_ck",
+    "source": "migrations/postgres/identity/0000_empty_living_lightning.sql",
+    "source_sha256": "2362b5b4870119b242607b5e8a87564dbc3e56d2639f53c1b8e8f31fb9527e6e"
+  },
+  {
+    "object": "runtime_target_profile_binding.runtime_profile_name_ck",
+    "source": "migrations/postgres/control-api/0199_familiar_energizer.sql",
+    "source_sha256": "ff88f7739a1fd7dd3add2100fa7546e19ba7c33b88c39c456575808fbd76ccec"
+  },
+  {
+    "object": "runtime_artifact_source_denial.runtime_artifact_source_denial_wire_ck",
+    "source": "migrations/postgres/control-api/0171_runtime_artifact_source_custody.sql",
+    "source_sha256": "a457a9d0349ca6a816fee7810addd5ef085a95a4ef67deef314f9f845b69e675"
+  },
+  {
+    "object": "qualification_deployment_attempt.qualification_deployment_attempt_bytes_ck",
+    "source": "migrations/postgres/control-api/0164_misty_thunderball.sql",
+    "source_sha256": "a94c34156fb408ab9c0d1b7948b05f130733542e5fbf741bfbbc086397ca074a"
+  },
+  {
+    "object": "qualification_deployment_installation.qualification_deployment_installation_bytes_ck",
+    "source": "migrations/postgres/control-api/0164_misty_thunderball.sql",
+    "source_sha256": "a94c34156fb408ab9c0d1b7948b05f130733542e5fbf741bfbbc086397ca074a"
+  },
+  {
+    "object": "qualification_deployment_observation.qualification_deployment_observation_bytes_ck",
+    "source": "migrations/postgres/control-api/0164_misty_thunderball.sql",
+    "source_sha256": "a94c34156fb408ab9c0d1b7948b05f130733542e5fbf741bfbbc086397ca074a"
+  },
+  {
+    "object": "notification_async_work_transition.notification_async_transition_bytes_ck",
+    "source": "migrations/postgres/control-api/0163_notification_async_custody.sql",
+    "source_sha256": "f0153b4ce30e3652c623f35e0ac8d0841941316c243fd22f7e296e7fe6183d65"
+  },
+  {
+    "object": "qualification_key_attempt.qualification_key_attempt_bytes_ck",
+    "source": "migrations/postgres/control-api/0162_qualification_key_custody.sql",
+    "source_sha256": "2c65732bd3e011b53917c597fd6a18a7dc9597e6fe0b62c92be535812e6832b4"
+  },
+  {
+    "object": "qualification_key_installation.qualification_key_installation_bytes_ck",
+    "source": "migrations/postgres/control-api/0162_qualification_key_custody.sql",
+    "source_sha256": "2c65732bd3e011b53917c597fd6a18a7dc9597e6fe0b62c92be535812e6832b4"
+  },
+  {
+    "object": "qualification_key_observation.qualification_key_observation_bytes_ck",
+    "source": "migrations/postgres/control-api/0162_qualification_key_custody.sql",
+    "source_sha256": "2c65732bd3e011b53917c597fd6a18a7dc9597e6fe0b62c92be535812e6832b4"
+  },
+  {
+    "object": "notification_completion_attempt.completion_attempt_bytes_ck",
+    "source": "migrations/postgres/control-api/0156_notification_completion_shared.sql",
+    "source_sha256": "e622f6097aff1e097d6735bbbb37439231a92c106cada11c9860137e4235fdd9"
+  },
+  {
+    "object": "notification_completion_disposition.completion_disposition_bytes_ck",
+    "source": "migrations/postgres/control-api/0156_notification_completion_shared.sql",
+    "source_sha256": "e622f6097aff1e097d6735bbbb37439231a92c106cada11c9860137e4235fdd9"
+  },
+  {
+    "object": "notification_completion_disposition_signer_installation.completion_signer_bytes_ck",
+    "source": "migrations/postgres/control-api/0156_notification_completion_shared.sql",
+    "source_sha256": "e622f6097aff1e097d6735bbbb37439231a92c106cada11c9860137e4235fdd9"
+  },
+  {
+    "object": "notification_completion_disposition_signing.completion_signing_bytes_ck",
+    "source": "migrations/postgres/control-api/0156_notification_completion_shared.sql",
+    "source_sha256": "e622f6097aff1e097d6735bbbb37439231a92c106cada11c9860137e4235fdd9"
+  },
+  {
+    "object": "notification_completion_source.completion_source_bytes_ck",
+    "source": "migrations/postgres/control-api/0156_notification_completion_shared.sql",
+    "source_sha256": "e622f6097aff1e097d6735bbbb37439231a92c106cada11c9860137e4235fdd9"
+  },
+  {
+    "object": "runtime_target_disposition_acknowledgement.runtime_target_disposition_ack_ck",
+    "source": "migrations/postgres/control-api/0148_runtime_target_disposition.sql",
+    "source_sha256": "4a0c2e62324472fa64924b6d6ecffc349232d14a9015fdf36ce91622ecd4a255"
+  },
+  {
+    "object": "runtime_target_disposition_delivery.runtime_target_disposition_delivery_ck",
+    "source": "migrations/postgres/control-api/0148_runtime_target_disposition.sql",
+    "source_sha256": "4a0c2e62324472fa64924b6d6ecffc349232d14a9015fdf36ce91622ecd4a255"
+  },
+  {
+    "object": "notification_cancellation_signing.notification_cancel_signing_preimage_ck",
+    "source": "migrations/postgres/control-api/0137_notification_result_owners.sql",
+    "source_sha256": "c13265ba1b8b90d8ae18387600be119f4b593a2e2da9865e0e699e8a43478969"
+  },
+  {
+    "object": "notification_delivery_cancellation.notification_cancellation_transition_ck",
+    "source": "migrations/postgres/control-api/0137_notification_result_owners.sql",
+    "source_sha256": "c13265ba1b8b90d8ae18387600be119f4b593a2e2da9865e0e699e8a43478969"
+  },
+  {
+    "object": "notification_delivery_outcome.notification_outcome_receipt_ck",
+    "source": "migrations/postgres/control-api/0137_notification_result_owners.sql",
+    "source_sha256": "c13265ba1b8b90d8ae18387600be119f4b593a2e2da9865e0e699e8a43478969"
+  },
+  {
+    "object": "notification_delivery_outcome.notification_outcome_transition_ck",
+    "source": "migrations/postgres/control-api/0137_notification_result_owners.sql",
+    "source_sha256": "c13265ba1b8b90d8ae18387600be119f4b593a2e2da9865e0e699e8a43478969"
+  },
+  {
+    "object": "notification_delivery_outcome_signing.notification_outcome_signing_preparation_ck",
+    "source": "migrations/postgres/control-api/0137_notification_result_owners.sql",
+    "source_sha256": "c13265ba1b8b90d8ae18387600be119f4b593a2e2da9865e0e699e8a43478969"
+  },
+  {
+    "object": "operations_qualification_root.ops_qualification_root_ck",
+    "source": "migrations/postgres/control-api/0134_great_thunderbolt.sql",
+    "source_sha256": "ff07cb39726823517297969cc2d5ec019d47d9a81252dadb07de704e13a515c8"
+  },
+  {
+    "object": "operations_qualification_state.ops_qualification_state_ck",
+    "source": "migrations/postgres/control-api/0134_great_thunderbolt.sql",
+    "source_sha256": "ff07cb39726823517297969cc2d5ec019d47d9a81252dadb07de704e13a515c8"
+  },
+  {
+    "object": "notification_delivery_dispatch_intent.notification_dispatch_state_ck",
+    "source": "migrations/postgres/control-api/0133_salty_the_santerians.sql",
+    "source_sha256": "78e7c424182cade7c5806d54cc3b231dd7ae50f2a09d8886768b3ec8c2753d9b"
+  },
+  {
+    "object": "notification_delivery_attempt.notification_attempt_count_ck",
+    "source": "migrations/postgres/control-api/0130_spooky_rachel_grey.sql",
+    "source_sha256": "d1edf73c470237fc111c0672f0cdc9b5745a0e3c553cb660263be796a6153932"
+  },
+  {
+    "object": "notification_delivery_signing.notification_delivery_signing_bytes_ck",
+    "source": "migrations/postgres/control-api/0130_spooky_rachel_grey.sql",
+    "source_sha256": "d1edf73c470237fc111c0672f0cdc9b5745a0e3c553cb660263be796a6153932"
+  },
+  {
+    "object": "notification_delivery_start.notification_delivery_start_receipt_ck",
+    "source": "migrations/postgres/control-api/0130_spooky_rachel_grey.sql",
+    "source_sha256": "d1edf73c470237fc111c0672f0cdc9b5745a0e3c553cb660263be796a6153932"
+  },
+  {
+    "object": "notification_delivery_start.notification_delivery_start_transition_ck",
+    "source": "migrations/postgres/control-api/0130_spooky_rachel_grey.sql",
+    "source_sha256": "d1edf73c470237fc111c0672f0cdc9b5745a0e3c553cb660263be796a6153932"
+  },
+  {
+    "object": "operations_secret_association.operations_secret_association_bytes_ck",
+    "source": "migrations/postgres/control-api/0128_lucky_leader.sql",
+    "source_sha256": "e16e1620adb3a92e5db3e84ed3aea9034d837f2eb152f186fd0f0ccfccd9dbc0"
+  },
+  {
+    "object": "operations_secret_observation.operations_secret_observation_bytes_ck",
+    "source": "migrations/postgres/control-api/0128_lucky_leader.sql",
+    "source_sha256": "e16e1620adb3a92e5db3e84ed3aea9034d837f2eb152f186fd0f0ccfccd9dbc0"
+  },
+  {
+    "object": "notification_delivery_preparation.notification_delivery_preparation_bytes_ck",
+    "source": "migrations/postgres/control-api/0127_busy_the_order.sql",
+    "source_sha256": "a1089f7cd167fe821f34dbb634adcb285c90e56810836af2fad9be4476cb1325"
+  },
+  {
+    "object": "notification_delivery_preparation.notification_delivery_preparation_revision_ck",
+    "source": "migrations/postgres/control-api/0127_busy_the_order.sql",
+    "source_sha256": "a1089f7cd167fe821f34dbb634adcb285c90e56810836af2fad9be4476cb1325"
+  },
+  {
+    "object": "notification_delivery.notification_delivery_budget_ck",
+    "source": "migrations/postgres/control-api/0126_breezy_korath.sql",
+    "source_sha256": "25fd3251a9e4c9afff255c886ed7e07bdd1308c694915fde69288e5a86002639"
+  },
+  {
+    "object": "notification_delivery.notification_delivery_budget_provenance_ck",
+    "source": "migrations/postgres/control-api/0126_breezy_korath.sql",
+    "source_sha256": "25fd3251a9e4c9afff255c886ed7e07bdd1308c694915fde69288e5a86002639"
+  },
+  {
+    "object": "operations_generation.operations_generation_bytes_ck",
+    "source": "migrations/postgres/control-api/0124_careless_deathstrike.sql",
+    "source_sha256": "3551294163ce4e5921ed689ec9680edf0c3b1282f841b0d9ff08715232f5d6ae"
+  },
+  {
+    "object": "operations_generation_commit.operations_commit_sequence_ck",
+    "source": "migrations/postgres/control-api/0124_careless_deathstrike.sql",
+    "source_sha256": "3551294163ce4e5921ed689ec9680edf0c3b1282f841b0d9ff08715232f5d6ae"
+  },
+  {
+    "object": "operations_installation.operations_installation_bytes_ck",
+    "source": "migrations/postgres/control-api/0124_careless_deathstrike.sql",
+    "source_sha256": "3551294163ce4e5921ed689ec9680edf0c3b1282f841b0d9ff08715232f5d6ae"
+  },
+  {
+    "object": "notification_source_cursor.notification_cursor_position_ck",
+    "source": "migrations/postgres/control-api/0123_curved_firelord.sql",
+    "source_sha256": "3094fd66d043deecbe8e65c1281e518d2e9d1da89e6b1ff3087d59e58ce7eb40"
+  },
+  {
+    "object": "notification_source_cursor.notification_cursor_source_ck",
+    "source": "migrations/postgres/control-api/0123_curved_firelord.sql",
+    "source_sha256": "3094fd66d043deecbe8e65c1281e518d2e9d1da89e6b1ff3087d59e58ce7eb40"
+  },
+  {
+    "object": "notification_source_inbox.notification_inbox_source_ck",
+    "source": "migrations/postgres/control-api/0123_curved_firelord.sql",
+    "source_sha256": "3094fd66d043deecbe8e65c1281e518d2e9d1da89e6b1ff3087d59e58ce7eb40"
+  },
+  {
+    "object": "notification_occurrence_observation.notification_occurrence_observation_bytes_ck",
+    "source": "migrations/postgres/control-api/0123_curved_firelord.sql",
+    "source_sha256": "3094fd66d043deecbe8e65c1281e518d2e9d1da89e6b1ff3087d59e58ce7eb40"
+  },
+  {
+    "object": "notification_occurrence_preparation.notification_occurrence_preparation_bytes_ck",
+    "source": "migrations/postgres/control-api/0123_curved_firelord.sql",
+    "source_sha256": "3094fd66d043deecbe8e65c1281e518d2e9d1da89e6b1ff3087d59e58ce7eb40"
+  },
+  {
+    "object": "notification_key_preparation.notification_key_preparation_bytes_ck",
+    "source": "migrations/postgres/control-api/0118_notification_key_custody.sql",
+    "source_sha256": "bb62f43e536befd85744dc9f526fbc2e1a0590df0f828a6daac953c9e785d29f"
+  },
+  {
+    "object": "evidence_kms_attempt.evidence_kms_attempt_request_ck",
+    "source": "migrations/postgres/control-api/0114_evidence_kms.sql",
+    "source_sha256": "1beb1603d16661df5f5a5f895dd09c5ef6e08c21097daf7dd8b11735cec3e7b7"
+  },
+  {
+    "object": "evidence_kms_attempt.evidence_kms_attempt_result_ck",
+    "source": "migrations/postgres/control-api/0114_evidence_kms.sql",
+    "source_sha256": "1beb1603d16661df5f5a5f895dd09c5ef6e08c21097daf7dd8b11735cec3e7b7"
+  },
+  {
+    "object": "evidence_kms_exchange.evidence_kms_exchange_receipt_ck",
+    "source": "migrations/postgres/control-api/0114_evidence_kms.sql",
+    "source_sha256": "1beb1603d16661df5f5a5f895dd09c5ef6e08c21097daf7dd8b11735cec3e7b7"
+  },
+  {
+    "object": "evidence_kms_installation.evidence_kms_installation_digest_ck",
+    "source": "migrations/postgres/control-api/0114_evidence_kms.sql",
+    "source_sha256": "1beb1603d16661df5f5a5f895dd09c5ef6e08c21097daf7dd8b11735cec3e7b7"
+  },
+  {
+    "object": "evidence_wrapped_key.evidence_wrapped_key_bytes_ck",
+    "source": "migrations/postgres/control-api/0114_evidence_kms.sql",
+    "source_sha256": "1beb1603d16661df5f5a5f895dd09c5ef6e08c21097daf7dd8b11735cec3e7b7"
+  },
+  {
+    "object": "notification_verification_attempt.notification_verification_attempt_bytes_ck",
+    "source": "migrations/postgres/control-api/0101_notification_endpoint_admission.sql",
+    "source_sha256": "968dafc646e5442530e4a3142f4e053b710259c4853cd7389945e8767908ee85"
+  },
+  {
+    "object": "fact_consumer_failure_signer.fact_failure_signer_time_ck",
+    "source": "migrations/postgres/control-api/0096_smart_carlie_cooper.sql",
+    "source_sha256": "12d910c1b94c7c057334f46b033e353605dc186455332d47895eedb880d26918"
+  },
+  {
+    "object": "fleet_fact_delivery.fleet_delivery_budget_ck",
+    "source": "migrations/postgres/control-api/0095_fleet-delivery-retry.sql",
+    "source_sha256": "7aba94074f983d913d0d440a1219b11e4deb97982a1940ccd5ba5ea11f3ad813"
+  },
+  {
+    "object": "fleet_fact_delivery.fleet_delivery_material_ck",
+    "source": "migrations/postgres/control-api/0095_fleet-delivery-retry.sql",
+    "source_sha256": "7aba94074f983d913d0d440a1219b11e4deb97982a1940ccd5ba5ea11f3ad813"
+  },
+  {
+    "object": "fleet_fact_delivery.fleet_delivery_time_ck",
+    "source": "migrations/postgres/control-api/0095_fleet-delivery-retry.sql",
+    "source_sha256": "7aba94074f983d913d0d440a1219b11e4deb97982a1940ccd5ba5ea11f3ad813"
+  },
+  {
+    "object": "fleet_fact_delivery_attempt.fleet_delivery_attempt_time_ck",
+    "source": "migrations/postgres/control-api/0095_fleet-delivery-retry.sql",
+    "source_sha256": "7aba94074f983d913d0d440a1219b11e4deb97982a1940ccd5ba5ea11f3ad813"
+  },
+  {
+    "object": "store_retirement_admission.store_retirement_admission_revision_ck",
+    "source": "migrations/postgres/control-api/0087_store_retirement_admission.sql",
+    "source_sha256": "acb1c3f83b9a601b441fbaaf7e62c5e197ac2009c8a2d8b83854e07bf51e051d"
+  },
+  {
+    "object": "store_retirement_admission.store_retirement_admission_wire_ck",
+    "source": "migrations/postgres/control-api/0087_store_retirement_admission.sql",
+    "source_sha256": "acb1c3f83b9a601b441fbaaf7e62c5e197ac2009c8a2d8b83854e07bf51e051d"
+  },
+  {
+    "object": "store_retirement_cancellation.store_retirement_cancellation_binding_ck",
+    "source": "migrations/postgres/control-api/0087_store_retirement_admission.sql",
+    "source_sha256": "acb1c3f83b9a601b441fbaaf7e62c5e197ac2009c8a2d8b83854e07bf51e051d"
+  },
+  {
+    "object": "store_retirement_host.store_retirement_host_validity_ck",
+    "source": "migrations/postgres/control-api/0087_store_retirement_admission.sql",
+    "source_sha256": "acb1c3f83b9a601b441fbaaf7e62c5e197ac2009c8a2d8b83854e07bf51e051d"
+  },
+  {
+    "object": "evidence_projection_retirement.evidence_projection_retirement_size_ck",
+    "source": "migrations/postgres/control-api/0074_projection_deletion.sql",
+    "source_sha256": "9f04827bf3149b508a75ac7376add63e51365d0653db89d8f078fd9a8cd0a317"
+  },
+  {
+    "object": "protected_proof_checkpoint.protected_proof_checkpoint_size_ck",
+    "source": "migrations/postgres/control-api/0072_protected_proof_custody.sql",
+    "source_sha256": "3f8b8946ad1aa99735eda835d5b75071d5c8393134859fe9de9acdd2e4bc49d6"
+  },
+  {
+    "object": "protected_proof_access.protected_proof_access_purpose_ck",
+    "source": "migrations/postgres/control-api/0064_daffy_white_tiger.sql",
+    "source_sha256": "2d57a9cc09387254c9624d3b8442d824fdb9fbf11195b7058ef49b3d7269ff1e"
+  },
+  {
+    "object": "protected_proof_object.protected_proof_object_purpose_ck",
+    "source": "migrations/postgres/control-api/0064_daffy_white_tiger.sql",
+    "source_sha256": "2d57a9cc09387254c9624d3b8442d824fdb9fbf11195b7058ef49b3d7269ff1e"
+  },
+  {
+    "object": "protected_proof_payload.protected_proof_payload_shape_ck",
+    "source": "migrations/postgres/control-api/0064_daffy_white_tiger.sql",
+    "source_sha256": "2d57a9cc09387254c9624d3b8442d824fdb9fbf11195b7058ef49b3d7269ff1e"
+  },
+  {
+    "object": "deletion_job.deletion_job_accounting_ck",
+    "source": "migrations/postgres/control-api/0058_evidence_local_deletion.sql",
+    "source_sha256": "b8e1c994d8b0d753d701c2e08312399126cef8b0a8b77e74ca3f09137eedb7a0"
+  },
+  {
+    "object": "retention_policy.retention_policy_digest_ck",
+    "source": "migrations/postgres/control-api/0055_retention_policy.sql",
+    "source_sha256": "19fec33cb8bbacc89c956777fc2e1ef4cb7b7956ae7dab9cad28d85b27b6c0d6"
+  },
+  {
+    "object": "retention_policy.retention_policy_duration_ck",
+    "source": "migrations/postgres/control-api/0055_retention_policy.sql",
+    "source_sha256": "19fec33cb8bbacc89c956777fc2e1ef4cb7b7956ae7dab9cad28d85b27b6c0d6"
+  },
+  {
+    "object": "evidence_export_output.evidence_export_output_digest_ck",
+    "source": "migrations/postgres/control-api/0051_dashing_purple_man.sql",
+    "source_sha256": "442fb322b9007707d39d5c448664a761a24f9b05f0aa960cea7af7473c020bba"
+  },
+  {
+    "object": "evidence_export_request.evidence_export_request_revision_ck",
+    "source": "migrations/postgres/control-api/0051_dashing_purple_man.sql",
+    "source_sha256": "442fb322b9007707d39d5c448664a761a24f9b05f0aa960cea7af7473c020bba"
+  },
+  {
+    "object": "evidence_stream.evidence_stream_capacity_ck",
+    "source": "migrations/postgres/control-api/0049_cultured_cerebro.sql",
+    "source_sha256": "7ec65ad78e26668921a6374c94469b21b8167cfdc416f9a09f8817e8a2065337"
+  },
+  {
+    "object": "evidence_stream.evidence_stream_sequence_ck",
+    "source": "migrations/postgres/control-api/0049_cultured_cerebro.sql",
+    "source_sha256": "7ec65ad78e26668921a6374c94469b21b8167cfdc416f9a09f8817e8a2065337"
+  },
+  {
+    "object": "runtime_configuration_input.runtime_configuration_input_bytes_ck",
+    "source": "migrations/postgres/control-api/0039_flimsy_zeigeist.sql",
+    "source_sha256": "ae0a0cd5aea69657bd858e9338c1ab3a0f2970a44bb9507b9e0c5e7e1d26cfed"
+  },
+  {
+    "object": "cigl_profile_dependency_path.cigl_profile_path_ordinal_ck",
+    "source": "migrations/postgres/control-api/0029_giant_madelyne_pryor.sql",
+    "source_sha256": "3e7571024aa8941d8fe73adf501104089ddc14b753d0054610bf6206d3c7b1c2"
+  },
+  {
+    "object": "contract_governance_association.contract_association_bytes_ck",
+    "source": "migrations/postgres/control-api/0018_third_caretaker.sql",
+    "source_sha256": "8fe9298d12276ac215826b82e604008c723a3b40413cace8d689016181c7b054"
+  },
+  {
+    "object": "contract_governance_association.contract_association_sequences_ck",
+    "source": "migrations/postgres/control-api/0018_third_caretaker.sql",
+    "source_sha256": "8fe9298d12276ac215826b82e604008c723a3b40413cace8d689016181c7b054"
+  },
+  {
+    "object": "mutation_candidate.platform_recovery_pending_expiry_effect_read",
+    "source": "migrations/postgres/identity/0243_completion_handoff.sql",
+    "source_sha256": "fed5223604f53d0151541a6ddeeabcead20d4c11d382e563b8d69b8f6cc8ec3a"
+  },
+  {
+    "object": "root_expiry_recovery_case.root_expiry_admin_receipt_prerequisite_read",
+    "source": "migrations/postgres/identity/0204_odd_loa.sql",
+    "source_sha256": "e538a2c4a9b422d0c33cdba700f81c54ae9f1ce7be6ad1a7dc551607999afb71"
+  },
+  {
+    "object": "root_expiry_recovery_enrollment.root_expiry_admin_receipt_prerequisite_read",
+    "source": "migrations/postgres/identity/0204_odd_loa.sql",
+    "source_sha256": "e538a2c4a9b422d0c33cdba700f81c54ae9f1ce7be6ad1a7dc551607999afb71"
+  },
+  {
+    "object": "root_expiry_recovery_scope.root_expiry_admin_receipt_prerequisite_read",
+    "source": "migrations/postgres/identity/0204_odd_loa.sql",
+    "source_sha256": "e538a2c4a9b422d0c33cdba700f81c54ae9f1ce7be6ad1a7dc551607999afb71"
+  },
+  {
+    "object": "root_expiry_recovery_scope.root_expiry_scope_read",
+    "source": "migrations/postgres/identity/0224_clever_obadiah_stane.sql",
+    "source_sha256": "d1ff0a248b342203c6387edb1affbff2c28397e113446ada69c5db3d45af8ddf"
+  }
+]

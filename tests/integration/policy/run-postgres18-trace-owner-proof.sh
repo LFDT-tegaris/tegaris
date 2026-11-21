@@ -5,6 +5,13 @@ trap 'status=$?; printf "OPENPC_POLICY_DATABASE_FAILURE|line=%s|status=%s\n" "$L
 readonly repository_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 source "$repository_root/scripts/maintenance/local-runtime-images.sh"
 openpc_require_execution database
+# Historical prefixes live only in a separate, authenticated test source view.
+if [ -f "$repository_root/migrations/postgres/baseline-v1/install.sql" ]; then
+  legacy_parent="$(mktemp -d "${OPENPC_LOCAL_RUNTIME_TMP_ROOT:?}/tegaris-legacy-proof.XXXXXX")"
+  exec python3 "$repository_root/scripts/migrations/legacy-test-view.py" \
+    --directory "$legacy_parent/source" --command bash "tests/integration/policy/run-postgres18-trace-owner-proof.sh" "$@"
+fi
+
 renewal_only=false
 module_preflight_only=false
 conflict_only=false

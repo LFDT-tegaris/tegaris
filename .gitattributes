@@ -1,0 +1,10 @@
+# Reproducible database installation output; source owners remain in services/.
+migrations/postgres/baseline-v1/*.sql linguist-generated=true
+migrations/postgres/baseline-v1/*.json linguist-generated=true
+migrations/postgres/baseline-v1/CHECKSUMS linguist-generated=true
+# Exact legacy function bodies retain source-significant whitespace.
+migrations/postgres/baseline-v1/control.sql whitespace=-blank-at-eol
+migrations/postgres/**/meta/** linguist-generated=true
+migrations/postgres/identity/0245_runtime_profile_approval_resume.sql linguist-generated=true
+migrations/postgres/control-api/0208_public_operations_source_v1.sql linguist-generated=true
+migrations/postgres/policy/0014_module_installation_direct_assignment_epoch.sql linguist-generated=true

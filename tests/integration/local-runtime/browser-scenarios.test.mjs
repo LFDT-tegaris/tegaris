@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, realpathSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 import {
   browserScenarios,
   createScenarioSession,
@@ -209,11 +210,7 @@ test('targeted retries allocate fresh namespaces and cannot erase the first fail
   assert.equal(session.exitCode, 1);
 });
 test('source provenance permits browser-selector edits but refuses product and fixture drift', () => {
-  const common = execFileSync('git', ['rev-parse', '--path-format=absolute', '--git-common-dir'], {
-    encoding: 'utf8',
-  }).trim();
-  const parent = join(common, '..', '..', 'Agents', 'tmp');
-  const root = mkdtempSync(join(parent, 'openpc-scenario-test.'));
+  const root = mkdtempSync(join(realpathSync(tmpdir()), 'openpc-scenario-test.'));
   try {
     execFileSync('git', ['init', '-q', root]);
     mkdirSync(join(root, 'apps'), { recursive: true });
@@ -252,10 +249,7 @@ test('source provenance permits browser-selector edits but refuses product and f
   }
 });
 test('scenario account changes are explicit and previously read accounts remain bound', () => {
-  const common = execFileSync('git', ['rev-parse', '--path-format=absolute', '--git-common-dir'], {
-    encoding: 'utf8',
-  }).trim();
-  const root = mkdtempSync(join(common, '..', '..', 'Agents', 'tmp', 'openpc-accounts-test.'));
+  const root = mkdtempSync(join(realpathSync(tmpdir()), 'openpc-accounts-test.'));
   try {
     const path = join(root, 'accounts');
     writeFileSync(path, JSON.stringify({ maker: '018f0000-0000-7000-8000-000000001131' }));

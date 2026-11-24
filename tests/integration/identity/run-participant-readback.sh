@@ -437,6 +437,9 @@ openpc_readback_keep_failure_state() {
 cleanup() {
   status=$?
   trap - EXIT
+  if [[ "$status" != 0 && -f "$root/migrations.log" && -f "${repo:-}/scripts/migrations/report-failure.py" ]]; then
+    python3 "$repo/scripts/migrations/report-failure.py" "$root/migrations.log" >&2 || true
+  fi
   if [ "$created" = 1 ]; then
     docker logs "$container" > "$root/postgres.log" 2>&1 || true
     if [ "$(docker inspect -f '{{index .Config.Labels "io.openpc.test-owner"}}' "$container")" != "$root" ]; then
@@ -508,11 +511,18 @@ if [ "$notification_completion_bridge" = 1 ]; then
   openssl rand -hex 32 > "$root/secrets/notification_completion_identity_admission_key"
   export OPENPC_NOTIFICATION_COMPLETION_TEST_KEY_FILE="$root/secrets/notification_completion_identity_admission_key"
 fi
+postgres_command=(postgres)
+if [[ "${test_files[0]}" == tests/integration/identity/postgres-runtime-artifact-source.test.ts ]]; then
+  # The same-database recovery case drops and recreates the full catalogue in
+  # one transaction. Provision its lock table at server startup; keep the same
+  # 1 GiB container cap and never alter an existing installation's settings.
+  postgres_command=(postgres -c max_locks_per_transaction=1024)
+fi
 docker run -d --name "$container" --memory 1g --memory-swap 1g --cpus 1 --pids-limit 256 --label "io.openpc.test-owner=$root" \
   -p 127.0.0.1::5432 -e POSTGRES_PASSWORD="$password" -e POSTGRES_DB=openpc_control \
   -v "$root/secrets:/run/secrets:ro" -v "$repo/migrations/postgres:/migrations/postgres:ro" \
   -v "$repo/deploy/compose/local/migrate.sh:/local/migrate.sh:ro" \
-  docker.io/library/postgres:18.6@sha256:7341002d2b8c7c5bdd7542a671a95b36196c0b5b888daf454ae4fc33ba5346d7 >/dev/null
+  docker.io/library/postgres:18.6@sha256:7341002d2b8c7c5bdd7542a671a95b36196c0b5b888daf454ae4fc33ba5346d7 "${postgres_command[@]}" >/dev/null
 created=1
 if [[ "${test_files[0]}" == tests/integration/identity/postgres-platform-envelope-scope.test.ts || "${test_files[0]}" == tests/integration/identity/postgres-root-expiry-installation.test.ts || "${test_files[0]}" == tests/integration/identity/postgres-root-expiry-recovery.test.ts ]]; then
   export OPENPC_PLATFORM_SCOPE_CONTAINER="$container"
@@ -525,6 +535,11 @@ for attempt in $(seq 1 60); do
   [ "$attempt" -lt 60 ] || exit 1
   sleep 1
 done
+if [[ "${test_files[0]}" == tests/integration/identity/postgres-runtime-artifact-source.test.ts ]]; then
+  lock_slots=$(docker exec "$container" psql -XqAt -v ON_ERROR_STOP=1 -U postgres -d openpc_control -c 'SHOW max_locks_per_transaction')
+  [[ "$lock_slots" == 1024 ]] || { echo 'Custody restore lock capacity unavailable' >&2; exit 1; }
+  printf 'ISOLATED_CUSTODY_POSTGRES|max_locks_per_transaction=%s|container_memory=1g\n' "$lock_slots"
+fi
 if [[ "${test_files[0]}" == tests/integration/identity/postgres-evidence-remote-upgrade.test.ts || "${test_files[0]}" == tests/integration/identity/postgres-identity-envelope-signing.test.ts || "${test_files[0]}" == tests/integration/identity/postgres-platform-envelope-scope.test.ts || "${test_files[0]}" == tests/integration/identity/postgres-envelope-proposal.test.ts ]]; then
   # Use unmodified predecessor files through the same installer. Keep today's
   # read-only migration mount on the database for the test's actual upgrade.
@@ -568,12 +583,21 @@ else
   fi
   docker exec -e PGHOST=127.0.0.1 -e PGUSER=postgres -e PGDATABASE=openpc_control "$container" sh /local/migrate.sh "$control_mode" > "$root/migrations.log" 2>&1
 fi
+platform_login=openpc_test_platform
+fact_reader_login=openpc_fact_authority_test_reader
+if [[ -f "$repo/migrations/postgres/baseline-v1/install.sql" ]]; then
+  # Use the installed actors with the same parent grants. Extra test roles
+  # would deliberately violate the compact baseline's frozen role catalogue.
+  platform_login=openpc_participant_runtime
+  fact_reader_login=openpc_source_control_reader
+else
 docker exec -i "$container" psql -X -q -v ON_ERROR_STOP=1 -U postgres -d openpc_control <<SQL
 CREATE ROLE openpc_test_platform LOGIN INHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS PASSWORD '$password';
 GRANT openpc_control_runtime, openpc_control_platform_runtime TO openpc_test_platform;
 CREATE ROLE openpc_fact_authority_test_reader LOGIN INHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS PASSWORD '$password';
 GRANT openpc_control_reader TO openpc_fact_authority_test_reader;
 SQL
+fi
 if [[ "$snapshot_interop" = 1 || "$secret_consumer_interop" = 1 ]]; then
   # Real isolated candidate store for the Fact consumer connection lifecycle.
   # Initial database/role installation only; no candidate or business state seed.
@@ -587,13 +611,13 @@ port=$(docker port "$container" 5432/tcp)
 port=${port##*:}
 export OPENPC_I02_ADMIN_DATABASE_URL="postgresql://postgres:$password@127.0.0.1:$port/openpc_control"
 export OPENPC_I02_RUNTIME_DATABASE_URL="postgresql://openpc_identity_runtime:$password@127.0.0.1:$port/openpc_control"
-export OPENPC_I02_PLATFORM_RUNTIME_DATABASE_URL="postgresql://openpc_test_platform:$password@127.0.0.1:$port/openpc_control"
+export OPENPC_I02_PLATFORM_RUNTIME_DATABASE_URL="postgresql://$platform_login:$password@127.0.0.1:$port/openpc_control"
 export OPENPC_ASTRA05_ADMIN_DATABASE_URL="$OPENPC_I02_ADMIN_DATABASE_URL"
 export OPENPC_ASTRA05_RUNTIME_DATABASE_URL="$OPENPC_I02_RUNTIME_DATABASE_URL"
 if [[ "$snapshot_interop" = 1 || "$secret_consumer_interop" = 1 ]]; then
   export OPENPC_FACT_CANDIDATE_SESSION_TEST_URL="postgresql://openpc_fact_bridge_reader:$password@127.0.0.1:$port/openpc_candidate_index"
 fi
-export OPENPC_FACT_WORKLOAD_TEST_READER_URL="postgresql://openpc_fact_authority_test_reader:$password@127.0.0.1:$port/openpc_control"
+export OPENPC_FACT_WORKLOAD_TEST_READER_URL="postgresql://$fact_reader_login:$password@127.0.0.1:$port/openpc_control"
 export OPENPC_DEPLOYMENT_COMPILATION_DATABASE_URL="postgresql://openpc_local_control_worker:$password@127.0.0.1:$port/openpc_control"
 cd "$repo"
 if [ "$source_policy_interop" = 1 ]; then

@@ -943,13 +943,9 @@ integration(
               const changed =
                 invalidation === 'EXPIRY'
                   ? await admin.query(
-                      `update control.session set
-                         issued_at=issued_at-interval '13 hours',
-                         last_seen_at=last_seen_at-interval '13 hours',
-                         idle_expires_at=idle_expires_at-interval '13 hours',
-                         absolute_expires_at=absolute_expires_at-interval '13 hours',
-                         step_up_verified_at=step_up_verified_at-interval '13 hours',
-                         row_version=row_version+1
+                      // Exercise the persisted expiry transition. Issuance and
+                      // duration are immutable, even in an administrator fixture.
+                      `update control.session set state='EXPIRED',row_version=row_version+1
                        where participant_id=$1 and session_id=$2`,
                       [participant, maker.sessionId],
                     )

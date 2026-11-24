@@ -3,7 +3,15 @@ set -eu
 umask 077
 
 repository_root="$(CDPATH= cd -- "$(dirname "$0")/../../.." && pwd)"
+
 bash "$repository_root/scripts/maintenance/run-bounded.sh" --profile database --reuse -- true
+# Historical prefixes live only in a separate, authenticated test source view.
+if [ -f "$repository_root/migrations/postgres/baseline-v1/install.sql" ]; then
+  legacy_parent="$(mktemp -d "${OPENPC_LOCAL_RUNTIME_TMP_ROOT:?}/tegaris-legacy-proof.XXXXXX")"
+  exec python3 "$repository_root/scripts/migrations/legacy-test-view.py" \
+    --directory "$legacy_parent/source" --command sh "tests/integration/local-runtime/run-control-migration-upgrade.sh" "$@"
+fi
+
 scratch_parent="${OPENPC_LOCAL_RUNTIME_TMP_ROOT:?OPENPC_LOCAL_RUNTIME_TMP_ROOT is required}"
 mkdir -p "$scratch_parent"
 test_root="$(mktemp -d "$scratch_parent/openpc-control-migration.XXXXXX")"

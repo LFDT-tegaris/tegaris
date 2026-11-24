@@ -9,6 +9,8 @@ target/
 .openpc-toolchain/
 .openpc-tmp/
 *.tsbuildinfo
+__pycache__/
+*.py[cod]
 
 # Local developer-only credentials and data are separately ignored in the
 # Compose directories; do not add committed .env files to this repository.

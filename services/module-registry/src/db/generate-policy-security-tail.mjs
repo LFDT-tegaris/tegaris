@@ -1,25 +1,27 @@
-import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { moduleLifecycleGuardSql } from './module-lifecycle-guards.mjs';
 import { policyGenerationFenceSql } from './policy-generation-fence.mjs';
+import { migrationInputs } from '../../../../scripts/migrations/legacy-inputs.mjs';
 
 const tailMarker = '-- OPENPC GENERATED POLICY SECURITY TAIL; DO NOT EDIT';
 const directory = fileURLToPath(
   new URL('../../../../migrations/postgres/policy/', import.meta.url),
 );
-const migrations = (await readdir(directory)).filter((name) => name.endsWith('.sql')).sort();
+const { migrations, readMigration, isHistoricalMigration } = await migrationInputs(directory);
 const migration = migrations.at(-1);
 if (migration === undefined) throw new Error('Drizzle did not generate a PostgreSQL migration');
+if (isHistoricalMigration(migration)) {
+  throw new Error('Applied policy migration bytes are immutable; create a new Drizzle migration');
+}
 
 const path = join(directory, migration);
-const generated = await readFile(path, 'utf8');
+const generated = await readMigration(migration);
 const base = generated.split(tailMarker, 1)[0].trimEnd();
 const history = (
   await Promise.all(
-    migrations.map(
-      async (name) => (await readFile(join(directory, name), 'utf8')).split(tailMarker, 1)[0],
-    ),
+    migrations.map(async (name) => (await readMigration(name)).split(tailMarker, 1)[0]),
   )
 ).join('\n');
 const tables = [...history.matchAll(/CREATE TABLE "control"\."([^"]+)"/gu)]

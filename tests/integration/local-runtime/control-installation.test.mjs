@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { setTimeout as pause } from 'node:timers/promises';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const execute = promisify(execFile);
@@ -82,7 +83,9 @@ async function businessState() {
   );
 }
 const journal = () =>
-  sql('select jsonb_agg(to_jsonb(m) order by path) from openpc_local.migration m');
+  sql(
+    "select coalesce(jsonb_agg(to_jsonb(m) order by path),'[]'::jsonb) from openpc_local.migration m",
+  );
 
 test(
   'Control installation creates service roles and catalogue without business trust or effects',
@@ -92,7 +95,34 @@ test(
     const empty = Object.fromEntries(businessTables.map((name) => [name, []]));
     assert.deepEqual(await businessState(), empty);
     const history = await journal();
-    assert.ok(JSON.parse(history).length > 0);
+    if ((await sql("select to_regclass('openpc_local.baseline_lineage') is not null")) === 't') {
+      const baseline = JSON.parse(
+        await readFile(
+          new URL('../../../migrations/postgres/baseline-v1/baseline.json', import.meta.url),
+          'utf8',
+        ),
+      );
+      assert.deepEqual(JSON.parse(history) ?? [], []);
+      assert.deepEqual(
+        JSON.parse(
+          await sql(
+            "select jsonb_agg(to_jsonb(l)-'recorded_at') from openpc_local.baseline_lineage l",
+          ),
+        ),
+        [
+          {
+            baseline_id: baseline.baseline_id,
+            source_commit: baseline.source_commit,
+            sql_sha256: baseline.files['control.sql'],
+            catalog_sha256: baseline.catalog_profiles.canonical.catalog_sha256,
+            catalog_profile: 'canonical',
+            origin: 'FRESH',
+          },
+        ],
+      );
+    } else {
+      assert.ok(JSON.parse(history).length > 0);
+    }
     assert.equal(
       await sql(`select count(*) from control.action_intent where
         action_intent_id='ACT-PARTICIPANTS_CREATE_RESOURCE-V1'

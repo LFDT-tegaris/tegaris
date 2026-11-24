@@ -21,6 +21,10 @@ deploy/compose/local/volumes/**
 pnpm-lock.yaml
 # Drizzle-owned metadata is byte-preserved and validated by the owning db:generate commands.
 migrations/postgres/*/meta/*.json
+# Baseline output is generated, authenticated, and consumed byte for byte.
+migrations/postgres/baseline-v1/*.sql
+migrations/postgres/baseline-v1/*.json
+migrations/postgres/baseline-v1/CHECKSUMS
 
 # Installation schema is consumed verbatim by the installer.
 config/schema/effective-configuration.schema.json

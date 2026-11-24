@@ -4,6 +4,13 @@ set -euo pipefail
 readonly repository_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 source "$repository_root/scripts/maintenance/local-runtime-images.sh"
 openpc_require_execution database
+# Historical prefixes live only in a separate, authenticated test source view.
+if [ -f "$repository_root/migrations/postgres/baseline-v1/install.sql" ]; then
+  legacy_parent="$(mktemp -d "${OPENPC_LOCAL_RUNTIME_TMP_ROOT:?}/tegaris-legacy-proof.XXXXXX")"
+  exec python3 "$repository_root/scripts/migrations/legacy-test-view.py" \
+    --directory "$legacy_parent/source" --command bash "tests/integration/policy/run-postgres18-nonsuperuser-migration-proof.sh" "$@"
+fi
+
 readonly container_name="openpc-i03-r5-migration-proof"
 readonly postgres_password="openpc_i03_r5_admin_local_only"
 readonly migrator_password="openpc_i03_r5_migrator_local_only"
